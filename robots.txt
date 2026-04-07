@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /assets/
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+Sitemap: https://glee-fully.tools/sitemap.xml
