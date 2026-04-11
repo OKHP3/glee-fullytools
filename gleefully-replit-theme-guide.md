@@ -68,6 +68,32 @@ Enter these values into the **Manage app themes** panel field by field.
 |---|---|---|
 | Input | `#fdfbf7` | Lightest paper surface — inputs blend into page |
 | Border | `#d7d7d7` | Soft warm gray — visible on cream backgrounds |
+| Focus Border | `#d35b2d` | Glee Rust — matches the site's `outline: 2px solid var(--color-accent)` focus ring |
+
+---
+
+## COMPONENTS — Containers
+
+| Field | Value | Notes |
+|---|---|---|
+| Card background | `#fdfbf7` | `--color-surface` — the lightest paper, used for all cards and panels on the site |
+| Card text | `#2e2b29` | `--color-fg` — rich espresso, primary readable text |
+| Popover background | `#fdfbf7` | Same as card surface — consistent floating panel treatment |
+| Popover text | `#2e2b29` | Espresso — consistent with all foreground text |
+
+---
+
+## COMPONENTS — Charts
+
+The five chart colors are drawn directly from the site's retro stripe palette, in descending visual weight. This means any generated chart will feel native to the brand rather than using generic defaults.
+
+| Field | Value | Source token | Role in stripe band |
+|---|---|---|---|
+| Chart 1 | `#d35b2d` | `glee-rust` | Primary — the signature Glee accent |
+| Chart 2 | `#1c3a34` | `--okh-teal` | Structural — deepest retro stripe |
+| Chart 3 | `#f3b932` | `glee-gold` | Highlight — brightest warm tone |
+| Chart 4 | `#676a2c` | `--okh-olive` | Mid — earthy muted green |
+| Chart 5 | `#a06e28` | `--okh-ochre` | Warm — amber-brown mid-tone |
 
 ---
 
@@ -82,7 +108,7 @@ These are all named tokens from `theme.css`. Use them when building any new app 
 | `--color-surface-soft` | `#f6f2ee` | Standard paper — nested panels, inputs |
 | `--color-fg` | `#2e2b29` | Rich espresso — primary body text |
 | `--color-muted` | `#6b6b6b` | Warm gray — captions, secondary text |
-| `glee-rust` | `#d35b2d` | Glee Rust — primary CTA / link accent |
+| `glee-rust` | `#d35b2d` | Glee Rust — primary CTA / link accent / focus ring |
 | `glee-gold` | `#f3b932` | Glee Gold — gradient end / highlight |
 | `--okh-orange` | `#c46a2c` | OKH Rust-orange — shared CTA base |
 | `--okh-amber` | `#e6a03c` | Amber gold — shared secondary accent |
