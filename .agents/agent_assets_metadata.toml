@@ -1,0 +1,14 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "VOjMVv_BIwK4M6HodRWNe"
+uri = "file://gleefully-replit-theme.json"
+type = "unspecified"
+title = "Glee-fully App Theme — JSON"
+
+[[outputs]]
+id = "1dLH3_F9ZuP1hBob3ALKQ"
+uri = "file://gleefully-replit-theme-guide.md"
+type = "text"
+title = "Glee-fully App Theme — Field-by-field Guide"
