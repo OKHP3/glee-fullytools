@@ -36,11 +36,15 @@
     <meta name="twitter:image" content="https://glee-fully.tools/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" />
     <meta name="twitter:image:alt" content="Glee‑fully Dreamland Journeys butterfly logo" />
 
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
     <!-- ========================================
        METADATA: Search & Crawling
        ======================================== -->
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
     <link rel="canonical" href="https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/" />
     <link rel="manifest" href="/site.webmanifest" />
 
@@ -51,6 +55,9 @@
     <meta name="msapplication-TileColor" content="#111827" />
     <meta name="color-scheme" content="dark light" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- ========================================
        FAVICONS: Multi-Format Icon Support
        ======================================== -->
@@ -535,45 +542,6 @@ and then give me a tidy card and a row in a wishboard table.</code></pre>
       </div>
     </footer>
     <script src="/assets/js/app.js"></script>
-
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
-    </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
   </body>
 </html>

@@ -16,6 +16,8 @@
     <meta name="keywords" content="resale, pricing, local marketplace, household items, clutter, donations, garage sale, declutter, organized life" />
     <meta name="author" content="Glee&#8209;fully Personalizable Tools™" />
 
+    <meta name="creator" content="Glee&#8209;fully Personalizable Tools™" />
+    <meta name="publisher" content="Glee&#8209;fully Personalizable Tools™" />
     <!-- ========================================
        METADATA: Open Graph (Social Sharing)
        ======================================== -->
@@ -38,11 +40,15 @@
     <meta name="twitter:description" content="Turn extra stuff into neighborly wins — a cheerful resale companion that helps you evaluate, price, and list items for local marketplaces." />
     <meta name="twitter:image" content="https://glee-fully.tools/assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Background-Transparent-Square-1024.png" />
 
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
     <!-- ========================================
        METADATA: Search & Crawling
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
     <link rel="canonical" href="https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/" />
     <link rel="manifest" href="/site.webmanifest" />
 
@@ -52,6 +58,9 @@
     <meta name="theme-color" content="#111827" />
     <meta name="color-scheme" content="light dark" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!-- ========================================
        FAVICONS: Multi-Format Icon Support
        ======================================== -->
@@ -452,44 +461,6 @@
         "url": "https://glee-fully.tools",
         "description": "A joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal."
       }
-    </script>
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
     </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
   </body>

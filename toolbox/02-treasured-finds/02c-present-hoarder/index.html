@@ -19,6 +19,8 @@
        METADATA: Open Graph (Social Sharing)
        ======================================== -->
     <meta property="og:title" content="Present Hoarder — Glee&#8209;fully Personalizable Tools™ 🧰🌳" />
+    <meta name="creator" content="Glee&#8209;fully Personalizable Tools™" />
+    <meta name="publisher" content="Glee&#8209;fully Personalizable Tools™" />
     <meta property="og:description" content="Keep your gift closet organized. Track every present you own or plan to give, know where it's hiding, who it's for, and when to wrap it—without the scavenger hunt." />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
@@ -36,11 +38,15 @@
     <meta name="twitter:image" content="https://glee-fully.tools/assets/img/toolbox/02-treasured-finds/02c-present-hoarder.png" />
     <meta name="twitter:image:alt" content="Present Hoarder Tool‑ette illustration" />
 
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
     <!-- ========================================
        METADATA: Search & Crawling
        ======================================== -->
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta name="googlebot" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
     <link rel="canonical" href="https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/" />
 
     <!-- ========================================
@@ -66,7 +72,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
     <link rel="stylesheet" href="/assets/css/theme.css" />
 
-  </head>
+      <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+</head>
 
   <body class="glee-main">
     <a href="#main" class="skip-link">Skip to content</a>
@@ -457,45 +466,6 @@
       </div>
     </footer>
     <script src="/assets/js/app.js"></script>
-
-    <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-      // Pull final, brand-specific tokens (OKH / AskJamie / Glee) from computed styles
-      const styles = getComputedStyle(document.body);
-
-      const surface = styles.getPropertyValue("--color-surface").trim() || "#111827";
-      const surfaceSoft = styles.getPropertyValue("--color-surface-soft").trim() || "#181f26";
-      const fg = styles.getPropertyValue("--color-fg").trim() || "#e5e7eb";
-      const accent = styles.getPropertyValue("--color-accent").trim() || "#c46a2c";
-      const muted = styles.getPropertyValue("--color-muted").trim() || "#6b7280";
-      const fontBody =
-        styles.getPropertyValue("--font-body").trim() ||
-        '"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-
-      mermaid.initialize({
-        startOnLoad: true,
-        securityLevel: "loose",   // required for clickable links in diagrams
-        theme: "base",            // modifiable theme
-        themeVariables: {
-          primaryColor: surface,        // node background
-          primaryTextColor: fg,
-          primaryBorderColor: accent,
-          lineColor: accent,
-          secondaryColor: surfaceSoft,  // secondary fills / highlights
-          tertiaryColor: surfaceSoft,
-          textColor: fg,
-          fontFamily: fontBody,
-          noteBkgColor: surface,
-          noteTextColor: muted
-        },
-        flowchart: {
-          curve: "basis",
-          nodeSpacing: 60,
-          rankSpacing: 70
-        }
-      });
-    </script>
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
   </body>
 </html>

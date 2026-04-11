@@ -3554,3 +3554,67 @@ body.construction-dismissed .construction-overlay,
 /* ----------------------------------------
    End of BFS Framing Intelligent Futures
    ---------------------------------------- */
+
+
+/* ===== CROSS-SITE SYNC — from overkillhill.com refactor 2026-04-10 ===== */
+
+.mermaid foreignObject,
+.mermaid foreignObject div,
+.mermaid foreignObject p,
+.mermaid foreignObject span {
+  color: initial;
+}
+
+.text-amber { color: var(--okh-amber, #F59E0B); }
+
+.link-amber {
+  color: var(--okh-amber, #F59E0B);
+  text-decoration: underline;
+}
+
+.diagram-static-img {
+  display: block;
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.diagram-live-render { margin-bottom: 0; }
+
+.diagram-live-render > summary {
+  font-size: 0.82rem;
+  color: var(--color-muted, #6b7280);
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  list-style: none;
+}
+
+.diagram-live-render > summary::-webkit-details-marker { display: none; }
+
+.section-subtitle {
+  font-family: var(--font-body, sans-serif);
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-muted, #6b7280);
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.council-card--compact { margin: 2rem 0; }
+
+.council-note {
+  font-size: 0.9rem;
+  color: var(--color-muted, #6b7280);
+  margin-top: 0.5rem;
+}
+
+/* Utility spacing helpers — replaces common inline style="margin-top:Xrem" patterns */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+/* ===== END CROSS-SITE SYNC ============================================= */
+.mt-075 { margin-top: 0.75rem; }
