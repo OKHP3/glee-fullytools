@@ -60,11 +60,12 @@
   --color-accent: var(--okh-orange);
 }
 
-body[data-theme="dark"] {
+/* ── Body background: JS sets data-theme on <html>, not <body> ────────── */
+html[data-theme="dark"] body {
   background: radial-gradient(circle at top, #1f2933, #020617);
 }
 
-body[data-theme="light"] {
+html[data-theme="light"] body {
   background: radial-gradient(circle at top, #f6f2ee, #fff7f1);
 }
 
