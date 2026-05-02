@@ -442,10 +442,125 @@
     return false;
   }
 
+  // ── Inline rendering (for the dedicated /search/ page) ─────
+  // Renders results into a host element instead of opening the modal.
+  // The host page provides:
+  //   <input data-glee-search-inline-input>     ← controlled input
+  //   <div data-glee-search-inline-status>      ← live status text
+  //   <ul  data-glee-search-inline-results>     ← results target
+  // Returns a controller { runQuery(q) } so the host can drive it.
+  function attachInline(root) {
+    root = root || document;
+    const input = root.querySelector("[data-glee-search-inline-input]");
+    const status = root.querySelector("[data-glee-search-inline-status]");
+    const list = root.querySelector("[data-glee-search-inline-results]");
+    if (!input || !list) return null;
+
+    function setStatus(msg) {
+      if (status) status.textContent = msg || "";
+    }
+
+    function renderInto(matches, tokens) {
+      list.innerHTML = "";
+      if (matches.length === 0) return;
+      matches.forEach((m) => {
+        const li = document.createElement("li");
+        li.className = "glee-search-result";
+        const a = document.createElement("a");
+        a.href = m.page.url;
+        a.className = "glee-search-result-link";
+        const sectionTag = m.page.section || "Page";
+        const snippet = buildSnippet(m.page, tokens);
+        a.innerHTML = `
+          <span class="glee-search-result-section">${escapeHtml(sectionTag)}</span>
+          <span class="glee-search-result-title">${highlight(m.page.title, tokens)}</span>
+          <span class="glee-search-result-url">${escapeHtml(m.page.url)}</span>
+          <span class="glee-search-result-snippet">${highlight(snippet, tokens)}</span>
+        `;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    }
+
+    function syncUrl(q) {
+      // Keep the URL synchronized with the live UI: write `?q=` for valid
+      // queries, drop it entirely for empty/too-short ones. Avoids stale
+      // params misrepresenting the visible state.
+      try {
+        const url = new URL(window.location.href);
+        if (q && q.length >= MIN_QUERY) {
+          url.searchParams.set("q", q);
+        } else {
+          url.searchParams.delete("q");
+          url.searchParams.delete("s");
+        }
+        window.history.replaceState({}, "", url);
+      } catch (_) { /* noop */ }
+    }
+
+    function runQuery(q) {
+      const trimmed = (q || "").trim();
+      if (trimmed.length < MIN_QUERY) {
+        list.innerHTML = "";
+        setStatus(trimmed.length === 0 ? "" : "Type at least 2 characters to search.");
+        syncUrl("");
+        return;
+      }
+      setStatus("Searching…");
+      loadIndex()
+        .then((index) => {
+          const matches = search(index, trimmed);
+          if (matches.length === 0) {
+            setStatus(`No results for “${trimmed}”. Try a different word.`);
+          } else {
+            setStatus(`${matches.length} result${matches.length === 1 ? "" : "s"} for “${trimmed}”.`);
+          }
+          renderInto(matches, tokenize(trimmed));
+          syncUrl(trimmed);
+        })
+        .catch(() => {
+          setStatus("Search index could not load. Please try again.");
+        });
+    }
+
+    let debounceId = null;
+    input.addEventListener("input", () => {
+      clearTimeout(debounceId);
+      debounceId = setTimeout(() => runQuery(input.value), 120);
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        runQuery(input.value);
+      }
+    });
+
+    return { runQuery };
+  }
+
   // ── Boot ───────────────────────────────────────────────────
   function init() {
+    // Detect the dedicated search page first — on that page we run
+    // inline (no modal) and skip the auto-open behavior.
+    const inlineRoot = document.querySelector("[data-glee-search-inline]");
+    const isInline = !!inlineRoot;
+
     injectNavButton();
     bindKeys();
+
+    if (isInline) {
+      const controller = attachInline(inlineRoot);
+      const params = new URLSearchParams(window.location.search);
+      const q = (params.get("q") || params.get("s") || "").trim();
+      const input = inlineRoot.querySelector("[data-glee-search-inline-input]");
+      if (input) {
+        if (q) input.value = q;
+        setTimeout(() => input.focus(), 30);
+      }
+      if (controller && q.length >= MIN_QUERY) controller.runQuery(q);
+      return;
+    }
+
     // Auto-open if URL contains ?s=query  (matches the JSON-LD SearchAction
     // declaration on index.html — visitors arriving from a search engine
     // sitelink will see results immediately).
@@ -465,5 +580,10 @@
   }
 
   // expose for other scripts/debugging
-  window.GleeSearch = { open: openModal, close: closeModal, toggle: toggleModal };
+  window.GleeSearch = {
+    open: openModal,
+    close: closeModal,
+    toggle: toggleModal,
+    attachInline: attachInline,
+  };
 })();

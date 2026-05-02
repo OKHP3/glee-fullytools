@@ -81,8 +81,12 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Why no Lunr.js or Algolia:** The site has 57 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
+**Two surfaces, one engine:** The same `search.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. When `search.js` boots, it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
+
 ## Recent Changes
 
+- **2026-05-02 — Dedicated `/search/` page.** Shareable, bookmarkable search results page with breadcrumb, JSON-LD `SearchAction`, no-JS directory fallback, dark-mode support. URL syncs as `?q=` for share/bookmark. Added to `sitemap.xml`. `search.js` extended with `attachInline()` API; on the dedicated page it skips the auto-modal and renders inline.
+- **2026-05-02 — `site.webmanifest` fixed.** Was empty (`name:""`, wrong icon paths, white theme color). Now declares full brand identity, brand colors (`theme:#d35b2d`, `bg:#f6f2ee`), correct paths to all favicon variants, plus maskable purpose for Android.
 - **2026-05-02 — Internal search engine.** Index builder + runtime + nav UI + ⌘K/`/` keybinds shipped on all 59 pages.
 - **2026-05-02 — Canonical-URL SEO bug fixed.** 6 inner tool pages (`03b-menu-conductor`, `03c-wishful-tastes`, `03d-pantry-shopper`, `06a-care-check`, `06b-calm-keep`, `06c-snappy-count`) had `<link rel="canonical">` pointing to the homepage instead of themselves — discovered by the search-index validator. All 6 corrected to match their `og:url`. Indexer now fails loud if this regression recurs.
 - **2026-05-02 — Spirited Journal page repaired.** Was missing `<!DOCTYPE html>` and `<head>` opening tag (skipped during initial indexing).

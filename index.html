@@ -91,7 +91,10 @@
           "inLanguage": "en-US",
           "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://glee-fully.tools/toolbox/",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://glee-fully.tools/search/?q={search_term_string}"
+            },
             "query-input": "required name=search_term_string"
           }
         },
@@ -300,7 +303,10 @@
         "description": "A joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://glee-fully.tools/?s={search_term_string}",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://glee-fully.tools/search/?q={search_term_string}"
+          },
           "query-input": "required name=search_term_string"
         }
       }
