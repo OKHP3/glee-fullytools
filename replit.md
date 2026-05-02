@@ -62,3 +62,29 @@ All 59 HTML pages have been fully audited and updated:
 - Twitter handle: `@OverKillHillP3` used as site-wide `twitter:site` and `twitter:creator`
 - Mermaid v11 ESM pattern now matches sibling sites
 - 2 multi-property inline styles remain in `toolbox/06-healthy-bee-ing/index.html` (lines 290, 437) — they bundle font-size + max-width alongside margin-top and require page-specific class names
+
+## Internal Site Search (added 2026-05-02)
+
+A zero-dependency, fully client-side search engine indexes every published page so visitors can jump anywhere without clicking through the trunk-branch-twig hierarchy.
+
+| Component | Path | Purpose |
+|---|---|---|
+| Index builder | `tools/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
+| Search index | `assets/data/search-index.json` | 57 pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
+| Runtime | `assets/js/search.js` | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
+| Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
+| Wired into | All 59 HTML pages | `<script src="/assets/js/search.js" defer>` after `app.js` |
+
+**Triggers:** Click magnifier in nav · press `/` outside an input · press ⌘K / Ctrl+K · arrive at any page with `?s=query` (matches the JSON-LD `SearchAction` declared on the homepage)
+
+**Rebuilding the index:** Run `python3 tools/build-search-index.py` after content changes. The generator excludes `404.html` and `under-construction.html`.
+
+**Why no Lunr.js or Algolia:** The site has 57 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
+
+## Recent Changes
+
+- **2026-05-02 — Internal search engine.** Index builder + runtime + nav UI + ⌘K/`/` keybinds shipped on all 59 pages.
+- **2026-05-02 — Canonical-URL SEO bug fixed.** 6 inner tool pages (`03b-menu-conductor`, `03c-wishful-tastes`, `03d-pantry-shopper`, `06a-care-check`, `06b-calm-keep`, `06c-snappy-count`) had `<link rel="canonical">` pointing to the homepage instead of themselves — discovered by the search-index validator. All 6 corrected to match their `og:url`. Indexer now fails loud if this regression recurs.
+- **2026-05-02 — Spirited Journal page repaired.** Was missing `<!DOCTYPE html>` and `<head>` opening tag (skipped during initial indexing).
+- **2026-04-11 — Replit App Theme exports.** `gleefully-replit-theme.json` + `gleefully-replit-theme-guide.md` covering Foundation, Actions, Forms (focus border `#d35b2d`), Containers (paper-system surfaces), Charts (5 retro-stripe colors).
+

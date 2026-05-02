@@ -3618,3 +3618,298 @@ body.construction-dismissed .construction-overlay,
 
 /* ===== END CROSS-SITE SYNC ============================================= */
 .mt-075 { margin-top: 0.75rem; }
+
+/* ──────────────────────────────────────────────────────────────
+ * Internal Search — magnifier button + modal overlay
+ * Lives on every page; injected by /assets/js/search.js
+ * ────────────────────────────────────────────────────────────── */
+
+/* Lock body scroll when the search modal is open */
+html.glee-search-open,
+html.glee-search-open body {
+  overflow: hidden;
+}
+
+/* Nav magnifier button */
+.glee-search-nav { display: flex; align-items: center; }
+
+.glee-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--color-border, #d7d7d7);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.glee-search-trigger:hover,
+.glee-search-trigger:focus-visible {
+  background: var(--color-surface, #fdfbf7);
+  border-color: var(--color-accent, #d35b2d);
+  color: var(--color-accent, #d35b2d);
+  outline: none;
+}
+
+.glee-search-trigger svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.glee-search-trigger-label { display: inline; }
+
+@media (max-width: 720px) {
+  .glee-search-trigger { padding: 0.3rem 0.55rem; }
+  .glee-search-trigger-label { display: none; }
+}
+
+/* Modal overlay */
+.glee-search-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(1rem, 6vh, 4rem) 1rem 1rem;
+}
+
+.glee-search-modal[hidden] { display: none; }
+
+.glee-search-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(42, 35, 32, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.glee-search-panel {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface, #fdfbf7);
+  color: var(--color-fg, #2e2b29);
+  border: 1px solid var(--color-border, #d7d7d7);
+  border-radius: 0.75rem;
+  box-shadow: 0 24px 64px rgba(42, 35, 32, 0.35);
+  overflow: hidden;
+  animation: gleeSearchPanelIn 140ms ease-out;
+}
+
+@keyframes gleeSearchPanelIn {
+  from { transform: translateY(-12px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.glee-search-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #d7d7d7);
+  background: var(--color-bg, #f6f2ee);
+}
+
+.glee-search-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  padding: 0.4rem 0.6rem;
+  background: var(--color-surface, #fdfbf7);
+  border: 1px solid var(--color-border, #d7d7d7);
+  border-radius: 0.5rem;
+}
+
+.glee-search-label:focus-within {
+  border-color: var(--color-accent, #d35b2d);
+  box-shadow: 0 0 0 2px rgba(211, 91, 45, 0.2);
+}
+
+.glee-search-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--color-muted, #6b6b6b);
+  stroke-width: 2;
+  stroke-linecap: round;
+  flex: 0 0 auto;
+}
+
+#glee-search-input {
+  flex: 1 1 auto;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-fg, #2e2b29);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.1rem 0;
+}
+
+#glee-search-input::-webkit-search-cancel-button { display: none; }
+
+.glee-search-close {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  color: var(--color-muted, #6b6b6b);
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  border-radius: 0.4rem;
+}
+
+.glee-search-close:hover,
+.glee-search-close:focus-visible {
+  background: var(--color-surface-soft, #f6f2ee);
+  color: var(--color-fg, #2e2b29);
+  outline: none;
+}
+
+.glee-search-status {
+  padding: 0.45rem 1rem 0;
+  font-size: 0.8rem;
+  color: var(--color-muted, #6b6b6b);
+  min-height: 0.4rem;
+}
+
+.glee-search-status:empty { padding: 0; }
+
+.glee-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0.5rem 0.6rem;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.glee-search-result {
+  border-radius: 0.5rem;
+  margin: 0.15rem 0;
+}
+
+.glee-search-result-link {
+  display: block;
+  padding: 0.65rem 0.8rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.glee-search-result-link:hover,
+.glee-search-result.is-active .glee-search-result-link,
+.glee-search-result-link:focus-visible {
+  background: var(--color-surface-soft, #f6f2ee);
+  border-color: var(--color-border, #d7d7d7);
+  outline: none;
+}
+
+.glee-search-result-section {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent, #d35b2d);
+  background: rgba(211, 91, 45, 0.08);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  margin-bottom: 0.2rem;
+}
+
+.glee-search-result-title {
+  display: block;
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--color-fg, #2e2b29);
+  line-height: 1.3;
+  margin-bottom: 0.1rem;
+}
+
+.glee-search-result-url {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-muted, #6b6b6b);
+  font-family: var(--font-mono, Menlo, monospace);
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.glee-search-result-snippet {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-fg, #2e2b29);
+  line-height: 1.45;
+}
+
+.glee-search-result-snippet mark,
+.glee-search-result-title mark {
+  background: rgba(243, 185, 50, 0.45);
+  color: inherit;
+  padding: 0 0.12em;
+  border-radius: 2px;
+}
+
+.glee-search-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.72rem;
+  color: var(--color-muted, #6b6b6b);
+  border-top: 1px solid var(--color-border, #d7d7d7);
+  background: var(--color-bg, #f6f2ee);
+}
+
+.glee-search-footer kbd {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  margin-right: 0.25rem;
+  background: var(--color-surface, #fdfbf7);
+  border: 1px solid var(--color-border, #d7d7d7);
+  border-radius: 0.3rem;
+  font-family: var(--font-mono, Menlo, monospace);
+  font-size: 0.7rem;
+  color: var(--color-fg, #2e2b29);
+}
+
+/* Dark-mode parent (OverKill Hill base) — invert backdrop slightly */
+[data-theme="dark"] .glee-search-panel {
+  background: var(--color-surface, #111827);
+  border-color: var(--color-border, #374151);
+  color: var(--color-fg, #e5e7eb);
+}
+
+[data-theme="dark"] .glee-search-header,
+[data-theme="dark"] .glee-search-footer {
+  background: var(--color-surface-soft, #181f26);
+  border-color: var(--color-border, #374151);
+}
+
+[data-theme="dark"] .glee-search-label,
+[data-theme="dark"] .glee-search-footer kbd {
+  background: var(--color-surface-soft, #181f26);
+  border-color: var(--color-border, #374151);
+}
+

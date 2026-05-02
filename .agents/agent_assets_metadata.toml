@@ -12,3 +12,9 @@ id = "1dLH3_F9ZuP1hBob3ALKQ"
 uri = "file://gleefully-replit-theme-guide.md"
 type = "text"
 title = "Glee-fully App Theme — Guide (complete)"
+
+[[outputs]]
+id = "bek097d57zQOKiG2qWuUp"
+uri = "file://SITE_AUDIT_2026-05-02.md"
+type = "text"
+title = "Site Audit & Enhancement Plan — 2026-05-02"
