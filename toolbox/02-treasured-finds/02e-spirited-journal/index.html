@@ -79,11 +79,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
 
+  <!-- ========================================
+       Google Analytics (G-89W66VMGPB)
+       ======================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-89W66VMGPB');
+    </script>
+    
+
   </head>
 
   <body class="glee-main">
-    <a href="#main" class="skip-link">Skip to content</a>
-
+    <a class="skip-to-content" href="#main">Skip to main content</a>
     <!-- 🔧 Glee‑fully “under construction” gate -->
     <div class="construction-overlay"
          data-wip-key="spirited-journal">
@@ -93,7 +104,7 @@
           alt="Glee‑fully — this page is joyfully under construction"
           class="construction-overlay__image"
           width="1536"
-          height="768"
+          height="768" loading="lazy" decoding="async"
         />
 
         <p class="construction-overlay__copy">
@@ -517,7 +528,8 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
       </div>
     </footer>
     <script src="/assets/js/app.js"></script>

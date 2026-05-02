@@ -466,9 +466,66 @@ button {
   border-top: 1px solid rgba(107, 114, 128, 0.45);
   margin-top: 2rem;
   padding: 0.9rem 0;
-  text-align: center;
   font-size: 0.85rem;
   color: var(--color-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1.5rem;
+}
+.footer-bottom .footer-copyright {
+  flex: 1 1 auto;
+  text-align: center;
+  margin: 0;
+}
+/* "Built with Replit" attribution — referral link, low-key on left edge */
+.footer-replit-credit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+.footer-replit-credit a {
+  color: #f26207; /* Replit brand orange */
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+.footer-replit-credit a:hover,
+.footer-replit-credit a:focus-visible {
+  color: #ff7a1f;
+  text-decoration: underline;
+}
+@media (max-width: 540px) {
+  .footer-bottom { justify-content: center; text-align: center; }
+  .footer-bottom .footer-copyright { flex: 1 1 100%; }
+  .footer-replit-credit { flex: 1 1 100%; justify-content: center; }
+}
+
+/* ===== ACCESSIBILITY: SKIP-TO-CONTENT ==================================== */
+/* Visually hidden until keyboard-focused; lets keyboard users jump past nav */
+.skip-to-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--color-accent, #c46a2c);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 6px 0;
+  transform: translateY(-110%);
+  transition: transform 140ms ease;
+}
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid #fff;
+  outline-offset: 2px;
 }
 
 /* ===== SCROLL REVEAL ===================================================== */

@@ -47,7 +47,20 @@ When diffing against sibling repos: differences inside GLOBAL/CROSS-BRAND blocks
 
 ## Inline-content audit (2026-05-02)
 
-Site already at GitHub Pages best practices: 0 inline `<style>` blocks; only 2 trivial single-use `style="…"` attributes (toolbox/06-healthy-bee-ing); 13 inline JSON-LD blocks (must stay inline per Schema.org); 1 inline GA `gtag()` init in `index.html` (must stay inline for pre-render execution). All shared CSS/JS properly externalized. Note: GA is currently only on `index.html` — flagged as a follow-up to either propagate to all 60 pages or remove.
+Site already at GitHub Pages best practices: 0 inline `<style>` blocks; only 2 trivial single-use `style="…"` attributes (toolbox/06-healthy-bee-ing); 13 inline JSON-LD blocks (must stay inline per Schema.org). All shared CSS/JS properly externalized.
+
+## Site-wide enhancements (2026-05-02 polish pass)
+
+Applied to every real HTML page (62 pages):
+
+- **"Built with Replit" footer attribution** — `.footer-replit-credit` on the left edge of the 2-column `.footer-bottom`, links to `https://replit.com/refer/overkillhillp3/` (referral). Replit brand orange `#f26207`.
+- **Google Analytics propagation** — `gtag.js` + inline `gtag('config','G-89W66VMGPB')` now in every page's `<head>` (was only on `index.html`).
+- **Skip-to-content link** (a11y) — `<a class="skip-to-content" href="#main">` injected as first child of `<body>` on every page; visually hidden until keyboard-focused.
+- **`theme-color` meta** — added on the 11 pages that were missing it (mobile browser chrome).
+- **`og:locale` meta** — added on the 4 pages that were missing it (social-card completeness).
+- **`loading="lazy" decoding="async"` on below-header images** — added to 54 images. Header logo intentionally preserved as eager-loaded to protect LCP.
+
+The mutator script (`/tmp/enhance_pages.py`) is idempotent — each transformation has a "skip if already present" guard, so re-running is safe.
 
 ## SEO & Metadata Status (as of 2026-04-11)
 

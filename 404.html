@@ -6,6 +6,7 @@
        ======================================== -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#c46a2c" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="language" content="English" />
 
@@ -21,6 +22,7 @@
     <meta property="og:title" content="Page not found — Glee‑fully Personalizable Tools™ 🧰🌳" />
     <meta property="og:description" content="The Glee‑fully Toolbox couldn’t find this page. Use this friendly error page to get back to solid ground." />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:url" content="https://glee-fully.tools/" />
     <meta property="og:image" content="https://glee-fully.tools/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" />
 
@@ -65,11 +67,21 @@
       <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<!-- ========================================
+       Google Analytics (G-89W66VMGPB)
+       ======================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-89W66VMGPB');
+    </script>
+    
 </head>
 
   <body class="glee-main">
-    <a href="#main" class="skip-link">Skip to content</a>
-
+    <a class="skip-to-content" href="#main">Skip to main content</a>
     <header class="site-header" id="top">
       <div class="container">
         <div class="logo">
@@ -221,7 +233,8 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
       </div>
     </footer>
     <script src="/assets/js/app.js"></script>
