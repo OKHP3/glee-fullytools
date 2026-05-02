@@ -13,8 +13,9 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 ## Project Structure
 
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
-- `assets/css/theme.css` — Central stylesheet (~3620 lines incl. cross-site sync utility classes)
-- `assets/js/app.js` — Shared JS (progress bar, theme toggle, mobile nav)
+- `assets/css/theme.css` — Central stylesheet (4265 lines), reorganized 2026-05-02 into scope-grouped sections: GLOBAL (L 6) → OVERKILL (L 2215) → GLEE (L 2633) → ASKJAMIE (L 3659) → CROSS-BRAND (L 4116). Each scope has a `╔══╗` boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
+- `assets/js/app.js` — Shared JS (252 lines): progress bar, theme toggle, mobile nav, sticky-TOC module (added 2026-05-02 for cross-site parity)
+- `assets/js/search.js` — Universal search engine: magnifier-button modal + dedicated `/search/` page (uses `?s=` param to auto-open modal, `?q=` on the search page)
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages)
 - `assets/img/` — Branded butterfly and GPT icons
 - `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
@@ -29,6 +30,24 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 ## Deployment
 
 Configured as a **static** deployment with `publicDir: "."` — no build step needed.
+
+## CSS Scope Map (post 2026-05-02 reorganization)
+
+When editing `theme.css`, find the right scope first:
+
+| Scope | Starts at | What lives here | Selector pattern |
+|---|---:|---|---|
+| GLOBAL | L 6 | Tokens, reset, layout, header/nav, footer, scroll-reveal, articles, Ko-fi, search engine, cross-site sync | unscoped or `:root` / `body` |
+| OVERKILL | L 2215 | Default chrome (headings, blueprint-forge hero, brand stripes, default Mermaid skin) | `body:not(.glee-main):not(.askjamie-main) …` |
+| GLEE | L 2633 | This site's brand chrome (paper hero, milestone, Glee Mermaid) | `.glee-main …` / `body.glee-main …` |
+| ASKJAMIE | L 3659 | AskJamie chrome (mid-century paper + teal, system pages) | `.askjamie-main …` / `body.askjamie-main …` |
+| CROSS-BRAND | L 4116 | Glee + AskJamie shared overrides of OverKill default | `.glee-main … , .askjamie-main …` |
+
+When diffing against sibling repos: differences inside GLOBAL/CROSS-BRAND blocks should be reconciled; differences inside the OVERKILL/GLEE/ASKJAMIE blocks are intentional brand divergence. Pre-reorg backup at `assets/css/theme.css.bak-prereorg`.
+
+## Inline-content audit (2026-05-02)
+
+Site already at GitHub Pages best practices: 0 inline `<style>` blocks; only 2 trivial single-use `style="…"` attributes (toolbox/06-healthy-bee-ing); 13 inline JSON-LD blocks (must stay inline per Schema.org); 1 inline GA `gtag()` init in `index.html` (must stay inline for pre-render execution). All shared CSS/JS properly externalized. Note: GA is currently only on `index.html` — flagged as a follow-up to either propagate to all 60 pages or remove.
 
 ## SEO & Metadata Status (as of 2026-04-11)
 
