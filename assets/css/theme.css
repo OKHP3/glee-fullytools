@@ -2598,9 +2598,24 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
 
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .brand-stripes {
-    animation: none;
-    background-position: 0 0;
+  /* Suppress all decorative infinite background motion (vestibular safety) */
+  .brand-stripes,
+  .glee-blueprint-bg,
+  .glee-blueprint-bg::before,
+  .glee-stripes-bg,
+  .glee-sweep-bg,
+  .glee-sweep-bg::before {
+    animation: none !important;
+    background-position: 0 0 !important;
+  }
+  /* Cap any remaining transitions to a near-instant, non-disorienting duration */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
