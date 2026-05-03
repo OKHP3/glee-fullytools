@@ -2596,6 +2596,38 @@ body:not(.glee-main):not(.askjamie-main) .project-card h3 {
   }
 }
 
+/* ===== MERMAID REFERRAL CREDIT ===========================================
+   Shown once per page on any page that embeds a Mermaid diagram.
+   "Mermaid.AI" rendered in the official Mermaid hot-pink (#FF3670). */
+.mermaid-referral {
+  margin: 0.75rem auto 1.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--glee-espresso, #2a2320);
+  text-align: center;
+  opacity: 0.85;
+}
+.mermaid-referral a.mermaid-referral-link {
+  color: #FF3670;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255, 54, 112, 0.5);
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.mermaid-referral a.mermaid-referral-link:hover,
+.mermaid-referral a.mermaid-referral-link:focus-visible {
+  color: #FF3670;
+  border-bottom-color: #FF3670;
+  text-decoration: none;
+  outline: none;
+}
+.mermaid-referral a.mermaid-referral-link:focus-visible {
+  outline: 2px solid #FF3670;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   /* Suppress all decorative infinite background motion (vestibular safety) */

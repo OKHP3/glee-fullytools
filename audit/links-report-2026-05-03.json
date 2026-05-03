@@ -2,7 +2,7 @@
   "generated": "2026-05-03",
   "pages_scanned": 60,
   "internal_links": 2048,
-  "external_links": 1066,
+  "external_links": 1070,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -29,7 +29,7 @@
     {
       "path": "ecosystem/index.html",
       "internal_links": 80,
-      "external_links": 15
+      "external_links": 17
     },
     {
       "path": "index.html",
@@ -309,7 +309,7 @@
     {
       "path": "universe/index.html",
       "internal_links": 30,
-      "external_links": 16
+      "external_links": 18
     }
   ]
 }
