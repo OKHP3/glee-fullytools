@@ -132,8 +132,9 @@
 
         <h1 class="glee-search-page__title">Search the Glee&#8209;fully Toolbox</h1>
         <p class="glee-search-page__lede">
-          Find any Tool, branch page, or guide across the entire site. Type a word like
+          One box. Every Tool, branch, and guide across the site. Try a word like
           <em>resume</em>, <em>recipe</em>, <em>budget</em>, or <em>journal</em> — results appear instantly.
+          Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.
         </p>
 
         <form class="glee-search-page__form" role="search" onsubmit="event.preventDefault();">
@@ -145,7 +146,7 @@
           <input
             id="glee-search-page-input"
             type="search"
-            placeholder="Search for tools, branches, guides…"
+            placeholder="Try “resume”, “recipe”, “budget”, or “journal”…"
             autocomplete="off"
             spellcheck="false"
             aria-describedby="glee-search-page-status"
@@ -153,7 +154,9 @@
           />
         </form>
 
-        <p class="glee-search-page__status" id="glee-search-page-status" role="status" aria-live="polite" data-glee-search-inline-status></p>
+        <p class="glee-search-page__status" id="glee-search-page-status" role="status" aria-live="polite" data-glee-search-inline-status>Loading index…</p>
+
+        <div class="glee-search-page__categories" role="group" aria-label="Filter by section" data-glee-search-inline-categories></div>
       </section>
 
       <section class="container glee-search-page__results-wrap" aria-label="Search results">

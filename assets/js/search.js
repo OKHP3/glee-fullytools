@@ -23,7 +23,8 @@
   "use strict";
 
   const INDEX_URL = "/assets/data/search-index.json";
-  const MAX_RESULTS = 12;
+  const MAX_RESULTS = 12;        // modal overlay cap
+  const MAX_RESULTS_INLINE = 60; // dedicated /search/ page cap
   const MIN_QUERY = 2;
 
   // ── Tokenization ────────────────────────────────────────────
@@ -107,7 +108,7 @@
     return score;
   }
 
-  function search(index, query) {
+  function search(index, query, limit) {
     const tokens = tokenize(query);
     if (tokens.length === 0) return [];
     const results = [];
@@ -116,7 +117,7 @@
       if (score > 0) results.push({ page, score });
     }
     results.sort((a, b) => b.score - a.score);
-    return results.slice(0, MAX_RESULTS);
+    return results.slice(0, limit || MAX_RESULTS);
   }
 
   // ── Snippet builder ────────────────────────────────────────
@@ -445,16 +446,22 @@
   // ── Inline rendering (for the dedicated /search/ page) ─────
   // Renders results into a host element instead of opening the modal.
   // The host page provides:
-  //   <input data-glee-search-inline-input>     ← controlled input
-  //   <div data-glee-search-inline-status>      ← live status text
-  //   <ul  data-glee-search-inline-results>     ← results target
+  //   <input data-glee-search-inline-input>      ← controlled input
+  //   <div   data-glee-search-inline-status>     ← live status text
+  //   <ul    data-glee-search-inline-results>    ← results target
+  //   <div   data-glee-search-inline-categories> ← optional chip rail
   // Returns a controller { runQuery(q) } so the host can drive it.
   function attachInline(root) {
     root = root || document;
     const input = root.querySelector("[data-glee-search-inline-input]");
     const status = root.querySelector("[data-glee-search-inline-status]");
     const list = root.querySelector("[data-glee-search-inline-results]");
+    const cats = root.querySelector("[data-glee-search-inline-categories]");
     if (!input || !list) return null;
+
+    let cachedIndex = null;
+    let activeCategory = "all";
+    let lastQuery = "";
 
     function setStatus(msg) {
       if (status) status.textContent = msg || "";
@@ -482,46 +489,110 @@
       });
     }
 
+    function buildCategoryChips(index) {
+      if (!cats) return;
+      const counts = {};
+      for (const p of index.pages) {
+        const c = p.section || "Page";
+        counts[c] = (counts[c] || 0) + 1;
+      }
+      const ordered = ["all"].concat(Object.keys(counts).sort());
+      cats.innerHTML = ordered.map((c) => {
+        const label = c === "all"
+          ? `All (${index.pages.length})`
+          : `${c} (${counts[c]})`;
+        const pressed = c === activeCategory ? "true" : "false";
+        return `<button type="button" class="glee-search-chip" data-cat="${escapeHtml(c)}" aria-pressed="${pressed}">${escapeHtml(label)}</button>`;
+      }).join("");
+      cats.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeCategory = btn.getAttribute("data-cat") || "all";
+          cats.querySelectorAll("button").forEach((b) => {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          // Re-run the most recent query against the new filter
+          runQuery(lastQuery, { skipUrl: false });
+        });
+      });
+    }
+
     function syncUrl(q) {
       // Keep the URL synchronized with the live UI: write `?q=` for valid
       // queries, drop it entirely for empty/too-short ones. Avoids stale
       // params misrepresenting the visible state.
       try {
         const url = new URL(window.location.href);
+        // Always strip the legacy `?s=` param — `?q=` is the single
+        // authoritative search param across the inline page, regardless of
+        // whether the visitor arrived from a sitelink that used `s`.
+        url.searchParams.delete("s");
         if (q && q.length >= MIN_QUERY) {
           url.searchParams.set("q", q);
         } else {
           url.searchParams.delete("q");
-          url.searchParams.delete("s");
         }
         window.history.replaceState({}, "", url);
       } catch (_) { /* noop */ }
     }
 
-    function runQuery(q) {
+    function setIdleStatus(index) {
+      // Friendly idle line shown when no query is active — matches the
+      // "Type to search N indexed entries." pattern from the sibling site.
+      setStatus(`Type to search ${index.pages.length} indexed entries.`);
+    }
+
+    function runQuery(q, opts) {
+      opts = opts || {};
       const trimmed = (q || "").trim();
+      lastQuery = trimmed;
+
+      // Empty query → clear results, show idle status, drop URL params
+      if (trimmed.length === 0) {
+        list.innerHTML = "";
+        if (cachedIndex) setIdleStatus(cachedIndex); else setStatus("");
+        if (!opts.skipUrl) syncUrl("");
+        return;
+      }
       if (trimmed.length < MIN_QUERY) {
         list.innerHTML = "";
-        setStatus(trimmed.length === 0 ? "" : "Type at least 2 characters to search.");
-        syncUrl("");
+        setStatus("Type at least 2 characters to search.");
+        if (!opts.skipUrl) syncUrl("");
         return;
       }
       setStatus("Searching…");
       loadIndex()
         .then((index) => {
-          const matches = search(index, trimmed);
+          cachedIndex = index;
+          let matches = search(index, trimmed, MAX_RESULTS_INLINE);
+          if (activeCategory !== "all") {
+            matches = matches.filter((m) =>
+              (m.page.section || "Page").toLowerCase() === activeCategory.toLowerCase()
+            );
+          }
+          const inCat = activeCategory !== "all" ? ` in ${activeCategory}` : "";
           if (matches.length === 0) {
-            setStatus(`No results for “${trimmed}”. Try a different word.`);
+            setStatus(`No results for “${trimmed}”${inCat}. Try a different word.`);
           } else {
-            setStatus(`${matches.length} result${matches.length === 1 ? "" : "s"} for “${trimmed}”.`);
+            setStatus(`${matches.length} result${matches.length === 1 ? "" : "s"} for “${trimmed}”${inCat}.`);
           }
           renderInto(matches, tokenize(trimmed));
-          syncUrl(trimmed);
+          if (!opts.skipUrl) syncUrl(trimmed);
         })
         .catch(() => {
           setStatus("Search index could not load. Please try again.");
         });
     }
+
+    // Pre-warm the index so the chip rail and idle-state stats appear as
+    // soon as possible, even before the user types anything.
+    setStatus("Loading index…");
+    loadIndex()
+      .then((index) => {
+        cachedIndex = index;
+        buildCategoryChips(index);
+        if (!input.value.trim()) setIdleStatus(index);
+      })
+      .catch(() => setStatus("Search index could not load. Please try again."));
 
     let debounceId = null;
     input.addEventListener("input", () => {
