@@ -23,6 +23,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/" />
     <meta property="og:image" content="https://glee-fully.tools/assets/img/Glee-fullyTools-GPTIcon-07f-Maker-Matcher-Background-RetroStripe-Square-1024.png" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
     <meta property="og:image:alt" content="Glee-fully Maker Matcher — GPT icon" />
     <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
     <meta property="og:locale" content="en_US" />
@@ -43,6 +45,7 @@
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
 
@@ -73,6 +76,8 @@
     <link rel="stylesheet" href="/assets/css/theme.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&display=swap" />
 
   <!-- ========================================
@@ -83,7 +88,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-89W66VMGPB');
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
     </script>
     <!-- AUTOGEN:JSONLD -->
     <script type="application/ld+json">
@@ -296,10 +305,10 @@
                   src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png"
                   alt="Illustration representing Maker Matcher"
                   class="glee-hero-img"
-                  loading="lazy"
+                  loading="eager"
                   width="1536"
                   height="768"
-                />
+                 fetchpriority="high" />
               </figure>
             </div>
           </div>

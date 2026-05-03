@@ -1,5 +1,5 @@
 {
-  "name": "Glee-fully Personalizable Tools™",
+  "name": "Glee-fully Personalizable Tools\u2122",
   "short_name": "Glee-fully",
   "description": "A joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.",
   "start_url": "/",
@@ -9,7 +9,11 @@
   "theme_color": "#d35b2d",
   "background_color": "#f6f2ee",
   "lang": "en",
-  "categories": ["productivity", "lifestyle", "utilities"],
+  "categories": [
+    "productivity",
+    "lifestyle",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/assets/img/favicons/favicon-16x16.png",
@@ -49,5 +53,14 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
-  ]
+  ],
+  "id": "/",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

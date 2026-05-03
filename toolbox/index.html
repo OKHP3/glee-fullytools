@@ -53,6 +53,7 @@
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
     <meta name="revisit-after" content="7 days" />
@@ -68,6 +69,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" />
 
   <!-- ========================================
@@ -78,7 +81,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-89W66VMGPB');
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
     </script>
     <!-- AUTOGEN:JSONLD -->
     <script type="application/ld+json">
@@ -224,10 +231,10 @@
                 src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png"
                 alt="The Glee‑fully butterfly perched on a branching toolbox tree labeled with life domains like careers, food, travel, home, health, and identity."
                 class="glee-hero-img"
-                loading="lazy"
+                loading="eager"
                 width="1536"
                 height="768"
-              />
+               fetchpriority="high" />
             </div>
           </div>
         </div>

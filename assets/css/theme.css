@@ -4499,3 +4499,21 @@ html:has(
     color: #ffd9a8;
   }
 }
+
+/* ╔════════════════════════════════════════════════════════════════════╗
+   ║  VIEW TRANSITIONS API — Chrome 126+, declarative cross-document    ║
+   ║  smooth navigation. Progressive enhancement: browsers without      ║
+   ║  support simply do an instant nav (no harm).                       ║
+   ╚════════════════════════════════════════════════════════════════════╝ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}

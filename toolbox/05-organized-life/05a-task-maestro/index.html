@@ -49,6 +49,7 @@
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
     <meta name="revisit-after" content="7 days" />
@@ -72,6 +73,8 @@
        ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
     <link rel="stylesheet" href="/assets/css/theme.css" />
 
@@ -83,7 +86,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-89W66VMGPB');
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
     </script>
     <!-- AUTOGEN:JSONLD -->
     <script type="application/ld+json">
@@ -295,8 +302,8 @@
                 <img
                   src="/assets/img/Glee-fullyTools-GPTIcon-05a-Task-Maestro-Background-RetroStripe-Square-1024.png"
                   alt="Glee-fully Task Maestro — GPT icon"
-                  class="glee-hero-img" width="1024" height="1024" loading="lazy" decoding="async"
-                />
+                  class="glee-hero-img" width="1024" height="1024" loading="eager" decoding="async"
+                 fetchpriority="high" />
               </div>
             </div>
           </div>

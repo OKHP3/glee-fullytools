@@ -57,6 +57,7 @@
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
 
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
@@ -69,6 +70,8 @@
        ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
     <link rel="stylesheet" href="assets/css/theme.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
 
@@ -128,6 +131,22 @@
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="manifest" href="/site.webmanifest" />
 
+    <!-- Speculation Rules API (Chrome 121+) — instant navigation via prerender on hover -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "and": [
+          { "href_matches": "/*" },
+          { "not": { "href_matches": "/*\\?*" } },
+          { "not": { "selector_matches": "[rel~=external]" } },
+          { "not": { "selector_matches": "[href*=\"ko-fi.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"chatgpt.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"mermaidchart.com\"]" } }
+        ]},
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
 </head>
 
   <body class="glee-main">
@@ -204,7 +223,7 @@
 
             </div>
             <div class="glee-hero-illustration">
-              <img src="assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png" alt="Glee-fully hero illustration" class="glee-hero-img" loading="lazy" />
+              <img src="assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png" alt="Glee-fully hero illustration" class="glee-hero-img" loading="eager"  fetchpriority="high" />
             </div>
           </div>
         </div>
@@ -324,7 +343,11 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-89W66VMGPB');
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
     </script>
   </body>
 </html>

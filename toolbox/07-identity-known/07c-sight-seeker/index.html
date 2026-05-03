@@ -24,6 +24,8 @@
     <meta property="og:title" content="Sight Seeker — Glee‑fully Identity Known Tool‑ette" />
     <meta property="og:description" content="Point Sight Seeker at a view or night sky and get names, stories, and gentle context, all wired into the Glee‑fully Identity Known recognition branch." />
     <meta property="og:image" content="https://glee-fully.tools/assets/img/Glee-fullyTools-GPTIcon-07c-Sight-Seeker-Background-RetroStripe-Square-1024.png" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
     <meta property="og:image:alt" content="Glee-fully Sight Seeker — GPT icon" />
     <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
     <meta property="og:locale" content="en_US" />
@@ -44,6 +46,7 @@
        ======================================== -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
 
@@ -69,6 +72,8 @@
     <!-- Preconnect for performance optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
     
     <!-- Glee‑fully typography -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
@@ -81,7 +86,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-89W66VMGPB');
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
     </script>
     <!-- AUTOGEN:JSONLD -->
     <script type="application/ld+json">
@@ -282,7 +291,7 @@
      </div>
      <div aria-hidden="true" class="hero-visual reveal-on-scroll">
       <!-- Swap this with a GPT-specific illustration if you’d like -->
-      <img alt="Illustration representing Sight Seeker" class="glee-hero-img" height="768" loading="lazy" src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png" width="1536"/>
+      <img alt="Illustration representing Sight Seeker" class="glee-hero-img" height="768" loading="eager" src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png" width="1536" fetchpriority="high" />
      </div>
     </div>
    </section>
