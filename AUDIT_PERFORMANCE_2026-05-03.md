@@ -22,8 +22,10 @@ retro-bright look.
 ## Render-path practices already in place
 
 * **Single shared CSS file** — one HTTP request, easily cached.
-* **Deferred JS** — every `<script>` tag uses `defer` so HTML parsing is
-  never blocked.
+* **Non-blocking JS** — `assets/js/app.js` and `assets/js/mermaid-init.js`
+  are `defer`'d (mermaid via `type="module"` which is defer-by-spec),
+  the Ko-fi widget is `async`, and Google Tag Manager is `async`. No
+  `<script src>` in the document blocks HTML parsing.
 * **Preconnect to Google Fonts** — `<link rel="preconnect">` to
   `fonts.googleapis.com` and `fonts.gstatic.com` on all 60 pages.
 * **Lazy hero icons except the LCP candidate** — every `<img>` below the
