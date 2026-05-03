@@ -143,6 +143,27 @@ Validators write machine-readable JSON to `audit/`. The Markdown audit covers
 (`AUDIT_*_2026-05-03.md`) explain the JSON output for humans. Re-running the
 mutators is byte-idempotent — they are safe to re-run on every content edit.
 
+## Template library (`assets/templates/`)
+
+A complete structural template clone of every site page lives at
+`assets/templates/`, mirroring the full hierarchy 1:1 (e.g.
+`assets/templates/toolbox/03-tasty-tracker/03b-menu-conductor/index.html`
+mirrors `toolbox/03-tasty-tracker/03b-menu-conductor/index.html`). Each
+template preserves the entire structural scaffolding — `<head>`, `<nav>`,
+`<footer>`, every `<script>`, every CSS class, every `data-*`/`aria-*`/`id`
+— and replaces only the **page-specific content** with `{{PLACEHOLDER}}`
+tokens. The full token vocabulary is documented in the comment block at the
+top of every template file and in `assets/templates/TEMPLATE_INDEX.md`.
+
+```bash
+python3 tools/generate-templates.py            # idempotent: skips existing
+python3 tools/generate-templates.py --force    # regenerate all 60
+```
+
+Templates are **development artifacts**, not crawlable pages — every
+HTML-walking tool in `tools/` excludes the entire `assets/` tree, so
+templates are invisible to validators, indexer, sitemap, and feed.
+
 ## Audit artifacts (2026-05-03)
 
 * `SITE_AUDIT_2026-05-03.md` — earlier-in-session normalization summary

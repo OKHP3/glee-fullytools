@@ -1,0 +1,552 @@
+# GLEE-FULLY TOOLS — FINAL SESSION TASK: TEMPLATE LIBRARY GENERATION
+
+**Addendum to GLEE-FULLY-REPLIT-MEGA-PROMPT-2026-05-03.md**
+**Execute this after all prior phases are complete or as the final action of the session.**
+
+-----
+
+## OBJECTIVE
+
+Create a complete template library for the Glee-fully Tools site.
+
+For every HTML page in the repo, determine whether a structural template clone already exists in `/assets/templates/`. If it does not exist, create one. The template preserves 100% of the structural scaffolding (nav, footer, `<head>`, CSS, JS, layout containers, section hierarchy) and replaces all page-specific content with clearly labeled placeholder tokens.
+
+The result is a `/assets/templates/` folder that mirrors the site’s full page hierarchy and can be used to spin up any new page type without copying live content and manually gutting it.
+
+-----
+
+## STEP 1 — INVENTORY
+
+### 1.1 Get the full list of HTML pages
+
+```bash
+find . -name "index.html" \
+  | grep -v 'assets/' \
+  | grep -v 'attached_assets/' \
+  | grep -v 'tools/' \
+  | grep -v '.agents/' \
+  | sort > /tmp/site_pages.txt
+
+# Also capture named non-index HTML files at root
+find . -maxdepth 1 -name "*.html" \
+  | grep -v 'index.html' >> /tmp/site_pages.txt
+
+sort -u /tmp/site_pages.txt -o /tmp/site_pages.txt
+echo "Total pages found:"
+wc -l /tmp/site_pages.txt
+cat /tmp/site_pages.txt
+```
+
+Expected output: approximately 59 files. If count differs significantly, investigate before proceeding.
+
+### 1.2 Check what templates already exist
+
+```bash
+mkdir -p assets/templates
+find assets/templates -name "*.html" | sort > /tmp/existing_templates.txt
+echo "Existing templates:"
+wc -l /tmp/existing_templates.txt
+cat /tmp/existing_templates.txt
+```
+
+### 1.3 Build the gap list — pages with no corresponding template
+
+```bash
+# For each page, determine its expected template path and check existence
+python3 - <<'EOF'
+import os
+from pathlib import Path
+
+pages = open('/tmp/site_pages.txt').read().strip().splitlines()
+missing = []
+
+for page in pages:
+    page = page.lstrip('./')
+    # Expected template path mirrors the page path under assets/templates/
+    # e.g.: toolbox/01-discovered-careers/index.html
+    #    -> assets/templates/toolbox/01-discovered-careers/index.html
+    template_path = Path('assets/templates') / page
+    if not template_path.exists():
+        missing.append((page, str(template_path)))
+        print(f"MISSING: {page}")
+    else:
+        print(f"EXISTS:  {template_path}")
+
+print(f"\nTotal missing templates: {len(missing)}")
+with open('/tmp/missing_templates.txt', 'w') as f:
+    for page, tpl in missing:
+        f.write(f"{page}|{tpl}\n")
+EOF
+```
+
+-----
+
+## STEP 2 — TEMPLATE SPECIFICATION
+
+Every template file must conform to the following rules. Read these before writing a single template.
+
+### What to PRESERVE (structure — never touch these)
+
+- The entire `<head>` block including all CSS links, JS includes, font links, favicon links, and meta tags — **with placeholder tokens substituted for content values** (see below)
+- The full navigation HTML (`<nav>` or `<header>`) exactly as it appears on the source page — navigation is structural and identical across all pages, so preserve it verbatim
+- The footer HTML exactly as it appears on the source page — same reason
+- All Bootstrap grid containers, rows, columns, and layout wrappers (`<div class="container">`, `<section>`, etc.)
+- All CSS classes on every element
+- All `data-*` attributes, `aria-*` attributes, `id` attributes
+- All `<script>` tags (both inline and external src references) — templates must be immediately runnable with JS intact
+- The skip-to-content link and `<main id="main">` wrapper
+- Section-level comments (`<!-- Hero -->`, `<!-- Features -->`, etc.) where they exist
+
+### What to REPLACE with placeholder tokens (content — strip all of this)
+
+Replace the following with the placeholder token format `{{PLACEHOLDER_NAME}}`:
+
+|Content type                                                    |Replacement token                                                                                              |
+|----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+|`<title>` inner text                                            |`{{PAGE_TITLE}} — Glee-fully Personalizable Tools™`                                                            |
+|`meta name="description"` content value                         |`{{META_DESCRIPTION}}`                                                                                         |
+|`meta property="og:title"` content value                        |`{{OG_TITLE}}`                                                                                                 |
+|`meta property="og:description"` content value                  |`{{OG_DESCRIPTION}}`                                                                                           |
+|`meta property="og:url"` content value                          |`{{CANONICAL_URL}}`                                                                                            |
+|`link rel="canonical"` href value                               |`{{CANONICAL_URL}}`                                                                                            |
+|`meta property="og:image"` content value                        |`{{OG_IMAGE_URL}}`                                                                                             |
+|`twitter:title` content value                                   |`{{PAGE_TITLE}}`                                                                                               |
+|`twitter:description` content value                             |`{{META_DESCRIPTION}}`                                                                                         |
+|`twitter:image` content value                                   |`{{OG_IMAGE_URL}}`                                                                                             |
+|JSON-LD `name` values (page-specific)                           |`"{{PAGE_TITLE}}"`                                                                                             |
+|JSON-LD `description` values                                    |`"{{META_DESCRIPTION}}"`                                                                                       |
+|JSON-LD `url` values                                            |`"{{CANONICAL_URL}}"`                                                                                          |
+|JSON-LD `image` values                                          |`"{{OG_IMAGE_URL}}"`                                                                                           |
+|BreadcrumbList item names beyond “Home”                         |`"{{BREADCRUMB_LABEL}}"`                                                                                       |
+|BreadcrumbList item URLs beyond homepage                        |`"{{BREADCRUMB_URL}}"`                                                                                         |
+|Hero `<h1>` inner text                                          |`{{PAGE_HEADING}}`                                                                                             |
+|Hero `<p>` or subtitle immediately below `<h1>`                 |`{{PAGE_SUBHEADING}}`                                                                                          |
+|Any `<img src="...">` in the content area (not nav/footer logos)|`{{CONTENT_IMAGE_PATH}}`                                                                                       |
+|Any `<img alt="...">` in the content area                       |`{{CONTENT_IMAGE_ALT}}`                                                                                        |
+|All body copy paragraphs (`<p>` elements in `<main>`)           |`{{BODY_COPY}}`                                                                                                |
+|All content `<h2>`, `<h3>`, `<h4>` inner text                   |`{{SECTION_HEADING}}`                                                                                          |
+|Content section `<p>` bodies                                    |`{{SECTION_BODY}}`                                                                                             |
+|CTA button text                                                 |`{{CTA_LABEL}}`                                                                                                |
+|CTA button `href` (if page-specific, like a ChatGPT GPT URL)    |`{{CTA_URL}}`                                                                                                  |
+|Any hardcoded tool name, Tool-ette name, or GPT name in content |`{{TOOL_NAME}}`                                                                                                |
+|“Today’s Sparkle” banner text and link                          |`{{SPARKLE_TEXT}}` and `{{SPARKLE_URL}}` (if banner is content-driven; leave verbatim if it’s a global include)|
+
+### What NOT to touch in the content area
+
+- Static structural elements with no page-specific content: empty `<div>` wrappers, decorative `<hr>` elements, structural `<span>` elements with only class attributes
+- The nav logo image (`assets/img/Glee-fullyTools ButterflyWaiting Square 1024.png`) — this is structural identity, not page-specific content
+- Footer email addresses, social links, and copyright line — these are site-wide constants, not page-specific
+
+### Template header comment block
+
+Insert this comment block as the very first line inside `<html>` (before `<head>`):
+
+```html
+<!--
+  GLEE-FULLY TOOLS™ — PAGE TEMPLATE
+  Source page: {RELATIVE_PATH_TO_SOURCE}
+  Template created: 2026-05-03
+  Template location: assets/templates/{RELATIVE_PATH_TO_SOURCE}
+
+  USAGE:
+  1. Copy this file to the target page location
+  2. Replace all {{PLACEHOLDER}} tokens with actual content
+  3. Update <link rel="canonical"> and all og:url / og:image values
+  4. Replace {{CONTENT_IMAGE_PATH}} with actual asset paths from assets/img/
+  5. Test in browser before committing
+
+  PLACEHOLDER INDEX:
+  {{PAGE_TITLE}}         — Short page name (e.g., "Menu Conductor")
+  {{PAGE_HEADING}}       — H1 text displayed on page
+  {{PAGE_SUBHEADING}}    — Subtitle or deck below H1
+  {{META_DESCRIPTION}}   — 140-160 char SEO description
+  {{OG_TITLE}}           — Open Graph title (usually same as PAGE_TITLE)
+  {{OG_DESCRIPTION}}     — Open Graph description (can be longer than meta)
+  {{OG_IMAGE_URL}}       — Absolute URL to 1200x630 compatible image
+  {{CANONICAL_URL}}      — Full absolute URL: https://glee-fully.tools/toolbox/.../
+  {{CONTENT_IMAGE_PATH}} — Relative path to hero/content image: /assets/img/...
+  {{CONTENT_IMAGE_ALT}}  — Descriptive alt text for content images
+  {{TOOL_NAME}}          — Specific GPT, Tool, or Tool-ette name
+  {{CTA_LABEL}}          — Button label text
+  {{CTA_URL}}            — Button destination URL
+  {{SECTION_HEADING}}    — H2/H3/H4 text for content sections
+  {{SECTION_BODY}}       — Paragraph text for content sections
+  {{BODY_COPY}}          — General body paragraph content
+  {{BREADCRUMB_LABEL}}   — Human-readable breadcrumb segment name
+  {{BREADCRUMB_URL}}     — Absolute URL for breadcrumb segment
+  {{SPARKLE_TEXT}}       — "Today's Sparkle" banner text (if applicable)
+  {{SPARKLE_URL}}        — "Today's Sparkle" banner link URL (if applicable)
+-->
+```
+
+-----
+
+## STEP 3 — TEMPLATE GENERATION SCRIPT
+
+Write and execute `tools/generate-templates.py`. This script must:
+
+```python
+#!/usr/bin/env python3
+"""
+generate-templates.py
+Glee-fully Tools — Template Library Generator
+Reads all site HTML pages, strips page-specific content,
+and writes structural templates to assets/templates/.
+Run from repo root. Idempotent — skips pages that already have templates.
+"""
+
+import os
+import re
+from pathlib import Path
+
+# ── Configuration ────────────────────────────────────────────────────────────
+
+REPO_ROOT = Path('.')
+TEMPLATE_ROOT = Path('assets/templates')
+TEMPLATE_ROOT.mkdir(parents=True, exist_ok=True)
+
+# Pages to exclude from template generation (non-content pages)
+EXCLUDE_PATTERNS = [
+    'assets/',
+    'attached_assets/',
+    'tools/',
+    '.agents/',
+    '.github/',
+    '.vscode/',
+]
+
+# Content image patterns to detect (used to identify non-structural images)
+NAV_LOGO_PATTERNS = [
+    'ButterflyWaiting',
+    'ButterflyLoopLeft',
+]
+
+# ── Placeholder substitution rules ───────────────────────────────────────────
+
+def strip_to_template(html: str, source_path: str) -> str:
+    """Apply all placeholder substitutions to produce a template."""
+    
+    # Insert template header comment after <html tag
+    html = re.sub(
+        r'(<html[^>]*>)',
+        r'\1\n<!--\n  GLEE-FULLY TOOLS™ — PAGE TEMPLATE\n'
+        f'  Source page: {source_path}\n'
+        f'  Template created: 2026-05-03\n'
+        f'  Template location: assets/templates/{source_path}\n'
+        '  Replace all {{PLACEHOLDER}} tokens before use.\n'
+        '-->\n',
+        html, count=1
+    )
+
+    # <title>
+    html = re.sub(
+        r'(<title>)([^<]+)(</title>)',
+        r'\1{{PAGE_TITLE}} — Glee-fully Personalizable Tools™\3',
+        html
+    )
+
+    # meta description
+    html = re.sub(
+        r'(<meta\s+name=["\']description["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{META_DESCRIPTION}}\3',
+        html
+    )
+
+    # og:title
+    html = re.sub(
+        r'(<meta\s+property=["\']og:title["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{OG_TITLE}}\3',
+        html
+    )
+
+    # og:description
+    html = re.sub(
+        r'(<meta\s+property=["\']og:description["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{OG_DESCRIPTION}}\3',
+        html
+    )
+
+    # og:url
+    html = re.sub(
+        r'(<meta\s+property=["\']og:url["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{CANONICAL_URL}}\3',
+        html
+    )
+
+    # og:image
+    html = re.sub(
+        r'(<meta\s+property=["\']og:image["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{OG_IMAGE_URL}}\3',
+        html
+    )
+
+    # twitter:title
+    html = re.sub(
+        r'(<meta\s+(?:name|property)=["\']twitter:title["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{PAGE_TITLE}}\3',
+        html
+    )
+
+    # twitter:description
+    html = re.sub(
+        r'(<meta\s+(?:name|property)=["\']twitter:description["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{META_DESCRIPTION}}\3',
+        html
+    )
+
+    # twitter:image
+    html = re.sub(
+        r'(<meta\s+(?:name|property)=["\']twitter:image["\']\s+content=["\'])([^"\']+)(["\'])',
+        r'\1{{OG_IMAGE_URL}}\3',
+        html
+    )
+
+    # canonical link
+    html = re.sub(
+        r'(<link\s+rel=["\']canonical["\']\s+href=["\'])([^"\']+)(["\'])',
+        r'\1{{CANONICAL_URL}}\3',
+        html
+    )
+
+    # JSON-LD — page-specific string values inside script blocks
+    def strip_jsonld(match):
+        block = match.group(0)
+        # Replace name, description, url, image values that are page-specific
+        block = re.sub(r'("name"\s*:\s*")[^"]+(")(?!\s*,\s*"@)', r'\1{{PAGE_TITLE}}\2', block)
+        block = re.sub(r'("description"\s*:\s*")[^"]+(")' , r'\1{{META_DESCRIPTION}}\2', block)
+        block = re.sub(r'("url"\s*:\s*"https://glee-fully\.tools[^"]*")', r'"url": "{{CANONICAL_URL}}"', block)
+        block = re.sub(r'("image"\s*:\s*"https://glee-fully\.tools[^"]*")', r'"image": "{{OG_IMAGE_URL}}"', block)
+        return block
+
+    html = re.sub(
+        r'<script type=["\']application/ld\+json["\']>.*?</script>',
+        strip_jsonld,
+        html,
+        flags=re.DOTALL
+    )
+
+    # Content area: h1
+    # Only replace h1 that is inside <main> — use a simple approach:
+    # Replace the first h1 after <main (heuristic — works for this site's structure)
+    html = re.sub(
+        r'(<main[^>]*>.*?)(<h1[^>]*>)([^<]+)(</h1>)',
+        r'\1\2{{PAGE_HEADING}}\4',
+        html, count=1, flags=re.DOTALL
+    )
+
+    # Content images (not nav logo)
+    def replace_content_img_src(match):
+        full = match.group(0)
+        src = match.group(1)
+        # Preserve nav logo images
+        if any(pattern in src for pattern in NAV_LOGO_PATTERNS):
+            return full
+        return full.replace(f'src="{src}"', 'src="{{CONTENT_IMAGE_PATH}}"')\
+                   .replace(f"src='{src}'", "src='{{CONTENT_IMAGE_PATH}}'")
+
+    # Replace src in content images
+    html = re.sub(
+        r'src=["\']([^"\']+assets/img[^"\']+)["\']',
+        lambda m: '{{CONTENT_IMAGE_PATH}}' if not any(p in m.group(1) for p in NAV_LOGO_PATTERNS)
+                  else m.group(0),
+        html
+    )
+
+    # Replace alt text on content images (preserve empty alts — those are decorative)
+    html = re.sub(
+        r'(alt=["\'])([^"\']{5,})(["\'])',
+        r'\1{{CONTENT_IMAGE_ALT}}\3',
+        html
+    )
+
+    return html
+
+
+# ── Main execution ────────────────────────────────────────────────────────────
+
+def find_all_pages():
+    pages = []
+    for path in REPO_ROOT.rglob('*.html'):
+        rel = str(path.relative_to(REPO_ROOT))
+        if any(rel.startswith(ex) for ex in EXCLUDE_PATTERNS):
+            continue
+        pages.append(path)
+    return sorted(pages)
+
+
+def main():
+    pages = find_all_pages()
+    print(f"Found {len(pages)} HTML pages")
+    
+    created = []
+    skipped = []
+    
+    for page in pages:
+        rel = page.relative_to(REPO_ROOT)
+        template_path = TEMPLATE_ROOT / rel
+        
+        if template_path.exists():
+            print(f"  SKIP (exists): {template_path}")
+            skipped.append(str(rel))
+            continue
+        
+        # Read source
+        try:
+            source_html = page.read_text(encoding='utf-8', errors='replace')
+        except Exception as e:
+            print(f"  ERROR reading {page}: {e}")
+            continue
+        
+        # Generate template
+        template_html = strip_to_template(source_html, str(rel))
+        
+        # Write template (create directories as needed)
+        template_path.parent.mkdir(parents=True, exist_ok=True)
+        template_path.write_text(template_html, encoding='utf-8')
+        
+        print(f"  CREATED: {template_path}")
+        created.append(str(rel))
+    
+    print(f"\n{'='*60}")
+    print(f"Templates created: {len(created)}")
+    print(f"Templates skipped (already existed): {len(skipped)}")
+    print(f"Total pages processed: {len(pages)}")
+    
+    # Write a manifest of all templates
+    manifest_path = TEMPLATE_ROOT / 'TEMPLATE_INDEX.md'
+    with open(manifest_path, 'w') as f:
+        f.write("# Glee-fully Tools — Template Library Index\n")
+        f.write(f"Generated: 2026-05-03 | Total templates: {len(pages)}\n\n")
+        f.write("## Usage\n")
+        f.write("Copy any template from this folder to its target location in the site hierarchy.\n")
+        f.write("Replace all `{{PLACEHOLDER}}` tokens with real content before committing.\n\n")
+        f.write("## Template Inventory\n\n")
+        f.write("| Template Path | Page Type |\n")
+        f.write("|---|---|\n")
+        for p in sorted(created + skipped):
+            # Infer page type from path
+            if 'toolbox' in p and p.count('/') >= 3:
+                ptype = "Tool-ette (SoftwareApplication)"
+            elif 'toolbox' in p and p.count('/') == 2:
+                ptype = "Tool Branch (CollectionPage)"
+            elif p == 'index.html':
+                ptype = "Homepage"
+            elif p == '404.html':
+                ptype = "Error page"
+            elif p == 'under-construction.html':
+                ptype = "Under construction"
+            else:
+                ptype = "Supporting page (WebPage)"
+            f.write(f"| `assets/templates/{p}` | {ptype} |\n")
+    
+    print(f"\nTemplate index written to: {manifest_path}")
+
+
+if __name__ == '__main__':
+    main()
+```
+
+Run it:
+
+```bash
+python3 tools/generate-templates.py
+```
+
+-----
+
+## STEP 4 — VERIFY THE OUTPUT
+
+### 4.1 Confirm count matches expectation
+
+```bash
+find assets/templates -name "*.html" | wc -l
+# Should match the count from Step 1.1 (expected ~59)
+```
+
+### 4.2 Spot-check a template for each page type
+
+Check one template from each category to confirm the placeholder logic worked correctly:
+
+```bash
+# Homepage template — should have {{PAGE_TITLE}} in <title> but nav/footer intact
+grep -n '{{' assets/templates/index.html | head -20
+grep -n '<nav' assets/templates/index.html | head -5  # Should still be there
+
+# A Tool-ette template — should have placeholder h1, placeholder img src
+grep -n '{{' assets/templates/toolbox/05-organized-life/05f-neighborly-bazaar/index.html | head -20
+
+# A supporting page template
+grep -n '{{' assets/templates/about/index.html | head -20
+
+# Confirm JSON-LD still present but with placeholders
+grep -A5 'application/ld+json' assets/templates/toolbox/03-tasty-tracker/index.html | head -15
+```
+
+### 4.3 Confirm nav and footer are intact in templates
+
+```bash
+# Nav should have real links, not placeholders
+grep -c 'href="https://glee-fully.tools' assets/templates/index.html
+# Footer copyright should be verbatim
+grep 'All rights reserved' assets/templates/index.html
+```
+
+### 4.4 Confirm no templates accidentally broke the source pages
+
+```bash
+# The source pages should be unchanged — templates are written to assets/templates/, not in-place
+git diff --name-only | grep -v 'assets/templates' | grep -v 'tools/generate-templates.py'
+# This should return nothing (no source pages modified)
+```
+
+-----
+
+## STEP 5 — REVIEW TEMPLATE_INDEX.md AND COMMIT
+
+### 5.1 Review the generated index
+
+```bash
+cat assets/templates/TEMPLATE_INDEX.md
+```
+
+Confirm it lists all expected templates with correct page type classifications. Fix any misclassifications manually if needed.
+
+### 5.2 Commit
+
+```bash
+git add assets/templates/
+git add tools/generate-templates.py
+git commit -m "feat: add complete template library for all 59 site pages (assets/templates/)"
+```
+
+-----
+
+## CONSTRAINTS
+
+1. **The script must be idempotent.** Running it again must skip pages that already have templates. Never overwrite existing template files without a `--force` flag.
+1. **Never modify source HTML files.** The script reads from page paths and writes to `assets/templates/`. The source files are read-only from this script’s perspective.
+1. **Preserve JS functionality in templates.** All `<script>` tags — including the search modal, dark mode toggle, and Bootstrap — must be present in templates exactly as in the source.
+1. **Nav and footer are verbatim.** Do not tokenize nav links, footer links, social URLs, or email addresses. These are site constants, not page-specific content.
+1. **The `assets/templates/` folder must mirror the full site hierarchy.** `assets/templates/toolbox/03-tasty-tracker/03b-menu-conductor/index.html` corresponds to `toolbox/03-tasty-tracker/03b-menu-conductor/index.html`. No flattening.
+1. **`TEMPLATE_INDEX.md` is a required deliverable.** It must be generated and committed alongside the templates.
+1. **Do not add `assets/templates/` to `sitemap.xml`.** Templates are development artifacts, not crawlable pages.
+1. **Do not add `robots.txt` disallow for `assets/templates/`** unless explicitly asked. The folder is already blocked by the typical static host convention of not serving it as a route.
+
+-----
+
+## SUCCESS CRITERIA FOR THIS TASK
+
+- [ ] `assets/templates/` exists and contains one `.html` file for every source page in the repo
+- [ ] Template count matches source page count (run `find assets/templates -name "*.html" | wc -l` to verify)
+- [ ] Every template contains `{{PAGE_TITLE}}`, `{{META_DESCRIPTION}}`, and `{{CANONICAL_URL}}` placeholder tokens
+- [ ] Every template’s `<nav>` and footer are intact and contain real links (not placeholders)
+- [ ] Every template’s `<script>` tags are present and unmodified
+- [ ] `assets/templates/TEMPLATE_INDEX.md` exists and lists all templates with page type
+- [ ] `tools/generate-templates.py` exists, is runnable, and is idempotent
+- [ ] Source HTML pages are unmodified (verify with `git diff --stat`)
+- [ ] All new files committed with message: `feat: add complete template library for all 59 site pages`
+
+-----
+
+*Addendum to GLEE-FULLY-REPLIT-MEGA-PROMPT-2026-05-03.md | Authored 2026-05-03*
+*This task is self-contained and can be executed independently of the prior phases if session state was lost.*

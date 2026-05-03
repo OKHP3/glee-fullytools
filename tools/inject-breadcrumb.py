@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets"}
+SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets"}
 # Pages that ship their own hand-written visible breadcrumb. Skip to avoid
 # duplicate <nav aria-label="Breadcrumb"> blocks (a11y regression).
 SKIP_FILES = {"search/index.html"}

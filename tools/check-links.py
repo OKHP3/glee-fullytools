@@ -20,7 +20,7 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets"}
+SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets"}
 SITE = "https://glee-fully.tools"
 
 

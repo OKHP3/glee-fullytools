@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  GLEE-FULLY TOOLS™ — PAGE TEMPLATE
+  Source page: toolbox/05-organized-life/05b-thrifty-spender/index.html
+  Template created: 2026-05-03
+  Template location: assets/templates/toolbox/05-organized-life/05b-thrifty-spender/index.html
+
+  USAGE:
+  1. Copy this file to the target page location.
+  2. Replace all {{PLACEHOLDER}} tokens with actual content.
+  3. Update <link rel="canonical"> + og:url + og:image values.
+  4. Replace {{CONTENT_IMAGE_PATH}} with paths under /assets/img/.
+  5. Test in a browser before committing.
+
+  PLACEHOLDER INDEX:
+  {{PAGE_TITLE}}         — Short page name (e.g., "Menu Conductor")
+  {{PAGE_HEADING}}       — H1 text displayed on page
+  {{PAGE_SUBHEADING}}    — Subtitle / deck below H1
+  {{META_DESCRIPTION}}   — 140–160 char SEO description
+  {{OG_TITLE}}           — Open Graph title
+  {{OG_DESCRIPTION}}     — Open Graph description
+  {{OG_IMAGE_URL}}       — Absolute URL to 1200x630 image
+  {{CANONICAL_URL}}      — Full absolute URL
+  {{CONTENT_IMAGE_PATH}} — Path to hero/content image
+  {{CONTENT_IMAGE_ALT}}  — Descriptive alt text
+  {{TOOL_NAME}}          — Tool / Tool-ette / GPT name
+  {{CTA_LABEL}}          — Button label text
+  {{CTA_URL}}            — Button destination URL
+  {{SECTION_HEADING}}    — H2/H3/H4 text
+  {{SECTION_BODY}}       — Section paragraph text
+  {{BODY_COPY}}          — Body paragraph content
+  {{BREADCRUMB_LABEL}}   — Breadcrumb segment name
+  {{BREADCRUMB_URL}}     — Breadcrumb segment URL
+  {{SPARKLE_TEXT}}       — "Today's Sparkle" text (if present)
+  {{SPARKLE_URL}}        — "Today's Sparkle" link (if present)
+-->
+
+  <head>
+    <!-- ========================================
+       METADATA: Core Document & Character Set
+       ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- ========================================
+       METADATA: Primary Title & Description
+       ======================================== -->
+    <title>{{PAGE_TITLE}} — Glee-fully Personalizable Tools™</title>
+    <meta name="description" content="{{META_DESCRIPTION}}" />
+    <meta name="keywords" content="budget tracker, bill reminder, spending tracker, personal finance, money management, Glee-fully, custom GPT, organized life" />
+    <meta name="author" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <meta name="creator" content="Glee&#8209;fully Personalizable Tools™" />
+    <meta name="publisher" content="Glee&#8209;fully Personalizable Tools™" />
+    <!-- ========================================
+       METADATA: Open Graph (Social Sharing)
+       ======================================== -->
+    <meta property="og:title" content="{{OG_TITLE}}" />
+    <meta property="og:description" content="{{OG_DESCRIPTION}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="{{CANONICAL_URL}}" />
+    <meta property="og:image" content="{{OG_IMAGE_URL}}" />
+    <meta property="og:image:alt" content="Glee-fully Thrifty Spender — GPT icon" />
+    <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <!-- ========================================
+       METADATA: Twitter Card (X Social)
+       ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{PAGE_TITLE}}" />
+    <meta name="twitter:description" content="{{META_DESCRIPTION}}" />
+    <meta name="twitter:image" content="{{OG_IMAGE_URL}}" />
+    <meta name="twitter:image:alt" content="Glee-fully Thrifty Spender — GPT icon" />
+
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
+    <!-- ========================================
+       METADATA: Search & Crawling
+       ======================================== -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
+    <link rel="canonical" href="{{CANONICAL_URL}}" />
+
+    <!-- ========================================
+       METADATA: Color Scheme & Theme
+       ======================================== -->
+    <meta name="theme-color" content="#d35b2d" />
+    <meta name="color-scheme" content="dark" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- ========================================
+       FAVICONS: Multi-Format Icon Support
+       ======================================== -->
+<!-- ========================================
+       STYLESHEETS & FONTS
+       ======================================== -->
+    <!-- Theme stylesheet -->
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+
+    <!-- Glee-fully typography stack -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
+
+  <!-- ========================================
+       Google Analytics (G-89W66VMGPB)
+       ======================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-89W66VMGPB');
+    </script>
+    <!-- AUTOGEN:JSONLD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/#software",
+      "name": "{{PAGE_TITLE}}",
+      "url": "{{CANONICAL_URL}}",
+      "description": "{{META_DESCRIPTION}}",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Any (web)",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "{{PAGE_TITLE}}",
+        "url": "{{CANONICAL_URL}}"
+      },
+      "isPartOf": {
+        "@type": "WebSite",
+        "url": "{{CANONICAL_URL}}",
+        "name": "{{PAGE_TITLE}}"
+      },
+      "image": "{{OG_IMAGE_URL}}",
+      "keywords": "budget tracker, bill reminder, spending tracker, personal finance, money management, Glee-fully, custom GPT, organized life",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/toolbox/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/toolbox/05-organized-life/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/"
+          }
+        ]
+      }
+    }
+  ]
+}
+    </script>
+    <!-- /AUTOGEN:JSONLD -->
+    <link rel="icon" href="/assets/img/favicons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+</head>
+
+  <body class="glee-main">
+    <a class="skip-to-content" href="#main">Skip to main content</a>
+    <!-- 🔧 Glee‑fully “under construction” gate -->
+    <div class="construction-overlay"
+         data-wip-key="thrifty-spender">
+      <div class="construction-overlay__card">
+        <img
+          src="{{CONTENT_IMAGE_PATH}}"
+          alt="{{CONTENT_IMAGE_ALT}}"
+          class="construction-overlay__image"
+          width="1536"
+          height="768" loading="lazy" decoding="async"
+        />
+
+        <p class="construction-overlay__copy">
+          This Thrifty Spender page is still being wired up. Sections may move,
+          links may change, and some flows aren’t ready yet — but you’re welcome
+          to explore the work‑in‑progress.
+        </p>
+
+        <div class="construction-overlay__actions">
+          <button
+            type="button"
+            class="btn btn-primary construction-overlay__dismiss"
+            data-wip-dismiss
+          >
+            I understand — let me explore
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- 🔧 end under‑construction gate -->
+
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo">
+          <a href="/" aria-label="Glee‑fully home">
+            <img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" alt="Glee‑fully logo" width="40" height="40" />
+          </a>
+          <span class="brand">Glee&#8209;fully</span>
+        </div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/toolbox/" aria-current="page">Opening The Toolbox</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu" aria-label="About menu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/about/">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation menu">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+
+      </div>
+      <section class="site-specials site-specials--glee" aria-label="Featured Glee‑fully tool">
+        <span class="site-specials-label">Today’s Sparkle</span>
+        <a class="site-specials-link" href="/toolbox/05-organized-life/05f-neighborly-bazaar/">
+          🔦 Neighborly Bazaar GPT —  helps you evaluate, price, and re‑home household items with Glee 💫
+        </a>
+      </section>
+
+    </header>
+
+    <main id="main">
+      <!-- AUTOGEN:BREADCRUMB -->
+      <nav class="glee-breadcrumb" aria-label="Breadcrumb">
+        <ol class="glee-breadcrumb-list">
+        <li class="glee-breadcrumb-item"><a href="https://glee-fully.tools/">Home</a></li>
+        <li class="glee-breadcrumb-item"><a href="https://glee-fully.tools/toolbox/">Toolbox</a></li>
+        <li class="glee-breadcrumb-item"><a href="https://glee-fully.tools/toolbox/05-organized-life/">Organized Life</a></li>
+        <li class="glee-breadcrumb-item glee-breadcrumb-current" aria-current="page">Thrifty Spender</li>
+        </ol>
+      </nav>
+      <!-- /AUTOGEN:BREADCRUMB -->
+      <!-- HERO: TOOL OVERVIEW + PRIMARY CTA -->
+      <section class="hero glee-hero" aria-labelledby="hero-title">
+        <div class="brand-stripes brand-stripes--glee" aria-hidden="true"></div>
+        <div class="glee-glow" aria-hidden="true"></div>
+        <div class="container hero-inner reveal-on-scroll">
+          <div class="hero-grid">
+            <!-- 🔸 PAPER CARD -->
+            <article class="glee-hero-card">
+              <div>
+                <p class="eyebrow h-accent">
+                <a href="/ecosystem/">🌍 Ecosystem</a> · <a href="/toolbox/05-organized-life/">🪚 Tool #05 – Organized Life</a>
+                </p>
+                <h1 id="hero-title">{{PAGE_HEADING}}</h1>
+                <p class="hero-subtitle">A calm, practical money buddy that keeps your bills and budget on one page.</p>
+                <p class="hero-tagline">
+                  Thrifty Spender helps you see where your money actually goes, without needing a complicated app or spreadsheet.
+                  Log your recurring bills, sketch a simple monthly budget, and spot patterns in your spending so you can make clearer, calmer decisions.
+                </p>
+
+                <div class="hero-actions">
+                  <!-- Highlighted launch button – update href to this custom GPT URL -->
+                  <a
+                    href="https://chatgpt.com/g/g-685ef48bfc808191b4414bace0810239-thrifty-spender-by-glee-fully"
+                    class="btn btn-primary"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Launch “Thrifty Spender” in ChatGPT
+                  </a>
+
+                  <!-- Optional secondary action back to parent Tool page -->
+                  <a href="/toolbox/05-organized-life/" class="btn btn-quiet">
+                    Back to Glee‑fully Organized Life
+                  </a>
+                </div>
+                <p class="note-small">
+                  Opens in ChatGPT in a new tab. Best experienced with your notes, lists, or files handy.
+                </p>
+              </article>
+
+            </div>
+
+            <div class="hero-visual reveal-on-scroll" aria-hidden="true">
+              <!-- Swap this with a GPT-specific illustration if you’d like -->
+              <img
+                src="{{CONTENT_IMAGE_PATH}}"
+                alt="{{CONTENT_IMAGE_ALT}}"
+                class="glee-hero-img" width="1024" height="1024" loading="lazy" decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHAT IT DOES / PURPOSE -->
+      <section class="section content-section">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 class="section-title">What this Tool‑ette does</h2>
+            <p class="section-subtitle">
+              A quick snapshot of how Thrifty Spender helps you see, plan, and steady your everyday spending.
+            </p>
+          </header>
+
+          <div class="grid grid-3">
+            <article class="card">
+              <h3>Core purpose</h3>
+              <p>
+                Thrifty Spender keeps your recurring bills, budgets, and everyday spending patterns in one neat place.
+                It turns scattered charges into a simple monthly view so you can see what’s due, what changed, and what needs attention.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>Best for</h3>
+              <p>
+                Ideal for busy adults who want to feel on top of money without becoming full‑time budget nerds.
+                Great when you’re juggling subscriptions, family expenses, or just trying to stop saying “where did it all go?” at the end of the month.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>Inputs &amp; outputs</h3>
+              <p>
+                Bring in whatever you have — a quick list of bills, pasted transactions, or a basic export from your bank or spreadsheet.
+                Thrifty Spender turns that into clean tables, category summaries, reminders, and budget snapshots you can reuse or save.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRIMARY FUNCTIONS / LEAVES -->
+      <section class="section content-section stripe-bg">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 class="section-title">Core functions (Leaves)</h2>
+            <p class="section-subtitle">
+              The core money jobs Thrifty Spender can handle for you, so you’re not juggling everything in your head.
+            </p>
+          </header>
+
+          <ul>
+            <li>
+              <strong>💸 FUNCTION⚙️ (🍃Leaf): Log recurring bills and due dates.</strong>
+              List out your rent or mortgage, utilities, subscriptions, and any other repeating charges so nothing slips through the cracks.
+            </li>
+            <li>
+              <strong>📊 FUNCTION⚙️ (🍃Leaf): Track spending against monthly budgets.</strong>
+              Set simple targets by category, then see how your real‑world spending compares as the month rolls along.
+            </li>
+            <li>
+              <strong>🔔 FUNCTION⚙️ (🍃Leaf): Get reminders for upcoming or missed payments.</strong>
+              Ask Thrifty Spender to highlight what’s due soon, what’s late, and which bills jumped more than usual.
+            </li>
+            <li>
+              <strong>🧾 FUNCTION⚙️ (🍃Leaf): Break down spending by category.</strong>
+              Group charges into everyday buckets like groceries, utilities, fun, and family so you can spot where to trim — without judgment.
+            </li>
+            <li>
+              <strong>📅 FUNCTION⚙️ (🍃Leaf): View trends over time.</strong>
+              Compare this month to last month (or last year) to see whether your spending is drifting up, down, or holding steady.
+            </li>
+            <li>
+              <strong>📥 FUNCTION⚙️ (🍃Leaf): Export summaries for other tools.</strong>
+              Turn your results into tidy tables you can copy into spreadsheets, budgeting apps, or your own personal finance system.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- WHY IT BEATS VANILLA CHATGPT -->
+      <section class="section content-section">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 class="section-title">Why use this instead of vanilla ChatGPT?</h2>
+            <p class="section-subtitle">
+              Why a pre‑tuned money Tool‑ette beats starting from a blank chat when you’re dealing with real‑life bills.
+            </p>
+          </header>
+
+          <div class="grid grid-3">
+            <article class="card">
+              <h3>Pre‑tuned brain</h3>
+              <p>
+                Thrifty Spender comes pre‑loaded with budgeting logic, bill‑tracking prompts, and friendly guardrails.
+                It already understands recurring bills, one‑time charges, and categories, so you’re not rebuilding your system every time you open a new chat.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Suite‑aware &amp; ecosystem‑ready</h3>
+              <p>
+                It knows it lives on the Glee‑fully Organized Life branch, alongside tools for tasks, calendars, gifting, and dashboards.
+                That means it can align with Task Maestro, Scheduling Wizard, and Lifestyle Wallboard so your money picture lines up with your time and priorities.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Repeatable, export‑friendly workflows</h3>
+              <p>
+                Budgets, bill logs, and category breakdowns are built as reusable views — monthly snapshots, reminder lists, and export‑ready tables.
+                You can rerun the same flow each month and simply update the numbers instead of reinventing your whole setup.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- GETTING STARTED / HOW TO USE -->
+      <section class="section content-section stripe-bg">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 class="section-title">Getting started</h2>
+            <p class="section-subtitle">
+              A simple four‑step path to get your first month of bills and budgets into view.
+            </p>
+          </header>
+
+          <ol>
+            <li>
+              <strong>Step 1 – Arrive with something small.</strong>
+              Start with one month of activity — your latest statement, or a simple list of the bills you remember off the top of your head.
+            </li>
+            <li>
+              <strong>Step 2 – Paste or upload.</strong>
+              Paste your transactions or bill list directly into the chat, or upload a basic export/CSV. Thrifty Spender will do the sorting and grouping for you.
+            </li>
+            <li>
+              <strong>Step 3 – Choose a path.</strong>
+              Tell it what you want to do: “Set up my monthly bills,” “Build a starter budget by category,” or “Show me where most of my money went last month.”
+            </li>
+            <li>
+              <strong>Step 4 – Save what matters.</strong>
+              Save the bill log or budget view you like — copy it into your budgeting app or notes, or export the table so you can update it next month in a few clicks.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ECOSYSTEM: PARENT TOOL + SIBLING TOOL‑ETTES -->
+      <section class="section content-section">
+        <div class="container reveal-on-scroll">
+          <header class="section-header">
+            <h2 class="section-title">Where it lives in the Glee‑fully Toolbox</h2>
+            <p class="section-subtitle">
+              See how Thrifty Spender fits inside Glee‑fully Organized Life, and which Tool‑ettes to visit when you’re ready for the next layer of support.
+            </p>
+          </header>
+
+          <div class="grid grid-3">
+            <!-- Parent Tool card -->
+            <article class="card">
+              <h3>Glee‑fully Organized Life (Branch)</h3>
+              <p>
+                This branch organizes your everyday life with joy — from to‑dos and schedules to budgets and gifting.
+                It groups together practical, lightweight Tool‑ettes that help you see your time, money, and commitments in one connected ecosystem.
+              </p>
+              <p>
+                <a href="/toolbox/05-organized-life/" class="btn btn-quiet">
+                  Visit Glee‑fully Organized Life
+                </a>
+              </p>
+            </article>
+
+            <!-- Sibling Tool‑ettes -->
+            <article class="card">
+              <h3>Sibling Tool‑ettes</h3>
+              <p>The rest of the Glee‑fully Organized Life branch lives right alongside Thrifty Spender.</p>
+              <ul class="link-list">
+                <li>
+                  <a href="/toolbox/05-organized-life/05a-task-maestro/">
+                    Task Maestro — your smarter to‑do and reminder system
+                  </a>
+                </li>
+                <li>
+                  <a href="/toolbox/05-organized-life/05c-giftlist-helper/">
+                    Giftlist Helper — remember who you’re gifting, and when
+                  </a>
+                </li>
+                <li>
+                  <a href="/toolbox/05-organized-life/05d-scheduling-wizard/">
+                    Scheduling Wizard — align calendars, commitments, and energy
+                  </a>
+                </li>
+                <li>
+                  <a href="/toolbox/05-organized-life/05e-lifestyle-wallboard/">
+                    Lifestyle Wallboard — see your life at a glance, not just your calendar
+                  </a>
+                </li>
+                <li>
+                  <a href="/toolbox/05-organized-life/05f-neighborly-bazaar/">
+                    Neighborly Bazaar — organize local swaps, sales, and shared stuff
+                  </a>
+                </li>
+              </ul>
+            </article>
+
+            <!-- Back to Toolbox -->
+            <article class="card">
+              <h3>Back to the Toolbox</h3>
+              <p>
+                Ready to explore another branch? Jump back to the full Glee‑fully suite and choose
+                your next Tool or Tool‑ette.
+              </p>
+              <p>
+                <a href="/toolbox/" class="btn btn-quiet">Open the Toolbox</a>
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>Glee&#8209;fully Personalizable Tools</h3>
+          <p>Smart design made human — a joyful suite of custom GPT Tools built with heart.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About Us</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@glee-fully.tools">contact@glee-fully.tools</a></li>
+            <li><a href="mailto:support@glee-fully.tools">support@glee-fully.tools</a></li>
+            <li><a href="https://ko-fi.com/gleefullypersonalizabletools" target="_blank" rel="noopener">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@Glee-fullyTools" target="_blank" rel="noopener">YouTube</a></li>            
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+      </div>
+    </footer>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/search.js" defer></script>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+  </body>
+</html>

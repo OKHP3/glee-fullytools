@@ -28,7 +28,7 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://glee-fully.tools"
-SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets"}
+SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets"}
 SKIP_FILES = {Path("index.html"), Path("404.html"), Path("under-construction.html"),
               Path("search/index.html")}
 

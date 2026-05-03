@@ -64,3 +64,10 @@ Our suite shows that structure can be playful, creativity can be systematic, and
   mutator scripts in order (`normalize-head` → `activate-icons` → `inject-jsonld`
   → `inject-breadcrumb`) and the three regenerators above. See `replit.md` for
   the detailed run order.
+* **Template library:** `assets/templates/` mirrors the full site hierarchy
+  with structural-only clones of every page. Every template preserves nav,
+  footer, scripts, CSS, JSON-LD scaffold; every page-specific value is a
+  `{{PLACEHOLDER}}` token. Documented in `assets/templates/TEMPLATE_INDEX.md`.
+  Regenerate with `python3 tools/generate-templates.py` (idempotent; pass
+  `--force` to overwrite). Templates are dev artifacts and are excluded from
+  the sitemap, search index, feed, and every validator.

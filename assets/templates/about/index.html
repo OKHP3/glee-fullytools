@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  GLEE-FULLY TOOLS™ — PAGE TEMPLATE
+  Source page: about/index.html
+  Template created: 2026-05-03
+  Template location: assets/templates/about/index.html
+
+  USAGE:
+  1. Copy this file to the target page location.
+  2. Replace all {{PLACEHOLDER}} tokens with actual content.
+  3. Update <link rel="canonical"> + og:url + og:image values.
+  4. Replace {{CONTENT_IMAGE_PATH}} with paths under /assets/img/.
+  5. Test in a browser before committing.
+
+  PLACEHOLDER INDEX:
+  {{PAGE_TITLE}}         — Short page name (e.g., "Menu Conductor")
+  {{PAGE_HEADING}}       — H1 text displayed on page
+  {{PAGE_SUBHEADING}}    — Subtitle / deck below H1
+  {{META_DESCRIPTION}}   — 140–160 char SEO description
+  {{OG_TITLE}}           — Open Graph title
+  {{OG_DESCRIPTION}}     — Open Graph description
+  {{OG_IMAGE_URL}}       — Absolute URL to 1200x630 image
+  {{CANONICAL_URL}}      — Full absolute URL
+  {{CONTENT_IMAGE_PATH}} — Path to hero/content image
+  {{CONTENT_IMAGE_ALT}}  — Descriptive alt text
+  {{TOOL_NAME}}          — Tool / Tool-ette / GPT name
+  {{CTA_LABEL}}          — Button label text
+  {{CTA_URL}}            — Button destination URL
+  {{SECTION_HEADING}}    — H2/H3/H4 text
+  {{SECTION_BODY}}       — Section paragraph text
+  {{BODY_COPY}}          — Body paragraph content
+  {{BREADCRUMB_LABEL}}   — Breadcrumb segment name
+  {{BREADCRUMB_URL}}     — Breadcrumb segment URL
+  {{SPARKLE_TEXT}}       — "Today's Sparkle" text (if present)
+  {{SPARKLE_URL}}        — "Today's Sparkle" link (if present)
+-->
+
+  <head>
+    <!-- ========================================
+       METADATA: Core Document & Character Set
+       ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="language" content="English" />
+
+    <!-- ========================================
+       METADATA: Primary Title & Description
+       ======================================== -->
+    <title>{{PAGE_TITLE}} — Glee-fully Personalizable Tools™</title>
+    <meta name="description" content="{{META_DESCRIPTION}}" />
+    <meta name="theme-color" content="#d35b2d" />
+
+    <!-- ========================================
+       METADATA: Open Graph (Social Sharing)
+       ======================================== -->
+    <meta property="og:title" content="{{OG_TITLE}}" />
+    <meta property="og:description" content="{{OG_DESCRIPTION}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="{{CANONICAL_URL}}" />
+    <meta property="og:image" content="{{OG_IMAGE_URL}}" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Glee‑fully butterfly logo" />
+    <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <!-- ========================================
+       METADATA: Twitter Card (X Social)
+       ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{PAGE_TITLE}}" />
+    <meta name="twitter:description" content="{{META_DESCRIPTION}}" />
+    <meta name="twitter:image" content="{{OG_IMAGE_URL}}" />
+    <meta name="twitter:image:alt" content="Glee‑fully butterfly logo" />
+
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
+    <!-- ========================================
+       METADATA: Search & Crawling
+       ======================================== -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
+    <link rel="canonical" href="{{CANONICAL_URL}}" />
+
+    <!-- ========================================
+       METADATA: Color Scheme & Theme
+       ======================================== -->
+    <meta name="color-scheme" content="light" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- ========================================
+       FAVICONS: Multi-Format Icon Support
+       ======================================== -->
+<!-- ========================================
+       STYLESHEETS & FONTS
+       ======================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&display=swap" />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+
+  <!-- ========================================
+       Google Analytics (G-89W66VMGPB)
+       ======================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-89W66VMGPB');
+    </script>
+    <!-- AUTOGEN:JSONLD -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://glee-fully.tools/about/#webpage",
+      "name": "{{PAGE_TITLE}}",
+      "url": "{{CANONICAL_URL}}",
+      "description": "{{META_DESCRIPTION}}",
+      "isPartOf": {
+        "@type": "WebSite",
+        "url": "{{CANONICAL_URL}}",
+        "name": "{{PAGE_TITLE}}"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "{{CANONICAL_URL}}"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{PAGE_TITLE}}",
+            "item": "https://glee-fully.tools/about/"
+          }
+        ]
+      }
+    }
+  ]
+}
+    </script>
+    <!-- /AUTOGEN:JSONLD -->
+    <link rel="icon" href="/assets/img/favicons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+</head>
+
+  <body class="glee-main">
+    <a class="skip-to-content" href="#main">Skip to main content</a>
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo">
+          <a href="/" aria-label="Glee‑fully home">
+            <img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" alt="Glee‑fully logo" width="40" height="40" />
+          </a>
+          <span class="brand">Glee&#8209;fully</span>
+        </div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/toolbox/">Opening The Toolbox</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+
+            <!-- About cluster: Universe / About / Contact / Legal -->
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu" aria-label="About menu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/about/" aria-current="page">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation menu">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+
+      </div>
+      <section class="site-specials site-specials--glee" aria-label="Featured Glee‑fully tool">
+        <span class="site-specials-label">Today’s Sparkle</span>
+        <a class="site-specials-link" href="/toolbox/05-organized-life/05f-neighborly-bazaar/">
+          🔦 Neighborly Bazaar GPT —  helps you evaluate, price, and re‑home household items with Glee 💫
+        </a>
+      </section>
+
+    </header>
+
+    <main id="main">
+      <!-- AUTOGEN:BREADCRUMB -->
+      <nav class="glee-breadcrumb" aria-label="Breadcrumb">
+        <ol class="glee-breadcrumb-list">
+        <li class="glee-breadcrumb-item"><a href="https://glee-fully.tools/">Home</a></li>
+        <li class="glee-breadcrumb-item glee-breadcrumb-current" aria-current="page">About</li>
+        </ol>
+      </nav>
+      <!-- /AUTOGEN:BREADCRUMB -->
+      <section class="hero glee-hero">
+        <div class="brand-stripes brand-stripes--glee" aria-hidden="true"></div>
+        <div class="glee-glow" aria-hidden="true"></div>
+        <div class="container hero-inner reveal-on-scroll">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="hero-eyebrow">The humans behind the toolbox</p>
+              <h1>{{PAGE_HEADING}}</h1>
+              <p class="hero-tagline">
+                Glee‑fully started as a late‑night question in a small Texas
+                kitchen: could AI feel less like a faceless system and more
+                like a warm, slightly dramatic collaborator? One of them kept
+                refining prompts and frameworks; the other kept asking,
+                “But how does it <em>feel</em>?”&nbsp;Together they built a
+                retro‑bright suite of Custom GPT Tools where every helper feels
+                a little more like a friend.
+              </p>
+              <div class="hero-actions">
+                <a href="/" class="btn btn-primary">Back to Glee‑fully home</a>
+                <a href="/toolbox/" class="btn btn-quiet">Explore the Toolbox</a>
+              </div>
+            </div>
+            <div class="hero-visual">
+              <img
+                src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png"
+                alt="Glee-fully hero illustration"
+                class="glee-hero-img"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How the story began -->
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>How a love story became a toolbox</h2>
+          <p>
+            Before there was a website, or a canon, or forty‑plus tiny GPTs,
+            there were just two people trading ideas across a kitchen table.
+            Glee brought the color, intuition, and “what if we make this fun?”
+            energy. Jamie brought the cathedral‑and‑blueprint brain, mapping
+            how dozens of tiny GPTs could behave like one thoughtful ecosystem.
+            Glee‑fully is what happens when those two ways of seeing the world
+            decide to build something that lasts.
+          </p>
+        </header>
+
+        <div class="about-grid">
+          <article class="card">
+            <h3>Glee in a glance</h3>
+            <ul>
+              <li>Yakima‑born, Alaska‑raised, forever Pacific Northwest at heart.</li>
+              <li>
+                Color‑codes everything; chai and blonde vanilla lattes are
+                basically office supplies.
+              </li>
+              <li>
+                Loves cozy witchy movies, Stevie Nicks moonlight, and 90s
+                sitcom reruns more than small talk.
+              </li>
+              <li>
+                Cat mom to Phoebe and Joey (yes, named after the
+                <em>Friends</em> duo).
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Jamie in a glance</h3>
+            <ul>
+              <li>
+                Systems‑builder who spent years in the lumber and construction
+                world before discovering promptcraft.
+              </li>
+              <li>
+                Thinks in frameworks, canon, and ledgers — happily turning
+                messy ideas into maps and rituals.
+              </li>
+              <li>
+                Believes good structure should feel like a safety rail, not a
+                cage.
+              </li>
+              <li>
+                The one who will absolutely over‑engineer a spreadsheet
+                <em>and</em> a Saturday snack board.
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Glee as muse -->
+      <section class="content-section stripe-bg">
+        <div class="container reveal-on-scroll">
+          <div class="two-column">
+            <div>
+              <h2>Glee: the muse in technicolor</h2>
+              <p>
+                Glee grew up between Yakima and Alaska, steeped in Pacific
+                Northwest skies, thrift‑store treasures, and grunge playlists.
+                Organizing things — books, snacks, schedules, feelings — was
+                never just about tidiness; it was how she took care of people.
+                Color‑coding was a love language long before it became a design
+                system.
+              </p>
+              <p>
+                Her inner world is a mash‑up of retro game shows, 90s
+                coffeehouse culture, and witchy comfort films. That’s the
+                Glee‑fully voice baked into every Tool: the one that quotes
+                sitcoms, lights a cinnamon candle when things get hard, and
+                asks, “Do you love this — like really love it?” before you hit
+                save.
+              </p>
+            </div>
+
+            <aside class="card">
+              <h3>What Glee brings into every Tool</h3>
+              <ul>
+                <li>
+                  A tone that feels like a chai‑fueled friend, not a corporate
+                  bot.
+                </li>
+                <li>
+                  Pop‑culture shorthand — little winks to
+                  <em>Friends</em>, <em>Schitt’s Creek</em>, grunge lyrics, and
+                  cozy movies that make hard tasks feel lighter.
+                </li>
+                <li>
+                  A belief that organization can be warm, human, and a little
+                  weird in the best possible way.
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- The tattoo & the three brands -->
+      <section class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>The tattoo, the trinity, and the tools</h2>
+          <p>
+            Long before the first Custom GPT shipped, Jamie made a single,
+            very permanent decision: a vertical tattoo with characters for
+            “eternal love,” “bride,” and Glee’s name. It was the first artifact
+            in a life that had finally earned permanence — the proto‑version of
+            the canon, ledgers, and “growth without deletion” discipline that
+            now shape their work.
+          </p>
+          <p>
+            From that anchor grew three intertwined brands — each carrying a
+            different facet of the same story.
+          </p>
+        </header>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <h3>AskJamie™ — The Voice</h3>
+            <p>
+              The conversationalist that started it all. AskJamie began as a
+              talking résumé and grew into a mid‑century‑modern helpdesk for
+              careers and complex decisions. Its tone — warm, articulate,
+              lightly retro — borrows from how Jamie speaks when he’s explaining
+              things to Glee: honest, structured, and impossibly patient.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Glee‑fully™ — The Heart</h3>
+            <p>
+              Glee‑fully is Glee, distilled: a tree‑shaped suite of
+              personalizable Tools that turn life admin into cozy rituals. It’s
+              where color‑coded dashboards, snack‑tracking sidekicks, travel
+              wishboards, and journaling companions all share the same
+              butterfly‑bright personality.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>OverKill Hill P³™ — The Spine</h3>
+            <p>
+              The forge behind the sparkle. OverKill Hill P³ — Precision,
+              Protocol, Promptcraft — is the architectural backbone that keeps
+              the whole universe coherent. It’s where ledgers live, canon is
+              guarded, and every Tool is treated like a stained‑glass window in
+              a bigger cathedral, not a throwaway experiment.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Philosophy & invitation -->
+      <section class="content-section container reveal-on-scroll">
+        <div class="two-column">
+          <div>
+            <h2>What they believe about people &amp; tools</h2>
+            <p>
+              Glee and Jamie share a simple, slightly rebellious philosophy:
+              technology should make people feel more alive, not more exhausted.
+            </p>
+            <ul class="feature-list">
+              <li>
+                <strong>Productivity without pressure.</strong> Getting things
+                done shouldn’t feel like performance. The best tools feel like
+                support, not surveillance.
+              </li>
+              <li>
+                <strong>Structure without stiffness.</strong> Frameworks can be
+                precise and still leave room for whimsy, comfort, and change.
+              </li>
+              <li>
+                <strong>Growth without erasing the past.</strong> Systems should
+                evolve by layering and clarifying — not deleting what came
+                before.
+              </li>
+              <li>
+                <strong>Tools as companions.</strong> Tone, story, and
+                emotional design aren’t decoration; they’re part of the
+                interface that keeps people coming back.
+              </li>
+            </ul>
+          </div>
+
+          <aside class="card">
+            <h3>Where you fit in</h3>
+            <p>
+              If you’ve ever wished your digital life felt a little more like a
+              cozy coffee shop and a little less like a blinking dashboard,
+              you’re in the right place. Glee‑fully is an ongoing experiment in
+              building tools that grow with real humans, not just with data.
+            </p>
+            <p>
+              They love hearing how people bend the Tools to their own rituals —
+              from job searches and travel journals to scent libraries and
+              snack logs.
+            </p>
+            <p>
+              <strong>Say hi:</strong>
+              <a href="mailto:info@glee-fully.tools">info@glee-fully.tools</a>
+            </p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>Glee&#8209;fully Personalizable Tools™ 🧰🌳</h3>
+          <p>Smart design made human — a joyful suite of custom GPT Tools built with heart.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About Us</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@glee-fully.tools">contact@glee-fully.tools</a></li>
+            <li><a href="mailto:support@glee-fully.tools">support@glee-fully.tools</a></li>
+            <li><a href="https://ko-fi.com/gleefullypersonalizabletools" target="_blank" rel="noopener">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@Glee-fullyTools" target="_blank" rel="noopener">YouTube</a></li>            
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee’s sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+      </div>
+    </footer>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/search.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{PAGE_TITLE}}",
+        "url": "{{CANONICAL_URL}}",
+        "description": "{{META_DESCRIPTION}}"
+      }
+    </script>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+  </body>
+</html>
