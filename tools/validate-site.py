@@ -124,6 +124,17 @@ def check_page(rel: Path, html: str) -> dict:
         except json.JSONDecodeError as e:
             issues.append(f"JSON-LD block #{i + 1} not parseable: {e.msg}")
 
+    # Mermaid referral invariant: any page that embeds a Mermaid diagram
+    # MUST surface the paid-referral credit exactly once.
+    has_mermaid = bool(re.search(r'class="mermaid"', html))
+    referral_count = len(re.findall(r'class="mermaid-referral"', html))
+    if has_mermaid and referral_count == 0:
+        issues.append("page embeds a Mermaid diagram but has no .mermaid-referral credit")
+    elif has_mermaid and referral_count > 1:
+        warnings.append(f"page has {referral_count} .mermaid-referral blocks (expect 1)")
+    elif not has_mermaid and referral_count > 0:
+        warnings.append(".mermaid-referral present on a page with no Mermaid diagram")
+
     return {"issues": issues, "warnings": warnings}
 
 

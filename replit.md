@@ -16,7 +16,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 - `assets/css/theme.css` — Central stylesheet (4265 lines), reorganized 2026-05-02 into scope-grouped sections: GLOBAL (L 6) → OVERKILL (L 2215) → GLEE (L 2633) → ASKJAMIE (L 3659) → CROSS-BRAND (L 4116). Each scope has a `╔══╗` boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
 - `assets/js/app.js` — Shared JS (252 lines): progress bar, theme toggle, mobile nav, sticky-TOC module (added 2026-05-02 for cross-site parity)
 - `assets/js/search.js` — Universal search engine: magnifier-button modal + dedicated `/search/` page (uses `?s=` param to auto-open modal, `?q=` on the search page)
-- `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages)
+- `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `tools/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/` — Supporting pages
