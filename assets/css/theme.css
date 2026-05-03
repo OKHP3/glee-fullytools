@@ -4370,3 +4370,85 @@ html:has(
   padding: 0.25rem 0.6rem;
   cursor: pointer;
 }
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║  BREADCRUMB (visible) — added 2026-05-03                                  ║
+   ║  Used site-wide (Glee + AskJamie + OverKill). Mirrors the JSON-LD         ║
+   ║  BreadcrumbList already injected by tools/inject-jsonld.py.               ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+.glee-breadcrumb {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem 0;
+  font-family: var(--font-body, "Open Sans", sans-serif);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.glee-breadcrumb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+  color: var(--ink-muted, #6b5d50);
+}
+
+.glee-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.glee-breadcrumb-item + .glee-breadcrumb-item::before {
+  content: "›";
+  margin-right: 0.5rem;
+  color: var(--rust, #d35b2d);
+  opacity: 0.65;
+  font-weight: 700;
+}
+
+.glee-breadcrumb-item a {
+  color: var(--ink, #2a2320);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.glee-breadcrumb-item a:hover,
+.glee-breadcrumb-item a:focus-visible {
+  color: var(--rust, #d35b2d);
+  border-bottom-color: currentColor;
+}
+
+.glee-breadcrumb-current {
+  color: var(--espresso, #2a2320);
+  font-weight: 600;
+}
+
+/* Tighten on small screens so it doesn't wrap badly. */
+@media (max-width: 480px) {
+  .glee-breadcrumb {
+    padding: 0.6rem 0.85rem 0;
+    font-size: 0.8rem;
+  }
+  .glee-breadcrumb-item + .glee-breadcrumb-item::before {
+    margin-right: 0.35rem;
+  }
+}
+
+/* Dark-mode parity (matches modal patterns elsewhere in the file). */
+@media (prefers-color-scheme: dark) {
+  .glee-breadcrumb-list {
+    color: #c7bdb1;
+  }
+  .glee-breadcrumb-item a {
+    color: #f3e9dc;
+  }
+  .glee-breadcrumb-current {
+    color: #ffd9a8;
+  }
+}

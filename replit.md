@@ -115,8 +115,47 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Two surfaces, one engine:** The same `search.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. When `search.js` boots, it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
 
+## Validation tooling (2026-05-03)
+
+Seven standalone Python scripts under `tools/` keep the site honest. **Run order
+matters** — `inject-jsonld` reads `og:image` to set `primaryImageOfPage`, so it
+must run *after* `activate-icons`; `inject-breadcrumb` reads the JSON-LD that
+`inject-jsonld` writes, so it must run *after* both of those.
+
+```bash
+# 1. Mutators (idempotent, AUTOGEN-marker-driven)
+python3 tools/normalize-head.py     # canonical favicon chain + theme-color
+python3 tools/activate-icons.py     # hero <img> + og:image swap to per-tool icons
+python3 tools/inject-jsonld.py      # JSON-LD @graph + BreadcrumbList
+python3 tools/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
+
+# 2. Index / asset / feed regenerators
+python3 tools/build-search-index.py # rebuilds assets/data/search-index.json
+python3 tools/audit-assets.py       # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
+python3 tools/generate-feed.py      # rebuilds /feed.xml
+
+# 3. Validators (exit non-zero on regressions; safe to wire into CI)
+python3 tools/validate-site.py      # every-page metadata + structure checks
+python3 tools/check-links.py        # every internal href + sitemap parity
+```
+
+Validators write machine-readable JSON to `audit/`. The Markdown audit covers
+(`AUDIT_*_2026-05-03.md`) explain the JSON output for humans. Re-running the
+mutators is byte-idempotent — they are safe to re-run on every content edit.
+
+## Audit artifacts (2026-05-03)
+
+* `SITE_AUDIT_2026-05-03.md` — earlier-in-session normalization summary
+* `FINAL_AUDIT_2026-05-03.md` — Phase 20 final pass in the prompted format
+* `AUDIT_PAGE_INVENTORY_2026-05-03.md` — Phase 0
+* `AUDIT_LINKS_2026-05-03.md` — Phase 3
+* `AUDIT_ASSETS_2026-05-03.md` — Phase 7
+* `AUDIT_ACCESSIBILITY_2026-05-03.md` — Phase 8
+* `AUDIT_PERFORMANCE_2026-05-03.md` — Phase 10
+
 ## Recent Changes
 
+- **2026-05-03 — Final audit pass.** Visible breadcrumb on 57 inner pages (mirrors the JSON-LD `BreadcrumbList`); restored missing `<!DOCTYPE html>` on `02b-decor-detective`; added `feed.xml` (Atom, 49 entries), `humans.txt`, `/.well-known/security.txt`; bumped sitemap dates from 2026-04-07 to 2026-05-03; new validators `tools/validate-site.py`, `tools/audit-assets.py`, `tools/check-links.py`, `tools/inject-breadcrumb.py`, `tools/generate-feed.py`; 5 new `AUDIT_*_2026-05-03.md` reports + machine-readable JSON in `audit/`. 60/60 pages validate clean (0 issues, 0 warnings, 0 broken internal links).
 - **2026-05-02 — Dedicated `/search/` page.** Shareable, bookmarkable search results page with breadcrumb, JSON-LD `SearchAction`, no-JS directory fallback, dark-mode support. URL syncs as `?q=` for share/bookmark. Added to `sitemap.xml`. `search.js` extended with `attachInline()` API; on the dedicated page it skips the auto-modal and renders inline.
 - **2026-05-02 — `site.webmanifest` fixed.** Was empty (`name:""`, wrong icon paths, white theme color). Now declares full brand identity, brand colors (`theme:#d35b2d`, `bg:#f6f2ee`), correct paths to all favicon variants, plus maskable purpose for Android.
 - **2026-05-02 — Internal search engine.** Index builder + runtime + nav UI + ⌘K/`/` keybinds shipped on all 59 pages.

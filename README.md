@@ -39,3 +39,28 @@ Our suite shows that structure can be playful, creativity can be systematic, and
 
 > **Glee-fully Personalizable Tools™** — *Smart design made human.*  
 > Build your world the Glee-fully way — where technology feels like joy.
+
+---
+
+### 🛠 Maintainers' notes
+
+* **Live audit reports:** `FINAL_AUDIT_2026-05-03.md`, plus
+  `AUDIT_PAGE_INVENTORY_*`, `AUDIT_LINKS_*`, `AUDIT_ASSETS_*`,
+  `AUDIT_ACCESSIBILITY_*`, `AUDIT_PERFORMANCE_*` covering every phase of the
+  2026-05-03 pass.
+* **Run validators after content edits:**
+  ```bash
+  python3 tools/validate-site.py  &&  python3 tools/check-links.py
+  ```
+  Exit 0 = safe to publish.
+* **Rebuild search/feed/icon map after content edits:**
+  ```bash
+  python3 tools/build-search-index.py
+  python3 tools/audit-assets.py
+  python3 tools/generate-feed.py
+  ```
+* **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
+  into `assets/img/`, add its URL to `sitemap.xml`, then run the four
+  mutator scripts in order (`normalize-head` → `activate-icons` → `inject-jsonld`
+  → `inject-breadcrumb`) and the three regenerators above. See `replit.md` for
+  the detailed run order.

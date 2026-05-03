@@ -1,0 +1,21 @@
+/* TEAM */
+  Designer & Lore Keeper: Glee
+  Engineering & Plumbing: Jamie (with help from a friendly co-pilot)
+  Brand: OverKill Hill P³
+  Site: https://glee-fully.tools
+  Contact: contact@glee-fully.tools
+
+/* THANKS */
+  Thank you to every visitor who slows down enough to actually read these.
+  Thanks to the open-web standards that let a tiny static site stay useful
+  without a build pipeline, a database, or a venture round.
+
+/* SITE */
+  Last update: 2026/05/03
+  Language: English
+  Doctype: HTML5
+  IDE: Replit
+  Components: Hand-written HTML, CSS, vanilla JS, Python tooling.
+  No build step. No backend. No tracking beyond GA basics.
+  Every Tool-ette is a focused Custom GPT — a friendly little helper
+  for one corner of life, work, or wonder.

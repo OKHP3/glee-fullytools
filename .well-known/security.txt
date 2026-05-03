@@ -1,0 +1,12 @@
+Contact: mailto:security@glee-fully.tools
+Contact: mailto:contact@glee-fully.tools
+Expires: 2027-05-03T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://glee-fully.tools/.well-known/security.txt
+Policy: https://glee-fully.tools/legal/
+
+# This is a static, no-backend site. There is no user data store, no
+# authentication system, and no server-side processing. If you have spotted
+# something we should know about (broken link, accessibility blocker, supply-
+# chain concern, or a real security report), please email us. We answer
+# friendly humans and friendly bug-reports alike.

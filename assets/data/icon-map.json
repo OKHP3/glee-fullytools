@@ -1,0 +1,356 @@
+{
+  "generated": "2026-05-03",
+  "doc": "Best GPT icon for each tool/branch prefix. 'primary' is the recommended hero/og:image. Variants exist for design flexibility.",
+  "tools": {
+    "00": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-00-Toolbox-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": "assets/img/Glee-fullyTools-GPTIcon-00-Toolbox-Background-RetroStripe-Square-1024-alt.png",
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-00-Toolbox-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": "assets/img/Glee-fullyTools-GPTIcon-00-Toolbox-Object-Background-Transparent-Square-1024-alt.png",
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-00-Toolbox-Background-RetroStripe-Square-1024.png"
+    },
+    "01": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01-Discovered-Careers-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01-Discovered-Careers-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01-Discovered-Careers-Background-RetroStripe-Square-1024.png"
+    },
+    "01a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-RetroStripe-Square-1024.png"
+    },
+    "01b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01b-Resume-Customizer-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": "assets/img/Glee-fullyTools-GPTIcon-01b-Resume-Customizer-Background-RetroStripe-Square-1024-alt.png",
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01b-Resume-Customizer-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": "assets/img/Glee-fullyTools-GPTIcon-01b-Resume-Customizer-Object-Background-Transparent-Square-1024-alt.png",
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01b-Resume-Customizer-Background-RetroStripe-Square-1024.png"
+    },
+    "01c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01c-Career-Fitness-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": "assets/img/Glee-fullyTools-GPTIcon-01c-Career-Fitness-Background-RetroStripe-Square-1024-alt.png",
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01c-Career-Fitness-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": "assets/img/Glee-fullyTools-GPTIcon-01c-Career-Fitness-Object-Background-Transparent-Square-1024-alt.png",
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01c-Career-Fitness-Background-RetroStripe-Square-1024.png"
+    },
+    "01d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01d-Letter- Composer-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01d-Letter- Composer-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01d-Letter- Composer-Background-RetroStripe-Square-1024.png"
+    },
+    "01e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01e-bLinkIn-Tuner-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01e-bLinkIn-Tuner-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01e-bLinkIn-Tuner-Background-RetroStripe-Square-1024.png"
+    },
+    "01f": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-01f-Career-Seeker-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-01f-Career-Seeker-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-01f-Career-Seeker-Background-RetroStripe-Square-1024.png"
+    },
+    "02": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02-Treasured-Finds-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02-Treasured-Finds-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02-Treasured-Finds-Background-RetroStripe-Square-1024.png"
+    },
+    "02a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02a-Personal-Librarian-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": "assets/img/Glee-fullyTools-GPTIcon-02a-Personal-Librarian-Background-RetroStripe-Square-1024-alt.png",
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02a-Personal-Librarian-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": "assets/img/Glee-fullyTools-GPTIcon-02a-Personal-Librarian-Object-Background-Transparent-Square-1024-alt.png",
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02a-Personal-Librarian-Background-RetroStripe-Square-1024.png"
+    },
+    "02b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02b-Decor-Detective-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02b-Decor-Detective-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02b-Decor-Detective-Background-RetroStripe-Square-1024.png"
+    },
+    "02c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02c-Present-Hoarder-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02c-Present-Hoarder-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02c-Present-Hoarder-Background-RetroStripe-Square-1024.png"
+    },
+    "02d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02d-Scentinal-Journal-Object-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02d-Scentinal-Journal-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02d-Scentinal-Journal-Object-Background-RetroStripe-Square-1024.png"
+    },
+    "02e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02e-Spirited-Journal-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02e-Spirited-Journal-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02e-Spirited-Journal-Background-RetroStripe-Square-1024.png"
+    },
+    "02f": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02f-Supply-Haus-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02f-Supply-Haus-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02f-Supply-Haus-Background-RetroStripe-Square-1024.png"
+    },
+    "02g": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-02g-Bag-Nabbit-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-02g-Bag-Nabbit-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-02g-Bag-Nabbit-Background-RetroStripe-Square-1024.png"
+    },
+    "03": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03-Tasty-Tracker-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03-Tasty-Tracker-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03-Tasty-Tracker-Background-RetroStripe-Square-1024.png"
+    },
+    "03a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03a-Flavor-Meister-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03a-Flavor-Meister-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03a-Flavor-Meister-Background-RetroStripe-Square-1024.png"
+    },
+    "03b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03b-Menu-Conductor-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03b-Menu-Conductor-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03b-Menu-Conductor-Background-RetroStripe-Square-1024.png"
+    },
+    "03c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03c-Wishful-Tastes-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03c-Wishful-Tastes-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03c-Wishful-Tastes-Background-RetroStripe-Square-1024.png"
+    },
+    "03d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03d-Pantry-Shopper-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03d-Pantry-Shopper-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03d-Pantry-Shopper-Background-RetroStripe-Square-1024.png"
+    },
+    "03e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-03e-Palatably-Profiled-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-03e-Palatably-Profiled-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-03e-Palatably-Profiled-Background-RetroStripe-Square-1024.png"
+    },
+    "04": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04-Travelers-Guide-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04-Travelers-Guide-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04-Travelers-Guide-Background-RetroStripe-Square-1024.png"
+    },
+    "04a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04a-Journey-Diary-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04a-Journey-Diary-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04a-Journey-Diary-Background-RetroStripe-Square-1024.png"
+    },
+    "04b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04b-Itinerary-Hacker-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04b-Itinerary-Hacker-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04b-Itinerary-Hacker-Background-RetroStripe-Square-1024.png"
+    },
+    "04c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04c-Detour-Discoverer-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04c-Detour-Discoverer-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04c-Detour-Discoverer-Background-RetroStripe-Square-1024.png"
+    },
+    "04d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04d-Dreamland-Journeys-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04d-Dreamland-Journeys-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04d-Dreamland-Journeys-Background-RetroStripe-Square-1024.png"
+    },
+    "04e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-04e-Memento-Log-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-04e-Memento-Log-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-04e-Memento-Log-Background-RetroStripe-Square-1024.png"
+    },
+    "05": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05-Organized-Life-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05-Organized-Life-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05-Organized-Life-Background-RetroStripe-Square-1024.png"
+    },
+    "05a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05a-Task-Maestro-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05a-Task-Maestro-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05a-Task-Maestro-Background-RetroStripe-Square-1024.png"
+    },
+    "05b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05b-Thrifty-Spender-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05b-Thrifty-Spender-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05b-Thrifty-Spender-Background-RetroStripe-Square-1024.png"
+    },
+    "05c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05c-Giftlist-Helper-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05c-Giftlist-Helper-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05c-Giftlist-Helper-Background-RetroStripe-Square-1024.png"
+    },
+    "05d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05d-Scheduling-Wizard-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05d-Scheduling-Wizard-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05d-Scheduling-Wizard-Background-RetroStripe-Square-1024.png"
+    },
+    "05e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05e-Lifestyle-Wallboard-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05e-Lifestyle-Wallboard-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05e-Lifestyle-Wallboard-Background-RetroStripe-Square-1024.png"
+    },
+    "05f": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-1024.png"
+    },
+    "06": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06-Healthy-Bee-ing-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06-Healthy-Bee-ing-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06-Healthy-Bee-ing-Background-RetroStripe-Square-1024.png"
+    },
+    "06a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06a-Care-Check-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06a-Care-Check-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06a-Care-Check-Background-RetroStripe-Square-1024.png"
+    },
+    "06b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06b-Calm-Keep-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06b-Calm-Keep-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06b-Calm-Keep-Background-RetroStripe-Square-1024.png"
+    },
+    "06c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06c-Snappy-Count-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06c-Snappy-Count-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06c-Snappy-Count-Background-RetroStripe-Square-1024.png"
+    },
+    "06d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06d-Medi-Minder-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06d-Medi-Minder-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06d-Medi-Minder-Background-RetroStripe-Square-1024.png"
+    },
+    "06e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06e-Moody-Log-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06e-Moody-Log-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06e-Moody-Log-Background-RetroStripe-Square-1024.png"
+    },
+    "06f": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-06f-Maven-Wise-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-06f-Maven-Wise-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-06f-Maven-Wise-Background-RetroStripe-Square-1024.png"
+    },
+    "07": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07-Identity-Known-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07-Identity-Known-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07-Identity-Known-Background-RetroStripe-Square-1024.png"
+    },
+    "07a": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07a-Critter-Spotter-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07a-Critter-Spotter-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07a-Critter-Spotter-Background-RetroStripe-Square-1024.png"
+    },
+    "07b": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07b-Roost-Wrangler-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07b-Roost-Wrangler-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07b-Roost-Wrangler-Background-RetroStripe-Square-1024.png"
+    },
+    "07c": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07c-Sight-Seeker-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07c-Sight-Seeker-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07c-Sight-Seeker-Background-RetroStripe-Square-1024.png"
+    },
+    "07d": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07d-Snap-Decoder-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07d-Snap-Decoder-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07d-Snap-Decoder-Background-RetroStripe-Square-1024.png"
+    },
+    "07e": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07e-Motif-Muse-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07e-Motif-Muse-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07e-Motif-Muse-Background-RetroStripe-Square-1024.png"
+    },
+    "07f": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07f-Maker-Matcher-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07f-Maker-Matcher-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07f-Maker-Matcher-Background-RetroStripe-Square-1024.png"
+    },
+    "07g": {
+      "retro_stripe": "assets/img/Glee-fullyTools-GPTIcon-07g-Self-Fixer-Background-RetroStripe-Square-1024.png",
+      "retro_stripe_alt": null,
+      "transparent": "assets/img/Glee-fullyTools-GPTIcon-07g-Self-Fixer-Object-Background-Transparent-Square-1024.png",
+      "transparent_alt": null,
+      "primary": "assets/img/Glee-fullyTools-GPTIcon-07g-Self-Fixer-Background-RetroStripe-Square-1024.png"
+    }
+  }
+}

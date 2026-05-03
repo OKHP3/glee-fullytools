@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Glee-fully Personalizable Tools™ — New &amp; Updated</title>
+  <link href="https://glee-fully.tools/feed.xml" rel="self" />
+  <link href="https://glee-fully.tools/" />
+  <id>https://glee-fully.tools/</id>
+  <updated>2026-05-03T00:00:00Z</updated>
+  <author><name>Glee-fully Personalizable Tools™</name></author>
+  <subtitle>The retro-bright toolbox of Custom GPTs for life, work, and wonder.</subtitle>
+  <entry>
+    <title>Resume Builder</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Resume Builder is a guided, keyword-aware GPT that helps you create or polish professional resumes, match job posts, and export clean, shareable versions.</summary>
+  </entry>
+  <entry>
+    <title>Resume Customizer</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Resume Customizer by Glee-fully transforms a general-purpose resume into tailored, keyword-aware versions for specific job descriptions. Analyze job postings, match them to your resume, and rewrite key sections.</summary>
+  </entry>
+  <entry>
+    <title>Career Fitness</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Career Fitness is a custom GPT that benchmarks your skills, matches job titles, checks salaries, and maps out practical career growth paths.</summary>
+  </entry>
+  <entry>
+    <title>Letter Composer</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Letter Composer turns your resume and a job post into a tailored, human cover letter you can send today. Draft, customize tone, and export in minutes.</summary>
+  </entry>
+  <entry>
+    <title>bLinkIn Tuner</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>bLinkIn Tuner is a Glee-fully Tool-ette in the Discovered Careers branch. Capture tiny flashes of interest or dread from your day and tune them into real career signals you can track, compare, and act on.</summary>
+  </entry>
+  <entry>
+    <title>Career Seeker</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Career Seeker is your retro-bright job search cockpit inside the Glee-fully Discovered Careers branch — a focused place to define targets, track roles, manage applications, and keep follow-ups moving without burning out.</summary>
+  </entry>
+  <entry>
+    <title>Discovered Careers</title>
+    <link href="https://glee-fully.tools/toolbox/01-discovered-careers/" />
+    <id>https://glee-fully.tools/toolbox/01-discovered-careers/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Discovered Careers is your joyful career navigation branch inside the Glee-fully Personalizable Tools suite — routing you to resume, cover letter, LinkedIn, and job-search GPTs with clarity and charm.</summary>
+  </entry>
+  <entry>
+    <title>Personal Librarian</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Personal Librarian by Glee-fully is your cozy digital library assistant for tracking every book you own, what you&#x27;ve read, and what you want to read next. Log physical books, Kindle titles, and audiobooks—all in one friendly GPT.</summary>
+  </entry>
+  <entry>
+    <title>Decor Detective</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Decor Detective is a Glee-fully Tool-ette that catalogs your seasonal décor, tracks storage bins, and reminds you when to swap decorations in and out. Perfect for homeowners, renters, and anyone drowning in mystery bins.</summary>
+  </entry>
+  <entry>
+    <title>Present Hoarder</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Present Hoarder is your gift-closet inventory system inside Glee-fully. Track stashed presents, recipients, occasions, storage locations, budgets, and wrap status—all in one searchable log.</summary>
+  </entry>
+  <entry>
+    <title>Scentinal Journal</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Track candles, wax melts, diffusers, and oils by brand, season, room, mood, burn time, and more with Scentinal Journal — a scent-loving logbook in the Glee-fully Treasured Finds toolbox.</summary>
+  </entry>
+  <entry>
+    <title>Spirited Journal</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Spirited Journal is the story-keeper Twig under Glee-fully Treasured Finds — a custom GPT that helps you log the memories, moments, and meaning behind your favorite books, candles, décor, and keepsakes.</summary>
+  </entry>
+  <entry>
+    <title>Supply Haus</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Supply Haus is your cozy master inventory for craft and creative supplies—helping you catalog what you own, track what gets used, and know what to restock before the glitter, glue, or tape runs out.</summary>
+  </entry>
+  <entry>
+    <title>Bag Nabbit</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Bag Nabbit helps you track, tag, and fall back in love with your bag collection — from everyday totes to glam clutches, including wishlist and loaned bags.</summary>
+  </entry>
+  <entry>
+    <title>Treasured Finds – Curate the Things You Love | Glee-fully</title>
+    <link href="https://glee-fully.tools/toolbox/02-treasured-finds/" />
+    <id>https://glee-fully.tools/toolbox/02-treasured-finds/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Treasured Finds — a cozy, retro-bright branch of the Glee-fully Toolbox that helps you catalog, tag, and enjoy the books, décor, gifts, scents, spirits, craft supplies, and handbags you love to collect.</summary>
+  </entry>
+  <entry>
+    <title>Flavor Meister</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Flavor Meister is your joyful digital recipe box — a custom GPT that stores, rates, and tags your recipes so home-cooked wins are easy to repeat.</summary>
+  </entry>
+  <entry>
+    <title>Menu Conductor</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Menu Conductor is the meal-planning Tool-ette inside Glee-fully Tasty Tracker. Turn your saved recipes, pantry notes, and real-life schedule into a calm, realistic weekly menu with grocery-ready outputs.</summary>
+  </entry>
+  <entry>
+    <title>Wishful Tastes</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Wishful Tastes is your epicurean bucket-list GPT for tracking dream dishes, restaurants, and food experiences until you finally taste them.</summary>
+  </entry>
+  <entry>
+    <title>Pantry Shopper</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Pantry Shopper is the grocery-list co-pilot inside Glee-fully Tasty Tracker — turning your pantry, recipes, and meal plans into smart, store-ready shopping runs.</summary>
+  </entry>
+  <entry>
+    <title>Palatably Profiled</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Palatably Profiled turns your food ratings into a living flavor profile. See what you love, compare tastes across your household, and plan meals everyone enjoys.</summary>
+  </entry>
+  <entry>
+    <title>Glee-fully Tasty Tracker</title>
+    <link href="https://glee-fully.tools/toolbox/03-tasty-tracker/" />
+    <id>https://glee-fully.tools/toolbox/03-tasty-tracker/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.</summary>
+  </entry>
+  <entry>
+    <title>Journey Diary</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Journey Diary is a custom travel journal GPT that helps you log trips, capture memories, and turn scattered notes into export-ready stories.</summary>
+  </entry>
+  <entry>
+    <title>Itinerary Hacker</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Itinerary Hacker turns your scattered trip notes into a clean, time-blocked travel plan you can share, print, or tweak on the fly. Part of the Glee-fully Traveler&#x27;s Guide branch.</summary>
+  </entry>
+  <entry>
+    <title>Detour Discoverer</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Detour Discoverer is the Traveler&#x27;s Guide Tool-ette that finds the worth-it side trips, scenic stops, and bonus adventures along your planned route.</summary>
+  </entry>
+  <entry>
+    <title>Dreamland Journeys</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Dreamland Journeys turns every &#x27;someday&#x27; trip into a clear, reusable trip profile. Capture dream destinations, build your travel wishboard, and turn inspiration into ready-to-go adventure plans with Glee-fully&#x27;s custom GPT.</summary>
+  </entry>
+  <entry>
+    <title>Memento Log</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Memento Log is the travel memory-keeper in Glee-fully&#x27;s Traveler&#x27;s Guide branch — a calm little historian for your trips, turning scattered notes, souvenirs, and snapshots into structured, searchable memories.</summary>
+  </entry>
+  <entry>
+    <title>Traveler&#x27;s Guide</title>
+    <link href="https://glee-fully.tools/toolbox/04-travelers-guide/" />
+    <id>https://glee-fully.tools/toolbox/04-travelers-guide/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Traveler&#x27;s Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.</summary>
+  </entry>
+  <entry>
+    <title>Task Maestro</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Task Maestro is a custom Glee-fully GPT that organizes your to-dos by category, urgency, and due date with gentle nudges, smart tags, and printable checklists.</summary>
+  </entry>
+  <entry>
+    <title>Thrifty Spender</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Thrifty Spender is a Glee-fully custom GPT that keeps your bills, budgets, and spending habits in one place so you can stay ahead of due dates and make calmer money decisions.</summary>
+  </entry>
+  <entry>
+    <title>Giftlist Helper</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Giftlist Helper is a custom GPT for tracking wishlists, gift ideas, and gift history so you never scramble for birthday or holiday presents again. Keep all your gifting in one place.</summary>
+  </entry>
+  <entry>
+    <title>Scheduling Wizard</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Turn your scattered tasks, bills, and events into a realistic, calendar-ready plan with Scheduling Wizard, a Glee-fully Organized Life Tool-ette.</summary>
+  </entry>
+  <entry>
+    <title>Lifestyle Wallboard</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Lifestyle Wallboard is your personal life dashboard GPT. Pull bills, goals, habits, and tasks into one calm, at-a-glance wallboard you can actually act on.</summary>
+  </entry>
+  <entry>
+    <title>Neighborly Bazaar</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Neighborly Bazaar is a custom GPT that helps you evaluate, price, and list household items so you can turn clutter into fair, neighbor-friendly sales and donations.</summary>
+  </entry>
+  <entry>
+    <title>Organized Life</title>
+    <link href="https://glee-fully.tools/toolbox/05-organized-life/" />
+    <id>https://glee-fully.tools/toolbox/05-organized-life/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.</summary>
+  </entry>
+  <entry>
+    <title>Care Check</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Care Check is a calm, plain-language symptom check-in in the Healthy Bee-ing branch that helps you decide when it’s rest, pharmacy, or doctor time—without the late-night internet spiral.</summary>
+  </entry>
+  <entry>
+    <title>Calm Keep</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Calm Keep by Glee-fully Healthy Bee-ing tracks stress, sleep, and small movement patterns so you can build calmer days without guilt or perfection pressure.</summary>
+  </entry>
+  <entry>
+    <title>Snappy Count</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Quick, photo-based nutrition awareness from the Healthy Bee-ing branch of the Glee-fully Personalizable Tools™ suite — snap a meal, get a gentle calorie and nutrition estimate, no diet-culture shame attached.</summary>
+  </entry>
+  <entry>
+    <title>Medi Minder</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Medi Minder is a Glee-fully Tool-ette GPT for keeping meds, refills, and doctor appointments organized with calm, logistics-only reminders — not medical advice.</summary>
+  </entry>
+  <entry>
+    <title>Moody Log</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Moody Log is a gentle wellness timeline that combines weekly self-photos, hydration tracking, and mood check-ins to help you spot patterns between how you feel and how you care for yourself.</summary>
+  </entry>
+  <entry>
+    <title>Maven Wise</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Maven Wise is a gentle midlife &amp; hormonal-change companion GPT that helps you track symptoms, spot patterns, and prepare better conversations with your real-world care team.</summary>
+  </entry>
+  <entry>
+    <title>Healthy Bee-ing</title>
+    <link href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/" />
+    <id>https://glee-fully.tools/toolbox/06-healthy-bee-ing/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Healthy Bee-ing is a calm, structured health companion GPT that helps you track symptoms, meds, mood, and habits so you walk into appointments prepared instead of scrambling.</summary>
+  </entry>
+  <entry>
+    <title>Critter Spotter</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Spot pets, wildlife, and mystery animals from your photos. Critter Spotter IDs breeds, shares personality traits, and helps you log each critter with trivia and tags.</summary>
+  </entry>
+  <entry>
+    <title>Roost Wrangler</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Roost Wrangler decodes your home&#x27;s architecture and furniture style from photos so you can name, tag, and admire your space — no shopping, no renovation pressure, just clear language for what you already love.</summary>
+  </entry>
+  <entry>
+    <title>Sight Seeker</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Sight Seeker is a Glee-fully Tool-ette that identifies landscapes, skylines, and starry skies from your photos, then adds lore, location guesses, and journaling-ready context.</summary>
+  </entry>
+  <entry>
+    <title>Snap Decoder</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Snap Decoder by Glee-fully turns your screenshot stash into a searchable story — decoding quotes, error messages, and UI oddities so you remember why you captured them.</summary>
+  </entry>
+  <entry>
+    <title>Motif Muse</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Motif Muse is a design-savvy Glee-fully Tool-ette GPT that pulls color palettes, motifs, and style tags out of your photos so you can name and reuse the looks you love.</summary>
+  </entry>
+  <entry>
+    <title>Maker Matcher</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Maker Matcher helps you identify crafts and hobbies from photos, tools, or work-in-progress projects, then tags them and suggests where to explore next in the Glee-fully Toolbox.</summary>
+  </entry>
+  <entry>
+    <title>Self Fixer</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Self Fixer helps you identify mystery objects, broken bits, and DIY parts so you can understand what they are, what they do, and what to do next.</summary>
+  </entry>
+  <entry>
+    <title>Identity Known</title>
+    <link href="https://glee-fully.tools/toolbox/07-identity-known/" />
+    <id>https://glee-fully.tools/toolbox/07-identity-known/</id>
+    <updated>2026-05-03T00:00:00Z</updated>
+    <summary>Identity Known is a Glee-fully Personalizable Tool™ — a custom-tuned GPT that turns your photos, screenshots, and &#x27;what is this?&#x27; moments into clear, friendly answers with lore and context.</summary>
+  </entry>
+</feed>

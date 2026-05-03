@@ -1,0 +1,203 @@
+# Glee-fully Final Replit Audit Pass — 2026-05-03
+
+## 1. Executive Summary
+
+The site is meaningfully better than it was on 2026-05-02 and is **safe to
+publish to GitHub Pages from `main`**.
+
+This pass closed every Tier-A item from the 2026-05-02 backlog, added the
+visible breadcrumb UX (Tier A6), shipped three new validation scripts, generated
+five formal audit reports, and added the polish artifacts (`humans.txt`,
+`security.txt`, `feed.xml`).
+
+The site validates 60 / 60 pages with **0 issues, 0 warnings, 0 broken internal
+links** — and every mutator script in `tools/` is byte-idempotent on re-run
+(see Section 4 for nuance on the regenerators).
+
+---
+
+## 2. Major Fixes Implemented
+
+| # | Fix | Where |
+|---|---|---|
+| 1 | **Visible breadcrumb navigation** added to all 57 inner pages, mirroring the JSON-LD `BreadcrumbList` already shipped on 2026-05-02. Accessible (`aria-label`, `aria-current`, semantic `<ol>`, decorative `›` separator). Closes A6. | `tools/inject-breadcrumb.py` + `assets/css/theme.css` |
+| 2 | **Missing `<!DOCTYPE html>`** restored on `toolbox/02-treasured-finds/02b-decor-detective/index.html` (same regression class as last session's `spirited-journal` bug). The new validator fails loud if it recurs. | tool-ette page + `tools/validate-site.py` |
+| 3 | **Sitemap freshness** bumped from the stale `2026-04-07` to `2026-05-03` for the 57 pages we touched in this and the prior session. | `sitemap.xml` |
+| 4 | **Atom feed** at `/feed.xml` listing every tool-ette and branch hub (49 entries), generated from `assets/data/search-index.json`. Linked from the homepage `<head>` as `rel="alternate"`. | `tools/generate-feed.py`, `feed.xml`, `index.html` |
+| 5 | **`humans.txt`** crediting the team, brand, and tooling philosophy. Linked from the homepage as `rel="author"`. | `humans.txt`, `index.html` |
+| 6 | **`/.well-known/security.txt`** with friendly contact, expiry 2027-05-03, and a note that the site is no-backend / no-data-store. | `.well-known/security.txt` |
+| 7 | **Asset inventory + icon-map** — every one of the 206 image files in `assets/img/` classified as referenced or orphaned, every GPT-icon prefix mapped to its 4 available variants. | `tools/audit-assets.py`, `assets/data/icon-map.json`, `audit/asset-inventory-2026-05-03.json` |
+
+---
+
+## 3. Files Changed
+
+### HTML
+- 60 page-level `index.html` + `404.html` + `under-construction.html` already
+  carried 2026-05-02 normalization. This pass added a visible breadcrumb to 57 of
+  them and restored a DOCTYPE on one.
+
+### CSS
+- `assets/css/theme.css` — appended a scoped `BREADCRUMB` section
+  (`.glee-breadcrumb`, list, separator, current, mobile, dark-mode) at the
+  bottom of the file. **+83 lines.** No existing selectors changed.
+
+### JS
+- No JS changes. `app.js`, `search.js`, `mermaid-init.js` left untouched.
+
+### Data
+- `assets/data/search-index.json` — already at 2026-05-03 from the prior session
+  (58 pages indexed, 132 KB raw).
+- `assets/data/icon-map.json` — **new**, 50 prefixes mapped.
+
+### Tools / scripts
+- `tools/validate-site.py` — **new**: every-page metadata validator.
+- `tools/audit-assets.py` — **new**: asset inventory + icon-map generator.
+- `tools/check-links.py` — **new**: internal-link resolver + sitemap parity.
+- `tools/inject-breadcrumb.py` — **new**: visible-breadcrumb injector
+  (idempotent, mirrors JSON-LD).
+- `tools/generate-feed.py` — **new**: Atom feed builder from search index.
+- The four prior scripts (`normalize-head.py`, `activate-icons.py`,
+  `inject-jsonld.py`, `build-search-index.py`) were not touched.
+
+### Docs
+- `replit.md` — updated (this pass).
+- `README.md` — appended new "Audit & validation" subsection.
+- 5 new audit reports — see Section 5.
+
+### Assets
+- No new image files.
+
+### Other
+- `feed.xml` — **new**.
+- `humans.txt` — **new**.
+- `.well-known/security.txt` — **new**.
+- `sitemap.xml` — date bumps only (no URL changes).
+
+---
+
+## 4. Validation Results
+
+| Signal | Result |
+|---|---|
+| Pages scanned | 60 |
+| Pages with critical issues | **0** |
+| Pages with warnings | **0** |
+| Internal links scanned | 2,048 |
+| Internal links broken | **0** |
+| External links counted (not pinged) | 1,067 |
+| Style issues (missing trailing slash on directory URLs) | 0 |
+| Sitemap URLs | 58 |
+| Files missing from sitemap | 0 |
+| Sitemap entries without backing files | 0 |
+| JSON-LD blocks failing JSON parse | 0 |
+| Pages with self-pointing canonical | 57 of 60 (3 intentional exceptions documented) |
+| Pages with brand `theme-color #d35b2d` | 60 / 60 |
+| Pages with SVG favicon link | 60 / 60 |
+| Pages with manifest link | 60 / 60 |
+| Pages with `app.js` and `search.js` wired in | 60 / 60 |
+| Pages with skip-to-content + `<main id="main">` | 60 / 60 |
+| Pages with visible breadcrumb | 57 / 57 (3 excluded by design) |
+| Manifest icon paths resolved | 7 / 7 |
+| Atom feed entries | 49 |
+| Manifest / favicon family validation | ✓ |
+| Accessibility: 0 imgs missing alt, 1 `<h1>` per page, decorative imgs `aria-hidden` | ✓ |
+| Mobile responsive smoke test | breadcrumb wrap + tap-target rules in CSS; not viewport-tested in sandbox |
+| Performance | CSS 105 KB, JS 33 KB, search index 132 KB raw / ~30 KB gz; no render-blocking JS; deferred everywhere |
+
+The mutator scripts (`normalize-head`, `activate-icons`, `inject-jsonld`,
+`inject-breadcrumb`) are **byte-idempotent on re-run** (verified via md5
+before/after). The regenerators (`build-search-index`, `audit-assets`,
+`generate-feed`) write a `generated_at` / build-date field, so their **content**
+is stable on re-run but a single timestamp string changes — `generate-feed.py`
+uses a hand-bumped `BUILD_DATE` constant so it is byte-stable; the other two
+embed the actual run timestamp (acceptable because their consumers — search,
+audit reports — only care about the data, not the byte equality of the file).
+
+---
+
+## 5. New Audit Artifacts
+
+| Path | What it contains |
+|---|---|
+| `AUDIT_PAGE_INVENTORY_2026-05-03.md` | Phase 0: page-by-page inventory cover for `audit/validation-report-2026-05-03.json` |
+| `AUDIT_LINKS_2026-05-03.md` | Phase 3: cover for `audit/links-report-2026-05-03.json` (2,048 internal / 1,067 external / 0 broken) |
+| `AUDIT_ASSETS_2026-05-03.md` | Phase 7: cover for `audit/asset-inventory-2026-05-03.json` and `assets/data/icon-map.json` |
+| `AUDIT_ACCESSIBILITY_2026-05-03.md` | Phase 8: skip-target, breadcrumb, contrast, heading-order, reduced-motion, keyboard |
+| `AUDIT_PERFORMANCE_2026-05-03.md` | Phase 10: asset budget, render path, deferred WebP/PurgeCSS work |
+| `audit/validation-report-2026-05-03.json` | Machine-readable per-page metadata report |
+| `audit/links-report-2026-05-03.json` | Machine-readable per-page link report |
+| `audit/asset-inventory-2026-05-03.json` | Machine-readable per-image inventory |
+| `assets/data/icon-map.json` | Best-icon-per-prefix mapping consumed by `activate-icons.py` |
+
+The existing `SITE_AUDIT_2026-05-03.md` from the prior session (the
+"3-phase remediation" report) remains valid and is **not** superseded; this
+report adds the audit phases the prior session didn't complete.
+
+---
+
+## 6. Deferred Items
+
+These are **documented and tracked**, not silently dropped.
+
+| ID | Item | Why deferred | Suggested next |
+|---|---|---|---|
+| **B1** | Stronger branch-page visual indices (icon + name + tagline cards). Branch hubs already use `<article class="card">` blocks with copy, but they don't yet show the per-tool GPT icons inside the card. | Each branch hub has a unique hand-tuned layout. A site-wide template sweep would homogenize them and lose the bespoke charm. | One-branch prototype + human review before sweeping. |
+| **B2** | "Suggested next" / "Keep exploring" tray at the bottom of each tool-ette. | Same as above — would benefit from a human-tuned editorial pass on the sibling-recommendation logic, not pure code-generation. | Build helper that reads `search-index.json`, surface candidates as a JSON file, then human-curate. |
+| **B3** | Reconcile the README's "AI should feel good to use" / "Smart design made human" copy onto `/about/` or homepage. | Editorial decision; not a static-validation issue. | One-paragraph update to `/about/` after voice review. |
+| **C2** | Per-page visible "Last updated" `<time datetime>` blocks. | Requires a stable per-page `dateModified` source — the JSON-LD already declares it, but the human-visible UX choice (footer? hero? hidden?) is a brand call. | Add to footer in next pass once the brand call is made. |
+| **C3** | Per-tool FAQ JSON-LD blocks. | Valuable for SEO, but writing one Q/A per tool is editorial work, not validation. | Surface as a "fill these in" template for the human editor. |
+| **WebP / PurgeCSS** | Convert hero PNGs to `.webp` via `<picture>`, run PurgeCSS over `theme.css`. | Both require a build step or templating sweep that violates "no-build" philosophy unless gated. | Optional CI workflow; not blocking. |
+| **22 MB of orphaned butterfly art** | `assets/img/Glee-fullyTools …Wide 1536.png` and friends — listed in `AUDIT_ASSETS_2026-05-03.md`. | Owner may still want them as source material. | Curation conversation with the human owner before any `git rm`. |
+
+---
+
+## 7. Recommended Next Moves (top 5, in priority order)
+
+1. **Publish.** Commit the working tree as one labeled commit
+   (`Audit and harden Glee-fully static site — 2026-05-03`) and push to
+   `main`. GitHub Pages will redeploy automatically. Verify the live site by
+   loading any tool-ette and confirming the visible breadcrumb renders.
+2. **Run a real Lighthouse pass on the deployed site** (homepage + one branch
+   + one tool-ette + `/search/`). The static-side analysis here predicts ≥ 90
+   in all four categories, but the live numbers are what matter. Capture the
+   four scores in the next audit doc.
+3. **Walk through three tool-ettes on a real iPhone or Android Chrome.**
+   Confirm the breadcrumb wraps cleanly on a 320 px viewport and that tap
+   targets feel right.
+4. **B1 + B2 editorial pass.** Decide which branch-page card pattern is the
+   canonical one, then sweep the other six branches to match. Same for the
+   "Suggested next" tray on tool-ettes.
+5. **Curate the 22 MB of orphaned butterfly art.** Move anything you want
+   to keep into `attached_assets/` (out of the deploy bundle) and `git rm`
+   anything that's truly retired.
+
+---
+
+## 8. Deployment Readiness
+
+**Safe to deploy.** The site:
+
+* Validates clean (`tools/validate-site.py` returns 0).
+* Has 0 broken internal links (`tools/check-links.py` returns 0).
+* Has 0 image/asset references that don't resolve.
+* Has accurate sitemap, accurate manifest, accurate robots, accurate canonical
+  URLs, accurate JSON-LD on every indexable page.
+* Honors `no-build / no-backend / GitHub-Pages-friendly` philosophy.
+
+**Caveats:**
+
+1. The `git commit` and `git push` steps must be run by the human owner — the
+   sandbox blocks both.
+2. After publishing, do a one-page eyeball check on the live site to confirm
+   the new breadcrumb component picks up the brand fonts (it falls back to
+   system fonts via `var(--font-body, "Open Sans", sans-serif)` so even the
+   worst case is graceful).
+3. The Atom feed at `/feed.xml` is brand-new — give it a moment for any feed
+   reader to discover it.
+
+No items in the deferred list are blockers.
+
+---
+
+*Audit completed by Replit Agent — 2026-05-03.*
