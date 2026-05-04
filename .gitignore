@@ -10,3 +10,6 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# Generated audit artefacts (do not commit run-time reports)
+scripts/audit-report.md

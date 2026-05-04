@@ -144,24 +144,31 @@ mutators is byte-idempotent — they are safe to re-run on every content edit.
 
 ## Template library (`assets/templates/`)
 
-A complete structural template clone of every site page lives at
-`assets/templates/`, mirroring the full hierarchy 1:1 (e.g.
-`assets/templates/toolbox/03-tasty-tracker/03b-menu-conductor/index.html`
-mirrors `toolbox/03-tasty-tracker/03b-menu-conductor/index.html`). Each
-template preserves the entire structural scaffolding — `<head>`, `<nav>`,
-`<footer>`, every `<script>`, every CSS class, every `data-*`/`aria-*`/`id`
-— and replaces only the **page-specific content** with `{{PLACEHOLDER}}`
-tokens. The full token vocabulary is documented in the comment block at the
-top of every template file and in `assets/templates/TEMPLATE_INDEX.md`.
+Nine structural HTML templates covering all 67 pages of the site.
+Templates live **flat** in `assets/templates/` as `template--[slug].html`.
+Each carries a full comment block enumerating every `[[UPPERCASE-KEBAB-CASE]]`
+token before `<!DOCTYPE html>`. The index and workflow for adding new pages
+live in `assets/templates/INDEX.md`.
 
-```bash
-python3 scripts/generate-templates.py            # idempotent: skips existing
-python3 scripts/generate-templates.py --force    # regenerate all 60
-```
+| Template file | Type | Pages |
+|---|---|---|
+| `template--homepage.html` | homepage | 1 |
+| `template--hub-toolbox.html` | hub-toolbox | 1 |
+| `template--hub-branch.html` | hub-branch | 7 |
+| `template--tool-detail.html` | tool-detail | 49 |
+| `template--interior-single.html` | interior-single | 4 |
+| `template--utility.html` | utility | 1 |
+| `template--mermaid-diagram.html` | mermaid-diagram | 2 |
+| `template--error.html` | error | 1 |
+| `template--holding.html` | holding | 1 |
 
 Templates are **development artifacts**, not crawlable pages — every
 HTML-walking tool in `scripts/` excludes the entire `assets/` tree, so
 templates are invisible to validators, indexer, sitemap, and feed.
+
+**Superseded:** `scripts/generate-templates.py` generated the old per-page
+60-file `{{DOUBLE_BRACE}}` system (deleted). Do **not** re-run it.
+`TEMPLATE_INDEX.md` replaced by `assets/templates/INDEX.md`.
 
 ## Audit artifacts (2026-05-03)
 

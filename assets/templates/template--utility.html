@@ -1,0 +1,280 @@
+<!--
+  ============================================================
+  GLEE-FULLY TOOLS™ — PAGE TEMPLATE
+  ============================================================
+  Template Type : utility
+  Slug          : utility
+  Source page   : search/index.html
+  Pages covered : 1  (search/index.html)
+  Created       : 2026-05-04
+  Spec          : assets/templates/INDEX.md
+  ============================================================
+  TOKENS
+  ----------------------------------------------------------------
+  [[PAGE-TITLE]]        Full <title>
+  [[PAGE-DESCRIPTION]]  <meta name="description">
+  [[PAGE-KEYWORDS]]     <meta name="keywords">
+  [[OG-TITLE]]          og:title / twitter:title
+  [[OG-DESCRIPTION]]    og:description / twitter:description
+  [[OG-IMAGE-URL]]      og:image / twitter:image
+  [[OG-IMAGE-ALT]]      og:image:alt
+  [[CANONICAL-URL]]     canonical href + og:url
+  [[SCHEMA-JSON-LD]]    Full JSON-LD (WebPage + SearchAction)
+  ============================================================
+  NOTES
+  ----------------------------------------------------------------
+  - The search page has NO "Today's Sparkle" bar (different header).
+  - All search JS is in /assets/js/app.js via data-* attributes.
+  - The <main> uses data-glee-search-inline for JS targeting.
+  - Page is mostly structural; tokens are head-level only.
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="language" content="English" />
+    <meta name="theme-color" content="#d35b2d" />
+    <meta name="theme-color" content="#d35b2d" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <title>[[PAGE-TITLE]]</title>
+    <meta name="description" content="[[PAGE-DESCRIPTION]]" />
+    <meta name="keywords" content="[[PAGE-KEYWORDS]]" />
+    <meta name="author" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <meta property="og:title" content="[[OG-TITLE]]" />
+    <meta property="og:description" content="[[OG-DESCRIPTION]]" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="[[CANONICAL-URL]]" />
+    <meta property="og:image" content="[[OG-IMAGE-URL]]" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="[[OG-IMAGE-ALT]]" />
+    <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="[[OG-TITLE]]" />
+    <meta name="twitter:description" content="[[OG-DESCRIPTION]]" />
+    <meta name="twitter:image" content="[[OG-IMAGE-URL]]" />
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <link rel="canonical" href="[[CANONICAL-URL]]" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
+
+    <!-- AUTOGEN:JSONLD -->
+    <script type="application/ld+json">
+[[SCHEMA-JSON-LD]]
+    </script>
+    <!-- /AUTOGEN:JSONLD -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
+    </script>
+
+    <link rel="icon" href="/assets/img/favicons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Speculation Rules API (Chrome 121+) -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "and": [
+          { "href_matches": "/*" },
+          { "not": { "href_matches": "/*\\?*" } },
+          { "not": { "selector_matches": "[rel~=external]" } },
+          { "not": { "selector_matches": "[href*=\"ko-fi.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"chatgpt.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"mermaidchart.com\"]" } }
+        ]},
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
+  </head>
+
+  <body class="glee-main">
+    <a class="skip-to-content" href="#main">Skip to main content</a>
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo">
+          <a href="/" aria-label="Glee‑fully home">
+            <img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" alt="Glee‑fully logo" width="40" height="40" />
+          </a>
+          <span class="brand">Glee&#8209;fully</span>
+        </div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/toolbox/">Opening The Toolbox</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu" aria-label="About menu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/about/">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="glee-search-page" data-glee-search-inline>
+
+      <!-- TEMPLATE SECTION: Search Hero -->
+      <section class="container glee-search-page__hero">
+        <nav class="glee-breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Search</li>
+          </ol>
+        </nav>
+
+        <h1 class="glee-search-page__title">Search the Glee&#8209;fully Toolbox</h1>
+        <p class="glee-search-page__lede">
+          One box. Every Tool, branch, and guide across the site. Try a word like
+          <em>resume</em>, <em>recipe</em>, <em>budget</em>, or <em>journal</em> — results appear instantly.
+          Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.
+        </p>
+
+        <form class="glee-search-page__form" role="search" onsubmit="event.preventDefault();">
+          <label for="glee-search-page-input" class="sr-only">Search this site</label>
+          <svg class="glee-search-page__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            id="glee-search-page-input"
+            type="search"
+            placeholder="Try "resume", "recipe", "budget", or "journal"…"
+            autocomplete="off"
+            spellcheck="false"
+            aria-describedby="glee-search-page-status"
+            data-glee-search-inline-input
+          />
+        </form>
+
+        <p class="glee-search-page__status" id="glee-search-page-status" role="status" aria-live="polite" data-glee-search-inline-status>Loading index…</p>
+        <div class="glee-search-page__categories" role="group" aria-label="Filter by section" data-glee-search-inline-categories></div>
+      </section>
+
+      <!-- TEMPLATE SECTION: Search Results -->
+      <section class="container glee-search-page__results-wrap" aria-label="Search results">
+        <ul class="glee-search-page__results" data-glee-search-inline-results></ul>
+      </section>
+
+      <noscript>
+        <section class="container glee-search-page__nojs">
+          <h2>Browse the toolbox</h2>
+          <p>Live search needs JavaScript. Here's the full directory you can browse instead:</p>
+          <ul class="glee-search-page__directory">
+            <li><a href="/toolbox/">All branches in the Toolbox</a></li>
+            <li><a href="/toolbox/01-discovered-careers/">Discovered Careers</a></li>
+            <li><a href="/toolbox/02-treasured-finds/">Treasured Finds</a></li>
+            <li><a href="/toolbox/03-tasty-tracker/">Tasty Tracker</a></li>
+            <li><a href="/toolbox/04-travelers-guide/">Traveler's Guide</a></li>
+            <li><a href="/toolbox/05-organized-life/">Organized Life</a></li>
+            <li><a href="/toolbox/06-healthy-bee-ing/">Healthy Bee‑ing</a></li>
+            <li><a href="/toolbox/07-identity-known/">Identity Known</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/sitemap.xml">XML Sitemap</a></li>
+          </ul>
+        </section>
+      </noscript>
+
+      <!-- TEMPLATE SECTION: Keyboard Shortcuts -->
+      <section class="container glee-search-page__shortcuts" aria-label="Tips">
+        <h2 class="glee-search-page__shortcuts-title">Keyboard shortcuts</h2>
+        <ul class="glee-search-page__shortcuts-list">
+          <li><kbd>⌘ K</kbd> / <kbd>Ctrl K</kbd> — open search anywhere on the site</li>
+          <li><kbd>/</kbd> — open search (when not typing)</li>
+          <li><kbd>Enter</kbd> — open the highlighted result</li>
+          <li><kbd>Esc</kbd> — close the search overlay</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>Glee&#8209;fully Personalizable Tools</h3>
+          <p>Smart design made human — a joyful suite of custom GPT Tools built with heart.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About Us</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@glee-fully.tools">contact@glee-fully.tools</a></li>
+            <li><a href="mailto:support@glee-fully.tools">support@glee-fully.tools</a></li>
+            <li><a href="https://ko-fi.com/gleefullypersonalizabletools" target="_blank" rel="noopener">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@Glee-fullyTools" target="_blank" rel="noopener">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee's sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+      </div>
+    </footer>
+
+    <script src="/assets/js/app.js" defer></script>
+  </body>
+</html>

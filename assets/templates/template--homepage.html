@@ -1,0 +1,333 @@
+<!--
+  ============================================================
+  GLEE-FULLY TOOLS™ — PAGE TEMPLATE
+  ============================================================
+  Template Type : homepage
+  Slug          : homepage
+  Source page   : index.html
+  Pages covered : 1  (index.html only)
+  Created       : 2026-05-04
+  Spec          : assets/templates/INDEX.md
+  ============================================================
+  TOKENS
+  ----------------------------------------------------------------
+  [[PAGE-TITLE]]          Full <title> content (no suffix on homepage)
+  [[PAGE-DESCRIPTION]]    <meta name="description">
+  [[PAGE-KEYWORDS]]       <meta name="keywords">
+  [[OG-TITLE]]            og:title / twitter:title
+  [[OG-DESCRIPTION]]      og:description / twitter:description
+  [[OG-IMAGE-URL]]        og:image / twitter:image (absolute URL)
+  [[OG-IMAGE-ALT]]        og:image:alt / twitter:image:alt
+  [[CANONICAL-URL]]       <link rel="canonical"> + og:url
+  [[SCHEMA-JSON-LD]]      Full JSON-LD object (replaces script body)
+  [[SPARKLE-URL]]         Today's Sparkle href (site-specials bar)
+  [[SPARKLE-TEXT]]        Today's Sparkle link text
+  [[HERO-HEADING]]        <h1> inside hero card
+  [[HERO-TAGLINE]]        Hero tagline <p>
+  [[STATUS-BODY]]         Site-status / early-emergence paragraph
+  [[LATEST-URL]]          Latest-block item href (image + figcaption)
+  [[LATEST-PILL]]         Latest-block pill label (e.g. "Newest addition")
+  [[LATEST-HEADING]]      Latest-block <h3>
+  [[LATEST-BODY]]         Latest-block body paragraph
+  [[LATEST-IMAGE-SRC]]    Latest-block <img src>
+  [[LATEST-IMAGE-ALT]]    Latest-block <img alt>
+  [[WHY-CARD-1-HEADING]]  Why-grid card 1 <h3>
+  [[WHY-CARD-1-BODY]]     Why-grid card 1 <p>
+  [[WHY-CARD-2-HEADING]]  Why-grid card 2 <h3>
+  [[WHY-CARD-2-BODY]]     Why-grid card 2 <p>
+  [[WHY-CARD-3-HEADING]]  Why-grid card 3 <h3>
+  [[WHY-CARD-3-BODY]]     Why-grid card 3 <p>
+  [[CTA-HEADING]]         Contact-CTA section <h2>
+  [[CTA-BODY]]            Contact-CTA section <p>
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ========================================
+         METADATA: Core Document & Character Set
+         ======================================== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="language" content="English" />
+    <meta name="theme-color" content="#d35b2d" />
+    <meta name="theme-color" content="#d35b2d" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- ========================================
+         METADATA: Primary Title & Description
+         ======================================== -->
+    <title>[[PAGE-TITLE]]</title>
+    <meta name="description" content="[[PAGE-DESCRIPTION]]" />
+    <meta name="keywords" content="[[PAGE-KEYWORDS]]" />
+    <meta name="author" content="Glee&#8209;fully Personalizable Tools™" />
+    <meta name="creator" content="Glee&#8209;fully Personalizable Tools™" />
+    <meta name="publisher" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <!-- ========================================
+         METADATA: Open Graph (Social Sharing)
+         ======================================== -->
+    <meta property="og:title" content="[[OG-TITLE]]" />
+    <meta property="og:description" content="[[OG-DESCRIPTION]]" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="[[CANONICAL-URL]]" />
+    <meta property="og:image" content="[[OG-IMAGE-URL]]" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="[[OG-IMAGE-ALT]]" />
+    <meta property="og:site_name" content="Glee&#8209;fully Personalizable Tools™" />
+
+    <!-- ========================================
+         METADATA: Twitter Card (X Social)
+         ======================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="[[OG-TITLE]]" />
+    <meta name="twitter:description" content="[[OG-DESCRIPTION]]" />
+    <meta name="twitter:image" content="[[OG-IMAGE-URL]]" />
+    <meta name="twitter:image:alt" content="[[OG-IMAGE-ALT]]" />
+    <meta name="twitter:site" content="@OverKillHillP3" />
+    <meta name="twitter:creator" content="@OverKillHillP3" />
+
+    <!-- ========================================
+         METADATA: Search & Crawling
+         ======================================== -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
+    <link rel="canonical" href="[[CANONICAL-URL]]" />
+
+    <!-- ========================================
+         STYLESHEETS & FONTS
+         ======================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://storage.ko-fi.com" crossorigin />
+    <link rel="stylesheet" href="/assets/css/theme.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
+
+    <!-- ========================================
+         Google Analytics (G-89W66VMGPB)
+         ======================================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      if (document.prerendering) {
+        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
+      } else {
+        gtag('config', 'G-89W66VMGPB');
+      }
+    </script>
+
+    <!-- ========================================
+         STRUCTURED DATA: JSON-LD Schema
+         ======================================== -->
+    <!-- AUTOGEN:JSONLD -->
+    <script type="application/ld+json">
+[[SCHEMA-JSON-LD]]
+    </script>
+    <!-- /AUTOGEN:JSONLD -->
+
+    <!-- ========================================
+         FAVICONS: Multi-Format Icon Support
+         ======================================== -->
+    <link rel="icon" href="/assets/img/favicons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" sizes="180x180" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/atom+xml" title="Glee-fully — New &amp; Updated" href="/feed.xml" />
+    <link rel="author" href="/humans.txt" />
+
+    <!-- Speculation Rules API (Chrome 121+) — instant navigation via prerender on hover -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "and": [
+          { "href_matches": "/*" },
+          { "not": { "href_matches": "/*\\?*" } },
+          { "not": { "selector_matches": "[rel~=external]" } },
+          { "not": { "selector_matches": "[href*=\"ko-fi.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"chatgpt.com\"]" } },
+          { "not": { "selector_matches": "[href*=\"mermaidchart.com\"]" } }
+        ]},
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
+  </head>
+
+  <body class="glee-main">
+    <a class="skip-to-content" href="#main">Skip to main content</a>
+    <header class="site-header" id="top">
+      <div class="container">
+        <div class="logo">
+          <a href="/" aria-label="Glee‑fully home">
+            <img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png" alt="Glee‑fully logo" width="40" height="40" />
+          </a>
+          <span class="brand">Glee&#8209;fully</span>
+        </div>
+
+        <nav class="primary-nav" id="navigation" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/#why" aria-current="page">Why Glee&#8209;fully</a></li>
+            <li><a href="/toolbox/">Opening The Toolbox</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li class="has-submenu">
+              <a href="/about/">About</a>
+              <ul class="submenu" aria-label="About menu">
+                <li><a href="/universe/">OKHP³™ Universe</a></li>
+                <li><a href="/about/">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/legal/">Legal</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <button class="nav-toggle" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+
+      <section class="site-specials site-specials--glee" aria-label="Featured Glee‑fully tool">
+        <span class="site-specials-label">Today's Sparkle</span>
+        <a class="site-specials-link" href="[[SPARKLE-URL]]">[[SPARKLE-TEXT]]</a>
+      </section>
+    </header>
+
+    <main id="main">
+
+      <!-- TEMPLATE SECTION: Hero -->
+      <section id="why" class="hero glee-hero">
+        <div class="glee-hero-stripes" aria-hidden="true"></div>
+        <div class="container hero-inner">
+          <div class="hero-grid">
+            <div class="glee-hero-card">
+              <p class="hero-eyebrow">Why Glee-fully</p>
+              <h1>[[HERO-HEADING]]</h1>
+              <p class="hero-tagline">[[HERO-TAGLINE]]</p>
+
+              <div class="site-status site-status--glee" aria-label="Glee‑fully pre‑opening notice">
+                <p class="site-status-eyebrow">🦋 Early Emergence</p>
+                <p class="site-status-body">[[STATUS-BODY]]</p>
+              </div>
+
+              <div class="hero-actions">
+                <a href="/ecosystem/" class="btn btn-primary">Explore the System</a>
+                <a href="/about/" class="btn btn-secondary">Meet Glee &amp; Jamie</a>
+              </div>
+            </div>
+            <div class="glee-hero-illustration">
+              <img src="/assets/img/Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png"
+                   alt="Glee-fully hero illustration"
+                   class="glee-hero-img"
+                   loading="eager"
+                   fetchpriority="high" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEMPLATE SECTION: Latest Block -->
+      <section class="content-section container reveal-on-scroll latest-block latest-block--glee" aria-labelledby="latest-glee-heading">
+        <header class="section-header">
+          <h2 id="latest-glee-heading">New from the Toolbox</h2>
+          <p>A little "Today's Special" board for the newest completion, addition or milestone in the Glee&#8209;fully ecosystem.</p>
+        </header>
+        <article class="card latest-card">
+          <p class="latest-pill">[[LATEST-PILL]]</p>
+          <h3>[[LATEST-HEADING]]</h3>
+          <p>[[LATEST-BODY]]</p>
+          <figure class="latest-image">
+            <a class="latest-image-link" href="[[LATEST-URL]]">
+              <img src="[[LATEST-IMAGE-SRC]]"
+                   alt="[[LATEST-IMAGE-ALT]]"
+                   width="300"
+                   height="300"
+                   loading="lazy" />
+            </a>
+            <figcaption class="latest-submenu">
+              <a href="[[LATEST-URL]]">Open the Tool&#8209;ette →</a>
+            </figcaption>
+          </figure>
+        </article>
+      </section>
+
+      <!-- TEMPLATE SECTION: Why Grid -->
+      <section id="why" class="content-section container reveal-on-scroll">
+        <header class="section-header">
+          <h2>Why Glee&#8209;fully exists</h2>
+          <p>Because technology should feel like friendship — not friction. Glee&#8209;fully was born from Glee's color-coded joy and Jamie's system-builder brain: together they created GPTs that organize, encourage and delight.</p>
+        </header>
+        <div class="grid grid-3">
+          <article class="card"><h3>[[WHY-CARD-1-HEADING]]</h3><p>[[WHY-CARD-1-BODY]]</p></article>
+          <article class="card"><h3>[[WHY-CARD-2-HEADING]]</h3><p>[[WHY-CARD-2-BODY]]</p></article>
+          <article class="card"><h3>[[WHY-CARD-3-HEADING]]</h3><p>[[WHY-CARD-3-BODY]]</p></article>
+        </div>
+      </section>
+
+      <!-- TEMPLATE SECTION: CTA -->
+      <section class="contact-cta container reveal-on-scroll">
+        <h2>[[CTA-HEADING]]</h2>
+        <p>[[CTA-BODY]]</p>
+        <a href="/toolbox/" class="btn btn-primary">Open the Toolbox</a>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-column">
+          <h3>Glee&#8209;fully Personalizable Tools</h3>
+          <p>Smart design made human — a joyful suite of custom GPT Tools built with heart.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#why">Why Glee&#8209;fully</a></li>
+            <li><a href="/ecosystem/">Our Ecosystem</a></li>
+            <li><a href="/persona/">The Voice &amp; Muse</a></li>
+            <li><a href="/universe/">OKHP³™ Universe</a></li>
+            <li><a href="/about/">About Us</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/legal/">Legal</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:contact@glee-fully.tools">contact@glee-fully.tools</a></li>
+            <li><a href="mailto:support@glee-fully.tools">support@glee-fully.tools</a></li>
+            <li><a href="https://ko-fi.com/gleefullypersonalizabletools" target="_blank" rel="noopener">Ko-fi</a></li>
+            <li><a href="https://www.linkedin.com/company/overkillhillp3" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://facebook.com/OverKillHillP3/" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://x.com/OverKillHillP3" target="_blank" rel="noopener">X (Twitter)</a></li>
+            <li><a href="https://www.youtube.com/@Glee-fullyTools" target="_blank" rel="noopener">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-replit-credit">Built with <a href="https://replit.com/refer/overkillhillp3/" target="_blank" rel="noopener" aria-label="Built with Replit — visit Replit (referral link)">Replit</a></p>
+        <p class="footer-copyright">© <span id="current-year-glee"></span> Glee&#8209;fully Personalizable Tools. All rights reserved.<br><em>Inspired by Glee's sparkle, fueled by iced chai, and loaded with facts-on-facts.</em></p>
+      </div>
+    </footer>
+
+    <script src="/assets/js/app.js" defer></script>
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js" async></script>
+  </body>
+</html>
