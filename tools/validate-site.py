@@ -14,7 +14,7 @@ Walks every HTML page (excluding curated skips) and checks:
   * theme-color = brand rust
   * Manifest link present
   * Favicon SVG link present
-  * search.js + app.js wired in
+  * app.js wired in (search.js merged into app.js 2026-05-04)
   * Skip-to-content link present
   * <main id="main"> landmark present
   * JSON-LD blocks parse as valid JSON
@@ -99,10 +99,8 @@ def check_page(rel: Path, html: str) -> dict:
     if "site.webmanifest" not in html:
         issues.append("missing manifest link")
 
-    if "search.js" not in html:
-        warnings.append("search.js not wired in")
     if "app.js" not in html:
-        warnings.append("app.js not wired in")
+        warnings.append("app.js not wired in")  # search.js merged into app.js 2026-05-04
 
     if 'class="skip-to-content"' not in html and 'skip-to-content' not in html:
         warnings.append("missing skip-to-content link")
