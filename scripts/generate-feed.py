@@ -6,7 +6,7 @@ Emits `/feed.xml` listing every tool-ette and branch hub pulled from
 `assets/data/search-index.json`.
 
 Usage:
-    python3 tools/generate-feed.py
+    python3 scripts/generate-feed.py
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ BUILD_DATE = "2026-05-03T00:00:00Z"
 def main() -> int:
     idx_path = ROOT / "assets" / "data" / "search-index.json"
     if not idx_path.exists():
-        print("!! Run tools/build-search-index.py first", file=sys.stderr)
+        print("!! Run scripts/build-search-index.py first", file=sys.stderr)
         return 1
     pages = json.loads(idx_path.read_text(encoding="utf-8"))
     if isinstance(pages, dict):

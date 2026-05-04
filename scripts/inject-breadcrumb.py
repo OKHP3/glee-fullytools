@@ -10,7 +10,7 @@ Skips pages without a JSON-LD BreadcrumbList (homepage, search, 404,
 under-construction).
 
 Usage:
-    python3 tools/inject-breadcrumb.py
+    python3 scripts/inject-breadcrumb.py
 """
 from __future__ import annotations
 

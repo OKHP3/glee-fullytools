@@ -28,7 +28,7 @@ grep -rn "<!-- TODO" --include='*.html' .
 
 1. Edit the `href` in place.
 2. Delete the surrounding `<!-- TODO ... -->` comment line.
-3. Run `python3 tools/check-links.py` to confirm the new link resolves
+3. Run `python3 scripts/check-links.py` to confirm the new link resolves
    (it'll be flagged if the URL pattern is malformed).
 4. The page's `dateModified` JSON-LD will need a manual bump if you want
    search engines to re-index promptly — set it to today's date.

@@ -16,7 +16,7 @@ Idempotent: any block delimited by AUTOGEN:JSONLD markers is replaced
 on subsequent runs.  Existing non-autogen JSON-LD blocks are left alone.
 
 Usage:
-    python3 tools/inject-jsonld.py
+    python3 scripts/inject-jsonld.py
 """
 from __future__ import annotations
 

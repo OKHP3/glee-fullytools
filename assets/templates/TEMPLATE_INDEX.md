@@ -11,7 +11,7 @@ for the full placeholder index.
 
 These templates are **development artifacts**, not crawlable pages —
 they are excluded from `sitemap.xml` and from every site-validator in
-`tools/` (the validators skip the whole `assets/` tree).
+`scripts/` (the validators skip the whole `assets/` tree).
 
 ## Template Inventory
 

@@ -32,7 +32,7 @@ TEMPLATE_ROOT = REPO_ROOT / "assets" / "templates"
 EXCLUDE_PREFIXES = (
     "assets/",          # includes assets/templates/ — prevents recursion
     "attached_assets/",
-    "tools/",
+    "scripts/",
     "audit/",
     ".agents/",
     ".github/",
@@ -255,7 +255,7 @@ def write_manifest(processed: list[str]) -> Path:
         "",
         "These templates are **development artifacts**, not crawlable pages —",
         "they are excluded from `sitemap.xml` and from every site-validator in",
-        "`tools/` (the validators skip the whole `assets/` tree).",
+        "`scripts/` (the validators skip the whole `assets/` tree).",
         "",
         "## Template Inventory",
         "",

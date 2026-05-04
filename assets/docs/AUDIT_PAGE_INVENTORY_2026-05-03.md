@@ -1,6 +1,6 @@
 # Page Inventory — 2026-05-03
 
-**Generator:** `tools/validate-site.py` → `audit/validation-report-2026-05-03.json`
+**Generator:** `scripts/validate-site.py` → `audit/validation-report-2026-05-03.json`
 **Pages scanned:** 60 HTML files (excludes `node_modules`, `.local`, `.git`, `attached_assets`)
 **Validation status:** **0 issues, 0 warnings**
 
@@ -82,7 +82,7 @@
 ## Re-running this audit
 
 ```bash
-python3 tools/validate-site.py
+python3 scripts/validate-site.py
 ```
 
 Exit code is `0` when the site is clean, `1` when any page has a critical issue

@@ -9,7 +9,7 @@ Outputs:
   assets/audit/links-report-2026-05-03.json
 
 Usage:
-    python3 tools/check-links.py
+    python3 scripts/check-links.py
 """
 from __future__ import annotations
 

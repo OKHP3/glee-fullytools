@@ -7,7 +7,7 @@ extracts title / description / canonical URL / h1-h3 headings / visible body
 text, and writes assets/data/search-index.json.
 
 Run from repo root:
-    python3 tools/build-search-index.py
+    python3 scripts/build-search-index.py
 
 The output JSON is loaded by /assets/js/search.js at runtime.
 """

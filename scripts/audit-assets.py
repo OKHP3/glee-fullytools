@@ -10,7 +10,7 @@ Outputs:
   assets/data/icon-map.json                 (best-icon mapping per tool)
 
 Usage:
-    python3 tools/audit-assets.py
+    python3 scripts/audit-assets.py
 """
 from __future__ import annotations
 

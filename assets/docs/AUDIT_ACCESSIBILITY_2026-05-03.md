@@ -51,8 +51,8 @@ Now every page that carries a JSON-LD breadcrumb (57 of 60) also renders:
 * On viewports < 480 px the type tightens and the gutter shrinks.
 * Honors `prefers-color-scheme: dark` for visitors who set it.
 
-The same data drives both surfaces: `tools/inject-breadcrumb.py` reads the
-JSON-LD `BreadcrumbList` already embedded by `tools/inject-jsonld.py`, so the
+The same data drives both surfaces: `scripts/inject-breadcrumb.py` reads the
+JSON-LD `BreadcrumbList` already embedded by `scripts/inject-jsonld.py`, so the
 visible labels can never drift from the structured data.
 
 ### DOCTYPE regression caught
@@ -99,6 +99,6 @@ landmark) and `check-links.py` (anchor target existence). Run both after any
 content change:
 
 ```bash
-python3 tools/validate-site.py
-python3 tools/check-links.py
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
 ```

@@ -104,11 +104,11 @@ There is no Lighthouse inside the sandbox. To regression-check after content
 changes:
 
 ```bash
-python3 tools/audit-assets.py     # surface any new oversized image
-python3 tools/build-search-index.py  # check the index hasn't ballooned
+python3 scripts/audit-assets.py     # surface any new oversized image
+python3 scripts/build-search-index.py  # check the index hasn't ballooned
 ls -lh assets/css/*.css assets/js/*.js  # quick CSS / JS budget check
 ```
 
-For a production reading, run Lighthouse against `https://glee-fully.tools/`
+For a production reading, run Lighthouse against `https://glee-fully.scripts/`
 and any one tool-ette page. Both should sit comfortably above 90 in
 Performance, Accessibility, Best Practices, and SEO.

@@ -50,14 +50,14 @@ Our suite shows that structure can be playful, creativity can be systematic, and
   2026-05-03 pass.
 * **Run validators after content edits:**
   ```bash
-  python3 tools/validate-site.py  &&  python3 tools/check-links.py
+  python3 scripts/validate-site.py  &&  python3 scripts/check-links.py
   ```
   Exit 0 = safe to publish.
 * **Rebuild search/feed/icon map after content edits:**
   ```bash
-  python3 tools/build-search-index.py
-  python3 tools/audit-assets.py
-  python3 tools/generate-feed.py
+  python3 scripts/build-search-index.py
+  python3 scripts/audit-assets.py
+  python3 scripts/generate-feed.py
   ```
 * **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
   into `assets/img/`, add its URL to `sitemap.xml`, then run the four
@@ -68,6 +68,6 @@ Our suite shows that structure can be playful, creativity can be systematic, and
   with structural-only clones of every page. Every template preserves nav,
   footer, scripts, CSS, JSON-LD scaffold; every page-specific value is a
   `{{PLACEHOLDER}}` token. Documented in `assets/templates/TEMPLATE_INDEX.md`.
-  Regenerate with `python3 tools/generate-templates.py` (idempotent; pass
+  Regenerate with `python3 scripts/generate-templates.py` (idempotent; pass
   `--force` to overwrite). Templates are dev artifacts and are excluded from
   the sitemap, search index, feed, and every validator.

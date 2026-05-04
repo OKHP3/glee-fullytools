@@ -18,7 +18,7 @@ This script:
 Idempotent: pages already pointing at their own GPT icon are left alone.
 
 Usage:
-    python3 tools/activate-icons.py
+    python3 scripts/activate-icons.py
 """
 from __future__ import annotations
 

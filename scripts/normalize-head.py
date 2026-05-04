@@ -18,7 +18,7 @@ root-absolute paths, removes the broken safari-pinned-tab.svg link
 Idempotent.
 
 Usage:
-    python3 tools/normalize-head.py
+    python3 scripts/normalize-head.py
 """
 from __future__ import annotations
 

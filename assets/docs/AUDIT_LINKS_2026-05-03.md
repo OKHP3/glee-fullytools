@@ -1,6 +1,6 @@
 # Link Audit — 2026-05-03
 
-**Generator:** `tools/check-links.py` → `audit/links-report-2026-05-03.json`
+**Generator:** `scripts/check-links.py` → `audit/links-report-2026-05-03.json`
 
 ---
 
@@ -79,7 +79,7 @@ The full machine-readable report — every link, on every page, classified — i
 * **Notion lore links** — long opaque URLs; left untouched.
 
 If full external-link reachability becomes important, a follow-up could add an
-opt-in `--check-external` flag to `tools/check-links.py` using
+opt-in `--check-external` flag to `scripts/check-links.py` using
 `urllib.request.head` with a 5-second timeout.
 
 ---
@@ -87,7 +87,7 @@ opt-in `--check-external` flag to `tools/check-links.py` using
 ## Re-running
 
 ```bash
-python3 tools/check-links.py
+python3 scripts/check-links.py
 ```
 
 Returns exit code `1` if any internal link is broken or any sitemap-vs-file

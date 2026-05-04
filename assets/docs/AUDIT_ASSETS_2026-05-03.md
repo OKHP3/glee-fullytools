@@ -1,6 +1,6 @@
 # Asset Audit — 2026-05-03
 
-**Generator:** `tools/audit-assets.py`
+**Generator:** `scripts/audit-assets.py`
 **Outputs:** `audit/asset-inventory-2026-05-03.json` (full detail) +
 `assets/data/icon-map.json` (best-icon mapping)
 
@@ -42,7 +42,7 @@ prefix (`00`, `01a`–`07g`), the four available variants:
 }
 ```
 
-`primary` is what `tools/activate-icons.py` uses for hero `<img>` and
+`primary` is what `scripts/activate-icons.py` uses for hero `<img>` and
 `og:image` swap.  50 prefixes total are mapped (1 for the trunk + 7 branches
 + 42 tool-ettes).
 
@@ -85,9 +85,9 @@ rule, this is **deferred** for a future curation pass with the human owner.
 ## Re-running
 
 ```bash
-python3 tools/audit-assets.py
+python3 scripts/audit-assets.py
 ```
 
 This will rebuild both the inventory JSON and the icon-map JSON. The icon-map
-is what `tools/activate-icons.py` reads when refreshing hero artwork — it is
+is what `scripts/activate-icons.py` reads when refreshing hero artwork — it is
 safe to commit.

@@ -15,7 +15,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
 - `assets/css/theme.css` — Central stylesheet (4265 lines), reorganized 2026-05-02 into scope-grouped sections: GLOBAL (L 6) → OVERKILL (L 2215) → GLEE (L 2633) → ASKJAMIE (L 3659) → CROSS-BRAND (L 4116). Each scope has a `╔══╗` boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
 - `assets/js/app.js` — Shared JS (918 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
-- `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `tools/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
+- `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/` — Supporting pages
@@ -100,7 +100,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 | Component | Path | Purpose |
 |---|---|---|
-| Index builder | `tools/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
+| Index builder | `scripts/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
 | Search index | `assets/data/search-index.json` | 57 pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
 | Runtime | `assets/js/app.js` (search section, line 263+) | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
 | Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
@@ -108,7 +108,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Triggers:** Click magnifier in nav · press `/` outside an input · press ⌘K / Ctrl+K · arrive at any page with `?s=query` (matches the JSON-LD `SearchAction` declared on the homepage)
 
-**Rebuilding the index:** Run `python3 tools/build-search-index.py` after content changes. The generator excludes `404.html` and `under-construction.html`.
+**Rebuilding the index:** Run `python3 scripts/build-search-index.py` after content changes. The generator excludes `404.html` and `under-construction.html`.
 
 **Why no Lunr.js or Algolia:** The site has 57 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
@@ -116,26 +116,26 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 ## Validation tooling (2026-05-03)
 
-Seven standalone Python scripts under `tools/` keep the site honest. **Run order
+Seven standalone Python scripts under `scripts/` keep the site honest. **Run order
 matters** — `inject-jsonld` reads `og:image` to set `primaryImageOfPage`, so it
 must run *after* `activate-icons`; `inject-breadcrumb` reads the JSON-LD that
 `inject-jsonld` writes, so it must run *after* both of those.
 
 ```bash
 # 1. Mutators (idempotent, AUTOGEN-marker-driven)
-python3 tools/normalize-head.py     # canonical favicon chain + theme-color
-python3 tools/activate-icons.py     # hero <img> + og:image swap to per-tool icons
-python3 tools/inject-jsonld.py      # JSON-LD @graph + BreadcrumbList
-python3 tools/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
+python3 scripts/normalize-head.py     # canonical favicon chain + theme-color
+python3 scripts/activate-icons.py     # hero <img> + og:image swap to per-tool icons
+python3 scripts/inject-jsonld.py      # JSON-LD @graph + BreadcrumbList
+python3 scripts/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
 
 # 2. Index / asset / feed regenerators
-python3 tools/build-search-index.py # rebuilds assets/data/search-index.json
-python3 tools/audit-assets.py       # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
-python3 tools/generate-feed.py      # rebuilds /feed.xml
+python3 scripts/build-search-index.py # rebuilds assets/data/search-index.json
+python3 scripts/audit-assets.py       # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
+python3 scripts/generate-feed.py      # rebuilds /feed.xml
 
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
-python3 tools/validate-site.py      # every-page metadata + structure checks
-python3 tools/check-links.py        # every internal href + sitemap parity
+python3 scripts/validate-site.py      # every-page metadata + structure checks
+python3 scripts/check-links.py        # every internal href + sitemap parity
 ```
 
 Validators write machine-readable JSON to `audit/`. The Markdown audit covers
@@ -155,12 +155,12 @@ tokens. The full token vocabulary is documented in the comment block at the
 top of every template file and in `assets/templates/TEMPLATE_INDEX.md`.
 
 ```bash
-python3 tools/generate-templates.py            # idempotent: skips existing
-python3 tools/generate-templates.py --force    # regenerate all 60
+python3 scripts/generate-templates.py            # idempotent: skips existing
+python3 scripts/generate-templates.py --force    # regenerate all 60
 ```
 
 Templates are **development artifacts**, not crawlable pages — every
-HTML-walking tool in `tools/` excludes the entire `assets/` tree, so
+HTML-walking tool in `scripts/` excludes the entire `assets/` tree, so
 templates are invisible to validators, indexer, sitemap, and feed.
 
 ## Audit artifacts (2026-05-03)
@@ -181,7 +181,7 @@ Machine-readable JSON outputs live in `assets/audit/` (written by tools on each 
 
 ## Recent Changes
 
-- **2026-05-03 — Final audit pass.** Visible breadcrumb on 57 inner pages (mirrors the JSON-LD `BreadcrumbList`); restored missing `<!DOCTYPE html>` on `02b-decor-detective`; added `feed.xml` (Atom, 49 entries), `humans.txt`, `/.well-known/security.txt`; bumped sitemap dates from 2026-04-07 to 2026-05-03; new validators `tools/validate-site.py`, `tools/audit-assets.py`, `tools/check-links.py`, `tools/inject-breadcrumb.py`, `tools/generate-feed.py`; 5 new `AUDIT_*_2026-05-03.md` reports + machine-readable JSON in `audit/`. 60/60 pages validate clean (0 issues, 0 warnings, 0 broken internal links).
+- **2026-05-03 — Final audit pass.** Visible breadcrumb on 57 inner pages (mirrors the JSON-LD `BreadcrumbList`); restored missing `<!DOCTYPE html>` on `02b-decor-detective`; added `feed.xml` (Atom, 49 entries), `humans.txt`, `/.well-known/security.txt`; bumped sitemap dates from 2026-04-07 to 2026-05-03; new validators `scripts/validate-site.py`, `scripts/audit-assets.py`, `scripts/check-links.py`, `scripts/inject-breadcrumb.py`, `scripts/generate-feed.py`; 5 new `AUDIT_*_2026-05-03.md` reports + machine-readable JSON in `audit/`. 60/60 pages validate clean (0 issues, 0 warnings, 0 broken internal links).
 - **2026-05-02 — Dedicated `/search/` page.** Shareable, bookmarkable search results page with breadcrumb, JSON-LD `SearchAction`, no-JS directory fallback, dark-mode support. URL syncs as `?q=` for share/bookmark. Added to `sitemap.xml`. `search.js` extended with `attachInline()` API; on the dedicated page it skips the auto-modal and renders inline.
 - **2026-05-02 — `site.webmanifest` fixed.** Was empty (`name:""`, wrong icon paths, white theme color). Now declares full brand identity, brand colors (`theme:#d35b2d`, `bg:#f6f2ee`), correct paths to all favicon variants, plus maskable purpose for Android.
 - **2026-05-02 — Internal search engine.** Index builder + runtime + nav UI + ⌘K/`/` keybinds shipped on all 59 pages.

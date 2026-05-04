@@ -27,7 +27,7 @@ Exit code:
   0 if no critical defects, 1 otherwise.
 
 Usage:
-    python3 tools/validate-site.py
+    python3 scripts/validate-site.py
 """
 from __future__ import annotations
 
