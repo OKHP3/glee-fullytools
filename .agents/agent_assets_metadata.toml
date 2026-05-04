@@ -18,3 +18,9 @@ id = "bek097d57zQOKiG2qWuUp"
 uri = "file://SITE_AUDIT_2026-05-02.md"
 type = "text"
 title = "Site Audit & Enhancement Plan — 2026-05-02"
+
+[[outputs]]
+id = "3ps1yWilmISPSio0DlT3D"
+uri = "file://assets/docs/FOLDER-STRUCTURE-PROMPT-2026-05-04.md"
+type = "text"
+title = "Cross-Project Folder Structure Prompt — 2026-05-04"
