@@ -176,8 +176,8 @@ All audit documents live in `assets/docs/` (non-crawlable, skipped by all HTML-w
 * `assets/docs/AUDIT_PERFORMANCE_2026-05-03.md` — Phase 10 performance audit
 * `assets/docs/gleefully-replit-theme-guide.md` — Replit app theme configuration guide
 
-Machine-readable JSON outputs live in `audit/` (written by tools on each run):
-`audit/validation-report-2026-05-03.json`, `audit/links-report-2026-05-03.json`, `audit/asset-inventory-2026-05-03.json`
+Machine-readable JSON outputs live in `assets/audit/` (written by tools on each run):
+`assets/audit/validation-report-2026-05-03.json`, `assets/audit/links-report-2026-05-03.json`, `assets/audit/asset-inventory-2026-05-03.json`
 
 ## Recent Changes
 

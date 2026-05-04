@@ -6,7 +6,7 @@ Walks `assets/img/` and cross-references every file against every HTML page
 to determine which images are referenced and which are orphaned.
 
 Outputs:
-  audit/asset-inventory-2026-05-03.json    (full inventory)
+  assets/audit/asset-inventory-2026-05-03.json    (full inventory)
   assets/data/icon-map.json                 (best-icon mapping per tool)
 
 Usage:
@@ -97,7 +97,7 @@ def main() -> int:
                 for prefix, files in sorted(by_prefix.items())}
 
     # --- Persist -----------------------------------------------------------
-    audit_dir = ROOT / "audit"
+    audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
     inv_path = audit_dir / "asset-inventory-2026-05-03.json"
     inv_path.write_text(json.dumps({

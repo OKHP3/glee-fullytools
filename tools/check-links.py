@@ -6,7 +6,7 @@ Walks every HTML file and validates every internal href against the
 filesystem.  Cross-references the result with `sitemap.xml`.
 
 Outputs:
-  audit/links-report-2026-05-03.json
+  assets/audit/links-report-2026-05-03.json
 
 Usage:
     python3 tools/check-links.py
@@ -119,7 +119,7 @@ def main() -> int:
                                       f"{SITE}/404.html"})
     extra_in_sitemap = sorted(sitemap_urls - file_urls)
 
-    audit_dir = ROOT / "audit"
+    audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
     out = audit_dir / "links-report-2026-05-03.json"
     out.write_text(json.dumps({

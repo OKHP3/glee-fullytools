@@ -21,7 +21,7 @@ Walks every HTML page (excluding curated skips) and checks:
   * Exactly one <h1>
 
 Writes:
-  audit/validation-report-2026-05-03.json   (machine-readable detail)
+  assets/audit/validation-report-2026-05-03.json   (machine-readable detail)
 
 Exit code:
   0 if no critical defects, 1 otherwise.
@@ -150,7 +150,7 @@ def main() -> int:
         total_issues += len(result["issues"])
         total_warnings += len(result["warnings"])
 
-    audit_dir = ROOT / "audit"
+    audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
     out = audit_dir / "validation-report-2026-05-03.json"
     out.write_text(json.dumps({
