@@ -14,8 +14,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
 - `assets/css/theme.css` — Central stylesheet (4265 lines), reorganized 2026-05-02 into scope-grouped sections: GLOBAL (L 6) → OVERKILL (L 2215) → GLEE (L 2633) → ASKJAMIE (L 3659) → CROSS-BRAND (L 4116). Each scope has a `╔══╗` boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
-- `assets/js/app.js` — Shared JS (252 lines): progress bar, theme toggle, mobile nav, sticky-TOC module (added 2026-05-02 for cross-site parity)
-- `assets/js/search.js` — Universal search engine: magnifier-button modal + dedicated `/search/` page (uses `?s=` param to auto-open modal, `?q=` on the search page)
+- `assets/js/app.js` — Shared JS (918 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `tools/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
@@ -103,9 +102,9 @@ A zero-dependency, fully client-side search engine indexes every published page 
 |---|---|---|
 | Index builder | `tools/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
 | Search index | `assets/data/search-index.json` | 57 pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
-| Runtime | `assets/js/search.js` | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
+| Runtime | `assets/js/app.js` (search section, line 263+) | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
 | Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
-| Wired into | All 59 HTML pages | `<script src="/assets/js/search.js" defer>` after `app.js` |
+| Wired into | All 60 HTML pages | `<script src="/assets/js/app.js" defer>` — single script, no separate search.js |
 
 **Triggers:** Click magnifier in nav · press `/` outside an input · press ⌘K / Ctrl+K · arrive at any page with `?s=query` (matches the JSON-LD `SearchAction` declared on the homepage)
 
@@ -113,7 +112,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Why no Lunr.js or Algolia:** The site has 57 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
-**Two surfaces, one engine:** The same `search.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. When `search.js` boots, it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
+**Two surfaces, one engine:** The search section of `app.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. On boot it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
 
 ## Validation tooling (2026-05-03)
 
@@ -166,13 +165,19 @@ templates are invisible to validators, indexer, sitemap, and feed.
 
 ## Audit artifacts (2026-05-03)
 
-* `SITE_AUDIT_2026-05-03.md` — earlier-in-session normalization summary
-* `FINAL_AUDIT_2026-05-03.md` — Phase 20 final pass in the prompted format
-* `AUDIT_PAGE_INVENTORY_2026-05-03.md` — Phase 0
-* `AUDIT_LINKS_2026-05-03.md` — Phase 3
-* `AUDIT_ASSETS_2026-05-03.md` — Phase 7
-* `AUDIT_ACCESSIBILITY_2026-05-03.md` — Phase 8
-* `AUDIT_PERFORMANCE_2026-05-03.md` — Phase 10
+All audit documents live in `assets/docs/` (non-crawlable, skipped by all HTML-walking tools):
+
+* `assets/docs/FINAL_AUDIT_2026-05-03.md` — comprehensive 26-row change log, canonical reference
+* `assets/docs/OPEN_TODOS_2026-05-03.md` — 3 placeholder GPT URLs + deferred editorial items
+* `assets/docs/AUDIT_PAGE_INVENTORY_2026-05-03.md` — Phase 0 page inventory
+* `assets/docs/AUDIT_LINKS_2026-05-03.md` — Phase 3 link audit
+* `assets/docs/AUDIT_ASSETS_2026-05-03.md` — Phase 7 asset inventory
+* `assets/docs/AUDIT_ACCESSIBILITY_2026-05-03.md` — Phase 8 accessibility audit
+* `assets/docs/AUDIT_PERFORMANCE_2026-05-03.md` — Phase 10 performance audit
+* `assets/docs/gleefully-replit-theme-guide.md` — Replit app theme configuration guide
+
+Machine-readable JSON outputs live in `audit/` (written by tools on each run):
+`audit/validation-report-2026-05-03.json`, `audit/links-report-2026-05-03.json`, `audit/asset-inventory-2026-05-03.json`
 
 ## Recent Changes
 
