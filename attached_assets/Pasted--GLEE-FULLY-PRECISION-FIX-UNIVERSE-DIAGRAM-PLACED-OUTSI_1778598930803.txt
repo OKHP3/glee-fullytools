@@ -1,0 +1,308 @@
+# GLEE-FULLY — PRECISION FIX: UNIVERSE DIAGRAM PLACED OUTSIDE HERO
+**File:** universe/index.html only
+**Live URL:** https://glee-fully.tools/universe/
+**Symptom:** The universe diagram card was moved BELOW the hero section
+instead of remaining IN the hero's right column. The hero now shows
+an empty right side. The diagram appears as a standalone block below.
+
+---
+
+## WHAT HAPPENED
+
+The prior fix correctly replaced the device mockup frame with a
+`universe-diagram-card`. But it placed the replacement element AFTER
+the hero section's closing tag instead of INSIDE the hero's right column.
+
+The hero is a two-column layout:
+- **Left column:** eyebrow label + H1 + description paragraphs + two CTAs
+- **Right column:** the diagram (was: device mockup. should be: diagram card)
+
+The diagram card needs to be the RIGHT COLUMN of the hero grid.
+It must not be a sibling of the hero — it must be a child inside it.
+
+---
+
+## STEP 1 — READ THE FILE STRUCTURE FIRST
+
+```bash
+# Read the full universe/index.html to understand current DOM
+cat universe/index.html
+```
+
+Find these three landmarks in order:
+
+1. **Hero section opening** — the `<section>` or `<div>` that wraps the
+   two-column hero layout. It will contain a Bootstrap row/grid or a
+   flex container. Look for classes like `hero`, `hero-section`,
+   `container`, `row`, `d-flex`, `section-hero`.
+
+2. **Left column closing tag** — ends after the two CTA buttons
+   (`Back to Glee-fully home` and `Explore the Toolbox`).
+
+3. **Right column** — currently empty or containing only a remnant
+   decorative element (the dark diagonal line visible in the screenshot
+   is a CSS background element on the section, not an HTML element to
+   preserve).
+
+4. **The `universe-diagram-card` div** — currently positioned AFTER the
+   hero section's closing tag. This is what needs to move.
+
+```bash
+# Find the diagram card's current location relative to the hero
+grep -n 'universe-diagram-card\|hero\|</section>\|</div>' universe/index.html \
+  | head -50
+```
+
+Confirm that `universe-diagram-card` appears AFTER the hero's closing
+tag. That's the bug. It needs to be BEFORE it — inside the right column.
+
+---
+
+## STEP 2 — IDENTIFY THE EXACT RIGHT COLUMN TARGET
+
+The hero right column will be one of these patterns:
+
+**Pattern A — Bootstrap grid:**
+```html
+<div class="row">
+  <div class="col-lg-6 col-md-12">
+    <!-- left: text + CTAs -->
+  </div>
+  <div class="col-lg-6 col-md-12">
+    <!-- RIGHT COLUMN — diagram goes here -->
+  </div>
+</div>
+```
+
+**Pattern B — CSS Flexbox:**
+```html
+<div class="hero-content d-flex">
+  <div class="hero-text">
+    <!-- left: text + CTAs -->
+  </div>
+  <div class="hero-visual">
+    <!-- RIGHT COLUMN — diagram goes here -->
+  </div>
+</div>
+```
+
+**Pattern C — right column is now empty or removed:**
+```html
+<div class="row">
+  <div class="col-lg-6">
+    <!-- left: text + CTAs -->
+  </div>
+  <!-- right column div was deleted when mockup was removed -->
+</div>
+```
+
+If Pattern C — the right column div was deleted along with the mockup,
+you need to add it back.
+
+---
+
+## STEP 3 — THE MOVE OPERATION
+
+### 3a. Cut the diagram card from its current location
+
+Find this block in `universe/index.html`:
+
+```html
+<div class="universe-diagram-card">
+  <div class="mermaid">
+    graph LR
+    ...
+  </div>
+  <p class="diagram-attribution">
+    ...
+  </p>
+</div>
+```
+
+Remove it from its current location (after the hero section close).
+
+### 3b. Place it inside the hero right column
+
+Depending on which pattern applies (identified in Step 2):
+
+**If Pattern A or B — right column div exists but is empty:**
+Place the diagram card as the sole child of the right column div:
+
+```html
+<div class="col-lg-6 col-md-12">   <!-- or whatever the right col class is -->
+  <div class="universe-diagram-card">
+    <div class="mermaid">
+      graph LR
+      ... (full diagram source, unchanged)
+    </div>
+    <p class="diagram-attribution">
+      Diagram rendered with Mermaid.js.
+      <a href="https://mermaid.ai" target="_blank" rel="noopener">Try Mermaid.AI →</a>
+      if you want to explore the syntax yourself.
+    </p>
+  </div>
+</div>
+```
+
+**If Pattern C — right column div was deleted:**
+Reconstruct it. After the left column closing tag and before the row
+closing tag, insert:
+
+```html
+  </div><!-- end left col -->
+
+  <div class="col-lg-6 col-md-12 hero-diagram-col">
+    <div class="universe-diagram-card">
+      <div class="mermaid">
+        graph LR
+        ... (full diagram source, unchanged)
+      </div>
+      <p class="diagram-attribution">
+        Diagram rendered with Mermaid.js.
+        <a href="https://mermaid.ai" target="_blank" rel="noopener">Try Mermaid.AI →</a>
+        if you want to explore the syntax yourself.
+      </p>
+    </div>
+  </div>
+
+</div><!-- end row -->
+```
+
+---
+
+## STEP 4 — CSS ADJUSTMENT FOR HERO CONTEXT
+
+The `universe-diagram-card` CSS from the prior fix sets `margin: 2rem 0`
+which is correct when it's a standalone block below the hero. Inside the
+hero right column it needs slight adjustment:
+
+Add this rule to the existing `.universe-diagram-card` block in the
+shared CSS file (do not create a new block — extend the existing one):
+
+```css
+/* Inside hero right column — remove top margin, align with hero top */
+.hero-diagram-col .universe-diagram-card,
+.hero-visual .universe-diagram-card {
+  margin-top: 0;
+  height: 100%;           /* fill the hero column height */
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-diagram-col .universe-diagram-card .mermaid,
+.hero-visual .universe-diagram-card .mermaid {
+  flex: 1;               /* diagram fills available height */
+  min-height: 300px;     /* minimum so it doesn't collapse */
+}
+```
+
+Adjust the selector to match whatever class name is on the right column
+div (from Step 2 — `hero-visual`, `hero-diagram-col`, or the Bootstrap
+`col-lg-6` class if no custom class exists).
+
+---
+
+## STEP 5 — VERIFY
+
+### 5.1 Visual check — hero layout
+
+Open `universe/index.html` in the Replit preview. At desktop width (1024px+):
+
+- [ ] Hero section shows **two columns side by side**
+- [ ] Left column: "OKHP³™ UNIVERSE" eyebrow + H1 + description + 2 CTAs
+- [ ] Right column: the universe diagram card with the full graph
+- [ ] No empty white space in the hero right column
+- [ ] The dark diagonal section divider (CSS background) still renders correctly
+- [ ] No diagram card appears as a standalone block below the hero
+
+### 5.2 Scroll check — diagram section below
+
+After the hero, confirm there is NO duplicate diagram card. The diagram
+should appear exactly once — in the hero right column only.
+
+```bash
+grep -c 'universe-diagram-card' universe/index.html
+# Must return 1 — not 2
+```
+
+### 5.3 Mobile check (390px)
+
+At mobile width the two columns should stack:
+- [ ] Left column (text + CTAs) appears first
+- [ ] Right column (diagram card) appears below it
+- [ ] Diagram card fills full mobile width
+- [ ] No horizontal overflow on `<body>`
+
+### 5.4 Diagram still functional
+
+- [ ] Diagram renders (not blank)
+- [ ] Node click-through links work (click "Glee-fully Personalizable Tools™" — should open glee-fully.tools)
+- [ ] Attribution text visible below diagram inside the card
+
+---
+
+## STEP 6 — CONFIRM DIAGRAM SOURCE IS INTACT
+
+The diagram source MUST be byte-identical to what was there before the
+prior fix. Do not re-type it. Verify by checking that all key nodes are
+present:
+
+```bash
+grep 'OKH\|ASJ\|BRG\|WRIT\|MPS\|BAC' universe/index.html | wc -l
+# Should return 30+ lines — one per node definition and edge reference
+```
+
+If the count is under 30, the diagram source was accidentally truncated
+during the prior edit. Restore it from git:
+
+```bash
+git log --oneline universe/index.html | head -5
+git show HEAD~1:universe/index.html | grep -A 200 'class="mermaid"' | head -210
+```
+
+Use the prior commit's diagram source to restore any truncated content.
+
+---
+
+## STEP 7 — COMMIT
+
+```bash
+git add universe/index.html
+git add assets/css/main.css   # only if CSS was adjusted
+git commit -m "fix: restore universe diagram to hero right column (was displaced below hero)"
+```
+
+---
+
+## CONSTRAINTS
+
+1. **Do not move or modify the left column content.** The eyebrow label,
+   H1, description, and both CTA buttons stay exactly where they are.
+2. **Do not modify the diagram source.** Copy it verbatim from its
+   current location. The `graph LR` content is correct.
+3. **Do not remove the CSS from the prior fix.** `.universe-diagram-card`
+   styles are still needed. This fix is a DOM placement correction only.
+4. **One diagram card, one location.** After the fix, `universe-diagram-card`
+   appears exactly once in the file — inside the hero right column.
+5. **The hero section's background/decorative elements stay untouched.**
+   The dark diagonal line in the screenshot is a CSS `::before`/`::after`
+   pseudo-element or a `background` on the hero section. Do not touch it.
+
+---
+
+## SUMMARY
+
+| | Before prior fix | After prior fix (current broken) | After this fix (target) |
+|---|---|---|---|
+| Diagram location | Hero right col (in device mockup) | Below hero (standalone card) | Hero right col (in clean card) |
+| Hero right col | Occupied (mockup) | **Empty** | Occupied (diagram card) |
+| Diagram legibility | Poor (too small) | Good (full width) | Good (hero col width) |
+| Layout | 2-col hero ✓ | 2-col hero broken | 2-col hero ✓ |
+
+The prior fix solved the wrong container. This fix solves the wrong location.
+Both fixes together = correct container in correct location.
+
+---
+
+*Glee-fully Personalizable Tools™ | Fix prompt authored 2026-05-12*
+*Sequence: GLEE-FULLY-FIX-UNIVERSE-DIAGRAM-2026-05-12.md → this file*
