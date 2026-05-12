@@ -4190,9 +4190,49 @@ html:has(
 /* AskJamie – Mermaid layout + mid‑century teal skin                     */
 /* ===================================================================== */
 
-/* Universe hero: make the Mermaid diagram fill the angled paper card */
-.askjamie-hero--universe .askjamie-hero-visual {
-  align-items: stretch;
+/* Universe hero: diagram moved out of hero column — rule retained for safety */
+/* .askjamie-hero--universe .askjamie-hero-visual no longer exists in HTML */
+
+/* ============================================================
+   UNIVERSE PAGE — full-width diagram card
+   Replaces the constrained hero-column with a clean card section.
+   ============================================================ */
+.universe-diagram-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(42, 35, 32, 0.12);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 0.5rem 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  .universe-diagram-card {
+    border-color: rgba(243, 185, 50, 0.15);
+  }
+}
+
+/* Allow horizontal scroll — this diagram has 40+ nodes and should not be
+   compressed into illegibility. overflow-x:auto lets users pan to explore. */
+.universe-diagram-card .askjamie-mermaid-shell {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.universe-diagram-card .mermaid {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Override the global glee-main !important rule for this diagram only.
+   Higher specificity wins the !important cascade: [0,3,1] beats [0,2,1].
+   Letting the SVG render at natural width + horizontal scroll is correct
+   for a 40-node reference diagram. */
+.universe-diagram-card .mermaid svg {
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
 }
 
 .askjamie-mermaid-shell {
