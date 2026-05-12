@@ -17,6 +17,16 @@ mermaid.initialize({
 // Explicit run — more reliable than startOnLoad with ES module loading order
 mermaid.run({
   querySelector: ".mermaid",
+}).then(() => {
+  // Strip inline width/height/max-width that Mermaid injects on every SVG.
+  // CSS !important on .glee-main .mermaid svg handles the cascade, but removing
+  // the attributes also fixes any browser that applies SVG presentation
+  // attributes above the CSS layer for width/height specifically.
+  document.querySelectorAll(".mermaid svg").forEach((svg) => {
+    svg.removeAttribute("width");
+    svg.removeAttribute("height");
+    if (svg.style.maxWidth) svg.style.removeProperty("max-width");
+  });
 }).catch((err) => {
   console.warn("[mermaid-init] render error:", err);
 });

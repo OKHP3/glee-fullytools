@@ -3081,6 +3081,7 @@ body:not(.glee-main):not(.askjamie-main) .latest-pill {
   margin-top: 1rem;
   width: 100%;
   max-width: 100%;
+  overflow: hidden; /* prevent Mermaid SVG from bleeding outside card */
 }
 
 .glee-mermaid-shell .mermaid {
@@ -3120,10 +3121,13 @@ body:not(.glee-main):not(.askjamie-main) .latest-pill {
   font-family: var(--font-body);
   color: var(--color-fg);
 }
-/* SVG sizing */
+/* SVG sizing — !important required: Mermaid injects inline width/height
+   attributes AND style="max-width:Xpx" at render time; both are overridden
+   by author !important rules. The mini-shell also gets overflow:hidden above. */
 .glee-main .mermaid svg {
-  width: 100%;
-  height: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
 } 
 /* Nodes – rounded joyful shapes with coral borders */
 .glee-main .mermaid .node rect,
