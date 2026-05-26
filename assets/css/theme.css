@@ -1477,6 +1477,33 @@ body.construction-dismissed .construction-overlay,
   }
 }
 
+/* ===== Tool-ette hub icon cards (.card--tool-ette) =================== */
+.card--tool-ette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card__tool-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-bottom: 0.25rem;
+}
+
+.card__bestfor {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #555);
+  margin-top: auto;
+}
+
+.card--tool-ette .btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
 
 /* ===== Ko‑fi support section ========================================= */
 

@@ -10,28 +10,18 @@ underlying GPT URL is finalized.
 
 ---
 
-## 1. Three unfinished GPT links
+## 1. Three unfinished GPT links — ✅ RESOLVED 2026-05-26
 
-| # | File | Line | What's needed |
-|---|------|------|---------------|
-| 1 | `toolbox/02-treasured-finds/02c-present-hoarder/index.html` | 271 | Replace placeholder `href` with the live **Present Hoarder** GPT URL once the GPT is published. |
-| 2 | `toolbox/04-travelers-guide/04d-dreamland-journeys/index.html` | 274 | Replace placeholder `href` with the live **Dreamland Journeys** GPT URL when the GPT is ready. |
-| 3 | `toolbox/04-travelers-guide/04e-memento-log/index.html` | 273 | Replace placeholder `href` with the real **Memento Log** GPT URL. |
+All three placeholder links replaced with verified live ChatGPT URLs.
+Source URLs confirmed from parent branch pages where they were already wired.
 
-### How to find them quickly
+| # | File | Resolution |
+|---|------|------------|
+| 1 | `toolbox/02-treasured-finds/02c-present-hoarder/index.html` | ✅ Real URL: `g-685af65a822881919690d7410a122984-present-hoarder-by-glee-fully` |
+| 2 | `toolbox/04-travelers-guide/04d-dreamland-journeys/index.html` | ✅ Real URL: `g-685b072fccec8191a595b10991348f30-dreamland-journeys-by-glee-fully` |
+| 3 | `toolbox/04-travelers-guide/04e-memento-log/index.html` | ✅ Real URL: `g-685b072be58c8191ba386b00b33b93b8-memento-log-by-glee-fully` |
 
-```bash
-grep -rn "<!-- TODO" --include='*.html' .
-```
-
-### When you fix one
-
-1. Edit the `href` in place.
-2. Delete the surrounding `<!-- TODO ... -->` comment line.
-3. Run `python3 scripts/check-links.py` to confirm the new link resolves
-   (it'll be flagged if the URL pattern is malformed).
-4. The page's `dateModified` JSON-LD will need a manual bump if you want
-   search engines to re-index promptly — set it to today's date.
+Fixed by `scripts/fix-placeholder-gpt-links.py` (idempotent, 2026-05-26).
 
 ---
 

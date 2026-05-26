@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 60,
-  "internal_links": 2311,
-  "external_links": 1190,
+  "internal_links": 2323,
+  "external_links": 1207,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -154,7 +154,7 @@
     {
       "path": "toolbox/03-tasty-tracker/index.html",
       "internal_links": 38,
-      "external_links": 24
+      "external_links": 29
     },
     {
       "path": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
@@ -184,7 +184,7 @@
     {
       "path": "toolbox/04-travelers-guide/index.html",
       "internal_links": 38,
-      "external_links": 24
+      "external_links": 29
     },
     {
       "path": "toolbox/05-organized-life/05a-task-maestro/index.html",
@@ -218,7 +218,7 @@
     },
     {
       "path": "toolbox/05-organized-life/index.html",
-      "internal_links": 47,
+      "internal_links": 53,
       "external_links": 19
     },
     {
@@ -253,7 +253,7 @@
     },
     {
       "path": "toolbox/06-healthy-bee-ing/index.html",
-      "internal_links": 38,
+      "internal_links": 44,
       "external_links": 25
     },
     {
@@ -294,7 +294,7 @@
     {
       "path": "toolbox/07-identity-known/index.html",
       "internal_links": 32,
-      "external_links": 32
+      "external_links": 39
     },
     {
       "path": "toolbox/index.html",
