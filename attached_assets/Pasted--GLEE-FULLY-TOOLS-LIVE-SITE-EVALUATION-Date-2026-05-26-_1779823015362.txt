@@ -1,0 +1,708 @@
+# GLEE-FULLY TOOLS — LIVE SITE EVALUATION
+**Date:** 2026-05-26 | **Scope:** Full site, all major page types
+**Evaluated:** Homepage, Toolbox hub, Ecosystem, Persona, About, Universe, Neighborly Bazaar (Tool-ette), Discovered Careers (branch), Contact, Legal
+**Standards basis:** 2026 static-site web design, GitHub Pages hosting, Core Web Vitals, WCAG 2.2 AA, Open Graph 2.0, GA4, PWA baseline
+
+---
+
+---
+# PART A — NOTION NOTES
+*Copy this section into the Glee-fully Notion workspace as improvement tickets*
+---
+
+## 🔴 CRITICAL — Fix before next public share
+
+---
+
+### [C-01] Homepage nav logo link is broken
+**Page:** Homepage (`/`)
+**Finding:** The nav logo `<a>` tag wraps the butterfly image but its `href` is empty (`<>`). Clicking the logo on the homepage does nothing — or navigates to a literal empty string, which is a broken link by any validator standard.
+**Expected:** `href="https://glee-fully.tools/"` or `href="/"`
+**Impact:** Every visitor who clicks the logo on the homepage hits a dead link. This is the most common nav interaction on mobile.
+
+---
+
+### [C-02] `meta-color-scheme` still inconsistent across pages
+**Pages affected:** Persona (`dark light`), About (`light` only)
+**Finding:** The May 12 audit standardized most pages to `light dark` but two pages still have non-canonical values:
+- `/persona/` = `dark light` (reversed preference — signals dark is the default)
+- `/about/` = `light` (no dark mode support at all)
+**Expected:** `light dark` on every page without exception
+**Impact:** Persona page will appear in dark mode by default on OS-set-to-dark devices. About page will never dark-mode. Inconsistent user experience.
+
+---
+
+### [C-03] About page title and og:title mismatch
+**Page:** `/about/`
+**Finding:**
+- `<title>`: `About — Glee-fully Personalizable Tools™ 🧰🌳`
+- `og:title`: `About Glee & Jamie — Glee-fully Personalizable Tools™`
+These must either match or the discrepancy must be intentional and documented.
+**Impact:** Social share cards show a different title than the browser tab. Confusing for anyone sharing the About page.
+
+---
+
+### [C-04] Branch pages show under-construction overlay BEFORE nav in DOM
+**Pages affected:** All 7 Tool branches (`/toolbox/01-discovered-careers/` confirmed, assumed others)
+**Finding:** The under-construction notice (image + dismiss button) appears in the HTML source BEFORE the `<nav>`. This means on slow connections or with JS disabled, the overlay renders first and nav is inaccessible until below-fold scroll or JS fires.
+**Expected:** Nav must be the first structural element inside `<body>` after the skip link. The overlay should be injected after nav, or positioned via CSS `position: fixed` so it doesn't displace the document flow.
+**Impact:** Accessibility failure, bad experience on slow connections, nav temporarily unreachable.
+
+---
+
+### [C-05] Neighborly Bazaar missing `viewport-fit=cover`
+**Page:** `/toolbox/05-organized-life/05f-neighborly-bazaar/`
+**Finding:** Viewport tag is `width=device-width, initial-scale=1` — missing `viewport-fit=cover`
+**Expected:** `width=device-width, initial-scale=1, viewport-fit=cover` (consistent with homepage and most other pages)
+**Impact:** On notched iPhones (iPhone X and later), the status bar area may not be filled with the theme color, creating a visual gap at the top.
+
+---
+
+## 🟠 HIGH — Fix in next Replit session
+
+---
+
+### [H-01] "Today's Sparkle" is permanently hardcoded to Neighborly Bazaar
+**Pages affected:** All pages where banner appears
+**Finding:** Every single page with a Sparkle banner shows the identical Neighborly Bazaar entry. This was the newest Tool-ette at launch but is now stale. There is no rotation mechanism or easy single-file update path.
+**Recommendation:** Create `assets/data/sparkle.json` with current spotlight data. Use a small inline script to populate the banner from that file. When a new Tool-ette launches, update one JSON file instead of 60 HTML files.
+**Impact:** Banner loses credibility as a "fresh pick" signal if it never changes. Users who visit twice see the same spotlight.
+
+---
+
+### [H-02] Skip link text inconsistency
+**Pages affected:** Ecosystem (`/ecosystem/`) vs others
+**Finding:** Homepage, About, Contact, Legal, and most pages use `Skip to main content` with anchor `#main`. The Ecosystem page uses `Skip to content` with anchor `#main`. Minor but flags as inconsistent to accessibility validators.
+**Expected:** `Skip to main content` on every page, anchoring to `<main id="main">`.
+
+---
+
+### [H-03] About dropdown in nav duplicates parent link
+**Pages affected:** All pages (nav is global)
+**Finding:** The nav "About" parent item and the first dropdown item "About Us" both resolve to `/about/`. This creates a redundant link pair and is a usability smell — users expect the dropdown parent to either be non-clickable or to link somewhere different from its children.
+**Recommendation:** Either make "About" the nav parent non-clickable (`href="#"` with `aria-haspopup` only) or remove "About Us" from the dropdown since the parent already covers it. The current structure means the `/about/` page is linked twice from the same nav element.
+
+---
+
+### [H-04] `meta-keywords` and `meta-revisit-after` are deprecated tags
+**Pages affected:** Homepage (confirmed), several others likely
+**Finding:** Both tags are ignored by Google, Bing, and all major crawlers:
+- `meta-keywords` has been irrelevant since ~2009
+- `meta-revisit-after` was never a standard and no major engine honors it
+**Impact:** No direct harm but adds dead weight to every `<head>` block. The presence of `meta-keywords` can also signal to some spam filters that a page is using old black-hat techniques.
+**Recommendation:** Remove both tags from all 60 pages via script.
+
+---
+
+### [H-05] Hero image has generic alt text
+**Pages affected:** Homepage, About, Toolbox hub (all use same `ButterflyLoopLeft Wide 1536.png`)
+**Finding:** Alt text is `Glee-fully hero illustration` — functional but generic. Screen reader users hear no meaningful description of what the image conveys.
+**Expected example:** `"The Glee-fully butterfly perched on a blooming tree filled with colorful toolbox branches — a visual metaphor for the suite's seven life-organization tools"`
+**Impact:** WCAG 2.2 AA requires meaningful, context-appropriate alt text on all non-decorative images.
+
+---
+
+### [H-06] OG image is the same generic butterfly across all pages
+**Pages affected:** Homepage, About, Persona, Contact, Legal, Universe, and most Tool-ette pages
+**Finding:** `og:image` defaults to the butterfly logo (`ButterflyWaiting Square 1024.png`) on most pages. Tool branch pages correctly use their branch GPT icon. But supporting pages (Contact, Legal, Persona, About) have no page-specific OG image.
+**Impact:** All social shares from non-branch pages look identical — same card thumbnail, no visual differentiation.
+**Recommendation:** Persona page should use a persona-specific image. About should use a "Glee & Jamie" image. Contact can remain as butterfly — it's a utility page.
+
+---
+
+### [H-07] Footer nav order doesn't match main nav order
+**Pages affected:** All pages (footer is global)
+**Finding:** Main nav order: Why Glee-fully → Toolbox → Ecosystem → Voice & Muse → About
+Footer nav order: Why Glee-fully → Ecosystem → Voice & Muse → Universe → About → Contact → Legal
+The Toolbox is the second nav item but is not listed in the footer nav at all. Universe appears in footer but not in the main nav top-level.
+**Impact:** Inconsistency creates confusion. Users who scroll to the footer looking for the Toolbox link won't find it.
+**Recommendation:** Footer nav should include Toolbox as a primary item. Its absence is a missed conversion — the Toolbox hub is the site's primary CTA destination.
+
+---
+
+## 🟡 MEDIUM — Queue for improvement sprint
+
+---
+
+### [M-01] Hero images are unoptimized for mobile
+**Pages affected:** Homepage, About, Toolbox hub (all use 1536px-wide PNGs)
+**Finding:** The butterfly hero image (`ButterflyLoopLeft Wide 1536.png`) is served at full 1536px width regardless of viewport. A mobile visitor at 390px wide downloads a 1536px asset. No `<picture>` element, no `srcset`, no WebP variant.
+**Recommendation:** Add responsive image treatment:
+```html
+<picture>
+  <source srcset="/assets/img/hero-butterfly-768.webp" type="image/webp" media="(max-width: 768px)">
+  <source srcset="/assets/img/hero-butterfly-1536.webp" type="image/webp">
+  <img src="/assets/img/Glee-fullyTools ButterflyLoopLeft Wide 1536.png" alt="..." loading="eager" width="1536" height="640">
+</picture>
+```
+**Impact:** Significant LCP improvement on mobile. Core Web Vitals score.
+
+---
+
+### [M-02] GPT icons served at 1024px, displayed at ~200-400px
+**Pages affected:** All Tool-ette pages, homepage "New from the Toolbox" section
+**Finding:** GPT icons are 1024x1024 PNG files. They're displayed at much smaller sizes (200-400px typically). No `srcset`, no resized variants, no WebP alternatives.
+**Impact:** Mobile users download ~200-400KB per icon to display it at 1/4 the resolution. Contributes to slow LCP on Tool-ette pages.
+
+---
+
+### [M-03] Branch pages (01-07) all show under-construction but are fully navigable
+**Pages affected:** All 7 branch pages
+**Finding:** Each branch page opens with a full-width under-construction banner. The dismiss button works, but first-time visitors see no content on arrival. The branch pages do contain full content below the banner.
+**Impact:** High bounce risk. Users who don't know to dismiss the banner may leave thinking the page is broken. The "I understand — let me explore" CTA text is clear but the visual dominance of the banner creates friction.
+**Recommendation:** Either graduate these pages out of under-construction mode or reduce the banner to a slim inline notice rather than a full-page interrupt.
+
+---
+
+### [M-04] Persona page breadcrumb says "Personas" (plural) but page is singular
+**Page:** `/persona/`
+**Finding:** The breadcrumb trail shows `Home › Personas` but the URL is `/persona/` (singular) and the page covers one persona — Glee's. The plural breadcrumb label implies more personas exist or are coming.
+**Impact:** Minor but creates a question mark in the user's head.
+
+---
+
+### [M-05] `og:image:type` missing from Persona page
+**Page:** `/persona/`
+**Finding:** Persona page `og:image` has `og:image:alt`, `og:image:height`, `og:image:width` but is missing `og:image:type: image/png`. Minor but flagged by OG validators.
+
+---
+
+### [M-06] Copyright year in footer is dynamic but not confirmed accurate
+**Pages affected:** All pages
+**Finding:** Footer shows `© Glee-fully Personalizable Tools. All rights reserved.` — no year shown. Some sites intentionally omit the year; others need it for legal/brand consistency. Confirm this is intentional.
+
+---
+
+## 🟢 LOW — Nice to have, log for future sprint
+
+---
+
+### [L-01] No `<link rel="preload">` for critical images
+LCP images (the hero butterfly) are not preloaded. Adding `<link rel="preload" as="image" href="/assets/img/hero.png">` in `<head>` would give browsers earlier fetch signal.
+
+### [L-02] Ko-fi widget not confirmed present on all pages
+Prior audit planned to add the Ko-fi floating widget. Confirm it shipped. If not, still pending.
+
+### [L-03] Universe diagram DOM placement unresolved
+Based on prior session screenshot, the universe diagram was displaced below the hero after the device-mockup fix. Confirm the placement fix was applied and verify the page renders with a two-column hero.
+
+### [L-04] "New from the Toolbox" section hardcoded to Neighborly Bazaar
+Same as H-01 but specifically for the homepage featured section — this is a separate element from the Sparkle banner and should be managed via the same `sparkle.json` approach.
+
+### [L-05] No `aria-label` on the hamburger nav toggle
+The mobile menu toggle button (`Toggle navigation`) should carry `aria-label="Open navigation menu"` for screen readers.
+
+### [L-06] Search page not confirmed in sitemap
+Prior audit confirmed `/search/` was to be added. Verify it's present with correct `changefreq: weekly` and `priority: 0.6`.
+
+---
+
+---
+# PART B — REPLIT EXECUTION PROMPT
+*Paste this entire section into Replit Agent*
+---
+
+# GLEE-FULLY TOOLS — TARGETED REPAIR SESSION 2026-05-26
+**Repo:** https://github.com/OKHP3/Glee-fullyTools
+**Live site:** https://glee-fully.tools
+**Prior audit docs:** SITE_AUDIT_2026-05-02.md · SITE_AUDIT_2026-05-12.md
+
+Read both audit docs first. Then execute the following fixes in priority order.
+
+---
+
+## FIX 1 — Repair the homepage nav logo broken href [CRITICAL]
+
+**File:** `index.html`
+
+```bash
+grep -n 'href="<>\|href=""' index.html | head -5
+```
+
+Find the `<a>` tag wrapping the nav logo butterfly image. Its `href` is currently `<>` (empty/broken). Replace it:
+
+```html
+<!-- BROKEN -->
+<a href="<>">
+  <img ... alt="Glee‑fully logo" ...>
+</a>
+
+<!-- FIXED -->
+<a href="/" aria-label="Glee‑fully home">
+  <img ... alt="Glee‑fully logo" ...>
+</a>
+```
+
+Verify:
+```bash
+grep -n 'href="<>"' index.html
+# Must return nothing after fix
+```
+
+---
+
+## FIX 2 — Standardize `meta-color-scheme` on Persona and About [CRITICAL]
+
+**Files:** `persona/index.html`, `about/index.html`
+
+```bash
+# Confirm current values
+grep 'color-scheme' persona/index.html about/index.html
+```
+
+In both files, find and replace:
+
+```bash
+# persona/index.html: dark light → light dark
+sed -i 's/content="dark light"/content="light dark"/g' persona/index.html
+
+# about/index.html: light → light dark  
+sed -i 's/content="light"/content="light dark"/g' about/index.html
+```
+
+Then verify all 60 pages:
+```bash
+grep -rh 'color-scheme' --include="*.html" . \
+  | grep -v 'assets/' \
+  | grep -v 'light dark' \
+  | sort -u
+# Should return nothing
+```
+
+---
+
+## FIX 3 — Align About page title and og:title [CRITICAL]
+
+**File:** `about/index.html`
+
+Current state:
+- `<title>`: `About — Glee-fully Personalizable Tools™ 🧰🌳`
+- `og:title`: `About Glee & Jamie — Glee-fully Personalizable Tools™`
+
+Decision: the og:title is more descriptive and better for social shares. Update the `<title>` to match it:
+
+```html
+<title>About Glee &amp; Jamie — Glee‑fully Personalizable Tools™ 🧰🌳</title>
+```
+
+Also update the `twitter:title` to match:
+```html
+<meta name="twitter:title" content="About Glee &amp; Jamie — Glee‑fully Personalizable Tools™ 🧰🌳">
+```
+
+---
+
+## FIX 4 — Fix under-construction overlay DOM placement on branch pages [CRITICAL]
+
+**Files:** All 7 branch pages (`toolbox/01-discovered-careers/index.html` through `toolbox/07-identity-known/index.html`)
+
+**Problem:** The overlay appears before `<nav>` in the DOM. On slow connections, nav is temporarily inaccessible.
+
+**Fix:** Convert the overlay from a block-flow element to a `position: fixed` CSS overlay. This way it visually covers the page but the nav remains accessible in the DOM flow.
+
+In `assets/css/main.css`, add:
+
+```css
+/* Under-construction overlay — fixed position so nav remains DOM-accessible */
+.under-construction-overlay,
+.uc-overlay,
+[class*="under-construction"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9000;           /* above nav (z-index ~1000) but below modals */
+  background: var(--color-paper, #f6f2ee);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* When dismissed, hide it */
+.under-construction-overlay.dismissed {
+  display: none;
+}
+```
+
+Then ensure the JS dismiss button adds the `dismissed` class rather than using `display:none` inline:
+
+```javascript
+// In whatever script handles the dismiss button
+document.querySelector('.uc-dismiss-btn, [data-dismiss="uc"]').addEventListener('click', function() {
+  document.querySelector('.under-construction-overlay').classList.add('dismissed');
+  // Optional: store in sessionStorage so dismissed state persists on refresh
+  sessionStorage.setItem('uc-dismissed-' + window.location.pathname, '1');
+});
+
+// On page load, check if already dismissed this session
+window.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('uc-dismissed-' + window.location.pathname)) {
+    var overlay = document.querySelector('.under-construction-overlay');
+    if (overlay) overlay.classList.add('dismissed');
+  }
+});
+```
+
+Confirm the actual overlay class names:
+```bash
+grep -n 'class=' toolbox/01-discovered-careers/index.html | head -10
+```
+Adjust selectors to match real class names before applying.
+
+---
+
+## FIX 5 — Add `viewport-fit=cover` to Neighborly Bazaar [CRITICAL]
+
+**File:** `toolbox/05-organized-life/05f-neighborly-bazaar/index.html`
+
+```bash
+grep 'viewport' toolbox/05-organized-life/05f-neighborly-bazaar/index.html
+```
+
+Replace:
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+With:
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+```
+
+Then run the full sweep to catch any other pages still missing it:
+```bash
+grep -rl 'name="viewport"' --include="*.html" . \
+  | grep -v 'assets/' \
+  | xargs grep -L 'viewport-fit=cover' | sort
+# Anything returned needs the same fix
+```
+
+---
+
+## FIX 6 — Remove deprecated `meta-keywords` and `meta-revisit-after` tags [HIGH]
+
+Write a Python script `tools/remove-deprecated-meta.py`:
+
+```python
+#!/usr/bin/env python3
+"""
+remove-deprecated-meta.py
+Removes deprecated meta tags ignored by all major search engines:
+- meta name="keywords"
+- meta name="revisit-after"
+Idempotent. Run from repo root.
+"""
+import re
+from pathlib import Path
+
+DEPRECATED_PATTERNS = [
+    r'<meta\s+name=["\']keywords["\']\s+content=["\'][^"\']*["\']\s*/?>',
+    r'<meta\s+name=["\']revisit-after["\']\s+content=["\'][^"\']*["\']\s*/?>',
+    # Also handle reversed attribute order
+    r'<meta\s+content=["\'][^"\']*["\']\s+name=["\']keywords["\']\s*/?>',
+    r'<meta\s+content=["\'][^"\']*["\']\s+name=["\']revisit-after["\']\s*/?>',
+]
+
+pages = [p for p in Path('.').rglob('*.html')
+         if not any(x in str(p) for x in ['assets/','attached_assets/','tools/'])]
+
+total_removed = 0
+for page in sorted(pages):
+    content = page.read_text(encoding='utf-8', errors='replace')
+    original = content
+    for pattern in DEPRECATED_PATTERNS:
+        content = re.sub(pattern, '', content, flags=re.IGNORECASE)
+    # Clean up blank lines left behind
+    content = re.sub(r'\n\s*\n\s*\n', '\n\n', content)
+    if content != original:
+        page.write_text(content, encoding='utf-8')
+        total_removed += 1
+        print(f"Cleaned: {page}")
+
+print(f"\nTotal pages cleaned: {total_removed} of {len(pages)}")
+```
+
+```bash
+python3 tools/remove-deprecated-meta.py
+```
+
+---
+
+## FIX 7 — Add Toolbox link to footer nav [HIGH]
+
+**Files:** All 60 HTML pages (or the shared footer include if one exists)
+
+The footer nav currently omits the Toolbox (`/toolbox/`) — the site's primary CTA destination. Add it as the second footer nav item, after "Why Glee-fully".
+
+First, confirm whether the footer is templated or repeated:
+```bash
+# Check if a footer partial/include exists
+ls assets/includes/ assets/partials/ 2>/dev/null
+```
+
+If the footer is repeated across all pages (no include system), write a script:
+
+```python
+#!/usr/bin/env python3
+"""
+add-toolbox-to-footer.py
+Adds /toolbox/ link to footer nav after the #why link.
+Idempotent — skips pages already containing the toolbox footer link.
+"""
+import re
+from pathlib import Path
+
+ANCHOR = '<a href="https://glee-fully.tools/#why">Why Glee&#8209;fully</a>'
+INSERT_AFTER = '<li><a href="https://glee-fully.tools/#why">Why Glee&#8209;fully</a></li>'
+TOOLBOX_ITEM = '<li><a href="https://glee-fully.tools/toolbox/">Opening the Toolbox</a></li>'
+
+pages = [p for p in Path('.').rglob('*.html')
+         if not any(x in str(p) for x in ['assets/','attached_assets/','tools/'])]
+
+for page in sorted(pages):
+    content = page.read_text(encoding='utf-8', errors='replace')
+    # Skip if already has toolbox in footer context
+    # Detect footer section and check within it
+    footer_match = re.search(r'<footer.*?</footer>', content, re.DOTALL)
+    if footer_match:
+        footer_html = footer_match.group(0)
+        if '/toolbox/' in footer_html:
+            continue  # already there
+        # Find the Why Glee-fully item in the footer and insert after it
+        new_footer = re.sub(
+            r'(<li><a href=["\']https://glee-fully\.tools/#why["\'][^>]*>Why Glee[^<]*</a></li>)',
+            r'\1\n              ' + TOOLBOX_ITEM,
+            footer_html,
+            count=1
+        )
+        if new_footer != footer_html:
+            content = content.replace(footer_html, new_footer)
+            page.write_text(content, encoding='utf-8')
+            print(f"Updated: {page}")
+```
+
+Adjust the regex to match the actual footer HTML structure before running.
+
+---
+
+## FIX 8 — Implement `sparkle.json` for single-source-of-truth Sparkle banner [HIGH]
+
+**Create:** `assets/data/sparkle.json`
+
+```json
+{
+  "emoji": "🔦",
+  "label": "Neighborly Bazaar GPT",
+  "description": "helps you evaluate, price, and re-home household items with Glee",
+  "suffix": "💫",
+  "url": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+  "updated": "2026-05-26"
+}
+```
+
+**Create:** `assets/js/sparkle-loader.js`
+
+```javascript
+/**
+ * sparkle-loader.js
+ * Populates the "Today's Sparkle" banner from assets/data/sparkle.json
+ * Falls back to static content if fetch fails (offline/slow).
+ */
+(function () {
+  'use strict';
+
+  var SPARKLE_SELECTOR = '.sparkle-banner a, .sparkle-link, [data-sparkle-link]';
+  var SPARKLE_TEXT_SELECTOR = '.sparkle-text, [data-sparkle-text]';
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var link = document.querySelector(SPARKLE_SELECTOR);
+    if (!link) return; // No sparkle banner on this page
+
+    fetch('/assets/data/sparkle.json?v=' + Date.now())
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        var text = data.emoji + ' ' + data.label + ' \u2014 ' + data.description + ' ' + data.suffix;
+        link.textContent = text;
+        link.href = data.url;
+      })
+      .catch(function () {
+        // Fail silently — static content remains visible
+      });
+  });
+})();
+```
+
+Add `<script src="/assets/js/sparkle-loader.js" defer></script>` to all pages that carry the sparkle banner. Mark the existing static banner link with `data-sparkle-link` so the script can find it.
+
+**To update the banner site-wide in future:** Edit only `assets/data/sparkle.json`. The JS handles distribution.
+
+---
+
+## FIX 9 — Fix skip link text consistency [HIGH]
+
+```bash
+# Find pages with "Skip to content" instead of "Skip to main content"
+grep -rn 'Skip to content' --include="*.html" . | grep -v 'assets/' | sort
+```
+
+For each page found, replace:
+```html
+<a href="#main" class="skip-link">Skip to content</a>
+```
+With:
+```html
+<a href="#main" class="skip-link">Skip to main content</a>
+```
+
+```bash
+# After fix, verify zero remaining instances
+grep -rn 'Skip to content' --include="*.html" . | grep -v 'assets/'
+```
+
+---
+
+## FIX 10 — Add aria-label to hamburger toggle [LOW]
+
+```bash
+grep -rn 'Toggle navigation\|hamburger\|navbar-toggler' --include="*.html" . \
+  | grep -v 'assets/' | head -5
+```
+
+Find the hamburger button element. Add `aria-label`:
+```html
+<!-- Before -->
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" ...>
+  Toggle navigation
+</button>
+
+<!-- After -->
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+        aria-label="Open navigation menu" ...>
+  <span class="navbar-toggler-icon"></span>
+</button>
+```
+
+Apply to all pages (or to the shared nav template if one exists).
+
+---
+
+## VERIFICATION SWEEP — Run after all fixes
+
+```bash
+# 1. No broken logo href
+grep -rn 'href="<>"' --include="*.html" . | grep -v assets/
+
+# 2. Color-scheme uniform  
+grep -rh 'color-scheme' --include="*.html" . \
+  | grep -v assets/ | grep -v 'light dark' | sort -u
+
+# 3. No deprecated meta tags
+grep -rn 'name="keywords"\|name="revisit-after"' --include="*.html" . \
+  | grep -v assets/
+
+# 4. Viewport-fit=cover on all pages
+grep -rL 'viewport-fit=cover' --include="*.html" . \
+  | grep -v assets/ | grep -v 404 | grep -v under-construction | sort
+
+# 5. Toolbox in every footer
+python3 - <<'EOF'
+import re
+from pathlib import Path
+pages = [p for p in Path('.').rglob('index.html')
+         if not any(x in str(p) for x in ['assets/','attached_assets/','tools/'])]
+missing = []
+for page in pages:
+    content = page.read_text(encoding='utf-8', errors='replace')
+    footer = re.search(r'<footer.*?</footer>', content, re.DOTALL)
+    if footer and '/toolbox/' not in footer.group(0):
+        missing.append(str(page))
+for m in missing:
+    print(f"FOOTER MISSING TOOLBOX: {m}")
+print(f"Total missing: {len(missing)}")
+EOF
+
+# 6. Skip link text uniform
+grep -rn 'Skip to content[^$]' --include="*.html" . | grep -v assets/
+
+# 7. Validate idempotency — run the deprecated meta script again
+python3 tools/remove-deprecated-meta.py
+# Should report 0 pages cleaned
+```
+
+---
+
+## COMMIT SEQUENCE
+
+```bash
+git add index.html
+git commit -m "fix: repair homepage nav logo broken href (was empty <>)"
+
+git add persona/index.html about/index.html
+git commit -m "fix: standardize color-scheme meta to 'light dark' on persona and about pages"
+
+git add about/index.html
+git commit -m "fix: align about page title and og:title to 'About Glee & Jamie'"
+
+git add toolbox/
+git commit -m "fix: convert under-construction overlay to position:fixed on all branch pages"
+
+git add assets/css/main.css
+git commit -m "fix: add viewport-fit=cover to Neighborly Bazaar and any remaining pages"
+
+git add tools/remove-deprecated-meta.py
+git add -A  # pages cleaned of deprecated meta
+git commit -m "refactor: remove deprecated meta-keywords and meta-revisit-after from all pages"
+
+git add assets/data/sparkle.json assets/js/sparkle-loader.js
+git add -A  # pages updated with data-sparkle-link attr
+git commit -m "feat: single-source Sparkle banner via sparkle.json + sparkle-loader.js"
+
+git add -A  # footer toolbox links + skip link fixes + aria labels
+git commit -m "fix: add Toolbox to footer nav, standardize skip link text, add hamburger aria-label"
+
+git add SITE_AUDIT_2026-05-26.md
+git commit -m "docs: site evaluation and repair log 2026-05-26"
+```
+
+---
+
+## WRITE SITE_AUDIT_2026-05-26.md
+
+After all fixes are committed, generate this file in the repo root:
+
+```markdown
+# Glee-fully Tools — Site Audit 2026-05-26
+Scope: Full-site fresh evaluation across all major page types
+Prior audits: SITE_AUDIT_2026-05-02.md, SITE_AUDIT_2026-05-12.md
+
+## Pages Evaluated
+- Homepage (/)
+- Toolbox hub (/toolbox/)
+- Ecosystem (/ecosystem/)
+- Persona (/persona/)
+- About (/about/)
+- Universe (/universe/)
+- Contact (/contact/)
+- Legal (/legal/)
+- Neighborly Bazaar Tool-ette (/toolbox/05-organized-life/05f-neighborly-bazaar/)
+- Discovered Careers branch (/toolbox/01-discovered-careers/)
+
+## Findings Summary
+[Insert counts: Critical / High / Medium / Low]
+
+## Fixes Applied This Session
+[Checklist from above]
+
+## Remaining Open Items
+[Anything not addressed, ranked]
+
+## Responsive Design Notes
+[Results of multi-viewport testing]
+```
+
+---
+
+*Glee-fully Personalizable Tools™ | Evaluation authored 2026-05-26*
+*Dual-format: Notion notes (Part A) + Replit prompt (Part B)*
