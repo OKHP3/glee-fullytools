@@ -1,0 +1,74 @@
+[
+  {
+    "label": "home",
+    "path": "/",
+    "perf": 49,
+    "a11y": 95,
+    "bp": 100,
+    "seo": 100,
+    "lcp": "29.1\u00a0s",
+    "cls": "0.011",
+    "tbt": "1,250\u00a0ms",
+    "fcp": "1.8\u00a0s"
+  },
+  {
+    "label": "toolbox",
+    "path": "/toolbox/",
+    "perf": 49,
+    "a11y": 95,
+    "bp": 100,
+    "seo": 92,
+    "lcp": "20.7\u00a0s",
+    "cls": "0",
+    "tbt": "1,200\u00a0ms",
+    "fcp": "2.0\u00a0s"
+  },
+  {
+    "label": "ecosystem",
+    "path": "/ecosystem/",
+    "perf": 32,
+    "a11y": 96,
+    "bp": 100,
+    "seo": 100,
+    "lcp": "9.2\u00a0s",
+    "cls": "0.197",
+    "tbt": "3,280\u00a0ms",
+    "fcp": "2.0\u00a0s"
+  },
+  {
+    "label": "search",
+    "path": "/search/",
+    "perf": 49,
+    "a11y": 96,
+    "bp": 100,
+    "seo": 100,
+    "lcp": "9.2\u00a0s",
+    "cls": "0.113",
+    "tbt": "850\u00a0ms",
+    "fcp": "2.3\u00a0s"
+  },
+  {
+    "label": "branch-01",
+    "path": "/toolbox/01-discovered-careers/",
+    "perf": 51,
+    "a11y": 96,
+    "bp": 100,
+    "seo": 100,
+    "lcp": "9.2\u00a0s",
+    "cls": "0",
+    "tbt": "1,020\u00a0ms",
+    "fcp": "1.8\u00a0s"
+  },
+  {
+    "label": "tool-01a",
+    "path": "/toolbox/01-discovered-careers/01a-resume-builder/",
+    "perf": 47,
+    "a11y": 95,
+    "bp": 100,
+    "seo": 100,
+    "lcp": "20.3\u00a0s",
+    "cls": "0.09",
+    "tbt": "880\u00a0ms",
+    "fcp": "3.1\u00a0s"
+  }
+]
