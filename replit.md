@@ -175,7 +175,7 @@ templates are invisible to validators, indexer, sitemap, and feed.
 All audit documents live in `assets/docs/` (non-crawlable, skipped by all HTML-walking tools):
 
 * `assets/docs/FINAL_AUDIT_2026-05-03.md` — comprehensive 26-row change log, canonical reference
-* `assets/docs/OPEN_TODOS_2026-05-03.md` — 3 placeholder GPT URLs + deferred editorial items
+* `assets/docs/OPEN_TODOS_2026-05-03.md` — placeholder GPT URLs + deferred editorial items (updated 2026-05-26)
 * `assets/docs/AUDIT_PAGE_INVENTORY_2026-05-03.md` — Phase 0 page inventory
 * `assets/docs/AUDIT_LINKS_2026-05-03.md` — Phase 3 link audit
 * `assets/docs/AUDIT_ASSETS_2026-05-03.md` — Phase 7 asset inventory
@@ -187,6 +187,8 @@ Machine-readable JSON outputs live in `assets/audit/` (written by tools on each 
 `assets/audit/validation-report-2026-05-03.json`, `assets/audit/links-report-2026-05-03.json`, `assets/audit/asset-inventory-2026-05-03.json`
 
 ## Recent Changes
+
+- **2026-05-26 — Content, UX & construction banner polish (Task #2).** 3 placeholder GPT links resolved (`02c-present-hoarder`, `04d-dreamland-journeys`, `04e-memento-log`) using live URLs confirmed in branch pages. "Keep exploring" bottom-of-page nav tray injected on all 42 Tool-ette pages via `scripts/inject-keep-exploring.py` (idempotent, `<!-- AUTOGEN:KEEP-EXPLORING -->` marker); tray links: parent branch, prev sibling, next sibling, Toolbox, Search. Construction banners reclassified: branches 01–04, 07 converted from full modal overlay to slim `.construction-badge--slim` strip via `scripts/reclassify-construction-banners.py`; branch 06 (Healthy Bee-ing) retains full overlay pending 4 unfinished tool-ette links. CSS: `.construction-badge--slim` + `.keep-exploring` tray blocks added to `theme.css` (GLOBAL scope). Search index rebuilt (67 pages, 145.8 KB). Exit: 60/60 validator pages 0 issues, 0 broken links. Docs: `OPEN_TODOS_2026-05-03.md` updated, `LIVE_SITE_EVALUATION_2026-05-26.md` §12 added.
 
 - **2026-05-26 — Responsive viewport QA & CSS audit (Task #1).** `assets/docs/LIVE_SITE_EVALUATION_2026-05-26.md` written. Real browser testing via Playwright Chromium (libgbm.so.1 stub + 21 Nix deps) across 26 pages × 8 viewports = 208 combinations. Results: 0 P0 defects, 2 P1 found+fixed, 1 P2 fixed. CSS fixes in `theme.css` (GLOBAL scope): (1) `.grid > * { min-width: 0 }` — ecosystem/ article.card overflow at 320–1024px fixed (classic grid min-width:auto bug); (2) `pre:not(.mermaid) { overflow-x: auto; max-width: 100%; }` — bare `<pre>` blocks scroll on narrow viewports; (3) `flex-wrap: wrap` + `@media (max-width: 480px)` compact rule on `.site-specials` (sparkle banner). All four `scripts/*.py` validators updated to exclude `.pythonlibs` and `.cache`. New scripts: `scripts/responsive-audit.py` (static analysis), `scripts/viewport-qa.py` (Playwright spec), `scripts/run-viewport-qa.py` (self-contained runner). Browser QA report: `assets/audit/viewport-qa-2026-05-26.json`. Exit: 208/208 browser checks clean, 60/60 validator pages 0 issues.
 

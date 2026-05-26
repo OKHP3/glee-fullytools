@@ -249,3 +249,73 @@ The site uses a **mobile-first single-column baseline with `min-width` progressi
 | `theme.css` net change | +32 lines (3 additive rules: Fix 1 + Fix 2 + Fix 3), no existing rules overridden |
 | Validators updated | 4 scripts — `.pythonlibs` / `.cache` added to `SKIP_DIRS` |
 | New scripts | `scripts/responsive-audit.py`, `scripts/viewport-qa.py`, `scripts/run-viewport-qa.py` |
+
+---
+
+## 12. Content, UX & GPT Link Fixes (Task #2 — 2026-05-26)
+
+**Auditor:** Agent (Task #2)  
+**Pages changed:** 42 Tool-ette pages + 5 branch pages + 3 tool-ette GPT-link pages + `assets/css/theme.css`
+
+### 12.1 Placeholder GPT links resolved
+
+Three tool-ette pages still pointed to generic ChatGPT fallback URLs as of Task #1.
+Real GPT slugs were confirmed present in the parent branch pages and backfilled.
+
+| Page | Old href | New href (slug) |
+|---|---|---|
+| `02c-present-hoarder` | `https://chatgpt.com` | `g-685af65a…present-hoarder-by-glee-fully` |
+| `04d-dreamland-journeys` | `https://chat.openai.com/` | `g-685b072f…dreamland-journeys-by-glee-fully` |
+| `04e-memento-log` | `REPLACE_WITH_MEMENTO_LOG_GPT_ID` | `g-685b072b…memento-log-by-glee-fully` |
+
+Script: `scripts/fix-placeholder-gpt-links.py` (idempotent).
+
+### 12.2 "Keep exploring" tray — all 42 Tool-ette pages
+
+A bottom-of-page nav tray was injected on every Tool-ette page via idempotent
+marker `<!-- AUTOGEN:KEEP-EXPLORING -->`. Each tray contains:
+
+- ↑ Parent branch link
+- ← Previous sibling (omitted on first in branch)
+- → Next sibling (omitted on last in branch)
+- The Toolbox hub `/toolbox/`
+- Search `/search/`
+
+CSS: `.keep-exploring` block added to `assets/css/theme.css` (GLOBAL scope, after
+construction-overlay block). Cards use Glee rust accent on hover with full
+keyboard-focus ring.
+
+**Coverage:** 42/42 Tool-ette pages injected (7 branches × 5–7 tools each).
+
+### 12.3 Construction banner reclassification — 5 of 7 branch pages
+
+Decision rule applied: complete content + all links live → slim badge; incomplete
+(href="#" placeholders present) → keep full overlay.
+
+| Branch | Before | After | Reason |
+|---|---|---|---|
+| 01 Discovered Careers | Full overlay | 🌱 Slim badge | All 6 tool-ette links live |
+| 02 Treasured Finds | Full overlay | 🌱 Slim badge | All 7 tool-ette links live |
+| 03 Tasty Tracker | Full overlay | 🌱 Slim badge | All 5 tool-ette links live |
+| 04 Traveler's Guide | Full overlay | 🌱 Slim badge | All 5 tool-ette links live (04d+04e fixed above) |
+| 05 Organized Life | None | None | No overlay was present |
+| 06 Healthy Bee-ing | Full overlay | Full overlay (kept) | Care Check, Calm Keep, Snappy Count, Medi Minder still href="#" |
+| 07 Identity Known | Full overlay | 🌱 Slim badge | All 7 tool-ette links live |
+
+CSS: `.construction-badge--slim` block added to `assets/css/theme.css` (GLOBAL scope).
+Script: `scripts/reclassify-construction-banners.py` (idempotent, AUTOGEN:CONSTRUCTION-SLIM marker).
+
+### 12.4 Search index rebuilt
+
+`scripts/build-search-index.py` re-run after all page changes.
+Output: `assets/data/search-index.json` — 67 pages, 145.8 KB.
+
+### 12.5 Exit state
+
+| Check | Result |
+|---|---|
+| GPT placeholder links | 3/3 resolved ✅ |
+| Keep-exploring tray injected | 42/42 Tool-ette pages ✅ |
+| Branch banner reclassification | 5 slim + 1 kept + 1 none = 7/7 processed ✅ |
+| OPEN_TODOS updated | ✅ |
+| Search index current | ✅ |

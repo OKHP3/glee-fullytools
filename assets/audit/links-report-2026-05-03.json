@@ -1,7 +1,7 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 60,
-  "internal_links": 2115,
+  "internal_links": 2311,
   "external_links": 1190,
   "broken_links": [],
   "style_issues": [],
@@ -53,32 +53,32 @@
     },
     {
       "path": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
-      "internal_links": 36,
+      "internal_links": 40,
       "external_links": 19
     },
     {
       "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
-      "internal_links": 34,
+      "internal_links": 39,
       "external_links": 19
     },
     {
       "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
-      "internal_links": 34,
+      "internal_links": 38,
       "external_links": 20
     },
     {
@@ -88,37 +88,37 @@
     },
     {
       "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
-      "internal_links": 37,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
-      "internal_links": 34,
+      "internal_links": 39,
       "external_links": 19
     },
     {
       "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
-      "internal_links": 31,
+      "internal_links": 36,
       "external_links": 25
     },
     {
       "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
-      "internal_links": 31,
+      "internal_links": 36,
       "external_links": 23
     },
     {
       "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
-      "internal_links": 37,
+      "internal_links": 41,
       "external_links": 19
     },
     {
@@ -128,27 +128,27 @@
     },
     {
       "path": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
-      "internal_links": 35,
+      "internal_links": 39,
       "external_links": 19
     },
     {
       "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
-      "internal_links": 31,
+      "internal_links": 36,
       "external_links": 23
     },
     {
       "path": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
-      "internal_links": 35,
+      "internal_links": 40,
       "external_links": 20
     },
     {
       "path": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
-      "internal_links": 35,
+      "internal_links": 40,
       "external_links": 20
     },
     {
       "path": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
-      "internal_links": 35,
+      "internal_links": 39,
       "external_links": 19
     },
     {
@@ -158,27 +158,27 @@
     },
     {
       "path": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
-      "internal_links": 34,
+      "internal_links": 38,
       "external_links": 19
     },
     {
       "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
-      "internal_links": 35,
+      "internal_links": 40,
       "external_links": 19
     },
     {
       "path": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
-      "internal_links": 29,
+      "internal_links": 34,
       "external_links": 19
     },
     {
       "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
-      "internal_links": 31,
+      "internal_links": 36,
       "external_links": 20
     },
     {
       "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
-      "internal_links": 34,
+      "internal_links": 38,
       "external_links": 19
     },
     {
@@ -188,32 +188,32 @@
     },
     {
       "path": "toolbox/05-organized-life/05a-task-maestro/index.html",
-      "internal_links": 36,
+      "internal_links": 40,
       "external_links": 19
     },
     {
       "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
-      "internal_links": 35,
+      "internal_links": 39,
       "external_links": 20
     },
     {
@@ -223,32 +223,32 @@
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
-      "internal_links": 36,
+      "internal_links": 40,
       "external_links": 20
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 20
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 20
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
-      "internal_links": 36,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
-      "internal_links": 36,
+      "internal_links": 40,
       "external_links": 19
     },
     {
@@ -258,37 +258,37 @@
     },
     {
       "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
-      "internal_links": 37,
+      "internal_links": 41,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
-      "internal_links": 37,
+      "internal_links": 42,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
-      "internal_links": 34,
+      "internal_links": 39,
       "external_links": 19
     },
     {
       "path": "toolbox/07-identity-known/07g-self-fixer/index.html",
-      "internal_links": 37,
+      "internal_links": 41,
       "external_links": 19
     },
     {
