@@ -1,0 +1,1477 @@
+{
+  "date": "2026-05-26",
+  "base_url": "http://localhost:5000",
+  "tool": "Playwright Chromium (headless, --disable-gpu, libgbm.so.1 stub)",
+  "viewports_tested": [
+    "320",
+    "375",
+    "390",
+    "414",
+    "768",
+    "1024",
+    "1280",
+    "1440"
+  ],
+  "pages_tested": 26,
+  "total_combinations": 208,
+  "total_issues": 0,
+  "issues_before_fixes": 6,
+  "fixes_applied": [
+    {
+      "id": "P1-ecosystem",
+      "severity": "P1",
+      "symptom": "article.card horizontal-overflow +745px at 320px up to +73px at 1024px on ecosystem/",
+      "root_cause": "CSS grid min-width:auto on grid items — article.card expanded beyond its track to fit unrendered <pre class=mermaid> content",
+      "fix": "Added .grid > * { min-width: 0 } to GLOBAL scope of theme.css",
+      "verified": "ecosystem/: all 8 viewports clean post-fix"
+    },
+    {
+      "id": "P1-pre-overflow",
+      "severity": "P1",
+      "symptom": "<pre> code blocks overflow at narrow viewports (04d-dreamland-journeys)",
+      "root_cause": "default pre white-space:pre with no overflow constraint",
+      "fix": "Added pre:not(.mermaid) { overflow-x: auto; max-width: 100% } to GLOBAL scope of theme.css",
+      "verified": "tool-04d: all 8 viewports clean"
+    },
+    {
+      "id": "P2-sparkle",
+      "severity": "P2",
+      "symptom": ".site-specials sparkle banner items wrap awkwardly at ≤480px",
+      "root_cause": "Missing flex-wrap on banner flex container",
+      "fix": "Added flex-wrap:wrap + @media(max-width:480px) compact rule to .site-specials in GLOBAL scope",
+      "verified": "home + all pages: clean at 320–480px"
+    }
+  ],
+  "results": [
+    {
+      "slug": "home",
+      "page": "/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "toolbox",
+      "page": "/toolbox/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "ecosystem",
+      "page": "/ecosystem/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "universe",
+      "page": "/universe/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "search",
+      "page": "/search/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "about",
+      "page": "/about/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "contact",
+      "page": "/contact/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "legal",
+      "page": "/legal/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "persona",
+      "page": "/persona/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-01",
+      "page": "/toolbox/01-discovered-careers/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-02",
+      "page": "/toolbox/02-treasured-finds/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-03",
+      "page": "/toolbox/03-tasty-tracker/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-04",
+      "page": "/toolbox/04-travelers-guide/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-05",
+      "page": "/toolbox/05-organized-life/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-06",
+      "page": "/toolbox/06-healthy-bee-ing/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "branch-07",
+      "page": "/toolbox/07-identity-known/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-01a",
+      "page": "/toolbox/01-discovered-careers/01a-resume-builder/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-02a",
+      "page": "/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-03a",
+      "page": "/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-04a",
+      "page": "/toolbox/04-travelers-guide/04a-journey-diary/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-05a",
+      "page": "/toolbox/05-organized-life/05a-task-maestro/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-06a",
+      "page": "/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-07a",
+      "page": "/toolbox/07-identity-known/07a-critter-spotter/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-02c",
+      "page": "/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-04d",
+      "page": "/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    },
+    {
+      "slug": "tool-04e",
+      "page": "/toolbox/04-travelers-guide/04e-memento-log/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ],
+      "page_issues": 0
+    }
+  ]
+}

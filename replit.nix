@@ -1,0 +1,32 @@
+{pkgs}: {
+  deps = [
+    pkgs.libGLU
+    pkgs.libGL
+    pkgs.libglvnd
+    pkgs.eudev
+    pkgs.systemd
+    pkgs.udev
+    pkgs.libdrm
+    pkgs.xorg.libxcb
+    pkgs.gdk-pixbuf
+    pkgs.pango
+    pkgs.xorg.libXcomposite
+    pkgs.xorg.libXrandr
+    pkgs.xorg.libXfixes
+    pkgs.xorg.libXdamage
+    pkgs.xorg.libXext
+    pkgs.xorg.libX11
+    pkgs.cairo
+    pkgs.mesa
+    pkgs.alsa-lib
+    pkgs.libxkbcommon
+    pkgs.expat
+    pkgs.cups
+    pkgs.dbus
+    pkgs.at-spi2-atk
+    pkgs.atk
+    pkgs.glib
+    pkgs.nss
+    pkgs.nspr
+  ];
+}

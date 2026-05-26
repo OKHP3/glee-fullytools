@@ -184,6 +184,10 @@ button {
   gap: 1.75rem;
 }
 
+.grid > * {
+  min-width: 0; /* prevent grid items expanding beyond track; fixes Mermaid pre overflow in narrow columns */
+}
+
 /* ===== HEADER & NAV ====================================================== */
 
 .site-header {
