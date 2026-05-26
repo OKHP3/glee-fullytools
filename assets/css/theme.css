@@ -105,6 +105,14 @@ img {
   display: block;
 }
 
+/* Bare <pre> blocks (non-Mermaid) scroll horizontally on narrow viewports
+   instead of breaking the page layout.  .code-drop pre already has its own
+   overflow-x rule; this covers any other <pre> used for prompt / code samples. */
+pre:not(.mermaid) {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -2990,6 +2998,7 @@ body:not(.glee-main):not(.askjamie-main) .site-status {
 
 .site-specials {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   align-items: baseline;
   padding: 0.5rem 1rem;
@@ -3019,6 +3028,17 @@ body:not(.glee-main):not(.askjamie-main) .site-status {
 .site-specials--okh { /* forge / industrial */
   background: #1c2127;
   color: #f4f7fa;
+}
+
+/* Sparkle banner: compact on narrow phones */
+@media (max-width: 480px) {
+  .site-specials {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    gap: 0.3rem;
+  }
+  .site-specials-label { display: none; }
 }
 
 /* ===== "LATEST MILESTONE" HIGHLIGHT SECTION ========================= */

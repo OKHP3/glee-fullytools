@@ -24,7 +24,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_FILES = {"404.html", "under-construction.html"}
 EXCLUDE_DIRS = {".git", ".local", ".cache", "node_modules", "attached_assets",
-                "tools", ".github", ".vscode", ".agents"}
+                "tools", ".github", ".vscode", ".agents", ".pythonlibs"}
 
 SKIP_TAGS = {"script", "style", "noscript", "svg", "template"}
 HEADING_TAGS = {"h1", "h2", "h3"}

@@ -1,0 +1,563 @@
+{
+  "date": "2026-05-26",
+  "css_file": "assets/css/theme.css",
+  "pages_scanned": 66,
+  "totals": {
+    "p0": 0,
+    "p1": 3,
+    "p2": 89,
+    "total": 92
+  },
+  "issues": [
+    {
+      "type": "CSS-3",
+      "severity": "P2",
+      "message": "white-space:nowrap on 'margin: 0;\n}\n\n.primary-nav .submenu a' — could overflow at 320px"
+    },
+    {
+      "type": "CSS-3",
+      "severity": "P2",
+      "message": "white-space:nowrap on 'border-color: var(--color-accent);\n  color: var(--color-acce' — could overflow at 320px"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "404.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-3",
+      "severity": "P1",
+      "page": "ecosystem/index.html",
+      "message": "Contains <pre> without overflow-x container"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/01-discovered-careers/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "message": "<img width=960> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/02-treasured-finds/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/03-tasty-tracker/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-3",
+      "severity": "P1",
+      "page": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "message": "Contains <pre> without overflow-x container"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/04-travelers-guide/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05a-task-maestro/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05a-task-maestro/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/06-healthy-bee-ing/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "message": "<img width=1024> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/07-identity-known/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "toolbox/index.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-1",
+      "severity": "P2",
+      "page": "under-construction.html",
+      "message": "<img width=1536> without max-width:100% protection"
+    },
+    {
+      "type": "HTML-3",
+      "severity": "P1",
+      "page": "universe/index.html",
+      "message": "Contains <pre> without overflow-x container"
+    }
+  ]
+}

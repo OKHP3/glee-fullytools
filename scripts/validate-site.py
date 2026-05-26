@@ -37,7 +37,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets"}
+SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache"}
 SITE = "https://glee-fully.tools"
 
 # Pages that intentionally point canonical to the homepage / are noindex.
