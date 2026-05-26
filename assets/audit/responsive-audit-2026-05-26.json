@@ -1,12 +1,12 @@
 {
   "date": "2026-05-26",
   "css_file": "assets/css/theme.css",
-  "pages_scanned": 66,
+  "pages_scanned": 60,
   "totals": {
     "p0": 0,
-    "p1": 3,
+    "p1": 0,
     "p2": 89,
-    "total": 92
+    "total": 89
   },
   "issues": [
     {
@@ -24,12 +24,6 @@
       "severity": "P2",
       "page": "404.html",
       "message": "<img width=1536> without max-width:100% protection"
-    },
-    {
-      "type": "HTML-3",
-      "severity": "P1",
-      "page": "ecosystem/index.html",
-      "message": "Contains <pre> without overflow-x container"
     },
     {
       "type": "HTML-1",
@@ -282,12 +276,6 @@
       "severity": "P2",
       "page": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
       "message": "<img width=1536> without max-width:100% protection"
-    },
-    {
-      "type": "HTML-3",
-      "severity": "P1",
-      "page": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
-      "message": "Contains <pre> without overflow-x container"
     },
     {
       "type": "HTML-1",
@@ -552,12 +540,6 @@
       "severity": "P2",
       "page": "under-construction.html",
       "message": "<img width=1536> without max-width:100% protection"
-    },
-    {
-      "type": "HTML-3",
-      "severity": "P1",
-      "page": "universe/index.html",
-      "message": "Contains <pre> without overflow-x container"
     }
   ]
 }

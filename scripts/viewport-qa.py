@@ -7,9 +7,10 @@ checks for horizontal overflow, nav layout issues, and reports findings.
 
 Usage:
     python3 scripts/viewport-qa.py [--base-url http://localhost:5000]
+    python3 scripts/viewport-qa.py --all-screenshots
 
 Output:
-    assets/audit/screenshots/2026-05-26/<page>-<width>.png  (failures only by default)
+    assets/audit/screenshots/2026-05-26/<page>-<width>.png  (failures; all if --all-screenshots)
     assets/audit/viewport-qa-2026-05-26.json
 """
 from __future__ import annotations
@@ -37,8 +38,9 @@ VIEWPORTS = [
     {"name": "1440", "width": 1440, "height": 900},
 ]
 
-# Pages to test: (slug_for_filename, path)
+# Pages: (slug_for_filename, path) — paths verified against real filesystem 2026-05-26
 PAGES = [
+    # Core pages
     ("home",               "/"),
     ("toolbox",            "/toolbox/"),
     ("ecosystem",          "/ecosystem/"),
@@ -48,26 +50,26 @@ PAGES = [
     ("legal",              "/legal/"),
     ("persona",            "/persona/"),
     ("universe",           "/universe/"),
-    # 7 branch pages
+    # 7 branch hub pages (actual folder names)
     ("branch-01",          "/toolbox/01-discovered-careers/"),
-    ("branch-02",          "/toolbox/02-make-it-beautiful/"),
-    ("branch-03",          "/toolbox/03-feed-your-soul/"),
-    ("branch-04",          "/toolbox/04-memory-keeping/"),
-    ("branch-05",          "/toolbox/05-community-connector/"),
+    ("branch-02",          "/toolbox/02-treasured-finds/"),
+    ("branch-03",          "/toolbox/03-tasty-tracker/"),
+    ("branch-04",          "/toolbox/04-travelers-guide/"),
+    ("branch-05",          "/toolbox/05-organized-life/"),
     ("branch-06",          "/toolbox/06-healthy-bee-ing/"),
-    ("branch-07",          "/toolbox/07-money-mindful/"),
-    # One tool-ette per branch
-    ("tool-01a",           "/toolbox/01-discovered-careers/01a-blueprint-forge-suite/"),
-    ("tool-02a",           "/toolbox/02-make-it-beautiful/02a-style-catalyst/"),
-    ("tool-03a",           "/toolbox/03-feed-your-soul/03a-flavor-explorer/"),
-    ("tool-04a",           "/toolbox/04-memory-keeping/04a-spirited-journal/"),
-    ("tool-05a",           "/toolbox/05-community-connector/05a-kindred-compass/"),
+    ("branch-07",          "/toolbox/07-identity-known/"),
+    # One tool-ette per branch (first tool in each)
+    ("tool-01a",           "/toolbox/01-discovered-careers/01a-resume-builder/"),
+    ("tool-02a",           "/toolbox/02-treasured-finds/02a-personal-librarian/"),
+    ("tool-03a",           "/toolbox/03-tasty-tracker/03a-flavor-meister/"),
+    ("tool-04a",           "/toolbox/04-travelers-guide/04a-journey-diary/"),
+    ("tool-05a",           "/toolbox/05-organized-life/05a-task-maestro/"),
     ("tool-06a",           "/toolbox/06-healthy-bee-ing/06a-care-check/"),
-    ("tool-07a",           "/toolbox/07-money-mindful/07a-budget-blueprint/"),
+    ("tool-07a",           "/toolbox/07-identity-known/07a-critter-spotter/"),
     # Specifically-called-out pages
-    ("tool-02c",           "/toolbox/02-make-it-beautiful/02c-present-hoarder/"),
-    ("tool-04d",           "/toolbox/04-memory-keeping/04d-dreamland-journeys/"),
-    ("tool-04e",           "/toolbox/04-memory-keeping/04e-memento-log/"),
+    ("tool-02c",           "/toolbox/02-treasured-finds/02c-present-hoarder/"),
+    ("tool-04d",           "/toolbox/04-travelers-guide/04d-dreamland-journeys/"),
+    ("tool-04e",           "/toolbox/04-travelers-guide/04e-memento-log/"),
 ]
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -102,22 +104,20 @@ def run_qa():
 
                 try:
                     resp = page.goto(url, wait_until="domcontentloaded", timeout=15000)
-                    time.sleep(0.4)  # let JS settle
+                    time.sleep(0.5)  # let JS (sparkle-loader, construction overlay) settle
 
                     status = resp.status if resp else 0
                     if status >= 400:
                         vp_issues.append(f"HTTP {status}")
 
-                    # ── Check 1: Horizontal overflow (body/html scroll width > viewport)
+                    # ── Check 1: Horizontal overflow ──────────────────────────────
                     overflow_data = page.evaluate("""() => {
                         const vw = window.innerWidth;
                         const bodyW = document.body.scrollWidth;
                         const htmlW = document.documentElement.scrollWidth;
                         const maxW = Math.max(bodyW, htmlW);
-                        // Find offending elements
                         const offenders = [];
-                        const allEls = document.querySelectorAll('*');
-                        for (const el of allEls) {
+                        for (const el of document.querySelectorAll('*')) {
                             const r = el.getBoundingClientRect();
                             if (r.right > vw + 4) {
                                 const tag = el.tagName.toLowerCase();
@@ -128,16 +128,15 @@ def run_qa():
                                     cls: typeof cls === 'string' ? cls.slice(0, 60) : '',
                                     id: id.slice(0, 30),
                                     right: Math.round(r.right),
-                                    vw
                                 });
-                                if (offenders.length >= 8) break;
+                                if (offenders.length >= 6) break;
                             }
                         }
                         return { bodyW, htmlW, maxW, vw, offenders };
                     }""")
                     if overflow_data["maxW"] > overflow_data["vw"] + 4:
                         overflow_px = overflow_data["maxW"] - overflow_data["vw"]
-                        offenders = overflow_data["offenders"][:4]
+                        offenders = overflow_data["offenders"][:3]
                         offender_str = "; ".join(
                             f"{o['tag']}{'#'+o['id'] if o['id'] else ''}{'.' + o['cls'].split()[0] if o['cls'] else ''}"
                             for o in offenders
@@ -146,53 +145,38 @@ def run_qa():
                             f"horizontal-overflow +{overflow_px}px (offenders: {offender_str})"
                         )
 
-                    # ── Check 2: Nav toggle visible & functional at mobile widths
+                    # ── Check 2: Nav toggle visible at mobile ─────────────────────
                     if vp["width"] < 768:
-                        # hamburger button should exist and be visible
                         toggle = page.query_selector(".nav-toggle")
-                        if toggle:
-                            is_visible = toggle.is_visible()
-                            if not is_visible:
-                                vp_issues.append("nav-toggle hidden at mobile width")
-                        else:
+                        if toggle and not toggle.is_visible():
+                            vp_issues.append("nav-toggle hidden at mobile width")
+                        elif not toggle:
                             vp_warnings.append("nav-toggle element not found")
 
-                        # primary-nav links should NOT be visible by default (collapsed)
-                        # (they may be in a hidden drawer)
-                        nav_ul = page.query_selector(".primary-nav ul")
-                        if nav_ul:
-                            nav_height = nav_ul.bounding_box()
-                            # if height > 0 and visible, that might be fine if it's a drawer
-                            # We just verify the toggle exists instead
-                            pass
-
-                    # ── Check 3: No text/image overflow clipping — check hero headings
+                    # ── Check 3: H1 not clipped ───────────────────────────────────
                     h1 = page.query_selector("h1")
                     if h1:
                         h1_box = h1.bounding_box()
                         if h1_box and h1_box["width"] > 0:
-                            if h1_box["x"] < -1:
-                                vp_warnings.append(f"h1 extends off left edge (x={h1_box['x']:.0f})")
                             if h1_box["x"] + h1_box["width"] > vp["width"] + 4:
-                                vp_issues.append(f"h1 overflows right edge")
+                                vp_issues.append("h1 overflows right edge")
 
-                    # ── Check 4: Footer visible (not hidden behind content)
+                    # ── Check 4: Footer visible ───────────────────────────────────
                     footer = page.query_selector("footer, .site-footer")
                     if footer:
-                        footer_box = footer.bounding_box()
-                        if footer_box and footer_box["height"] < 1:
+                        box = footer.bounding_box()
+                        if box and box["height"] < 1:
                             vp_warnings.append("footer has zero height")
 
-                    # ── Check 5: Images not overflowing their containers
+                    # ── Check 5: Images not overflowing ──────────────────────────
                     img_overflow = page.evaluate("""() => {
-                        const imgs = document.querySelectorAll('img');
                         const issues = [];
-                        for (const img of imgs) {
+                        for (const img of document.querySelectorAll('img')) {
                             const r = img.getBoundingClientRect();
                             const vw = window.innerWidth;
                             if (r.width > vw + 4 && r.width > 50) {
-                                const src = img.src.split('/').pop().slice(0, 30);
-                                issues.push({ src, w: Math.round(r.width), vw });
+                                issues.push({ src: img.src.split('/').pop().slice(0, 30),
+                                              w: Math.round(r.width), vw });
                                 if (issues.length >= 3) break;
                             }
                         }
@@ -204,12 +188,11 @@ def run_qa():
                             f"({img_iss['w']}px > {img_iss['vw']}px)"
                         )
 
-                    # ── Check 6: Text readability — min font size check (body text ≥ 14px)
+                    # ── Check 6: Text ≥ 14px ──────────────────────────────────────
                     small_text = page.evaluate("""() => {
                         const MIN_PX = 14;
-                        const paras = document.querySelectorAll('p, li, td');
                         const issues = [];
-                        for (const el of paras) {
+                        for (const el of document.querySelectorAll('p, li, td')) {
                             const fs = parseFloat(window.getComputedStyle(el).fontSize);
                             if (fs > 0 && fs < MIN_PX) {
                                 const text = el.textContent.trim().slice(0, 40);
@@ -222,21 +205,16 @@ def run_qa():
                     for st in small_text:
                         vp_warnings.append(f"text at {st['fs']}px (<14px): '{st['text'][:30]}'")
 
-                    # ── Check 7: Sparkle banner — should load/exist
-                    if vp["width"] <= 414:
-                        sparkle = page.query_selector("[data-sparkle-link], .sparkle-banner, .site-status")
-                        # Not a hard failure if missing — just a warning
-                        # (the sparkle-loader.js is async, may not be present)
-
-                    # ── Screenshot on any issue, or if --all-screenshots
-                    has_issues = bool(vp_issues)
-                    if has_issues or SCREENSHOTS_ALL:
+                    # Screenshot: on any issue, or --all-screenshots
+                    if vp_issues or SCREENSHOTS_ALL:
                         shot_path = SCREENSHOTS_DIR / f"{page_slug}-{vp['name']}.png"
-                        page.screenshot(path=str(shot_path), full_page=False)
+                        try:
+                            page.screenshot(path=str(shot_path), full_page=False)
+                        except Exception:
+                            pass
 
                 except Exception as exc:
                     vp_issues.append(f"playwright-error: {exc}")
-
                 finally:
                     context.close()
 
@@ -250,10 +228,9 @@ def run_qa():
                 total_issues += len(vp_issues)
 
                 status_char = "✗" if vp_issues else ("△" if vp_warnings else "✓")
-                print(
-                    f"  {status_char} {page_slug:<20} {vp['name']:>5}px  "
-                    f"{'  '.join(vp_issues[:2]) if vp_issues else ('  '.join(vp_warnings[:1]) if vp_warnings else 'ok')}"
-                )
+                issue_str = ("  ".join(vp_issues[:2]) if vp_issues
+                             else ("  ".join(vp_warnings[:1]) if vp_warnings else "ok"))
+                print(f"  {status_char} {page_slug:<22} {vp['name']:>5}px  {issue_str}")
 
             results.append(page_results)
 

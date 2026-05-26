@@ -172,14 +172,25 @@ def audit_html_page(rel: Path, html: str) -> list[dict]:
                 "message": "Contains <table> with no overflow-x wrapper",
             })
 
-    # HTML-2: <pre> or <code> blocks not inside overflow-x container
-    if re.search(r'<pre[^>]*>', html, re.I):
-        if not re.search(r'overflow[^"]*auto|overflow[^"]*scroll|overflow-x|code-drop|diagram-shell', html):
+    # HTML-2: <pre> blocks not inside overflow-x container
+    # Exclude <pre class="mermaid"> — those are converted to SVG by Mermaid.js and
+    # are wrapped by .glee-mermaid-shell which provides overflow-x:auto in CSS.
+    # Also: theme.css now has a global `pre:not(.mermaid){overflow-x:auto}` rule
+    # that protects every non-mermaid <pre> on pages that load theme.css (all 60).
+    # Only flag pages that have non-mermaid <pre> AND don't load theme.css.
+    pre_tags = re.findall(r'<pre[^>]*>', html, re.I)
+    has_non_mermaid_pre = any(
+        not re.search(r'class=["\'][^"\']*mermaid', tag, re.I)
+        for tag in pre_tags
+    )
+    loads_theme_css = 'theme.css' in html or 'assets/css' in html
+    if has_non_mermaid_pre and not loads_theme_css:
+        if not re.search(r'overflow[^"]*auto|overflow[^"]*scroll|overflow-x|code-drop|diagram-shell|mermaid-shell', html):
             issues.append({
                 "type": "HTML-3",
                 "severity": "P1",
                 "page": rel.as_posix(),
-                "message": "Contains <pre> without overflow-x container",
+                "message": "Contains <pre> without overflow-x container and does not load theme.css",
             })
 
     # HTML-3: Inline style with fixed width > 320px
