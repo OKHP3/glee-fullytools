@@ -2,7 +2,7 @@
 """
 responsive-audit.py — Static responsive-design analysis
 =========================================================
-Analyses theme.css + every HTML page for patterns known to cause
+Analyzes theme.css + every HTML page for patterns known to cause
 horizontal overflow or layout breakage at narrow viewports.
 
 Checks:
@@ -338,7 +338,7 @@ def audit_toolette_pages(pages: list[tuple[Path, str]]) -> list[dict]:
 def main() -> int:
     css = THEME_CSS.read_text(encoding="utf-8", errors="replace")
 
-    print("Analysing theme.css for responsive defects…")
+    print("Analyzing theme.css for responsive defects…")
     css_issues = audit_css(css)
     css_issues += audit_glee_hero_css(css)
     css_issues += audit_nav_css(css)
@@ -346,7 +346,7 @@ def main() -> int:
 
     print(f"  CSS checks done: {len(css_issues)} issues")
 
-    print("Analysing HTML pages…")
+    print("Analyzing HTML pages…")
     html_issues = []
     pages_data = []
     for path in sorted(ROOT.rglob("*.html")):

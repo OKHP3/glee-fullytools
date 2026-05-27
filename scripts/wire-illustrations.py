@@ -43,7 +43,7 @@ TOOLS = {
     ),
     "01e-blinkin-tuner": (
         "Blinkin Tuner",
-        "A retro-bright LinkedIn profile optimisation dashboard showing profile strength meter, keyword density, and section improvement checklist",
+        "A retro-bright LinkedIn profile optimization dashboard showing profile strength meter, keyword density, and section improvement checklist",
         "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
     ),
     "02a-personal-librarian": (
@@ -143,7 +143,7 @@ TOOLS = {
     ),
     "05d-scheduling-wizard": (
         "Scheduling Wizard",
-        "A retro-bright weekly calendar showing colour-coded time blocks for work, personal and health events with conflict detector",
+        "A retro-bright weekly calendar showing color-coded time blocks for work, personal and health events with conflict detector",
         "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
     ),
     "05e-lifestyle-wallboard": (
@@ -178,7 +178,7 @@ TOOLS = {
     ),
     "06e-moody-log": (
         "Moody Log",
-        "A retro-bright mood journal showing daily emotion cards, colour-coded calendar and trend chart",
+        "A retro-bright mood journal showing daily emotion cards, color-coded calendar and trend chart",
         "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
     ),
     "06f-maven-wise": (
@@ -208,7 +208,7 @@ TOOLS = {
     ),
     "07e-motif-muse": (
         "Motif Muse",
-        "A retro-bright pattern and motif inspiration board with style cards, colour palette chips and design origin notes",
+        "A retro-bright pattern and motif inspiration board with style cards, color palette chips and design origin notes",
         "toolbox/07-identity-known/07e-motif-muse/index.html",
     ),
     "07f-maker-matcher": (

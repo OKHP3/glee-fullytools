@@ -52,7 +52,7 @@ Enter these values into the **Manage app themes** panel field by field.
 | Primary text | `#0f172a` | Dark ink — high contrast on rust/orange |
 | Secondary background | `#2a2320` | OKH Espresso — dark complement surface |
 | Secondary text | `#f6f2ee` | Paper — readable on espresso |
-| Accent background | `#f3b932` | Glee Gold — nav underline end, highlight colour |
+| Accent background | `#f3b932` | Glee Gold — nav underline end, highlight color |
 | Accent text | `#2e2b29` | Espresso — dark text on gold |
 | Destructive background | `#d94f63` | Coral-red — used in the site CSS for error states |
 | Destructive text | `#ffffff` | White — readable on coral |
@@ -97,7 +97,7 @@ The five chart colors are drawn directly from the site's retro stripe palette, i
 
 ---
 
-## Full Colour Palette Reference
+## Full Color Palette Reference
 
 These are all named tokens from `theme.css`. Use them when building any new app in this workspace.
 

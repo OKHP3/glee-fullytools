@@ -163,7 +163,7 @@ def make_01a():
         txt(60, 224, "Senior UX Researcher · Bloom Studio", 10, "#3a3530", bold=True),
         txt(60, 238, "2022 – present · Remote", 9, "#c9bfb2"),
         txt(60, 252, "• Led 40+ usability sessions; reduced onboarding drop 31%", 9, "#3a3530"),
-        txt(60, 266, "• Built a 3-sprint generative research programme", 9, "#3a3530"),
+        txt(60, 266, "• Built a 3-sprint generative research program", 9, "#3a3530"),
         txt(60, 280, "UX Designer · Maple &amp; Co.", 10, "#3a3530", bold=True),
         txt(60, 294, "2019 – 2022 · Hybrid", 9, "#c9bfb2"),
         txt(60, 308, "• Redesigned checkout flow, lifting conversion by 18%", 9, "#3a3530"),
@@ -220,7 +220,7 @@ def make_01b():
         rect(424, 88, 352, 260, rx=10, fill="#fff"),
         rect(424, 88, 352, 28, rx=10, fill="#d35b2d", stroke="", sw=0),
         txt(440, 107, "Your Tailored Resume", 10, "#f6f2ee", bold=True),
-        txt(440, 130, "Jane Doe — customised for Solstice Apps", 11, "#3a3530", bold=True),
+        txt(440, 130, "Jane Doe — customized for Solstice Apps", 11, "#3a3530", bold=True),
         txt(440, 148, "SUMMARY (rewritten for match ✓)", 9, "#6b7c3f", bold=True),
         txt(440, 163, "Mixed-methods researcher with 6 yrs leading discovery", 9, "#3a3530"),
         txt(440, 177, "sprints and synthesising insights for cross-functional", 9, "#3a3530"),
@@ -318,7 +318,7 @@ def make_01d():
         txt(60, 220, "At Bloom Studio, I redesigned the onboarding experience for a", 9, "#3a3530"),
         txt(60, 233, "300k-user SaaS product, reducing drop-off by 31% in 3 months.", 9, "#3a3530"),
         txt(60, 246, "I led discovery, prototyped in Figma, ran usability sessions,", 9, "#3a3530"),
-        txt(60, 259, "and shipped — then iterated based on real-world behaviour.", 9, "#3a3530"),
+        txt(60, 259, "and shipped — then iterated based on real-world behavior.", 9, "#3a3530"),
         txt(60, 279, "What draws me most to Solstice is your approach to transparency.", 9, "#3a3530"),
         txt(60, 292, "The public changelog shows a company that trusts its users.", 9, "#3a3530"),
         txt(60, 305, "I'd love to help build the next chapter.", 9, "#3a3530"),
@@ -353,7 +353,7 @@ ILLUSTRATIONS["01d-letter-composer"] = make_01d()
 # ── 01e blinkin-tuner ─────────────────────────────────────────────────────────
 def make_01e():
     return join(
-        svg_open("bt", "A retro-bright LinkedIn profile optimisation dashboard showing profile strength meter, keyword density, and section improvement checklist"),
+        svg_open("bt", "A retro-bright LinkedIn profile optimization dashboard showing profile strength meter, keyword density, and section improvement checklist"),
         header_bar("Blinkin Tuner", "LinkedIn profile polish — where recruiters actually look.", dots()),
         rect(40, 88, 300, 200, rx=10, fill="#fff"),
         rect(40, 88, 300, 60, rx=10, fill="#2d7c7c", stroke="", sw=0),
@@ -423,8 +423,8 @@ def make_02a():
     def book(x, y, w, h, fill, rx=2):
         return rect(x, y, w, h, rx=rx, fill=fill, stroke="", sw=0)
     return join(
-        svg_open("pl", "A retro-bright bookshelf illustration showing colourful book spines with reading tracker and recommendation card"),
-        header_bar("Personal Librarian", "Your reading life — catalogued, tracked, and lovingly curated.", dots()),
+        svg_open("pl", "A retro-bright bookshelf illustration showing colorful book spines with reading tracker and recommendation card"),
+        header_bar("Personal Librarian", "Your reading life — cataloged, tracked, and lovingly curated.", dots()),
         rect(40, 88, 480, 290, rx=10, fill="#fff"),
         rect(40, 220, 480, 8, rx=2, fill="#c9bfb2"),
         book(60,150,22,70,"#d35b2d"), book(84,160,18,60,"#6b7c3f"), book(104,155,26,65,"#c9922d"),
@@ -468,7 +468,7 @@ def make_02a():
         txt(560, 320, "Lists &amp; shelves:", 10, "#9e3b2e", bold=True),
         txt(560, 340, "📋  Want to read          48 books", 9, "#3a3530"),
         txt(560, 358, "✅  Read this year        34 books", 9, "#3a3530"),
-        txt(560, 376, "❤️   All-time favourites  12 books", 9, "#3a3530"),
+        txt(560, 376, "❤️   All-time favorites  12 books", 9, "#3a3530"),
         txt(560, 394, "📦  Own but unread       21 books", 9, "#3a3530"),
         txt(560, 412, "🎁  Gift ideas              9 books", 9, "#3a3530"),
         svg_close("Personal Librarian"),
@@ -478,7 +478,7 @@ ILLUSTRATIONS["02a-personal-librarian"] = make_02a()
 # ── 02b decor-detective ───────────────────────────────────────────────────────
 def make_02b():
     return join(
-        svg_open("dd", "A retro-bright home decor mood board showing colour swatches, furniture sketches, style tags and a room planning grid"),
+        svg_open("dd", "A retro-bright home decor mood board showing color swatches, furniture sketches, style tags and a room planning grid"),
         header_bar("Decor Detective", "Identify what you love — then find more of it.", dots()),
         rect(40, 88, 460, 408, rx=10, fill="#fff"),
         txt(270, 112, "Living Room Mood Board", 12, "#9e3b2e", anchor="middle", bold=True),
@@ -547,7 +547,7 @@ ILLUSTRATIONS["02b-decor-detective"] = make_02b()
 # ── 02c present-hoarder ───────────────────────────────────────────────────────
 def make_02c():
     return join(
-        svg_open("ph", "A retro-bright gift wishlist organiser showing people-organised lists with budget tracking, occasion tags, and purchase status badges"),
+        svg_open("ph", "A retro-bright gift wishlist organizer showing people-organized lists with budget tracking, occasion tags, and purchase status badges"),
         header_bar("Present Hoarder", "Never forget a great gift idea — or give a mediocre one.", dots()),
         pill(48, 96, 72, 22, "#d35b2d", "Mum ❤️", "#f6f2ee", 9),
         pill(128, 96, 60, 22, "#e8e3dc", "Dad", "#9e3b2e", 9),
@@ -574,7 +574,7 @@ def make_02c():
         pill(410, 290, 44, 18, "#2d7c7c", "Idea", "#f6f2ee", 8),
         rect(60, 342, 440, 52, rx=7, fill="#f6f2ee"),
         rect(60, 342, 5, 52, fill="#c9bfb2", stroke="", sw=0),
-        txt(74, 361, "Cashmere cardigan — soft colours only (not black)", 10, "#c9bfb2", bold=True),
+        txt(74, 361, "Cashmere cardigan — soft colors only (not black)", 10, "#c9bfb2", bold=True),
         txt(74, 376, "Size 10–12 · Budget ~£50 · Check M&amp;S, Uniqlo", 8, "#c9bfb2"),
         txt(60, 412, "+ Add another idea for Mum", 9, "#d35b2d", bold=True, italic=True),
         bar(60, 428, 440, 280, 10, "#d35b2d"),
@@ -607,7 +607,7 @@ ILLUSTRATIONS["02c-present-hoarder"] = make_02c()
 def make_02d():
     return join(
         svg_open("sj", "A retro-bright fragrance journal showing a scent wheel with top, middle and base notes, a fragrance rating card, and a collection grid"),
-        header_bar("Scentinal Journal", "Your fragrance memory — catalogued, compared, and curated.", dots()),
+        header_bar("Scentinal Journal", "Your fragrance memory — cataloged, compared, and curated.", dots()),
         rect(40, 88, 340, 340, rx=10, fill="#fff"),
         txt(210, 112, "Scent Wheel", 11, "#9e3b2e", anchor="middle", bold=True),
         circle(210, 240, 120, "#f6f2ee", "#c9bfb2"),
@@ -657,7 +657,7 @@ def make_02d():
         txt(420, 368, "My collection:", 10, "#9e3b2e", bold=True),
         txt(420, 386, "Owned: 12 · Decanted: 4 · Wish list: 8", 9, "#3a3530"),
         txt(420, 402, "Families: Floral (6) · Fresh (3) · Woody (2)", 9, "#c9bfb2"),
-        txt(420, 420, "Favourite season: Spring / Autumn", 9, "#3a3530"),
+        txt(420, 420, "Favorite season: Spring / Autumn", 9, "#3a3530"),
         txt(420, 438, "Top brand: Jo Malone, Chanel, Diptyque", 9, "#3a3530"),
         txt(420, 456, '✨  Ask: "suggest a winter scent like Philosykos"', 8, "#d35b2d", italic=True),
         svg_close("Scentinal Journal"),
@@ -673,8 +673,8 @@ def make_02e():
             txt(x + w//2, y+h+10, label_text, 7, fill, anchor="middle"),
         )
     return join(
-        svg_open("spj", "A retro-bright spirits tasting journal showing a whisky notes card with colour, nose, palate and finish descriptors, and a bottle collection grid"),
-        header_bar("Spirited Journal", "Nose it. Taste it. Remember it. Every dram catalogued.", dots()),
+        svg_open("spj", "A retro-bright spirits tasting journal showing a whisky notes card with color, nose, palate and finish descriptors, and a bottle collection grid"),
+        header_bar("Spirited Journal", "Nose it. Taste it. Remember it. Every dram cataloged.", dots()),
         rect(40, 88, 440, 340, rx=10, fill="#fff"),
         rect(40, 88, 440, 36, rx=10, fill="#c9922d", stroke="", sw=0),
         txt(60, 111, "Tasting Note — Glenfarclas 15 Year", 12, "#f6f2ee", bold=True),
@@ -961,7 +961,7 @@ def make_03c():
         txt(540, 252, "Kiln, Soho", 10, "#3a3530", bold=True),
         txt(540, 268, "June 14 · 20:00 · 2 pax", 9, "#c9bfb2"),
         rect(540, 284, 200, 2, fill="#c9bfb2", stroke="", sw=0),
-        txt(540, 304, "Cuisine favourites:", 9, "#9e3b2e", bold=True),
+        txt(540, 304, "Cuisine favorites:", 9, "#9e3b2e", bold=True),
         bar(540, 312, 200, 160, 8, "#d35b2d"),
         txt(540, 334, "South-East Asian · 80%", 8, "#d35b2d"),
         bar(540, 342, 200, 120, 8, "#c9922d"),
@@ -1039,7 +1039,7 @@ def make_03d():
         txt(466, 406, "☐  Baby spinach 250g", 9, "#3a3530"),
         rect(460, 422, 284, 26, rx=5),
         txt(466, 438, "☐  Lemons ×4", 9, "#3a3530"),
-        txt(460, 468, "Est. total: £34 · 3 stores optimised", 9, "#9e3b2e", bold=True),
+        txt(460, 468, "Est. total: £34 · 3 stores optimized", 9, "#9e3b2e", bold=True),
         svg_close("Pantry Shopper"),
     )
 ILLUSTRATIONS["03d-pantry-shopper"] = make_03d()
@@ -1047,7 +1047,7 @@ ILLUSTRATIONS["03d-pantry-shopper"] = make_03d()
 # ── 03e palatably-profiled ────────────────────────────────────────────────────
 def make_03e():
     return join(
-        svg_open("pp", "A retro-bright food preference profile card showing dietary settings, allergy flags, flavour preferences and cuisine favourites"),
+        svg_open("pp", "A retro-bright food preference profile card showing dietary settings, allergy flags, flavor preferences and cuisine favorites"),
         header_bar("Palatably Profiled", "Your eating identity — so every meal suggestion actually fits.", dots()),
         rect(40, 88, 440, 400, rx=10, fill="#fff"),
         rect(40, 88, 440, 28, rx=10, fill="#d35b2d", stroke="", sw=0),
@@ -1067,7 +1067,7 @@ def make_03e():
         txt(60, 248, "Medium-hot (loves chilli, dislikes face-melting)", 8, "#d35b2d"),
         txt(60, 268, "Texture preferences:", 9, "#9e3b2e", bold=True),
         txt(60, 282, "✓ Crispy  ✓ Silky sauces  ✓ Al dente  ✗ Slimy  ✗ Mushy", 9, "#3a3530"),
-        txt(60, 302, "Favourite cuisines:", 9, "#9e3b2e", bold=True),
+        txt(60, 302, "Favorite cuisines:", 9, "#9e3b2e", bold=True),
         bar(160, 308, 250, 250, 8, "#d35b2d"),
         txt(60, 320, "Japanese", 8, "#d35b2d"),
         bar(160, 324, 250, 212, 8, "#c9922d"),
@@ -1174,7 +1174,7 @@ def make_04a():
         txt(530, 324, "Diary entries: 204", 9, "#3a3530"),
         txt(530, 340, "Food moments: 89", 9, "#3a3530"),
         rect(530, 356, 214, 2, fill="#c9bfb2", stroke="", sw=0),
-        txt(530, 376, '"Summarise Japan 2026', 8, "#d35b2d", italic=True),
+        txt(530, 376, '"Summarize Japan 2026', 8, "#d35b2d", italic=True),
         txt(530, 390, "into a postcard I can", 8, "#d35b2d", italic=True),
         txt(530, 404, 'send to family."', 8, "#d35b2d", italic=True),
         txt(530, 436, "Diary started: 2019", 8, "#c9bfb2"),
@@ -1242,7 +1242,7 @@ ILLUSTRATIONS["04b-itinerary-hacker"] = make_04b()
 # ── 04c detour-discoverer ─────────────────────────────────────────────────────
 def make_04c():
     return join(
-        svg_open("dc", "A retro-bright off-the-beaten-path travel discovery board showing a stylised map with coloured pins for hidden gems"),
+        svg_open("dc", "A retro-bright off-the-beaten-path travel discovery board showing a stylised map with colored pins for hidden gems"),
         header_bar("Detour Discoverer", "Skip the top 10 lists. Find where the locals actually go.", dots()),
         rect(40, 88, 430, 320, rx=10, fill="#e8e3dc"),
         line(80, 280, 440, 280, "#f6f2ee", 4),
@@ -1591,7 +1591,7 @@ def make_05c():
         txt(540, 226, "📖  Churchill biography — signed", 9, "#3a3530"),
         rect(540, 244, 204, 2, fill="#c9bfb2", stroke="", sw=0),
         txt(540, 264, "For Sofia — £30–£40:", 9, "#2d7c7c", bold=True),
-        txt(540, 280, "🎨  Caran d'Ache watercolour set", 9, "#3a3530"),
+        txt(540, 280, "🎨  Caran d'Ache watercolor set", 9, "#3a3530"),
         txt(540, 294, "🌿  Lego Botanical succulents", 9, "#3a3530"),
         txt(540, 308, "📚  Jacqueline Wilson special ed.", 9, "#3a3530"),
         rect(540, 324, 204, 2, fill="#c9bfb2", stroke="", sw=0),
@@ -1619,7 +1619,7 @@ def make_05d():
     times = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"]
     time_ys = [148,188,228,268,308,348,388,428,468]
     return join(
-        svg_open("sw", "A retro-bright weekly calendar showing colour-coded time blocks for work, personal and health events with conflict detector"),
+        svg_open("sw", "A retro-bright weekly calendar showing color-coded time blocks for work, personal and health events with conflict detector"),
         header_bar("Scheduling Wizard", "Find the time. Make it count. Stop double-booking yourself.", dots()),
         "\n".join(txt(day_cols[i], 108, days[i], 9, day_colors[i], anchor="middle", bold=True) for i in range(7)),
         "\n".join(txt(46, time_ys[i], times[i], 7, "#c9bfb2", anchor="end") for i in range(9)),
@@ -2039,7 +2039,7 @@ ILLUSTRATIONS["06d-medi-minder"] = make_06d()
 
 # ── 06e moody-log ─────────────────────────────────────────────────────────────
 def make_06e():
-    # mood calendar — 7 cols of coloured squares
+    # mood calendar — 7 cols of colored squares
     colors_w1 = ["#d35b2d","#c9922d","#6b7c3f","#6b7c3f","#c9922d","#2d7c7c","#6b7c3f"]
     colors_w2 = ["#6b7c3f","#6b7c3f","#c9922d","#d35b2d","#6b7c3f","#2d7c7c","#2d7c7c"]
     colors_w3 = ["#6b7c3f","#6b7c3f","#c9922d","#c9922d","#6b7c3f","#2d7c7c","#6b7c3f"]
@@ -2048,7 +2048,7 @@ def make_06e():
         return "\n".join(rect(62 + i*36, y, 28, 28, rx=4, fill=c, stroke="", sw=0) for i,c in enumerate(colors))
     day_lbs = ["M","T","W","T","F","S","S"]
     return join(
-        svg_open("mlog", "A retro-bright mood journal showing a colour-coded monthly calendar, pattern insights panel, and a journal entry form"),
+        svg_open("mlog", "A retro-bright mood journal showing a color-coded monthly calendar, pattern insights panel, and a journal entry form"),
         header_bar("Moody Log", "Understand your emotional patterns. No judgment — just data.", dots()),
         rect(40, 88, 420, 280, rx=10, fill="#fff"),
         txt(250, 112, "May 2026 — Mood Calendar", 12, "#9e3b2e", anchor="middle", bold=True),
@@ -2274,7 +2274,7 @@ ILLUSTRATIONS["07b-roost-wrangler"] = make_07b()
 # ── 07c sight-seeker ──────────────────────────────────────────────────────────
 def make_07c():
     return join(
-        svg_open("ssk", "A retro-bright visual identification interface showing a camera viewfinder analysing an object, with identification result and confidence meter"),
+        svg_open("ssk", "A retro-bright visual identification interface showing a camera viewfinder analyzing an object, with identification result and confidence meter"),
         header_bar("Sight Seeker", "Point. Describe. Identify. Everything visible to the curious eye.", dots()),
         rect(40, 88, 420, 320, rx=10, fill="#3a3530"),
         rect(96, 120, 30, 4, fill="#d35b2d", stroke="", sw=0),
@@ -2329,7 +2329,7 @@ ILLUSTRATIONS["07c-sight-seeker"] = make_07c()
 # ── 07d snap-decoder ──────────────────────────────────────────────────────────
 def make_07d():
     return join(
-        svg_open("sd", "A retro-bright photo analysis tool showing an uploaded image with colour palette extraction, object labels, metadata readout and context interpretation"),
+        svg_open("sd", "A retro-bright photo analysis tool showing an uploaded image with color palette extraction, object labels, metadata readout and context interpretation"),
         header_bar("Snap Decoder", "Upload a photo. Get the story behind it.", dots()),
         rect(40, 88, 360, 300, rx=10, fill="#3a3530"),
         rect(56, 104, 328, 200, rx=6, fill="#2d7c7c", stroke="", sw=0),
@@ -2346,7 +2346,7 @@ def make_07d():
         rect(56, 290, 328, 14, rx=3, fill="#3a3530", stroke="", sw=0),
         txt(220, 300, "IMG_4831.jpg · iPhone 15 Pro · May 25, 14:32 · 51.54N, -0.05E", 7, "#c9bfb2", anchor="middle"),
         rect(40, 398, 360, 90, rx=10, fill="#fff"),
-        txt(60, 418, "Dominant colours:", 9, "#9e3b2e", bold=True),
+        txt(60, 418, "Dominant colors:", 9, "#9e3b2e", bold=True),
         rect(60, 426, 52, 32, rx=4, fill="#2d7c7c", stroke="", sw=0),
         txt(86, 470, "#2d7c7c", 7, "#2d7c7c", anchor="middle"),
         rect(120, 426, 52, 32, rx=4, fill="#6b7c3f", stroke="", sw=0),

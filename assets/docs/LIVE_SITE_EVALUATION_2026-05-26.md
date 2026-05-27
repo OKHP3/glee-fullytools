@@ -215,9 +215,9 @@ Complete keyboard flow traced against `app.js` and HTML structure:
 
 ### 5.5 Advisory — P2 (no fix required; note for future edits)
 
-**Accent colour contrast — 3.4–3.6 : 1 against paper background**
+**Accent color contrast — 3.4–3.6 : 1 against paper background**
 
-| Colour pair | Ratio | AA normal (4.5:1) | AA large / UI (3:1) |
+| Color pair | Ratio | AA normal (4.5:1) | AA large / UI (3:1) |
 |---|---|---|---|
 | `#d94f63` GLEE coral on `#f6f2ee` paper | 3.37 : 1 | ⚠️ | ✅ |
 | `#d35b2d` orange accent on `#f6f2ee` paper | 3.55 : 1 | ⚠️ | ✅ |
@@ -225,16 +225,16 @@ Complete keyboard flow traced against `app.js` and HTML structure:
 | `#9e3b2e` deep rust on `#f6f2ee` paper | 6.05 : 1 | ✅ | ✅ |
 | `#0d2b3a` near-black on `#f6f2ee` paper | 13.24 : 1 | ✅ | ✅ |
 
-Accent colours appear only on buttons (`.btn-primary`, `.btn-quiet`) and UI controls. Button text
+Accent colors appear only on buttons (`.btn-primary`, `.btn-quiet`) and UI controls. Button text
 at `font-size: 0.95rem; font-weight: 600` qualifies as "large text" (≥ 14 pt bold), where the 3:1
 threshold applies. All current uses pass.
 
-**Editorial rule:** `var(--color-accent)` must not be used as the sole colour signal for
+**Editorial rule:** `var(--color-accent)` must not be used as the sole color signal for
 normal-weight body text smaller than 18.67 px.
 
 ### 5.6 Fixed — 2026-05-27 (Task #9)
 
-**Replit footer credit contrast raised to ≥ 4.1 : 1** — base colour changed from `#f26207`
+**Replit footer credit contrast raised to ≥ 4.1 : 1** — base color changed from `#f26207`
 (2.89:1) to `#c45000` (≈ 4.1:1 on `#f6f2ee`), passing WCAG 2.1 AA for both normal and
 large/bold text. Hover state updated from `#ff7a1f` to `#a33f00` for consistency.
 Change is CSS-only (one rule in `assets/css/theme.css`, GLOBAL scope); no HTML edits needed.
@@ -297,7 +297,7 @@ Google Fonts loaded as a single stylesheet (4 families, `display=swap`). No rend
 | Route | CLS | Root cause | Fix status |
 |---|---|---|---|
 | `ecosystem/` | 0.197 | Mermaid.js replaces `<pre class="mermaid">` with rendered SVG, causing layout shift in `.grid` | P2 — mitigated by `grid > * { min-width: 0 }` (Task #1 Fix 1); full elimination requires `aspect-ratio` CSS on diagram containers (deferred) |
-| `search/` | 0.113 | Google Fonts `display=swap` FOUT + lazy-loaded search panel appearance | P2 — expected behaviour of `display=swap`; acceptable trade-off for fast initial paint |
+| `search/` | 0.113 | Google Fonts `display=swap` FOUT + lazy-loaded search panel appearance | P2 — expected behavior of `display=swap`; acceptable trade-off for fast initial paint |
 | `tool-01a/` | 0.09 | `ButterflyLoopLeft Wide 1536.png` missing `height` attribute (see §6.5) | P3 — add `height="768"` attribute |
 | All others | ≤ 0.011 | Within "Good" threshold | ✅ |
 
@@ -505,7 +505,7 @@ tool-01a          47    95    100  100  | 20.3s*   0.090   880ms*   3.1s
 |---|---|---|
 | Branch 06 (Healthy Bee-ing) — `06a`–`06d` GPT URLs still `href="#"` | P1 content | Full construction overlay gate already in place. Resolve when GPT URLs go live. |
 | ~~Replit footer credit contrast (`#f26207` → 2.89:1)~~ | ~~P3 a11y~~ | **Fixed 2026-05-27 (Task #9)** — changed to `#c45000` (≈ 4.1:1). |
-| Accent colour editorial rule (`#d94f63` / `#d35b2d` at 3.4–3.6:1) | P2 a11y | Valid on buttons / large bold text. Must not be used for normal-weight body text. Add to style guide. |
+| Accent color editorial rule (`#d94f63` / `#d35b2d` at 3.4–3.6:1) | P2 a11y | Valid on buttons / large bold text. Must not be used for normal-weight body text. Add to style guide. |
 | Construction overlay image `loading="lazy"` on 44 tool-ette pages | P3 perf | Remove `lazy`; keep `decoding="async"`. Task #8 proposed. |
 | 12 images missing `width`/`height` attributes | P3 perf | Add intrinsic dimensions to eliminate CLS. Task #8 proposed. |
 | Mermaid CLS on `ecosystem/` (0.197) | P2 perf | Add `aspect-ratio` CSS to Mermaid diagram containers to reserve space before render. |
