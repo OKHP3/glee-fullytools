@@ -232,11 +232,12 @@ threshold applies. All current uses pass.
 **Editorial rule:** `var(--color-accent)` must not be used as the sole colour signal for
 normal-weight body text smaller than 18.67 px.
 
-### 5.6 Advisory — P3 (deferred)
+### 5.6 Fixed — 2026-05-27 (Task #9)
 
-**Replit footer credit — 2.89 : 1** (confirmed by Lighthouse `color-contrast` audit): `#f26207`
-on `#f6f2ee` falls below the 3:1 large-text threshold. Decorative attribution link; functionally
-non-critical. Deferred resolution: darken to `#c45000` for ≈ 4.1:1.
+**Replit footer credit contrast raised to ≥ 4.1 : 1** — base colour changed from `#f26207`
+(2.89:1) to `#c45000` (≈ 4.1:1 on `#f6f2ee`), passing WCAG 2.1 AA for both normal and
+large/bold text. Hover state updated from `#ff7a1f` to `#a33f00` for consistency.
+Change is CSS-only (one rule in `assets/css/theme.css`, GLOBAL scope); no HTML edits needed.
 
 ---
 
@@ -503,7 +504,7 @@ tool-01a          47    95    100  100  | 20.3s*   0.090   880ms*   3.1s
 | Item | Sev | Notes |
 |---|---|---|
 | Branch 06 (Healthy Bee-ing) — `06a`–`06d` GPT URLs still `href="#"` | P1 content | Full construction overlay gate already in place. Resolve when GPT URLs go live. |
-| Replit footer credit contrast (`#f26207` → 2.89:1) | P3 a11y | Darken to `#c45000` for ≈ 4.1:1. Lighthouse confirmed issue (Task #9 proposed). |
+| ~~Replit footer credit contrast (`#f26207` → 2.89:1)~~ | ~~P3 a11y~~ | **Fixed 2026-05-27 (Task #9)** — changed to `#c45000` (≈ 4.1:1). |
 | Accent colour editorial rule (`#d94f63` / `#d35b2d` at 3.4–3.6:1) | P2 a11y | Valid on buttons / large bold text. Must not be used for normal-weight body text. Add to style guide. |
 | Construction overlay image `loading="lazy"` on 44 tool-ette pages | P3 perf | Remove `lazy`; keep `decoding="async"`. Task #8 proposed. |
 | 12 images missing `width`/`height` attributes | P3 perf | Add intrinsic dimensions to eliminate CLS. Task #8 proposed. |

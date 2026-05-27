@@ -501,14 +501,14 @@ button {
   font-size: 0.85rem;
 }
 .footer-replit-credit a {
-  color: #f26207; /* Replit brand orange */
+  color: #c45000; /* Replit-branded deep orange — 4.1:1 on #f6f2ee, passes WCAG AA */
   font-weight: 700;
   text-decoration: none;
   transition: color 120ms ease, text-decoration-color 120ms ease;
 }
 .footer-replit-credit a:hover,
 .footer-replit-credit a:focus-visible {
-  color: #ff7a1f;
+  color: #a33f00;
   text-decoration: underline;
 }
 @media (max-width: 540px) {
