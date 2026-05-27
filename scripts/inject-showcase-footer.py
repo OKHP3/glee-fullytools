@@ -25,7 +25,7 @@ SKIP_FILES = {"404.html", "under-construction.html"}
 SHOWCASE_LINK = '<li><a href="/showcase/">Showcase</a></li>'
 
 AFTER_PATTERN = re.compile(
-    r'(<li><a href="/about/">About Us</a></li>)',
+    r'(<li><a href="(?:/|)about/">About Us</a></li>)',
 )
 
 
