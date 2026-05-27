@@ -1,0 +1,321 @@
+Glee-fully Site Evaluation — 2026-05-26
+
+Executive readout
+
+Verdict: Glee-fully is no longer in “emergency remediation” territory. It is a mature static GitHub Pages site with strong repo-side validation, search, sitemap coverage, metadata hardening, and audit documentation. The remaining work is mostly experience polish, editorial completion, responsive proofing, and conversion path clarity, not core technical rescue.
+
+GitHub Pages is a suitable hosting target for this architecture because it serves static HTML, CSS, and JavaScript directly from a repository, optionally with a build process. Glee-fully’s current no-build static approach is aligned with that model.   The repo documentation confirms the site is pure HTML/CSS/vanilla JavaScript with a central stylesheet, shared app script, Mermaid only where needed, and GitHub Pages-compatible static deployment.  
+
+I did not run a live Playwright/Puppeteer viewport suite from inside Replit in this chat. The repo’s own audit artifacts report 60 pages scanned, 2,048 internal links scanned, 0 broken internal links, 0 critical issues, valid manifest/favicons, 60/60 skip links and main landmarks, and responsive smoke-test CSS rules, but the same report explicitly says the mobile responsive check was not viewport-tested in sandbox.   So the next Replit task should be a real browser viewport verification pass, not another static grep pass.
+
+⸻
+
+Source-backed baseline
+
+Area	Current state
+Architecture	Static HTML/CSS/JS, no build step, central theme.css, shared app.js, Mermaid only on ecosystem/universe pages.  
+Search	Client-side search is built into app.js, backed by assets/data/search-index.json, with modal and dedicated /search/ page behavior.  
+Validation tooling	Repo includes scripts for normalizing heads, activating icons, injecting JSON-LD, breadcrumbs, search index, asset audit, feed generation, site validation, and link checking.  
+Audit trail	Final audit says the site was safe to publish from main, with Tier-A items closed, audit reports created, humans.txt, security.txt, and feed.xml added.  
+Canonical catalog	Notion lists the Toolbox trunk, seven branches, and all Tool-ettes with corresponding live site paths.  
+Live homepage	Homepage presents navigation, Today’s Sparkle, “Welcome to Glee-fully,” the “pre-opening flutter” positioning, CTA links, footer links, contact emails, Ko-fi, and social channels.  
+Live Toolbox page	Toolbox explains the trunk/branch/tool-ette model and links into all seven branches.  
+Live Ecosystem page	Ecosystem page contains a Mermaid map and lists branches and Tool-ettes with direct links.  
+
+⸻
+
+Notion-ready evaluation notes
+
+1. Overall health scorecard
+
+Category	Rating	Notes
+Static-site architecture	A	Correctly scoped for GitHub Pages. No unnecessary app framework.
+Repo documentation	A-	replit.md is unusually strong and operationally useful.
+SEO metadata	A-	Prior audits indicate metadata, canonical, OG, Twitter, favicon, and manifest coverage are largely normalized.
+Internal linking	A	Repo audit reports 2,048 internal links scanned with 0 broken internal links.  
+Accessibility foundation	B+	Strong baseline: skip links, landmarks, alt coverage, breadcrumbs, reduced motion. Needs live keyboard/viewport confirmation.
+Responsive readiness	B	CSS appears prepared, but needs actual viewport proof at mobile/tablet/desktop widths.
+Content clarity	B	Brand voice is strong; some pages still carry “under construction” language despite having substantial content.
+Conversion path	B-	Many CTAs exist, but some GPT links remain placeholders and some branch pages need stronger visual routing.
+Asset governance	B	Asset audit exists; open TODOs note large orphaned butterfly art and intentionally retained GPT icon variants.  
+Maintainability	A-	Validation scripts and templates are a serious advantage. Need CI/workflow enforcement to prevent drift.
+
+⸻
+
+2. Highest-priority issues
+
+P0 — No active catastrophic issue found
+
+No evidence from the repo audit or live spot checks suggests the site is currently broken at the structural level. The final audit says 60/60 pages validate, no internal links are broken, manifest icons resolve, JSON-LD parses, and sitemap parity passes.  
+
+P1 — Real viewport testing still needs to be executed
+
+The strongest unresolved gap is that the repo-side audit explicitly says mobile responsive smoke testing was CSS/rule-based, not viewport-tested in sandbox.   Current standards require more than source validation: test actual rendering at 320, 375, 390, 414, 768, 1024, 1280, and 1440 widths, including nav, hero, breadcrumbs, cards, footer, search modal, and Mermaid diagrams.
+
+Replit mitigation: Run Playwright/Chromium viewport screenshots across all indexable pages. Generate a screenshot diff/failure report and fix actual overflow, tap-target, wrap, and modal issues.
+
+⸻
+
+3. Content and UX findings
+
+Priority	Finding	Evidence	Recommended fix
+P1	Several branch pages still open with “joyfully under construction” banners even though they contain substantial finished copy.	Discovered Careers, Treasured Finds, and Tasty Tracker pages all show work-in-progress banners at the top while also presenting full branch content and Tool-ette summaries.  	Decide whether the site is “public beta” or “live catalog.” Replace heavy construction banners with smaller “pre-opening flutter” badges where content is usable.
+P1	Branch pages need stronger visual scanning.	Toolbox page currently lists branches with headings and “More Info” links, while the audit TODO still calls out stronger branch-page visual indices/icon cards.    	Convert branch and Tool-ette lists into consistent icon cards with summary, best-use case, and CTA.
+P1	Three GPT links remain owner-action placeholders.	Open TODOs identify Present Hoarder, Dreamland Journeys, and Memento Log as needing final GPT URLs.  	Replace placeholder links, remove TODO comments, rerun link checker, bump dateModified.
+P2	Suggested-next navigation remains deferred.	Open TODOs list “Suggested next / Keep exploring” tray as unresolved.  	Add bottom-of-page trays on Tool-ette pages: parent branch, two sibling Tool-ettes, Toolbox, Search.
+P2	README copy still needs site reconciliation.	Open TODOs list README-to-home/about reconciliation as unresolved.  	Pull strongest README positioning into /about/ or homepage without making the homepage text-heavy.
+P2	Visible “last updated” dates remain unresolved.	Open TODOs list visible <time datetime> blocks as a deferred brand decision.  	Add subtle “Last tuned” metadata to branch/tool pages if it reinforces the living-toolbox premise.
+P3	FAQ JSON-LD remains deferred.	Open TODOs list per-tool FAQ JSON-LD as editorial work.  	Add one concise, human FAQ per Tool-ette only where the answer adds value. Do not spam schema.
+
+⸻
+
+4. Technical QA findings
+
+Area	Assessment	Action
+GitHub Pages fit	Strong. The no-build approach is appropriate and avoids dependency drift. GitHub Pages supports static HTML/CSS/JS directly from repo files.  	Preserve no-build architecture unless WebP/PurgeCSS becomes worth a build step.
+Accessibility	Baseline is good, but should be tested against WCAG 2.2 focus, target size, keyboard operation, and reflow expectations. W3C identifies WCAG 2.2 as the current Recommendation and encourages current-version use.  	Run keyboard + screen-reader smoke tests; verify focus states are not obscured by sticky headers.
+Performance	Repo audit reports CSS ~105 KB, JS ~33 KB, search index ~132 KB raw / ~30 KB gz, and no render-blocking JS.  	Run Lighthouse/PageSpeed for homepage, toolbox, ecosystem, search, and one Tool-ette. Track LCP, CLS, and INP; Core Web Vitals center on loading, responsiveness, and visual stability.  
+Search	Architecture is strong and correctly no-backend.	Test search results for common non-canonical queries: “resume,” “meal plan,” “gift,” “travel,” “mood,” “decor,” “sell stuff.”
+Sitemap/feed	Repo audit says sitemap parity passes and Atom feed exists.  	Confirm Search Console indexing after deployment.
+Security/privacy	security.txt, referrer policy, no-backend statement, and static architecture are positives.	Confirm legal/privacy language does not imply user-data handling the static site does not actually perform.
+
+⸻
+
+Replit mitigation prompt
+
+Paste this into the Glee-fullyTools Replit project.
+
+You are Replit Agent working in the existing Glee-fully Personalizable Tools static website repository.
+Objective:
+Perform a fresh 2026-05-26 production QA pass focused on actual browser rendering, responsive behavior, link integrity, content polish, and remaining owner-action TODOs. Do not rebuild the site. Preserve the static GitHub Pages architecture.
+Authoritative references:
+- Live site: https://glee-fully.tools/
+- Repo: https://github.com/OKHP3/Glee-fullyTools
+- Notion catalog: https://www.notion.so/overkillhill/Glee-fully-2cc812e0ced480f3862af0b8caee1aa8
+- Existing repo docs:
+  - replit.md
+  - assets/docs/FINAL_AUDIT_2026-05-03.md
+  - assets/docs/OPEN_TODOS_2026-05-03.md
+Start by reading:
+1. replit.md
+2. assets/docs/FINAL_AUDIT_2026-05-03.md
+3. assets/docs/OPEN_TODOS_2026-05-03.md
+4. sitemap.xml
+5. assets/data/search-index.json
+6. scripts/validate-site.py
+7. scripts/check-links.py
+Do not repeat solved work unless validation shows it regressed. The May 3 audit already claims 60/60 pages validate and 0 internal links are broken. This pass must focus on fresh viewport verification and remaining content/UX completion.
+PHASE 1 — Run existing validators
+Run, in order:
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/build-search-index.py
+Record results in a new report:
+assets/docs/LIVE_SITE_EVALUATION_2026-05-26.md
+If any validator fails, fix the issue before moving on.
+PHASE 2 — Real viewport rendering test
+Use Playwright or equivalent browser automation. Test these viewport widths:
+- 320 x 700
+- 375 x 812
+- 390 x 844
+- 414 x 896
+- 768 x 1024
+- 1024 x 768
+- 1280 x 800
+- 1440 x 900
+Test at minimum these pages:
+- /
+- /toolbox/
+- /ecosystem/
+- /search/
+- /about/
+- /contact/
+- /legal/
+- /persona/
+- /universe/
+- /toolbox/01-discovered-careers/
+- /toolbox/02-treasured-finds/
+- /toolbox/03-tasty-tracker/
+- /toolbox/04-travelers-guide/
+- /toolbox/05-organized-life/
+- /toolbox/06-healthy-bee-ing/
+- /toolbox/07-identity-known/
+- one representative Tool-ette from each branch
+- the three placeholder/TODO Tool-ette pages:
+  - /toolbox/02-treasured-finds/02c-present-hoarder/
+  - /toolbox/04-travelers-guide/04d-dreamland-journeys/
+  - /toolbox/04-travelers-guide/04e-memento-log/
+For each page/viewport, check:
+- no horizontal scrolling
+- nav is usable
+- hamburger/mobile nav works
+- skip link works
+- search button/modal works
+- breadcrumbs wrap or collapse cleanly
+- hero image does not crush text
+- CTA buttons remain tappable
+- footer stacks cleanly
+- Mermaid diagrams do not overflow
+- cards/lists do not break
+- Today’s Sparkle does not dominate mobile screens
+- no visible JavaScript errors
+- no console errors related to missing assets
+Save screenshots for failures only under:
+assets/audit/screenshots/2026-05-26/
+Generate a Markdown table of failures:
+page | viewport | issue | severity | fix applied | screenshot path
+PHASE 3 — Fix responsive defects
+Fix every P0/P1 responsive issue discovered.
+Prefer CSS-only fixes in assets/css/theme.css. Do not add page-specific hacks unless absolutely necessary.
+Likely areas to inspect:
+- primary nav wrapping
+- dropdown About menu
+- Today’s Sparkle banner
+- breadcrumb long-name wrapping
+- Mermaid diagram containers
+- Tool-ette list/card spacing
+- footer columns
+- search modal width/height
+- long CTA labels
+- under-construction banner sizing
+After each fix, rerun the affected viewport tests.
+PHASE 4 — Resolve or reclassify open TODOs
+Open:
+assets/docs/OPEN_TODOS_2026-05-03.md
+Check the three unfinished GPT links:
+1. Present Hoarder
+2. Dreamland Journeys
+3. Memento Log
+If live GPT URLs are present in the repo or Notion, replace the placeholder hrefs and remove the TODO comments. If the real URLs are not available, leave the safe placeholder link but improve the visible page copy so visitors are not misled. Add a clear owner-action note to the new report.
+Also evaluate deferred editorial items:
+- branch-page visual icon cards
+- “Suggested next” / “Keep exploring” tray on Tool-ette pages
+- README copy reconciliation into homepage or About
+- visible “last updated” / “last tuned” date
+- per-tool FAQ JSON-LD
+Implement the ones that are safe and high-value. Defer only with a specific reason.
+PHASE 5 — Branch and Tool-ette UX polish
+For each branch page:
+- Ensure it functions as a visual routing hub, not just a long text page.
+- Add or improve icon cards for Tool-ettes if not already done.
+- Each Tool-ette card should include:
+  - name
+  - icon/image if available
+  - one-sentence purpose
+  - best-fit scenario
+  - CTA link
+- Keep the playful Glee-fully voice, but make the utility obvious.
+For each Tool-ette page:
+- Add or improve a “Keep exploring” tray:
+  - parent branch
+  - previous sibling
+  - next sibling
+  - Toolbox
+  - Search
+- Confirm the page answers:
+  1. What is this?
+  2. Who is it for?
+  3. What does it help me do?
+  4. Where should I go next?
+PHASE 6 — Reconsider construction banners
+Several branch pages show “joyfully under construction” banners even though the pages contain substantial complete content. Review every page with this banner.
+Decision rule:
+- If the page has complete branch explanation, Tool-ette summaries, working navigation, and live CTAs, replace the heavy construction banner with a smaller “pre-opening flutter” badge.
+- If the page genuinely has incomplete or misleading functionality, keep the banner but make it less visually dominant on mobile.
+- Do not remove honest beta/in-progress language entirely; just reduce friction where the content is usable.
+PHASE 7 — Accessibility verification
+Run manual or automated checks for:
+- keyboard-only navigation
+- visible focus
+- no keyboard traps
+- search modal open/close by keyboard
+- skip link lands on main content
+- mobile nav keyboard operation
+- color contrast on buttons, badges, footer links, and Today’s Sparkle
+- target size on mobile
+- reduced-motion behavior
+Fix P0/P1 accessibility defects immediately.
+PHASE 8 — Performance check
+Run Lighthouse or PageSpeed-style checks against:
+- /
+- /toolbox/
+- /ecosystem/
+- /search/
+- one branch page
+- one Tool-ette page
+Track:
+- Performance
+- Accessibility
+- Best Practices
+- SEO
+- LCP
+- CLS
+- INP/TBT proxy
+- total JS
+- total CSS
+- image weight
+Do not chase fake 100s if it harms maintainability or brand. Fix obvious issues:
+- lazy-loaded LCP images
+- missing image dimensions
+- render-blocking scripts
+- oversized unoptimized hero images
+- Mermaid loaded where not needed
+- duplicate third-party scripts
+PHASE 9 — Final validation
+Rerun:
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/build-search-index.py
+Confirm:
+- 0 critical validation failures
+- 0 broken internal links
+- sitemap parity still passes
+- search index still builds
+- no JSON-LD parse failures
+- no missing skip/main landmarks
+- no missing alt text
+- all edited pages still have self-canonical URLs unless explicitly excluded
+PHASE 10 — Report output
+Create or update:
+assets/docs/LIVE_SITE_EVALUATION_2026-05-26.md
+Use this format:
+# Glee-fully Live Site Evaluation — 2026-05-26
+## Executive Summary
+State whether the site is production-safe, what was fixed, and what remains.
+## Scope
+List pages, scripts, viewport sizes, and validators used.
+## Validation Results
+Include validator/link/search/Lighthouse results.
+## Responsive Findings
+Table:
+page | viewport | issue | severity | fixed? | notes
+## Accessibility Findings
+Table:
+issue | severity | fix | remaining risk
+## Content / UX Findings
+Table:
+issue | severity | fix | remaining risk
+## Link / GPT URL Findings
+List the three known GPT placeholder pages and whether resolved.
+## Files Changed
+Group by HTML, CSS, JS, data, docs, scripts.
+## Screenshots
+Link any failure screenshots saved under assets/audit/screenshots/2026-05-26/.
+## Deferred Items
+List only true owner decisions or items that require unavailable data.
+## Deployment Recommendation
+Say either:
+- Safe to deploy
+- Safe with caveats
+- Do not deploy until listed blockers are fixed
+After creating the report, give me a concise summary in Replit chat with:
+1. final status
+2. files changed
+3. tests run
+4. remaining owner actions
+
+⸻
+
+Practical next move
+
+Run the Replit prompt above as the next pass. The site’s backend-less/static foundation is good; the highest-value use of Replit now is browser-real QA plus UX routing polish, not more metadata churn.

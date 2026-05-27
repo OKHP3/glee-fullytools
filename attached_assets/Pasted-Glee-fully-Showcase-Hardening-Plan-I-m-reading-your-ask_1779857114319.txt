@@ -1,0 +1,870 @@
+Glee-fully Showcase Hardening Plan
+
+I’m reading your ask as: identify and eliminate anything that could stop glee-fully.tools from functioning as a polished public showcase, living portfolio, and credibility artifact for your AI/product/design capability.
+
+The blunt version: the site is already technically stronger than most personal portfolio sites. The remaining risk is not “does it work?” It is whether it persuades. A portfolio site can pass validators and still fail as a portfolio if visitors cannot quickly understand the work, trust the craft, follow the story, or see proof that the creator can ship.
+
+The repo is already documented as a static HTML/CSS/vanilla JS GitHub Pages site with a central stylesheet, shared JS, search index, Mermaid pages, sitemap, robots policy, and no build step.   That aligns with GitHub Pages’ model: it serves HTML, CSS, and JavaScript from a repository, optionally with a build process.   The existing May 3 audit reports 60 pages scanned, 0 critical issues, 0 warnings, 0 broken internal links, valid manifest/favicons, visible breadcrumbs, skip links, alt coverage, and 2,048 internal links scanned.  
+
+But that does not prove it is a great showcase. It proves the scaffolding is not collapsing.
+
+⸻
+
+1. Agent-skills position
+
+I searched the repo for agent-skills.md, SKILL.md, and similar skill files. I did not find a directly named agent-skills.md/SKILL.md file in OKHP3/Glee-fullyTools. I did find skills-lock.json, which suggests there is at least some skill-registry artifact present.  
+
+Recommendation
+
+Create a first-class repo artifact:
+
+agent-skills.md
+
+Purpose: make the site self-auditing and agent-operable. This becomes the instruction surface for Replit, ChatGPT, Claude, Copilot, or any future coding agent that touches the site.
+
+This should not be decorative. It should define:
+
+Skill	Purpose
+static-site-auditor	Validates GitHub Pages readiness, metadata, sitemap, links, and no-build assumptions.
+responsive-render-tester	Runs Playwright viewport tests and screenshot capture.
+portfolio-positioning-reviewer	Reviews whether each page proves capability, not just exists.
+glee-brand-guardian	Preserves Glee-fully tone: warm, retro-bright, non-technical, human.
+accessibility-aa-reviewer	Audits WCAG 2.2 AA risks, keyboard flows, contrast, target size, focus, reduced motion.
+seo-schema-curator	Maintains titles, descriptions, canonicals, JSON-LD, OG/Twitter, breadcrumbs, search index.
+conversion-path-auditor	Ensures every page has a next step, CTA, or portfolio proof point.
+artifact-proof-checker	Confirms portfolio claims are backed by visible outputs, screenshots, docs, demos, or repo links.
+staleness-and-drift-detector	Flags outdated pages, TODOs, old audit dates, missing updates, stale claims.
+agent-safety-governor	Prevents agents from over-rebuilding, over-branding, deleting assets, or hallucinating claims.
+
+This is very close to your ledger/RAG/ReAct instincts: agent-skills.md becomes the local operating constitution for any agent touching the repo.
+
+⸻
+
+2. Portfolio failure model
+
+A site can fail as a showcase in five ways:
+
+Failure mode	What it looks like	Damage
+Technical failure	Broken links, mobile overflow, slow load, console errors, bad metadata.	Visitor distrust.
+Narrative failure	Visitor cannot tell what Glee-fully is, why it exists, or why it matters.	Confusion.
+Proof failure	Lots of names and pages, but not enough visible evidence of craft.	“Cute idea” instead of “serious builder.”
+Conversion failure	Visitor has no obvious next step: try a tool, support, contact, read more.	Lost opportunity.
+Governance failure	Future edits slowly degrade quality, brand, metadata, or hierarchy.	Portfolio rot.
+
+Your plan must defend against all five.
+
+⸻
+
+3. Standards baseline
+
+Use these as the current reference rails:
+
+Domain	Standard / source	Practical implication
+Hosting	GitHub Pages serves static HTML/CSS/JS from a repository.  	Preserve static simplicity unless a build step creates measurable value.
+Accessibility	W3C recommends WCAG 2.2 as the current accessibility baseline for new/update work, and WCAG covers desktop and mobile content.  	Treat WCAG 2.2 AA as the target, even if not making formal legal claims.
+Performance	Core Web Vitals currently focus on LCP, INP, and CLS, with good thresholds of LCP ≤2.5s, INP ≤200ms, CLS ≤0.1 at the 75th percentile.  	Do not settle for Lighthouse-only vanity. Validate with field-like thinking.
+SEO	Google recommends descriptive URLs, because URL parts can appear as breadcrumbs in search results.  	Keep canonical trunk/branch/tool-ette slugs readable and stable.
+Image SEO/accessibility	Google says alt text helps explain image relationship and context.  	Every meaningful icon/hero/social image needs accurate alt text.
+
+⸻
+
+4. Comprehensive weakness inventory
+
+A. Technical showcase risks
+
+Risk	Evaluation question	Required test	Mitigation
+Mobile horizontal overflow	Does any page scroll sideways at 320–414px?	Playwright viewport screenshots	Fix cards, breadcrumbs, CTAs, Mermaid containers.
+Search modal breakage	Does /, Ctrl+K, and /search/?q= work on mobile/desktop?	Browser automation + keyboard test	Add modal focus management, close behavior, mobile height handling.
+Mermaid overflow	Do ecosystem/universe diagrams crush mobile layout?	320/390/768px screenshots	Add responsive wrappers, fallback image/text summary, zoom affordance.
+Console errors	Any JS errors on route load?	Playwright console capture	Null guards, missing DOM checks, script-order review.
+Broken external links	Are Ko-fi, social, GPT, Mermaid, Replit, contact links valid?	External link checker with allowlist	Flag non-200 or suspicious redirects.
+Static path fragility	Do nested pages resolve assets correctly?	Crawl all pages from local server	Use root-absolute paths where needed.
+Inconsistent page generation	Do hand-edited pages drift from templates?	Diff against assets/templates	Promote template-token workflow.
+Validation not enforced	Do scripts exist but not run automatically?	Check GitHub Actions	Add CI workflow for validators.
+Asset bloat	Are 22 MB+ orphaned assets slowing repo operations?	Asset inventory	Retain design slack or archive intentionally.
+PWA quality	Does manifest install cleanly and use right icons?	Lighthouse PWA checks	Validate manifest, maskable icons, start_url, theme colors.
+
+⸻
+
+B. Accessibility risks
+
+The repo audit says the baseline is strong, but accessibility cannot be proven by static inspection alone. WCAG 2.2 emphasizes testable criteria and covers mobile/desktop experiences.  
+
+Risk	Evaluation question	Test
+Keyboard trap	Can a keyboard-only user open/close search and nav?	Tab/Shift+Tab/Escape automation
+Focus invisibility	Is focus visible on all links/buttons?	Screenshot focused states
+Focus obscured	Does sticky nav cover focused elements?	WCAG 2.2 focus check
+Poor target size	Are mobile tap targets too small or crowded?	320/375/390 px tap target audit
+Color contrast failure	Do rust/teal/cream combinations pass?	Axe + manual contrast sample
+Motion discomfort	Are background animations suppressed with reduced motion?	prefers-reduced-motion browser emulation
+Link purpose ambiguity	Do links say “More Info” without enough context?	Screen-reader link list review
+Mermaid inaccessible	Are diagrams also available as text summaries?	Screen-reader fallback audit
+Icon-only controls	Do search/theme/menu buttons have accessible names?	Accessibility tree inspection
+Reading overload	Are playful names explained for first-time visitors?	Cognitive accessibility review
+
+⸻
+
+C. SEO / discoverability risks
+
+Risk	Evaluation question	Mitigation
+Generic titles	Does every page title uniquely describe the page?	Title validator, semantic review.
+Thin meta descriptions	Do descriptions explain utility and branch context?	Rewrite weak descriptions.
+Over-indexing utility pages	Are 404/under-construction pages noindexed?	Confirm robots meta.
+Stale sitemap dates	Do modified pages update sitemap/feed?	Add script gate.
+Weak structured data	Does JSON-LD map pages to correct entity types?	Validate schema parse + semantic fit.
+Tool pages not treated as software/application pages	Are Tool-ettes discoverable as discrete entities?	Use careful SoftwareApplication only where accurate.
+Missing FAQ eligibility	Are obvious “What does this do?” answers absent?	Add one concise FAQ per major page, not spam.
+Image social-card mismatch	Do shared cards use correct icons/alt?	OG/Twitter image audit.
+Brand name inconsistency	Glee-fully vs Glee-fully vs GLEE-FULLY	Canonical naming linter.
+Search index drift	Does internal search reflect edited content?	Rebuild index on every content change.
+
+⸻
+
+D. Portfolio-positioning risks
+
+This is the strategic layer. It matters more than the validators.
+
+Risk	Why it hurts	Fix
+The site reads like a directory, not a portfolio	Visitors see lots of tools but not the thinking behind them.	Add “Design Decisions” and “What this proves” sections.
+Tool names are charming but opaque	Playful names may obscure utility.	Every Tool-ette card needs “Plain English use case.”
+No visible builder proof	A visitor may not infer that you architected the system.	Add “How this suite is structured” and “Built as a living AI product system.”
+Too much “under construction” language	Makes the work feel unfinished even when valuable.	Convert to “public beta / pre-opening flutter” microcopy.
+Not enough screenshots/demos	Portfolio visitors want evidence.	Add selected screenshots, diagram maps, search UI examples, before/after audit proof.
+No case-study framing	The suite looks like many pages, not one designed system.	Add a flagship case study: “Designing Glee-fully as a humane AI toolbox.”
+Weak conversion funnel	Visitors can browse but not act.	Define CTAs: Try, Support, Contact, View Map, Read Case Study.
+No audience segmentation	Casual users, AI builders, potential clients, and friends all land in same flow.	Create three entry paths: “Use it,” “Study it,” “Work with me.”
+No proof of governance	You have scripts and audits, but visitors do not see disciplined craft.	Surface a “Quality System” page or section.
+No clear relationship to OverKill Hill	Glee-fully is softer, but its creator credibility lives in OKHP³.	Add subtle “Built by OverKill Hill P³” explanation without hijacking tone.
+
+⸻
+
+E. Content completeness risks
+
+Page group	Weakness to check	Showcase-grade fix
+Homepage	Does it explain value in 5 seconds?	Clear hero: “A friendly suite of Custom GPTs for life, work, and wonder.”
+Toolbox	Does it function as command center?	Add visual branch cards, branch filters, “start here” guidance.
+Branch pages	Do they feel like coherent product families?	Add icon grid, scenarios, “best for” sections.
+Tool-ette pages	Do they explain purpose, output, and next step?	Add “What it helps with,” “Try this when,” “Related tools.”
+Ecosystem page	Is the Mermaid map readable on mobile?	Add collapsible text index and zoom/fallback.
+About page	Does it tell the creation story?	Add Glee origin, brand ethos, design philosophy, human-first AI framing.
+Contact page	Is it clear why someone should contact you?	Add contact categories: feedback, partnership, tool request, support.
+Legal page	Does it protect without sounding scary?	Plain-language disclaimers, no overclaiming.
+Search page	Does it feel like a feature?	Add examples and suggested searches.
+404 page	Does it recover gracefully?	Search box, Toolbox CTA, popular branch links.
+
+⸻
+
+5. Agent-skills operating model
+
+Proposed agent-skills.md structure
+
+# agent-skills.md — Glee-fully Site Governance
+## Purpose
+This file defines agent-operable skills for maintaining glee-fully.tools as a static GitHub Pages site, public showcase, living portfolio, and humane AI toolbox catalog.
+## Core constraints
+- Preserve static HTML/CSS/vanilla JS architecture.
+- Do not introduce a build step without explicit owner approval.
+- Preserve Glee-fully tone: warm, human, retro-bright, practical, non-technical.
+- Preserve trunk → branch → tool-ette hierarchy.
+- Do not fabricate GPT URLs, testimonials, metrics, legal claims, or availability.
+- Prefer reusable scripts and templates over one-off fixes.
+## Available skills
+### skill.static-site-auditor
+Checks:
+- sitemap parity
+- internal links
+- canonical URLs
+- robots
+- manifest
+- favicon paths
+- script loading
+- root-relative paths
+- GitHub Pages compatibility
+### skill.responsive-render-tester
+Checks:
+- 320, 375, 390, 414, 768, 1024, 1280, 1440 widths
+- no horizontal overflow
+- mobile nav
+- breadcrumbs
+- search modal
+- CTA wrapping
+- footer stacking
+- Mermaid diagrams
+### skill.portfolio-positioning-reviewer
+Checks:
+- every major page proves capability
+- every tool explains its value
+- site has visible case-study proof
+- visitor understands creator skill
+- project reads as designed system, not random catalog
+### skill.glee-brand-guardian
+Checks:
+- playful but not childish
+- warm but useful
+- non-technical user can understand
+- Glee-fully voice remains distinct from OverKill Hill
+- no generic SaaS copy
+### skill.accessibility-aa-reviewer
+Checks:
+- WCAG 2.2 AA-oriented baseline
+- keyboard access
+- focus visible / not obscured
+- contrast
+- target size
+- reduced motion
+- semantic headings
+- alt text
+- accessible diagram fallback
+### skill.seo-schema-curator
+Checks:
+- title
+- meta description
+- canonical
+- OG/Twitter card
+- image alt
+- JSON-LD
+- breadcrumb structure
+- search index
+- feed
+### skill.conversion-path-auditor
+Checks:
+- every page has next step
+- no dead ends
+- CTAs are clear
+- Ko-fi is present but not pushy
+- contact routes are explicit
+- live GPT links are not placeholders
+### skill.artifact-proof-checker
+Checks:
+- screenshots
+- diagrams
+- audit reports
+- validation outputs
+- repo links
+- changelog
+- case studies
+- before/after examples
+### skill.staleness-drift-detector
+Checks:
+- stale audit dates
+- old TODOs
+- inconsistent naming
+- outdated “under construction”
+- mismatched Notion/catalog/site hierarchy
+- unrebuilt search index
+### skill.agent-safety-governor
+Prevents:
+- large framework rewrites
+- deleting assets without approval
+- invented claims
+- CSS scope breakage
+- losing brand voice
+- breaking GitHub Pages deployment
+
+⸻
+
+6. Master remediation roadmap
+
+Phase 0 — Freeze current baseline
+
+Goal: Create a stable snapshot before agents start making changes.
+
+Actions:
+
+1. Confirm current branch and uncommitted changes.
+2. Run existing validators:
+    * python3 scripts/validate-site.py
+    * python3 scripts/check-links.py
+    * python3 scripts/build-search-index.py
+3. Export current metrics:
+    * page count
+    * indexed page count
+    * sitemap URL count
+    * internal/external link count
+    * asset count
+    * total CSS/JS size
+    * search index size
+4. Create:
+    * assets/docs/SHOWCASE_BASELINE_2026-05-26.md
+
+Acceptance criteria:
+
+* No remediation begins until the baseline is recorded.
+* Any existing failures are logged before being fixed.
+
+⸻
+
+Phase 1 — Browser-real responsive QA
+
+Goal: Replace theoretical validation with actual viewport proof.
+
+Test matrix:
+
+Width	Device class
+320	Small legacy mobile
+375	iPhone standard
+390	Modern iPhone
+414	Large phone
+768	Tablet portrait
+1024	Tablet landscape / small desktop
+1280	Laptop
+1440	Desktop
+
+Pages:
+
+* /
+* /toolbox/
+* all 7 branch pages
+* all Tool-ette pages
+* /ecosystem/
+* /universe/
+* /search/
+* /about/
+* /contact/
+* /persona/
+* /legal/
+* /404.html
+
+Checks:
+
+* no horizontal overflow
+* no clipped hero content
+* no broken nav
+* no unusable dropdown
+* no compressed branch cards
+* no crushed CTAs
+* breadcrumbs wrap correctly
+* search modal works
+* footer stacks correctly
+* Mermaid diagrams remain usable
+* text remains readable
+* tap targets usable
+
+Deliverables:
+
+* assets/docs/RESPONSIVE_AUDIT_2026-05-26.md
+* failure screenshots under assets/audit/screenshots/responsive/
+
+⸻
+
+Phase 2 — Showcase narrative rebuild
+
+Goal: Make the site prove capability.
+
+Add or improve these sections:
+
+Location	New showcase element
+Homepage	“What this proves” strip: product thinking, custom GPT taxonomy, static-site governance, humane AI UX.
+About	Founder/creator story: why Glee-fully exists, tribute to Glee, human-first AI principle.
+Toolbox	“How the system works” visual: trunk → branches → Tool-ettes.
+Ecosystem	“Architecture map” plus text fallback.
+Branch pages	“Branch purpose,” “Who this helps,” “What the Tool-ettes cover.”
+Tool-ette pages	“Use this when,” “What you can ask,” “Related tools.”
+Footer	Add subtle “Built as a living portfolio by OverKill Hill P³.”
+
+The key move: do not just showcase the tools. Showcase the system design.
+
+⸻
+
+Phase 3 — Portfolio proof layer
+
+Goal: Evidence > claims.
+
+Add a new page:
+
+/showcase/
+
+Suggested title:
+
+Glee-fully as a Living AI Product System
+
+Sections:
+
+1. The problem
+    * AI tools are often cold, generic, and technical.
+    * Everyday users need AI that feels approachable.
+2. The design move
+    * A toolbox metaphor.
+    * Trunk/branch/tool-ette taxonomy.
+    * Friendly voice.
+    * Clear routing.
+3. The architecture
+    * Static GitHub Pages.
+    * Search index.
+    * Validation scripts.
+    * Structured data.
+    * Responsive design.
+    * Mermaid ecosystem map.
+4. The governance system
+    * replit.md
+    * audit reports
+    * validation scripts
+    * proposed agent-skills.md
+5. The portfolio proof
+    * before/after audits
+    * responsive screenshots
+    * search demo
+    * ecosystem map
+    * selected Tool-ette examples
+6. What this demonstrates
+    * product architecture
+    * prompt/product taxonomy
+    * brand design
+    * static-site delivery
+    * agent-directed development
+    * AI UX strategy
+
+⸻
+
+Phase 4 — Conversion path hardening
+
+Goal: Every visitor has a clear next action.
+
+Visitor types:
+
+Visitor	Likely question	CTA
+Casual user	“What can I use?”	Start with Toolbox
+AI/product peer	“How was this designed?”	View Showcase
+Potential collaborator	“Can Jamie build systems like this?”	Contact
+Supporter	“How do I support this?”	Ko-fi
+Returning user	“Where was that one tool?”	Search
+Recruiter/client	“What capability does this prove?”	View case study
+
+Required CTA set:
+
+* Start with the Toolbox
+* Explore the Ecosystem Map
+* Search the Tools
+* Read the Showcase Case Study
+* Contact Jamie
+* Support on Ko-fi
+
+No page should end without one of those.
+
+⸻
+
+Phase 5 — Tool-ette page upgrade pattern
+
+Every Tool-ette page should use this pattern:
+
+1. Hero
+   - Tool name
+   - Plain-English utility sentence
+   - Branch context
+   - Primary CTA
+2. What it helps with
+   - 3–5 concrete tasks
+3. Use this when
+   - scenario bullets
+4. Example prompts
+   - 3 sample asks
+5. Related Tool-ettes
+   - previous sibling
+   - next sibling
+   - parent branch
+   - Toolbox/Search
+6. Portfolio note
+   - one subtle sentence showing why this Tool-ette exists in the system
+
+Example:
+
+Personal Librarian helps you track books, collections, notes, and reading memory without turning your shelf into a spreadsheet prison.
+
+That keeps the Glee voice but makes utility explicit.
+
+⸻
+
+Phase 6 — Branch page upgrade pattern
+
+Every branch page should become a product-family landing page.
+
+Pattern:
+
+1. Branch hero
+2. Who this branch is for
+3. The jobs this branch handles
+4. Tool-ette card grid
+5. Suggested starting point
+6. “How this branch fits the Glee-fully system”
+7. CTA tray
+
+Each Tool-ette card:
+
+Field	Example
+Icon	Existing tool icon
+Name	Menu Conductor
+Plain-English use	Build meal plans around real preferences.
+Best when	You need dinner decisions without kitchen chaos.
+CTA	Open Menu Conductor
+
+⸻
+
+Phase 7 — Accessibility hardening
+
+Target: WCAG 2.2 AA-oriented practical conformance, without making a formal legal conformance claim unless a full audit is completed. W3C says WCAG 2.2 covers accessibility across device types and often improves usability generally.  
+
+Tests:
+
+* axe-core automated audit
+* manual keyboard pass
+* focus order pass
+* focus-visible screenshots
+* reduced-motion emulation
+* contrast sampling
+* link-purpose review
+* screen-reader link list review
+* Mermaid fallback text review
+
+Deliverables:
+
+* assets/docs/WCAG22_AA_REVIEW_2026-05-26.md
+* remediation checklist
+* deferred manual findings
+
+Acceptance criteria:
+
+* no keyboard traps
+* all controls have names
+* all meaningful images have accurate alt
+* no color-only meaning
+* focus is visible and not obscured
+* mobile tap targets are usable
+* diagrams have text fallback
+
+⸻
+
+Phase 8 — Core Web Vitals / performance hardening
+
+Core Web Vitals measure loading, interactivity, and visual stability through LCP, INP, and CLS, with current good thresholds of LCP ≤2.5s, INP ≤200ms, and CLS ≤0.1.  
+
+Tests:
+
+* Lighthouse mobile and desktop
+* PageSpeed Insights for live URL
+* Chrome DevTools performance trace
+* image weight audit
+* JS/CSS transfer size
+* font load timing
+* third-party impact
+* Mermaid page-specific load cost
+
+Acceptance thresholds:
+
+Metric	Target
+LCP	≤ 2.5s
+INP	≤ 200ms
+CLS	≤ 0.1
+Lighthouse Performance	≥ 90 where practical
+Accessibility	≥ 95
+Best Practices	≥ 95
+SEO	≥ 95
+
+Mitigations:
+
+* preload or prioritize LCP hero images
+* add width/height to images
+* defer third-party scripts
+* lazy-load non-critical media
+* avoid loading Mermaid on non-Mermaid pages
+* keep search index gzipped-friendly
+* review Google Fonts weight usage
+
+⸻
+
+Phase 9 — SEO and structured-data polish
+
+Actions:
+
+1. Validate all titles and descriptions.
+2. Confirm canonical URLs.
+3. Confirm breadcrumbs.
+4. Confirm og:image and og:image:alt.
+5. Validate JSON-LD.
+6. Add FAQ only where useful.
+7. Keep URLs descriptive, stable, and human-readable. Google notes URL parts may appear as breadcrumbs in search results, helping users judge relevance.  
+8. Ensure image alt text is descriptive and contextual, since Google uses alt text to understand image/content relationships.  
+
+Deliverable:
+
+* assets/docs/SEO_SCHEMA_REVIEW_2026-05-26.md
+
+⸻
+
+Phase 10 — Agent governance and CI
+
+Goal: Prevent future drift.
+
+Add:
+
+.github/workflows/site-quality.yml
+
+Checks:
+
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/build-search-index.py
+python3 scripts/audit-assets.py
+python3 scripts/generate-feed.py
+
+Optional Playwright job:
+
+npm install --save-dev @playwright/test
+npx playwright install chromium
+npx playwright test
+
+CI should fail on:
+
+* broken internal link
+* duplicate canonical
+* missing title
+* missing description
+* missing h1
+* missing skip/main
+* missing app script
+* broken manifest icon path
+* JSON-LD parse failure
+* sitemap mismatch
+* search index not rebuilt
+* unmanaged TODO in production HTML
+
+⸻
+
+7. The “weakness kill list”
+
+Use this as the exhaustive backlog taxonomy.
+
+P0 — Portfolio blockers
+
+ID	Weakness	Fix
+P0-01	Any broken internal link	Fix immediately.
+P0-02	Mobile horizontal scroll	Fix immediately.
+P0-03	Search modal unusable	Fix immediately.
+P0-04	GPT CTA points to wrong destination	Fix or clearly label.
+P0-05	Homepage does not explain value quickly	Rewrite hero.
+P0-06	Contact path unclear	Fix CTA/footer/contact.
+P0-07	Console error on core page	Fix JS.
+P0-08	Accessibility keyboard trap	Fix before deploy.
+P0-09	404/utility pages indexed incorrectly	Fix robots/canonical.
+P0-10	Misleading claims about live tools	Clarify status.
+
+P1 — Showcase credibility risks
+
+ID	Weakness	Fix
+P1-01	Too much under-construction language	Convert to public-beta badge.
+P1-02	Tool names opaque	Add plain-English utility text.
+P1-03	Branch pages too list-like	Add card grids.
+P1-04	No visible system-design proof	Add showcase/case-study page.
+P1-05	No proof artifacts	Add screenshots, diagrams, audit summaries.
+P1-06	Weak about/story page	Add origin, ethos, creator role.
+P1-07	No “what this proves” layer	Add portfolio framing.
+P1-08	CTAs inconsistent	Normalize CTA system.
+P1-09	Placeholder GPT URLs	Resolve or label.
+P1-10	Mermaid map inaccessible on mobile	Add fallback and responsive container.
+
+P2 — Quality and maintainability risks
+
+ID	Weakness	Fix
+P2-01	No agent-skills.md	Add it.
+P2-02	CI not enforcing validation	Add GitHub Actions.
+P2-03	Asset bloat unmanaged	Archive/purge with approval.
+P2-04	CSS scope drift	Add CSS lint/review rules.
+P2-05	Templates not used consistently	Add template workflow.
+P2-06	Search index stale	CI fail if stale.
+P2-07	Sitemap/feed stale	Regenerate on content edits.
+P2-08	Inconsistent brand spellings	Add naming linter.
+P2-09	Old audit docs confuse state	Add canonical “current status” doc.
+P2-10	External links rot	Scheduled link audit.
+
+P3 — Polishing risks
+
+ID	Weakness	Fix
+P3-01	No visible update dates	Add “Last tuned” fields.
+P3-02	Weak social share previews	Test LinkedIn/Facebook/X cards.
+P3-03	Ko-fi under-integrated	Add gentle support rationale.
+P3-04	No user pathway segmentation	Add “Use / Study / Support / Contact.”
+P3-05	No release notes	Add changelog/feed highlights.
+P3-06	No “start here” path	Add onboarding route.
+P3-07	Search lacks suggested queries	Add query chips.
+P3-08	Diagrams lack downloadable/shareable variants	Add image/PDF links if useful.
+P3-09	Footer too generic	Make footer a navigation safety net.
+P3-10	No external credibility bridge	Cross-link OverKill Hill case-study materials.
+
+⸻
+
+8. Replit execution prompt
+
+Paste this into Replit as the next comprehensive planning/execution prompt.
+
+You are Replit Agent operating in the existing OKHP3/Glee-fullyTools repository.
+Mission:
+Turn glee-fully.tools into a stronger showcase and living portfolio of Jamie Hill’s ability to design, govern, and ship humane AI product systems. Do not merely validate the site. Evaluate and remediate anything that prevents the site from functioning as a credible public portfolio artifact.
+Authoritative constraints:
+- Preserve the static GitHub Pages architecture.
+- Preserve pure HTML/CSS/vanilla JS unless explicitly approved.
+- Preserve Glee-fully voice: warm, retro-bright, human, approachable, non-technical.
+- Preserve trunk → branch → tool-ette taxonomy.
+- Do not fabricate GPT URLs, claims, testimonials, metrics, legal statements, or availability.
+- Do not delete assets without documenting and getting owner approval.
+- Prefer idempotent scripts, templates, and validation gates over one-off manual fixes.
+Read first:
+1. replit.md
+2. assets/docs/FINAL_AUDIT_2026-05-03.md
+3. assets/docs/OPEN_TODOS_2026-05-03.md
+4. sitemap.xml
+5. assets/data/search-index.json
+6. scripts/validate-site.py
+7. scripts/check-links.py
+8. skills-lock.json if present
+Create if missing:
+agent-skills.md
+agent-skills.md must define these skills:
+- static-site-auditor
+- responsive-render-tester
+- portfolio-positioning-reviewer
+- glee-brand-guardian
+- accessibility-aa-reviewer
+- seo-schema-curator
+- conversion-path-auditor
+- artifact-proof-checker
+- staleness-and-drift-detector
+- agent-safety-governor
+Phase 1 — Baseline:
+Run:
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/build-search-index.py
+python3 scripts/audit-assets.py
+python3 scripts/generate-feed.py
+Create:
+assets/docs/SHOWCASE_BASELINE_2026-05-26.md
+Phase 2 — Viewport audit:
+Use Playwright or equivalent to test:
+320x700, 375x812, 390x844, 414x896, 768x1024, 1024x768, 1280x800, 1440x900.
+Test every indexable page plus 404 and under-construction.
+Check:
+- no horizontal scroll
+- nav works
+- search works
+- breadcrumbs wrap
+- CTAs remain tappable
+- footer stacks
+- Mermaid diagrams do not overflow
+- no console errors
+- no missing assets
+- no clipped text
+- no modal viewport traps
+Save failure screenshots under:
+assets/audit/screenshots/showcase-2026-05-26/
+Phase 3 — Portfolio-positioning audit:
+For every major page, answer:
+1. Does this page explain what it is?
+2. Does it explain who it helps?
+3. Does it show why the system exists?
+4. Does it prove Jamie can design and ship?
+5. Does it offer a next step?
+Create:
+assets/docs/PORTFOLIO_POSITIONING_AUDIT_2026-05-26.md
+Phase 4 — Content remediation:
+Improve:
+- homepage hero clarity
+- Toolbox route clarity
+- branch page card grids
+- Tool-ette plain-English explanations
+- About page creator/story/design philosophy
+- Ecosystem page diagram fallback
+- Search page suggested queries
+- Contact page intent paths
+- Footer navigation safety net
+Phase 5 — Showcase page:
+Create /showcase/ if missing.
+Title:
+Glee-fully as a Living AI Product System
+Include:
+- problem
+- design approach
+- architecture
+- governance model
+- validation system
+- screenshots/proof points
+- what this demonstrates
+- next actions
+Phase 6 — TODO cleanup:
+Resolve or clearly label:
+- Present Hoarder GPT URL
+- Dreamland Journeys GPT URL
+- Memento Log GPT URL
+If real URLs are unavailable, keep safe placeholders but make the visible copy honest.
+Phase 7 — Accessibility:
+Run axe or equivalent and manual keyboard checks.
+Target WCAG 2.2 AA-oriented practical quality.
+Fix P0/P1 issues.
+Phase 8 — Performance:
+Run Lighthouse/PageSpeed-style tests on:
+/
+ /toolbox/
+ /ecosystem/
+ /search/
+ one branch page
+ one Tool-ette page
+Track:
+LCP, INP/TBT, CLS, performance, accessibility, best practices, SEO.
+Phase 9 — SEO/schema:
+Validate:
+- titles
+- descriptions
+- canonicals
+- breadcrumbs
+- JSON-LD
+- OG/Twitter images
+- image alt
+- sitemap
+- feed
+- search index
+Phase 10 — CI:
+Add or update GitHub Actions workflow:
+.github/workflows/site-quality.yml
+It must run validators and fail on regressions.
+Phase 11 — Final report:
+Create:
+assets/docs/SHOWCASE_HARDENING_PLAN_AND_RESULTS_2026-05-26.md
+Report format:
+# Glee-fully Showcase Hardening — 2026-05-26
+## Executive Summary
+## Baseline Findings
+## Portfolio Risks Found
+## Technical Risks Found
+## Accessibility Findings
+## Responsive Findings
+## SEO / Schema Findings
+## Performance Findings
+## Content / Brand Findings
+## Agent Skills Added or Updated
+## Files Changed
+## Screenshots Captured
+## Remaining Owner Decisions
+## Deployment Recommendation
+## Next 10 Actions
+Do not mark this complete until:
+- validators pass
+- viewport audit is complete
+- remaining TODOs are documented
+- portfolio-positioning review is complete
+- agent-skills.md exists
+- final report exists
+
+⸻
+
+9. My strong recommendation
+
+Do not spend the next pass primarily on metadata. That battle is mostly won.
+
+Spend it on:
+
+1. real viewport screenshots
+2. branch and Tool-ette page persuasion
+3. a /showcase/ case-study page
+4. agent-skills.md governance
+5. CI gates
+6. removing the “this is unfinished” smell where the work is already strong
+
+That is the difference between a site that validates and a site that sells the competence behind it.
