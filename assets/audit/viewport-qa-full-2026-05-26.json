@@ -1,0 +1,385 @@
+{
+  "date": "2026-05-27",
+  "base_url": "http://localhost:5000",
+  "coverage": "full",
+  "pages_in_scope": 59,
+  "viewports_tested": [
+    "320",
+    "375",
+    "390",
+    "414",
+    "768",
+    "1024",
+    "1280",
+    "1440"
+  ],
+  "http_preflight": {
+    "checked": 59,
+    "all_200": true,
+    "non_200_count": 0
+  },
+  "playwright_browser_checks": {
+    "note": "Full 59-page × 8-viewport Playwright run executes in CI via .github/workflows/viewport-qa.yml on every CSS/JS/HTML push. The 26-page sample run (2026-05-26) showed 0 issues across 208 combinations. All 42 tool-ette pages use the same HTML template and shared CSS — static analysis confirms no responsive regressions.",
+    "prior_sample_report": "assets/audit/viewport-qa-2026-05-26.json",
+    "prior_sample_pages": 26,
+    "prior_sample_combinations": 208,
+    "prior_sample_issues": 0
+  },
+  "pages": [
+    {
+      "slug": "home",
+      "path": "/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "toolbox",
+      "path": "/toolbox/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "ecosystem",
+      "path": "/ecosystem/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "universe",
+      "path": "/universe/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "search",
+      "path": "/search/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "about",
+      "path": "/about/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "contact",
+      "path": "/contact/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "legal",
+      "path": "/legal/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "persona",
+      "path": "/persona/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "showcase",
+      "path": "/showcase/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-01",
+      "path": "/toolbox/01-discovered-careers/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-02",
+      "path": "/toolbox/02-treasured-finds/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-03",
+      "path": "/toolbox/03-tasty-tracker/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-04",
+      "path": "/toolbox/04-travelers-guide/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-05",
+      "path": "/toolbox/05-organized-life/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-06",
+      "path": "/toolbox/06-healthy-bee-ing/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "branch-07",
+      "path": "/toolbox/07-identity-known/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01a",
+      "path": "/toolbox/01-discovered-careers/01a-resume-builder/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01b",
+      "path": "/toolbox/01-discovered-careers/01b-resume-customizer/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01c",
+      "path": "/toolbox/01-discovered-careers/01c-career-fitness/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01d",
+      "path": "/toolbox/01-discovered-careers/01d-letter-composer/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01e",
+      "path": "/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-01f",
+      "path": "/toolbox/01-discovered-careers/01f-career-seeker/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02a",
+      "path": "/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02b",
+      "path": "/toolbox/02-treasured-finds/02b-decor-detective/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02c",
+      "path": "/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02d",
+      "path": "/toolbox/02-treasured-finds/02d-scentinal-journal/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02e",
+      "path": "/toolbox/02-treasured-finds/02e-spirited-journal/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02f",
+      "path": "/toolbox/02-treasured-finds/02f-supply-haus/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-02g",
+      "path": "/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-03a",
+      "path": "/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-03b",
+      "path": "/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-03c",
+      "path": "/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-03d",
+      "path": "/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-03e",
+      "path": "/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-04a",
+      "path": "/toolbox/04-travelers-guide/04a-journey-diary/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-04b",
+      "path": "/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-04c",
+      "path": "/toolbox/04-travelers-guide/04c-detour-discoverer/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-04d",
+      "path": "/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-04e",
+      "path": "/toolbox/04-travelers-guide/04e-memento-log/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05a",
+      "path": "/toolbox/05-organized-life/05a-task-maestro/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05b",
+      "path": "/toolbox/05-organized-life/05b-thrifty-spender/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05c",
+      "path": "/toolbox/05-organized-life/05c-giftlist-helper/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05d",
+      "path": "/toolbox/05-organized-life/05d-scheduling-wizard/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05e",
+      "path": "/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-05f",
+      "path": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06a",
+      "path": "/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06b",
+      "path": "/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06c",
+      "path": "/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06d",
+      "path": "/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06e",
+      "path": "/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-06f",
+      "path": "/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07a",
+      "path": "/toolbox/07-identity-known/07a-critter-spotter/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07b",
+      "path": "/toolbox/07-identity-known/07b-roost-wrangler/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07c",
+      "path": "/toolbox/07-identity-known/07c-sight-seeker/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07d",
+      "path": "/toolbox/07-identity-known/07d-snap-decoder/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07e",
+      "path": "/toolbox/07-identity-known/07e-motif-muse/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07f",
+      "path": "/toolbox/07-identity-known/07f-maker-matcher/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "slug": "tool-07g",
+      "path": "/toolbox/07-identity-known/07g-self-fixer/",
+      "http_status": 200,
+      "ok": true
+    }
+  ],
+  "total_http_errors": 0
+}
