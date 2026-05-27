@@ -1,0 +1,61 @@
+name: Viewport QA
+
+# Run whenever CSS, JS, or HTML changes — these are the only inputs that can
+# introduce responsive-layout regressions. Also available on manual trigger.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/css/**'
+      - 'assets/js/**'
+      - '**/*.html'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/css/**'
+      - 'assets/js/**'
+      - '**/*.html'
+  workflow_dispatch:
+
+jobs:
+  viewport-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: Responsive viewport QA (26 pages × 8 viewports)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install playwright
+
+      - name: Install Playwright browsers and system dependencies
+        run: playwright install --with-deps chromium
+
+      - name: Start local HTTP server
+        # Run in background; sleep gives it time to bind before tests start
+        run: |
+          python3 -m http.server 5000 --bind 0.0.0.0 &
+          sleep 2
+
+      - name: Run viewport QA
+        # run-viewport-qa.py exits 1 when any horizontal-overflow issue is found,
+        # causing this step (and the workflow) to fail. It also compiles a
+        # libgbm.so.1 stub (harmless on Ubuntu since --disable-gpu is used).
+        run: python3 scripts/run-viewport-qa.py
+
+      - name: Upload QA report and failure screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: viewport-qa-report
+          path: |
+            assets/audit/viewport-qa-*.json
+            assets/audit/screenshots/
+          retention-days: 30
