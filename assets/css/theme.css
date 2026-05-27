@@ -4796,6 +4796,20 @@ html:has(
   navigation: auto;
 }
 
+/* Cross-fade keyframes for root view transition */
+@keyframes vt-fade-in  { from { opacity: 0; } to   { opacity: 1; } }
+@keyframes vt-fade-out { from { opacity: 1; } to   { opacity: 0; } }
+
+/* Explicit 250ms cross-fade — only runs when user has no motion preference */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: 250ms ease both vt-fade-out;
+  }
+  ::view-transition-new(root) {
+    animation: 250ms ease both vt-fade-in;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -4803,6 +4817,13 @@ html:has(
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
   }
+}
+
+/* Optional shared-element hero title morph between Glee pages.
+   view-transition-name must be unique per page — .glee-hero h1 qualifies
+   because each page has at most one hero section. */
+.glee-main .glee-hero h1 {
+  view-transition-name: glee-hero-title;
 }
 
 

@@ -86,6 +86,15 @@ def ensure_mobile_meta(html: str) -> str:
     return html
 
 
+
+def ensure_view_transition(html: str) -> str:
+    """Insert <meta name="view-transition" content="same-origin"> if absent."""
+    if 'name="view-transition"' in html:
+        return html
+    tag = '    <meta name="view-transition" content="same-origin" />\n'
+    return re.sub(r"(\s*)</head>", f"{tag}\\1</head>", html, count=1)
+
+
 def process(path: Path) -> bool:
     original = path.read_text(encoding="utf-8", errors="replace")
     html = original
@@ -95,6 +104,7 @@ def process(path: Path) -> bool:
         html = strip_old_favicons(html)
         html = insert_favicon_block(html)
         html = ensure_mobile_meta(html)
+    html = ensure_view_transition(html)
     if html != original:
         path.write_text(html, encoding="utf-8")
         return True
