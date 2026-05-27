@@ -138,7 +138,7 @@ TOOLS = {
     ),
     "05c-giftlist-helper": (
         "Giftlist Helper",
-        "A retro-bright gift organiser showing a person-by-person gift list with budget tracking bars and smart suggestion panel",
+        "A retro-bright gift organizer showing a person-by-person gift list with budget tracking bars and smart suggestion panel",
         "toolbox/05-organized-life/05c-giftlist-helper/index.html",
     ),
     "05d-scheduling-wizard": (

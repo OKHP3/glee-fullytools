@@ -312,7 +312,7 @@ def make_01d():
         txt(60, 109, "Cover Letter — Solstice Apps · Product Designer", 11, "#f6f2ee", bold=True),
         txt(60, 136, "27 May 2026", 9, "#c9bfb2"),
         txt(60, 155, "Dear Hiring Team,", 10, "#3a3530", bold=True),
-        txt(60, 174, "When I read your job post for a Product Designer, I recognised", 9, "#3a3530"),
+        txt(60, 174, "When I read your job post for a Product Designer, I recognized", 9, "#3a3530"),
         txt(60, 187, "the rhythm immediately — a small team moving fast, making things", 9, "#3a3530"),
         txt(60, 200, "real, and actually caring about the humans on the other side.", 9, "#3a3530"),
         txt(60, 220, "At Bloom Studio, I redesigned the onboarding experience for a", 9, "#3a3530"),
@@ -1565,7 +1565,7 @@ def make_05c():
             txt(380, y+30, budget, 8, accentcol),
         )
     return join(
-        svg_open("glh", "A retro-bright gift organiser showing a person-by-person gift list with budget tracking bars and smart suggestion panel"),
+        svg_open("glh", "A retro-bright gift organizer showing a person-by-person gift list with budget tracking bars and smart suggestion panel"),
         header_bar("Giftlist Helper", "The right gift, for the right person — every time.", dots()),
         pill(48, 96, 90, 22, "#d35b2d", "🎄 Christmas", "#f6f2ee", 9),
         pill(146, 96, 86, 22, "#e8e3dc", "🎂 Birthdays", "#9e3b2e", 9),

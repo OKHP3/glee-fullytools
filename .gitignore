@@ -11,5 +11,5 @@ Thumbs.db
 .vscode/
 *.swp
 
-# Generated audit artefacts (do not commit run-time reports)
+# Generated audit artifacts (do not commit run-time reports)
 scripts/audit-report.md
