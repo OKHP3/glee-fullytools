@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-27T13:22:10.322104Z",
+  "generated_at": "2026-05-27T13:27:45.558704Z",
   "version": 1,
   "site": "https://glee-fully.tools",
   "count": 68,
@@ -320,20 +320,20 @@
       "branch": "",
       "headings": [
         "Glee-fully as a Living AI Product System",
-        "The design challenge",
-        "The constraints that shaped everything",
-        "Information architecture: trunk, branch, tool-ette",
-        "The Trunk",
-        "The Branches",
-        "The Tool-ettes",
-        "Orientation at every depth",
-        "Why no mega-menu?",
-        "Technical architecture: static by conviction",
-        "Zero-dependency frontend",
-        "Client-side search engine"
+        "The problem",
+        "What generic AI UX actually costs users",
+        "The design approach",
+        "The toolbox metaphor",
+        "Trunk → branch → tool-ette",
+        "Friendly voice, clear routing",
+        "One design system for three brands",
+        "Why not a framework?",
+        "The architecture",
+        "Static GitHub Pages",
+        "Client-side search"
       ],
       "keywords": "",
-      "body": "Skip to main content Glee-fully Why Glee-fully Opening The Toolbox Our Ecosystem The Voice & Muse About OKHP³™ Universe About Us Showcase Contact Legal Toggle navigation Today's Sparkle 🔦 Neighborly Bazaar GPT — helps you evaluate, price, and re-home household items with Glee 💫 Home Showcase Portfolio case study Glee-fully as a Living AI Product System Sixty pages. Forty-two tool-ettes. A shared design language, a client-side search engine, a Python CI gate, and a governance model that keeps it all coherent as it grows — built without a single npm install. Explore the Toolbox Meet Glee & Jamie The design challenge Building a coherent suite of AI tools is easy when you have three tools. It gets interesting at forty-two. Every new tool-ette has to feel like it belongs in the same universe as the first one — same voice, same visual language, same mental model for navigation — without introducing a build system, a CMS, or a dependency that could rot overnight. The constraints were self-imposed and intentional: static HTML only , deployable straight to GitHub Pages, readable by any browser without JavaScript, and maintainable by a team of two without a DevOps workflow. Those constraints forced clarity in every other decision. The constraints that shaped everything No build step. No webpack, Vite, or Next.js. Every page is a"
+      "body": "Skip to main content Glee-fully Why Glee-fully Opening The Toolbox Our Ecosystem The Voice & Muse About OKHP³™ Universe About Us Showcase Contact Legal Toggle navigation Today's Sparkle 🔦 Neighborly Bazaar GPT — helps you evaluate, price, and re-home household items with Glee 💫 Home Showcase Portfolio case study Glee-fully as a Living AI Product System Sixty pages. Forty-two tool-ettes. Seven branches. Forty-plus Custom GPTs. One shared design language, a client-side search engine, a Python CI gate, and a governance model built to keep everything coherent as it grows — all without a single framework or npm install. This is what it proves. Explore the Toolbox Meet Glee & Jamie The problem Most AI tools feel cold. They launch with a blank prompt box, a generic voice, and zero context about who you are or why you showed up. They're powerful in theory and exhausting in practice — because figuring out how to talk to them is a skill most people don't have time to develop. Everyday users — the ones managing households, navigating career changes, tracking a pantry, planning a road trip — don't need more capability. They need approachability. They need an AI that already knows the domain, already has a personality, and already sounds like someone who's on their side. Generic tools don't give them that. The"
     },
     {
       "url": "/toolbox/01-discovered-careers/01a-resume-builder/",

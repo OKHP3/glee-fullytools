@@ -215,7 +215,7 @@
       <!-- /AUTOGEN:BREADCRUMB -->
 
       <!-- ══════════════════════════════════════
-           HERO
+           1. HERO
          ══════════════════════════════════════ -->
       <section class="hero glee-hero">
         <div class="brand-stripes brand-stripes--glee" aria-hidden="true"></div>
@@ -226,10 +226,12 @@
               <p class="hero-eyebrow">Portfolio case study</p>
               <h1>Glee&#8209;fully as a Living AI Product System</h1>
               <p class="hero-tagline">
-                Sixty pages. Forty&#8209;two tool&#8209;ettes. A shared design
-                language, a client&#8209;side search engine, a Python CI gate,
-                and a governance model that keeps it all coherent as it grows —
-                built without a single npm install.
+                Sixty pages. Forty&#8209;two tool&#8209;ettes. Seven branches.
+                Forty&#8209;plus Custom GPTs. One shared design language, a
+                client&#8209;side search engine, a Python CI gate, and a
+                governance model built to keep everything coherent as it
+                grows — all without a single framework or npm install.
+                This is what it proves.
               </p>
               <div class="hero-actions">
                 <a href="/toolbox/" class="btn btn-primary">Explore the Toolbox</a>
@@ -250,37 +252,44 @@
       </section>
 
       <!-- ══════════════════════════════════════
-           SECTION 1 — THE DESIGN CHALLENGE
+           2. THE PROBLEM
          ══════════════════════════════════════ -->
       <section class="content-section stripe-bg">
         <div class="container reveal-on-scroll">
           <div class="two-column">
             <div>
-              <h2>The design challenge</h2>
+              <h2>The problem</h2>
               <p>
-                Building a coherent suite of AI tools is easy when you have
-                three tools. It gets interesting at forty&#8209;two. Every
-                new tool-ette has to feel like it belongs in the same universe
-                as the first one — same voice, same visual language, same
-                mental model for navigation — without introducing a build
-                system, a CMS, or a dependency that could rot overnight.
+                Most AI tools feel cold. They launch with a blank prompt
+                box, a generic voice, and zero context about who you are
+                or why you showed up. They're powerful in theory and
+                exhausting in practice — because figuring out how to
+                talk to them is a skill most people don't have time to
+                develop.
               </p>
               <p>
-                The constraints were self&#8209;imposed and intentional:
-                <strong>static HTML only</strong>, deployable straight to
-                GitHub Pages, readable by any browser without JavaScript,
-                and maintainable by a team of two without a DevOps workflow.
-                Those constraints forced clarity in every other decision.
+                Everyday users — the ones managing households, navigating
+                career changes, tracking a pantry, planning a road trip —
+                don't need more capability. They need approachability.
+                They need an AI that already knows the domain, already
+                has a personality, and already sounds like someone who's
+                on their side. Generic tools don't give them that.
+              </p>
+              <p>
+                The deeper problem is structural: building one personalized
+                AI tool is easy. Building forty&#8209;two that share a
+                voice, a taxonomy, a visual language, and a navigation
+                system — without a team or a budget — is a design and
+                architecture problem, not just a prompting problem.
               </p>
             </div>
             <aside class="card">
-              <h3>The constraints that shaped everything</h3>
+              <h3>What generic AI UX actually costs users</h3>
               <ul>
-                <li><strong>No build step.</strong> No webpack, Vite, or Next.js. Every page is a real HTML file.</li>
-                <li><strong>No CMS.</strong> Content lives in the HTML. Idempotent Python scripts handle bulk changes.</li>
-                <li><strong>No framework JS.</strong> One shared <code>app.js</code> — 918 lines — covers nav, search, scroll animations, and the mobile overlay.</li>
-                <li><strong>No external search API.</strong> A weighted client&#8209;side scorer on a 130 KB JSON index.</li>
-                <li><strong>No broken pages.</strong> A CI gate exits non&#8209;zero on any metadata regression.</li>
+                <li><strong>Cognitive overhead.</strong> Every new tool requires re&#8209;learning how to phrase your needs — even when the need is the same.</li>
+                <li><strong>Voice mismatch.</strong> Corporate neutrality feels wrong for personal tasks: journaling, gifting, snack logs, career fears.</li>
+                <li><strong>No memory of the ecosystem.</strong> Each tool is an island; users can't navigate between related helpers naturally.</li>
+                <li><strong>No trust signal.</strong> A blank interface with no personality gives the user nothing to hold onto.</li>
               </ul>
             </aside>
           </div>
@@ -288,49 +297,54 @@
       </section>
 
       <!-- ══════════════════════════════════════
-           SECTION 2 — INFORMATION ARCHITECTURE
+           3. THE DESIGN APPROACH
          ══════════════════════════════════════ -->
       <section class="content-section container reveal-on-scroll">
         <header class="section-header">
-          <h2>Information architecture: trunk, branch, tool&#8209;ette</h2>
+          <h2>The design approach</h2>
           <p>
-            Navigation at scale requires a model visitors can internalize in
-            three seconds. The trunk&#8209;branch&#8209;tool&#8209;ette
-            hierarchy gives every page an address that explains itself.
+            The answer wasn't to build a better blank box. It was to
+            give every tool a home, a name, a personality, and a clear
+            place in a system visitors could understand in three seconds.
           </p>
         </header>
 
         <div class="grid grid-3">
           <article class="card">
             <div class="portfolio-pillar-icon" aria-hidden="true">🌳</div>
-            <h3>The Trunk</h3>
+            <h3>The toolbox metaphor</h3>
             <p>
-              The Toolbox hub (<code>/toolbox/</code>) is the single entry
-              point for all 42 tools. Seven branch cards — each with a name,
-              tagline, and tool count — give visitors an immediate map of the
-              whole system without needing to click.
+              "Toolbox" frames the whole system immediately: these are
+              things you reach for when you need them, organized by the
+              kind of job they do. Not a "platform," not a "suite" —
+              a toolbox. Familiar, physical, purposeful. The metaphor
+              does orientation work before the visitor reads a word.
             </p>
           </article>
 
           <article class="card">
             <div class="portfolio-pillar-icon" aria-hidden="true">🌿</div>
-            <h3>The Branches</h3>
+            <h3>Trunk → branch → tool&#8209;ette</h3>
             <p>
-              Seven thematic hubs group tools by life domain: careers,
-              treasured finds, food, travel, organization, health, and
-              identity. Each branch page explains the domain, introduces
-              the tools, and lists the best&#8209;fit visitor profiles.
+              A three&#8209;tier taxonomy keeps 60 pages navigable.
+              The trunk (Toolbox hub) shows seven branches at a glance.
+              Each branch groups tools by life domain — careers, food,
+              travel, health. Each tool&#8209;ette has its own page,
+              personality, and GPT link. Every page always knows what's
+              above it, beside it, and below it.
             </p>
           </article>
 
           <article class="card">
-            <div class="portfolio-pillar-icon" aria-hidden="true">🍃</div>
-            <h3>The Tool&#8209;ettes</h3>
+            <div class="portfolio-pillar-icon" aria-hidden="true">💬</div>
+            <h3>Friendly voice, clear routing</h3>
             <p>
-              Forty&#8209;two pages — one per Custom GPT. Each carries a
-              hero, a functions list, a "who this is for" aside, a live
-              GPT link, sibling cards, and a "Keep exploring" tray so the
-              visitor is never stranded at a dead end.
+              The Glee&#8209;fully tone — warm chai&#8209;fueled
+              friend, not corporate bot — is baked into the brand CSS,
+              the copywriting patterns, and the character voice that
+              runs through every GPT. Clear routing (breadcrumb, "Keep
+              exploring" tray, ⌘K search) means no visitor is ever
+              stranded at a dead end.
             </p>
           </article>
         </div>
@@ -338,43 +352,29 @@
         <div class="mt-2">
           <div class="two-column">
             <div>
-              <h3>Orientation at every depth</h3>
+              <h3>One design system for three brands</h3>
               <p>
-                Three independent systems reinforce the mental model at
-                every level of depth. A visitor who lands on any page —
-                from a search engine or a shared link — always knows exactly
-                where they are and what's nearby.
+                Glee&#8209;fully shares a stylesheet with two sibling
+                brands — OverKill Hill P³ and AskJamie. The
+                4,800&#8209;line <code>theme.css</code> is divided into
+                four named scopes (GLOBAL, OVERKILL, GLEE, ASKJAMIE),
+                each separated by a boxed banner comment and a
+                body&#8209;class selector. New rules go into the correct
+                scope based on which brand they affect — no specificity
+                wars, no <code>!important</code> hacks. All colors
+                declared as CSS custom properties on <code>:root</code>
+                — no hardcoded hex values in component rules.
               </p>
-              <ul class="feature-list">
-                <li>
-                  <strong>Breadcrumb.</strong> Home &rsaquo; Branch &rsaquo;
-                  Tool&#8209;ette on every inner page, mirroring the
-                  JSON&#8209;LD <code>BreadcrumbList</code> for
-                  Google&#8209;rich&#8209;results eligibility.
-                </li>
-                <li>
-                  <strong>"Keep exploring" tray.</strong> Injected on all 42
-                  tool&#8209;ette pages via an idempotent Python script —
-                  links to parent branch, previous sibling, next sibling,
-                  Toolbox hub, and site search.
-                </li>
-                <li>
-                  <strong>Site search.</strong> ⌘K / <kbd>/</kbd> opens a
-                  modal that searches all 60+ pages instantly, weighted by
-                  title, heading, description, and body — zero dependencies,
-                  no API key.
-                </li>
-              </ul>
             </div>
             <aside class="card">
-              <h3>Why no mega&#8209;menu?</h3>
+              <h3>Why not a framework?</h3>
               <p>
-                With 42 tools across 7 branches, a flat mega&#8209;menu
-                would require 42 entries — overwhelming and unmaintainable.
-                The trunk&#8209;branch&#8209;tool&#8209;ette model keeps the
-                primary nav to five items while the search modal handles
-                power&#8209;user navigation. The two systems are
-                complementary, not redundant.
+                React, Next.js, or Astro would have solved some problems
+                and introduced others: build pipelines, dependency drift,
+                framework lock&#8209;in, a steeper onboarding curve for
+                future maintainers. Static HTML means every page is
+                readable without running anything — and the CI gate
+                catches regressions without a test runner.
               </p>
             </aside>
           </div>
@@ -382,71 +382,92 @@
       </section>
 
       <!-- ══════════════════════════════════════
-           SECTION 3 — TECHNICAL ARCHITECTURE
+           4. THE ARCHITECTURE
          ══════════════════════════════════════ -->
       <section class="content-section stripe-bg">
         <div class="container reveal-on-scroll">
           <header class="section-header">
-            <h2>Technical architecture: static by conviction</h2>
+            <h2>The architecture</h2>
             <p>
-              Every technical decision has a legible reason. "Static" isn't
-              a limitation — it's the feature that makes the site fast,
-              cheap to host, and impossible to take down with a server crash.
+              Every technical decision has a legible reason. Static
+              GitHub Pages, client&#8209;side search, a Python validation
+              toolchain, and structured data — each one chosen because
+              it fits the constraints and outlasts the trend.
             </p>
           </header>
 
           <div class="grid grid-3">
             <article class="card">
-              <h3>Zero&#8209;dependency frontend</h3>
+              <h3>Static GitHub Pages</h3>
               <p>
-                One CSS file (<code>theme.css</code>, ~4,800 lines, organized
-                into four named brand scopes). One JavaScript file
-                (<code>app.js</code>, 918 lines). Google Fonts loaded from
-                CDN with preconnect hints. No runtime frameworks. No
-                tree&#8209;shaking required because there's nothing to shake.
+                Zero server costs. Zero cold starts. One CSS file, one
+                JS file, pure HTML. The site is fast by default, not by
+                optimization — because there's nothing to slow it down.
+                Deployable from any machine, readable by any browser,
+                archivable by the Internet Archive.
               </p>
             </article>
 
             <article class="card">
-              <h3>Client&#8209;side search engine</h3>
+              <h3>Client&#8209;side search</h3>
               <p>
-                A Python script walks every HTML page, extracts
-                title&nbsp;/&nbsp;description&nbsp;/&nbsp;headings&nbsp;/&nbsp;body,
-                and writes a 130&nbsp;KB JSON index. The runtime — 200 lines
-                of vanilla JS — tokenizes queries, scores fields
-                (title&nbsp;×&nbsp;10, headings&nbsp;×&nbsp;5), and renders
-                modal results in under 50&nbsp;ms. No Algolia. No Lunr. No API costs.
+                A Python script walks every HTML page and writes a
+                130&nbsp;KB JSON index. The runtime — 200 lines of
+                vanilla JS — tokenizes queries, scores by field weight
+                (title&nbsp;×&nbsp;10, headings&nbsp;×&nbsp;5,
+                description&nbsp;×&nbsp;4, body&nbsp;×&nbsp;1), and
+                renders results in under 50&nbsp;ms. No Algolia. No API
+                key. No monthly bill.
               </p>
             </article>
 
             <article class="card">
-              <h3>Python CI toolchain</h3>
+              <h3>Mermaid ecosystem map</h3>
               <p>
-                Seven idempotent scripts handle bulk mutations and
-                validation. Two of them run as GitHub Actions CI gates:
-                <code>validate-site.py</code> checks every page's metadata,
-                and <code>check-links.py</code> validates every internal
-                href against the filesystem and sitemap. A push with broken
-                metadata doesn't reach production.
+                The <a href="/ecosystem/">Ecosystem page</a> renders the
+                full OKHP³ universe as a live Mermaid diagram — a
+                canonical, always&#8209;current map of how all three
+                brands relate. The Mermaid referral credit is enforced
+                by <code>validate-site.py</code> so it can never be
+                silently dropped in a future edit.
               </p>
             </article>
-          </div>
 
-          <div class="mt-2">
             <article class="card">
-              <h3>What the CI gate actually checks</h3>
+              <h3>Structured data</h3>
               <p>
-                On every push to <code>main</code>,
-                <code>validate-site.py</code> verifies that every HTML page
-                has: a non&#8209;empty <code>&lt;title&gt;</code>, a meta
-                description, a self&#8209;referencing canonical URL,
-                a matching <code>og:url</code>, the brand
-                <code>theme&#8209;color</code>, a favicon SVG link, a
-                webmanifest link, a parseable JSON&#8209;LD block, and
-                exactly one <code>&lt;h1&gt;</code>. Pages that add a
-                Mermaid diagram must include the paid&#8209;referral credit
-                exactly once. The gate exits non&#8209;zero on any critical
-                defect — no silent regressions.
+                Every page carries JSON&#8209;LD <code>WebPage</code>
+                or <code>SoftwareApplication</code> schema with a
+                matching <code>BreadcrumbList</code>. The 42
+                tool&#8209;ette pages each declare their GPT as a
+                <code>SoftwareApplication</code>, making them eligible
+                for Google rich results. The indexer validates
+                parseable JSON&#8209;LD on every run.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>No build pipeline</h3>
+              <p>
+                No webpack, Vite, Rollup, or bundler. No
+                <code>package.json</code> to drift out of date. One
+                shared <code>app.js</code> (918 lines) handles nav,
+                search, scroll animations, and the mobile overlay.
+                Dependencies are loaded from CDN with preconnect hints
+                — Google Fonts, Ko&#8209;fi overlay, GA4.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>CI gate</h3>
+              <p>
+                On every push to <code>main</code>, GitHub Actions runs
+                <code>validate-site.py</code> (metadata, JSON&#8209;LD,
+                theme&#8209;color, favicon, h1 count) and
+                <code>check-links.py</code> (every internal href against
+                the filesystem and sitemap). A push with a broken
+                canonical or a missing description doesn't reach
+                production.
               </p>
             </article>
           </div>
@@ -454,231 +475,180 @@
       </section>
 
       <!-- ══════════════════════════════════════
-           SECTION 4 — DESIGN SYSTEM
+           5. THE GOVERNANCE SYSTEM
          ══════════════════════════════════════ -->
       <section class="content-section container reveal-on-scroll">
         <header class="section-header">
-          <h2>Design system: one palette, four scopes</h2>
+          <h2>The governance system</h2>
           <p>
-            A single <code>theme.css</code> file serves three different
-            brands — OverKill Hill P³, Glee&#8209;fully, and AskJamie —
-            without specificity wars or !important hacks. The trick is
-            structural, not clever.
+            A site with 60 pages and two maintainers — one of whom is an
+            AI agent — needs explicit rules. The governance system makes
+            the right action obvious and the wrong action hard.
           </p>
         </header>
 
         <div class="two-column">
           <div>
-            <h3>CSS scope architecture</h3>
+            <h3>replit.md — the operating contract</h3>
             <p>
-              The stylesheet is divided into four named scopes, each
-              separated by a boxed banner comment and a body&#8209;class
-              selector pattern. New rules go into the correct scope
-              based on which brand they affect — never into a global block
-              unless they're genuinely cross&#8209;brand.
+              The project root carries a <code>replit.md</code> that
+              functions as a living specification: tech stack, project
+              structure, CSS scope map, script run&#8209;order, and a
+              timestamped change log. Any agent or human joining the
+              project reads it first and finds everything they need
+              to work without breaking what's already there.
             </p>
-            <ul class="feature-list">
-              <li><strong>GLOBAL</strong> — tokens, reset, layout, header, footer, search engine, scroll&#8209;reveal</li>
-              <li><strong>OVERKILL</strong> — default chrome for the OverKill Hill P³ site (<code>body:not(.glee-main):not(.askjamie-main)</code>)</li>
-              <li><strong>GLEE</strong> — paper&#8209;cream backgrounds, rust&#8209;and&#8209;gold accents, Fredoka headings (<code>.glee-main</code>)</li>
-              <li><strong>ASKJAMIE</strong> — mid&#8209;century modern teal palette (<code>.askjamie-main</code>)</li>
-            </ul>
+
+            <h3 class="mt-2">agent&#8209;skills.md — the AI operating constitution</h3>
             <p>
-              The scope map means that merging a CSS change from a sibling
-              brand repo is a one&#8209;line decision: changes inside
-              GLOBAL&nbsp;/&nbsp;CROSS&#8209;BRAND blocks get reconciled;
-              changes inside OVERKILL&nbsp;/&nbsp;GLEE&nbsp;/&nbsp;ASKJAMIE
-              blocks are intentional brand divergence and stay put.
+              A 10&#8209;skill document defines exactly what AI agents
+              are allowed to do on this codebase. Six core constraints
+              are non&#8209;negotiable: static&#8209;only architecture,
+              no fabricated content, brand voice, trunk→branch→tool&#8209;ette
+              taxonomy, idempotent scripts only, Mermaid referral
+              invariant. Each skill has a Purpose, Checks, and
+              Off&#8209;limits section — so an agent always knows its
+              scope before it touches a file.
             </p>
           </div>
 
-          <aside class="card">
-            <h3>The token layer</h3>
+          <div>
+            <h3>Audit cycle</h3>
             <p>
-              All colors, spacing, and typography are declared as CSS custom
-              properties on <code>:root</code>. No hardcoded hex values in
-              component rules — only <code>var(--color-rust)</code>,
-              <code>var(--color-teal)</code>, and friends. Dark&#8209;mode
-              support is a single overriding <code>:root</code> block at
-              the end of the GLOBAL scope — no duplication of component
-              rules required.
+              Periodic multi&#8209;pass audits cover metadata, links,
+              assets, accessibility, and performance across all 60+
+              pages. Each audit produces machine&#8209;readable JSON in
+              <code>assets/audit/</code> and a human&#8209;readable
+              Markdown report. The audit cycle is the feedback loop that
+              keeps the site honest between feature additions.
             </p>
+
+            <h3 class="mt-2">AUTOGEN markers &amp; template library</h3>
             <p>
-              The token discipline is enforced by code&#8209;review
-              convention: any PR adding a hardcoded hex color to a
-              non&#8209;root rule is a regression and gets flagged before
-              merge.
+              Bulk&#8209;generated content — breadcrumbs, JSON&#8209;LD,
+              keep&#8209;exploring trays — is fenced with
+              <code>&lt;!-- AUTOGEN:BLOCK --&gt;</code> markers. Every
+              mutator script is byte&#8209;idempotent — re&#8209;running
+              it on any page produces no change if the content is already
+              correct. Nine structural HTML templates cover every page
+              type and are invisible to all validators, so they evolve
+              freely without affecting production.
             </p>
-          </aside>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <article class="card">
+            <h3>Script run&#8209;order discipline</h3>
+            <p>
+              Seven Python scripts have a defined run order that prevents
+              dependency failures. <code>inject-jsonld.py</code> reads
+              <code>og:image</code> to set <code>primaryImageOfPage</code>,
+              so it runs after <code>activate-icons.py</code>.
+              <code>inject-breadcrumb.py</code> reads the JSON&#8209;LD
+              that <code>inject-jsonld.py</code> wrote, so it runs last
+              among the mutators. The order is documented in
+              <code>replit.md</code> and in each script's docstring —
+              the documentation and the code are the same artifact.
+            </p>
+          </article>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════
-           SECTION 5 — GOVERNANCE
-         ══════════════════════════════════════ -->
-      <section class="content-section stripe-bg">
-        <div class="container reveal-on-scroll">
-          <header class="section-header">
-            <h2>Governance: keeping 60 pages coherent</h2>
-            <p>
-              A site with 60 pages and two maintainers needs explicit
-              rules — not just conventions. The governance system makes
-              the right action obvious and the wrong action hard.
-            </p>
-          </header>
-
-          <div class="grid grid-3">
-            <article class="card">
-              <h3>agent&#8209;skills.md</h3>
-              <p>
-                A 10&#8209;skill operating constitution for AI agents working
-                on the codebase. Six core constraints (static&#8209;only,
-                no fabricated content, brand voice, taxonomy rules,
-                idempotent scripts, Mermaid referral invariant) are
-                declared as non&#8209;negotiable. Each skill has a Purpose,
-                Checks, and Off&#8209;limits section so any agent knows
-                exactly what it's allowed to do before touching a file.
-              </p>
-            </article>
-
-            <article class="card">
-              <h3>AUTOGEN markers</h3>
-              <p>
-                Bulk&#8209;generated content — breadcrumbs, JSON&#8209;LD,
-                keep&#8209;exploring trays, sparkle loaders — is fenced
-                with <code>&lt;!-- AUTOGEN:BLOCK --&gt;</code> markers.
-                Every mutator script checks for the marker before writing,
-                making re&#8209;runs byte&#8209;idempotent. Humans can
-                safely re&#8209;run any script on any page without
-                creating duplicates.
-              </p>
-            </article>
-
-            <article class="card">
-              <h3>Template library</h3>
-              <p>
-                Nine structural HTML templates cover every page type:
-                homepage, toolbox hub, branch hub, tool&#8209;ette,
-                interior single, search utility, Mermaid diagram,
-                error, and holding. Templates are invisible to the
-                CI gate — the <code>assets/</code> tree is skipped by
-                all validators — so they can be updated freely without
-                affecting production pages.
-              </p>
-            </article>
-          </div>
-
-          <div class="mt-2">
-            <div class="two-column">
-              <div>
-                <h3>Script run&#8209;order discipline</h3>
-                <p>
-                  Seven Python scripts have a defined run order that
-                  prevents dependency failures. <code>inject-jsonld.py</code>
-                  reads <code>og:image</code> to set
-                  <code>primaryImageOfPage</code>, so it runs after
-                  <code>activate-icons.py</code>. <code>inject-breadcrumb.py</code>
-                  reads the JSON&#8209;LD that <code>inject-jsonld.py</code>
-                  wrote, so it runs last among the mutators.
-                  The run&#8209;order is documented in <code>replit.md</code>
-                  and in each script's docstring.
-                </p>
-              </div>
-              <aside class="card">
-                <h3>Why Python, not Node?</h3>
-                <p>
-                  The toolchain deliberately matches the runtime: static
-                  HTML manipulated by Python's
-                  <code>html.parser</code>, no npm dependencies, no
-                  <code>package.json</code> to drift out of date.
-                  A future maintainer with only Python installed can
-                  run the full CI gate without installing anything else.
-                </p>
-              </aside>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ══════════════════════════════════════
-           SECTION 6 — WHAT THIS DEMONSTRATES
+           6. WHAT THIS DEMONSTRATES
          ══════════════════════════════════════ -->
       <section class="portfolio-statement content-section container reveal-on-scroll">
         <header class="section-header">
           <h2>What this demonstrates</h2>
           <p>
             Glee&#8209;fully isn't just a product — it's a proof of
-            methodology. Here's the craft it documents.
+            methodology. Six capabilities, documented in a live system
+            that anyone can click through and verify.
           </p>
         </header>
 
         <div class="portfolio-pillars">
           <article class="portfolio-pillar card">
             <div class="portfolio-pillar-icon" aria-hidden="true">🗺️</div>
-            <h3>Scalable information architecture</h3>
+            <h3>Product architecture</h3>
             <p>
-              A three&#8209;tier taxonomy that makes 60 pages feel
-              navigable without a mega&#8209;menu or a site map page.
-              Every page always knows what's above it, beside it, and
-              below it — and communicates that to both humans and search
-              engines.
-            </p>
-          </article>
-
-          <article class="portfolio-pillar card">
-            <div class="portfolio-pillar-icon" aria-hidden="true">⚙️</div>
-            <h3>Zero&#8209;dependency engineering</h3>
-            <p>
-              A fully functional product site — search, dark mode, lazy
-              loading, scroll animations, mobile nav — built without a
-              single npm package or a build pipeline. Every dependency is
-              a deliberate choice, not a scaffold default.
-            </p>
-          </article>
-
-          <article class="portfolio-pillar card">
-            <div class="portfolio-pillar-icon" aria-hidden="true">🎨</div>
-            <h3>Multi&#8209;brand design system</h3>
-            <p>
-              One stylesheet, four scopes, three brands — no specificity
-              wars. A token&#8209;based color system that supports dark
-              mode and future brand extensions without touching component
-              rules.
-            </p>
-          </article>
-
-          <article class="portfolio-pillar card">
-            <div class="portfolio-pillar-icon" aria-hidden="true">🔬</div>
-            <h3>CI&#8209;gated quality</h3>
-            <p>
-              Metadata regressions, broken links, stale search indices,
-              and missing JSON&#8209;LD don't reach production. The gate
-              is Python, runs in GitHub Actions, and exits non&#8209;zero
-              on any critical defect — no exceptions.
+              A three&#8209;tier taxonomy (trunk → branch → tool&#8209;ette)
+              makes 60 pages navigable without a mega&#8209;menu or a
+              site map page. Every page always knows what's above it,
+              beside it, and below it — and communicates that to both
+              humans and search engines through breadcrumb, "Keep
+              exploring" trays, and JSON&#8209;LD structured data.
             </p>
           </article>
 
           <article class="portfolio-pillar card">
             <div class="portfolio-pillar-icon" aria-hidden="true">✨</div>
-            <h3>Prompt engineering at scale</h3>
+            <h3>Prompt &amp; product taxonomy</h3>
             <p>
               40+ Custom GPTs share a personality, a canon, and a voice
-              without blurring into each other. Consistency at that
-              scale is an information&#8209;architecture problem, not
-              just a writing problem — and this project solves it
-              structurally.
+              without blurring into each other. Consistency at that scale
+              is an information&#8209;architecture problem, not just a
+              writing problem. Named characters, domain&#8209;scoped
+              tool&#8209;ettes, and a shared canon document solve it
+              structurally — so any future GPT knows exactly where it
+              belongs before it's built.
             </p>
           </article>
 
           <article class="portfolio-pillar card">
-            <div class="portfolio-pillar-icon" aria-hidden="true">📋</div>
-            <h3>Governance for longevity</h3>
+            <div class="portfolio-pillar-icon" aria-hidden="true">🎨</div>
+            <h3>Brand design system</h3>
             <p>
-              An operating constitution, AUTOGEN&#8209;marker discipline,
-              and template library ensure the site can grow to 100+ pages
-              without accumulating the inconsistencies that make large
-              static sites unmaintainable. Structure is a gift to the
-              future self.
+              One stylesheet, four named scopes, three brands — no
+              specificity wars. A token&#8209;based color system
+              (<code>var(--color-rust)</code>, <code>var(--color-teal)</code>)
+              supports dark mode and future brand extensions without
+              touching component rules. The Fredoka headings, paper&#8209;cream
+              backgrounds, and rust&#8209;and&#8209;gold accents are a
+              deliberate aesthetic statement, not a scaffold default.
+            </p>
+          </article>
+
+          <article class="portfolio-pillar card">
+            <div class="portfolio-pillar-icon" aria-hidden="true">⚙️</div>
+            <h3>Static&#8209;site delivery</h3>
+            <p>
+              A fully functional product site — search, dark mode, lazy
+              loading, scroll animations, mobile nav, structured data,
+              Atom feed — built without a single npm package or a build
+              pipeline. Every dependency is a deliberate choice.
+              The CI gate exits non&#8209;zero on any metadata regression,
+              broken link, or missing JSON&#8209;LD before it reaches
+              GitHub Pages.
+            </p>
+          </article>
+
+          <article class="portfolio-pillar card">
+            <div class="portfolio-pillar-icon" aria-hidden="true">🤖</div>
+            <h3>Agent&#8209;directed development</h3>
+            <p>
+              The codebase was built and maintained with AI agents as
+              active collaborators — not autocomplete assistants. The
+              operating constitution (<code>agent-skills.md</code>),
+              AUTOGEN&#8209;marker discipline, idempotent scripts, and
+              the CI gate all exist so agents can do real work on a live
+              site without introducing regressions. This is what
+              human&#8209;AI co&#8209;authorship looks like in practice.
+            </p>
+          </article>
+
+          <article class="portfolio-pillar card">
+            <div class="portfolio-pillar-icon" aria-hidden="true">💡</div>
+            <h3>AI UX strategy</h3>
+            <p>
+              Making AI tools approachable for everyday users is not a
+              prompt problem — it's a UX and product design problem.
+              Glee&#8209;fully demonstrates a coherent strategy: named
+              domains, warm brand voice, physical metaphors (toolbox,
+              branches, leaves), clear navigation patterns, and a
+              zero&#8209;friction entry point for users who have never
+              written a system prompt in their lives.
             </p>
           </article>
         </div>
@@ -691,22 +661,25 @@
         <div class="container">
           <p class="keep-exploring__heading">Keep exploring</p>
           <ul class="keep-exploring__list">
-            <li class="keep-exploring__item keep-exploring__branch">
-              <a href="/about/" class="keep-exploring__link keep-exploring__link--branch">
-                <span class="keep-exploring__label">About</span>
-                <span class="keep-exploring__name">Meet Glee &amp; Jamie</span>
-              </a>
-            </li>
             <li class="keep-exploring__item keep-exploring__toolbox">
               <a href="/toolbox/" class="keep-exploring__link keep-exploring__link--toolbox">
-                <span class="keep-exploring__label">Hub</span>
+                <span class="keep-exploring__dir" aria-hidden="true">&#8594;</span>
+                <span class="keep-exploring__label">Explore</span>
                 <span class="keep-exploring__name">The Toolbox</span>
               </a>
             </li>
+            <li class="keep-exploring__item keep-exploring__branch">
+              <a href="/ecosystem/" class="keep-exploring__link keep-exploring__link--branch">
+                <span class="keep-exploring__dir" aria-hidden="true">&#8594;</span>
+                <span class="keep-exploring__label">View</span>
+                <span class="keep-exploring__name">Ecosystem Map</span>
+              </a>
+            </li>
             <li class="keep-exploring__item keep-exploring__search">
-              <a href="/search/" class="keep-exploring__link keep-exploring__link--search">
-                <span class="keep-exploring__label">Search</span>
-                <span class="keep-exploring__name">All Tools</span>
+              <a href="/contact/" class="keep-exploring__link keep-exploring__link--search">
+                <span class="keep-exploring__dir" aria-hidden="true">&#8594;</span>
+                <span class="keep-exploring__label">Contact</span>
+                <span class="keep-exploring__name">Jamie</span>
               </a>
             </li>
           </ul>
