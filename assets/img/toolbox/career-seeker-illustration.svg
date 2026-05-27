@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534">
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="60" y="60" width="680" height="414" rx="18" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="2"/>
+  <!-- Retro-stripe accent bar -->
+  <rect x="60" y="60" width="680" height="8" rx="4" fill="#d35b2d"/>
+  <!-- Illustrated elements: branching tree / dashboard motif -->
+  <circle cx="400" cy="200" r="60" fill="#d35b2d" opacity="0.15"/>
+  <circle cx="400" cy="200" r="40" fill="#d35b2d" opacity="0.25"/>
+  <!-- Branch lines -->
+  <line x1="400" y1="240" x2="260" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
+  <line x1="400" y1="240" x2="400" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
+  <line x1="400" y1="240" x2="540" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="260" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
+  <circle cx="400" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
+  <circle cx="540" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
+  <!-- Label area -->
+  <rect x="200" y="410" width="400" height="36" rx="8" fill="#d35b2d" opacity="0.12"/>
+  <text x="400" y="433" font-family="Georgia, serif" font-size="14" fill="#9e3b2e" text-anchor="middle" font-style="italic">Illustration coming soon</text>
+  <!-- Central icon suggestion -->
+  <text x="400" y="213" font-family="Georgia, serif" font-size="36" fill="#9e3b2e" text-anchor="middle">🌳</text>
+</svg>
