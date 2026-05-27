@@ -75,12 +75,18 @@ def extract_meta(html: str) -> dict:
     desc = first_match(r'<meta\s+name="description"\s+content="([^"]*)"', html) or ""
     canonical = first_match(r'<link\s+rel="canonical"\s+href="([^"]+)"', html) or ""
     og_image = first_match(r'<meta\s+property="og:image"\s+content="([^"]+)"', html) or ""
+    og_image_width = first_match(r'<meta\s+property="og:image:width"\s+content="([^"]+)"', html) or ""
+    og_image_height = first_match(r'<meta\s+property="og:image:height"\s+content="([^"]+)"', html) or ""
+    og_image_alt = first_match(r'<meta\s+property="og:image:alt"\s+content="([^"]*)"', html) or ""
     keywords = first_match(r'<meta\s+name="keywords"\s+content="([^"]*)"', html) or ""
     return {
         "title": title.strip().replace("\n", " "),
         "description": desc.strip(),
         "canonical": canonical.strip(),
         "og_image": og_image.strip(),
+        "og_image_width": og_image_width.strip(),
+        "og_image_height": og_image_height.strip(),
+        "og_image_alt": og_image_alt.strip(),
         "keywords": keywords.strip(),
     }
 
@@ -141,6 +147,15 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
     desc = meta["description"]
     canonical = meta["canonical"] or f"{SITE}/{'/'.join(rel_path.parts[:-1])}/"
     image = meta["og_image"]
+    image_obj: dict | None = None
+    if image:
+        image_obj = {"@type": "ImageObject", "url": image}
+        if meta["og_image_width"]:
+            image_obj["width"] = int(meta["og_image_width"])
+        if meta["og_image_height"]:
+            image_obj["height"] = int(meta["og_image_height"])
+        if meta["og_image_alt"]:
+            image_obj["caption"] = meta["og_image_alt"]
     crumbs = crumbs_for(rel_path)
 
     breadcrumb = {
@@ -167,8 +182,8 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
             "isPartOf": {"@type": "WebSite", "url": f"{SITE}/",
                          "name": "Glee-fully Personalizable Tools™"},
         }
-        if image:
-            node["image"] = image
+        if image_obj:
+            node["image"] = image_obj
         if meta["keywords"]:
             node["keywords"] = meta["keywords"]
     elif kind in ("branch-hub", "toolbox-hub"):
@@ -181,8 +196,8 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
             "isPartOf": {"@type": "WebSite", "url": f"{SITE}/",
                          "name": "Glee-fully Personalizable Tools™"},
         }
-        if image:
-            node["primaryImageOfPage"] = {"@type": "ImageObject", "url": image}
+        if image_obj:
+            node["primaryImageOfPage"] = image_obj
     else:  # supporting
         node = {
             "@type": "WebPage",
@@ -193,8 +208,8 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
             "isPartOf": {"@type": "WebSite", "url": f"{SITE}/",
                          "name": "Glee-fully Personalizable Tools™"},
         }
-        if image:
-            node["primaryImageOfPage"] = {"@type": "ImageObject", "url": image}
+        if image_obj:
+            node["primaryImageOfPage"] = image_obj
 
     node["breadcrumb"] = breadcrumb
     payload = {"@context": "https://schema.org", "@graph": [node]}
