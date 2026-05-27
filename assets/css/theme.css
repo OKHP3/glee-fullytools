@@ -4008,7 +4008,7 @@ html:has(
 }
 
 .glee-main .portfolio-statement .section-header h2 {
-  color: var(--color-rust, #d35b2d);
+  color: var(--color-rust);
 }
 
 .glee-main .portfolio-statement .section-header p {
@@ -4047,7 +4047,7 @@ html:has(
 }
 
 .portfolio-pillar h3 {
-  color: var(--color-rust, #d35b2d);
+  color: var(--color-rust);
   margin-bottom: 0.4rem;
 }
 
