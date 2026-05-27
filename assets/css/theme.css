@@ -242,7 +242,7 @@ button {
   width: 0;
   height: 2px;
   background: linear-gradient(90deg, #ff7a00, #ffb347);
-  transition: width 0.2s ease;
+  transition: width 150ms ease;
 }
 
 /* Current / active nav link */
@@ -4866,6 +4866,20 @@ html:has(
   .glee-main .primary-nav .has-submenu > .submenu {
     background-color: #2a2320;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ── Generic cards (overrides hardcoded #ffffff at ~L3913) ── */
+  .glee-main .card {
+    background: #2a2320;
+    border-color: rgba(240, 220, 210, 0.14);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    color: #f0e8e0;
+  }
+
+  /* ── Footer (overrides hardcoded #fff7f1 at ~L3920) ── */
+  .glee-main .site-footer {
+    background: #120d0b;
+    border-top-color: rgba(240, 220, 210, 0.1);
   }
 
   /* ── Hero card: warm-dark paper panel ── */
