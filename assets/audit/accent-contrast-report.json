@@ -1,0 +1,8 @@
+{
+  "generated": "2026-05-27",
+  "files_scanned": 61,
+  "advisory_count": 0,
+  "info_count": 0,
+  "findings": [],
+  "rule": "var(--color-accent) (#d94f63 / #d35b2d) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Contrast ratios: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (paper bg #f6f2ee). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but fails for normal body text."
+}

@@ -123,4 +123,63 @@ These are all named tokens from `theme.css`. Use them when building any new app 
 
 ---
 
-*Generated from glee-fully.tools theme — 2026-04-11*
+## Color Accessibility Rules
+
+These rules are a QA/QC gate for any editor adding or changing colored text on this site.
+They come from the accessibility audit in `LIVE_SITE_EVALUATION_2026-05-26.md` §5.5.
+
+### Accent color contrast ratios (against paper background `#f6f2ee`)
+
+| Color | Hex | Ratio | WCAG AA normal text (4.5:1) | WCAG AA large / UI (3:1) |
+|---|---|---|---|---|
+| GLEE coral | `#d94f63` | 3.37 : 1 | Fail | Pass |
+| Orange accent | `#d35b2d` | 3.55 : 1 | Fail | Pass |
+| Espresso text on coral btn | `#2e2b29` on `#d94f63` | 3.51 : 1 | Fail | Pass |
+| Deep rust | `#9e3b2e` | 6.05 : 1 | Pass | Pass |
+| Near-black | `#0d2b3a` | 13.24 : 1 | Pass | Pass |
+
+"Large text" per WCAG 2.1: 18.67 px normal weight, or 14 px bold (equivalent to 18pt / 14pt bold).
+Button text at `font-size: 0.95rem; font-weight: 600` qualifies as large text. All current button uses pass.
+
+### Editorial rule (enforced)
+
+> `var(--color-accent)` (`#d94f63` / `#d35b2d`) must not be used as the sole color signal
+> for normal-weight body text smaller than 18.67 px.
+
+**Where accent color IS permitted:**
+
+- `.btn-primary`, `.btn-quiet` — button text (≥ 14 px bold, qualifies as large text)
+- Headings H1–H3 at any size that meets the large-text threshold
+- UI controls (borders, focus rings, icons used alongside text labels)
+- Decorative elements (stripes, illustrations) where color is not the sole information carrier
+
+**Where accent color is NOT permitted:**
+
+- Normal-weight (`font-weight: 400–500`) inline body text
+- Paragraph copy, list items, captions, labels at default body size (1rem / 16 px)
+- Any context where a color-blind or low-vision user could lose meaning if the color is removed
+
+### Safe alternatives for tinted body text
+
+If you need colored body text, use these tokens instead — all pass 4.5:1 against `#f6f2ee`:
+
+| Purpose | Token | Hex | Ratio |
+|---|---|---|---|
+| Muted / secondary text | `--color-muted` | `#6b5e57` | ~5.3 : 1 |
+| Deep rust link (hover) | `--color-rust-deep` | `#9e3b2e` | 6.05 : 1 |
+| Near-black (body default) | `--color-fg` | `#2e2b29` | ~14.5 : 1 |
+
+### Automated check
+
+Run `scripts/check-accent-contrast.py` to scan all HTML pages for inline `style` attributes
+or utility classes that apply accent color to body-text contexts. The script exits 0 and
+reports findings as advisories — it does not block the build. Wire it into code review
+sessions, not CI, to avoid false positives from legitimate large-text uses.
+
+```bash
+python3 scripts/check-accent-contrast.py
+```
+
+---
+
+*Generated from glee-fully.tools theme — 2026-04-11. Color accessibility section added 2026-05-27.*
