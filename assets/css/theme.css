@@ -5059,3 +5059,394 @@ html:has(
     animation: gleeHeroH1In 400ms ease-out both;
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLEE COLOR-SCHEME TOGGLE — sun ☀ / moon ☽ button in site header
+   Base styles scoped to .glee-main. Dark-mode overrides follow in the
+   [data-color-scheme] blocks below and in the @media supplement block.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.glee-main .glee-color-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: 1.5px solid rgba(42, 35, 32, 0.18);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-muted, #6b5e57);
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.glee-main .glee-color-toggle:hover {
+  background: rgba(42, 35, 32, 0.06);
+  border-color: rgba(42, 35, 32, 0.3);
+  color: var(--color-fg, #2e2b29);
+}
+.glee-main .glee-color-toggle:focus-visible {
+  outline: 2px solid var(--color-accent, #d94f63);
+  outline-offset: 2px;
+}
+.glee-main .glee-color-toggle svg {
+  pointer-events: none;
+  display: block;
+}
+
+/* Toggle button in OS-dark (no explicit user choice stored yet) */
+@media (prefers-color-scheme: dark) {
+  .glee-main .glee-color-toggle {
+    border-color: rgba(240, 220, 210, 0.25);
+    color: #b09080;
+  }
+  .glee-main .glee-color-toggle:hover {
+    background: rgba(240, 220, 210, 0.08);
+    border-color: rgba(240, 220, 210, 0.4);
+    color: #f0e8e0;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EXPLICIT DARK MODE — html[data-color-scheme="dark"] .glee-main
+   User clicked the toggle to force dark regardless of OS setting.
+   Specificity: html[attr] .class = (0,2,1) — beats @media .class (0,1,0).
+   All 20 component families mirror the @media dark block above.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-color-scheme="dark"] .glee-main {
+  --color-bg:            #1a1210;
+  --color-surface:       #241c1a;
+  --color-surface-soft:  #2a2320;
+  --color-fg:            #f0e8e0;
+  --color-muted:         #b09080;
+  --color-accent:        #f07585;
+  --color-border-subtle: rgba(240, 220, 210, 0.12);
+  background: #1a1210;
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .site-header {
+  background: #1a1210;
+  border-bottom-color: rgba(240, 220, 210, 0.1);
+  box-shadow: 0 1px 0 rgba(240, 220, 210, 0.08);
+}
+html[data-color-scheme="dark"] .glee-main .site-header.scrolled {
+  background: rgba(26, 18, 16, 0.96);
+  backdrop-filter: blur(8px);
+}
+html[data-color-scheme="dark"] .glee-main .site-header .primary-nav a,
+html[data-color-scheme="dark"] .glee-main .primary-nav a {
+  color: #c7bdb1;
+}
+html[data-color-scheme="dark"] .glee-main .primary-nav a[aria-current="page"],
+html[data-color-scheme="dark"] .glee-main .primary-nav a.is-current {
+  color: #f07585;
+}
+html[data-color-scheme="dark"] .glee-main .nav-toggle {
+  background: rgba(42, 35, 32, 0.95);
+  border-color: rgba(240, 220, 210, 0.18);
+}
+html[data-color-scheme="dark"] .glee-main .nav-toggle .bar {
+  background: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .primary-nav .submenu,
+html[data-color-scheme="dark"] .glee-main .primary-nav .has-submenu > .submenu {
+  background-color: #2a2320;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+html[data-color-scheme="dark"] .glee-main .card {
+  background: #2a2320;
+  border-color: rgba(240, 220, 210, 0.14);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .site-footer {
+  background: #120d0b;
+  border-top-color: rgba(240, 220, 210, 0.1);
+}
+html[data-color-scheme="dark"] .glee-main .glee-hero-card::before {
+  background: #2a2320;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+}
+html[data-color-scheme="dark"] .glee-main .stripe-bg {
+  background: #1f1512;
+  border-top-color: rgba(240, 220, 210, 0.08);
+  border-bottom-color: rgba(240, 220, 210, 0.08);
+}
+html[data-color-scheme="dark"] .glee-main .site-status {
+  background: #261616;
+  border-color: rgba(240, 105, 120, 0.3);
+}
+html[data-color-scheme="dark"] .glee-main .site-specials--glee {
+  background: #3d2b00;
+  color: #f9e4a0;
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-trigger {
+  border-color: rgba(240, 220, 210, 0.25);
+}
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle {
+  border-color: rgba(240, 220, 210, 0.25);
+  color: #b09080;
+}
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle:hover {
+  background: rgba(240, 220, 210, 0.08);
+  border-color: rgba(240, 220, 210, 0.4);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-panel {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.18);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-header,
+html[data-color-scheme="dark"] .glee-main .glee-search-footer {
+  background: #2a2320;
+  border-color: rgba(240, 220, 210, 0.12);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-label {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.18);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-footer kbd {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.2);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main #glee-search-input { color: #f0e8e0; }
+html[data-color-scheme="dark"] .glee-main .glee-search-result-link:hover,
+html[data-color-scheme="dark"] .glee-main .glee-search-result.is-active .glee-search-result-link {
+  background: #2a2320;
+  border-color: rgba(240, 220, 210, 0.15);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-result-title { color: #f0e8e0; }
+html[data-color-scheme="dark"] .glee-main .glee-search-result-snippet { color: rgba(240, 232, 224, 0.8); }
+html[data-color-scheme="dark"] .glee-main .glee-search-page { background: #1a1210; }
+html[data-color-scheme="dark"] .glee-main .glee-search-page__title,
+html[data-color-scheme="dark"] .glee-main .glee-search-page__shortcuts-title { color: #f0e8e0; }
+html[data-color-scheme="dark"] .glee-main .glee-search-page__lede,
+html[data-color-scheme="dark"] .glee-main .glee-search-page__status,
+html[data-color-scheme="dark"] .glee-main .glee-search-page__shortcuts-list { color: rgba(240, 232, 224, 0.78); }
+html[data-color-scheme="dark"] .glee-main .glee-search-page__form {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.2);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__form input[type="search"] { color: #f0e8e0; }
+html[data-color-scheme="dark"] .glee-main .glee-search-page__form input[type="search"]::placeholder {
+  color: rgba(240, 232, 224, 0.4);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__results .glee-search-result {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.1);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__results .glee-search-result-title { color: #f0e8e0; }
+html[data-color-scheme="dark"] .glee-main .glee-search-page__results .glee-search-result-snippet {
+  color: rgba(240, 232, 224, 0.78);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__results .glee-search-result-url {
+  color: rgba(240, 232, 224, 0.5);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__nojs {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.12);
+}
+html[data-color-scheme="dark"] .glee-main .glee-search-page__shortcuts-list kbd {
+  background: #241c1a;
+  border-color: rgba(240, 220, 210, 0.2);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .construction-overlay__card {
+  background: #2a2320;
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .keep-exploring {
+  background: #1f1512;
+  border-top-color: rgba(240, 220, 210, 0.1);
+}
+html[data-color-scheme="dark"] .glee-main .keep-exploring__link {
+  background: #2a2320;
+  border-color: rgba(240, 220, 210, 0.15);
+  color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .keep-exploring__link:hover,
+html[data-color-scheme="dark"] .glee-main .keep-exploring__link:focus-visible {
+  background: #342820;
+  border-color: #f07585;
+  box-shadow: 0 2px 8px rgba(240, 117, 133, 0.2);
+}
+html[data-color-scheme="dark"] .glee-main .latest-pill {
+  background: rgba(240, 117, 133, 0.2);
+  color: #f093a5;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EXPLICIT LIGHT MODE — html[data-color-scheme="light"] .glee-main
+   User clicked the toggle to force light on a dark-OS device.
+   Same specificity (0,2,1) defeats @media (prefers-color-scheme: dark) (0,1,0).
+   Resets every rule that the dark @media block overrides.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html[data-color-scheme="light"] .glee-main {
+  --color-bg:            #f6f2ee;
+  --color-surface:       #fffdfa;
+  --color-surface-soft:  #fff7f1;
+  --color-fg:            #2e2b29;
+  --color-muted:         #6b5e57;
+  --color-accent:        #d94f63;
+  --color-border-subtle: rgba(42, 35, 32, 0.1);
+  background: #f6f2ee;
+  color: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .site-header {
+  background: #f6f2ee;
+  border-bottom-color: #ffdcd2;
+  box-shadow: none;
+}
+html[data-color-scheme="light"] .glee-main .site-header.scrolled {
+  background: rgba(246, 242, 238, 0.96);
+  backdrop-filter: none;
+}
+html[data-color-scheme="light"] .glee-main .site-header .primary-nav a,
+html[data-color-scheme="light"] .glee-main .primary-nav a {
+  color: #6b5e57;
+}
+html[data-color-scheme="light"] .glee-main .primary-nav a[aria-current="page"],
+html[data-color-scheme="light"] .glee-main .primary-nav a.is-current {
+  color: #d35b2d;
+}
+html[data-color-scheme="light"] .glee-main .nav-toggle {
+  background: rgba(246, 242, 238, 0.98);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+html[data-color-scheme="light"] .glee-main .nav-toggle .bar {
+  background: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .primary-nav .submenu,
+html[data-color-scheme="light"] .glee-main .primary-nav .has-submenu > .submenu {
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(42, 35, 32, 0.12);
+}
+html[data-color-scheme="light"] .glee-main .card {
+  background: #ffffff;
+  border-color: #ffe7e0;
+  box-shadow: 0 8px 20px rgba(255, 195, 160, 0.25);
+  color: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .site-footer {
+  background: #fff7f1;
+  border-top-color: #ffdcd2;
+}
+html[data-color-scheme="light"] .glee-main .glee-hero-card::before {
+  background: #fff7f1;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.26);
+}
+html[data-color-scheme="light"] .glee-main .stripe-bg {
+  background: #fff7f1;
+  border-top-color: rgba(0, 0, 0, 0.04);
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+html[data-color-scheme="light"] .glee-main .site-status {
+  background: #fffafa;
+  border-color: #ffd8d2;
+}
+html[data-color-scheme="light"] .glee-main .site-specials--glee {
+  background: #ffe8a8;
+  color: inherit;
+}
+html[data-color-scheme="light"] .glee-main .glee-search-trigger {
+  border-color: rgba(42, 35, 32, 0.14);
+}
+html[data-color-scheme="light"] .glee-main .glee-color-toggle {
+  border-color: rgba(42, 35, 32, 0.18);
+  color: #6b5e57;
+}
+html[data-color-scheme="light"] .glee-main .glee-color-toggle:hover {
+  background: rgba(42, 35, 32, 0.06);
+  border-color: rgba(42, 35, 32, 0.3);
+  color: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .glee-search-panel {
+  background: var(--color-surface, #fffdfa);
+  border-color: rgba(42, 35, 32, 0.12);
+  color: var(--color-fg, #2e2b29);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-header,
+html[data-color-scheme="light"] .glee-main .glee-search-footer {
+  background: var(--color-bg, #f6f2ee);
+  border-color: rgba(42, 35, 32, 0.1);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-label {
+  background: var(--color-surface, #fffdfa);
+  border-color: rgba(42, 35, 32, 0.12);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-footer kbd {
+  background: var(--color-surface, #fffdfa);
+  border-color: rgba(42, 35, 32, 0.14);
+  color: var(--color-fg, #2e2b29);
+}
+html[data-color-scheme="light"] .glee-main #glee-search-input { color: var(--color-fg, #2e2b29); }
+html[data-color-scheme="light"] .glee-main .glee-search-result-link:hover,
+html[data-color-scheme="light"] .glee-main .glee-search-result.is-active .glee-search-result-link {
+  background: var(--color-surface-soft, #fff7f1);
+  border-color: rgba(42, 35, 32, 0.1);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-result-title { color: var(--color-fg, #2e2b29); }
+html[data-color-scheme="light"] .glee-main .glee-search-result-snippet { color: var(--color-muted, #6b5e57); }
+html[data-color-scheme="light"] .glee-main .glee-search-page { background: var(--color-bg, #f6f2ee); }
+html[data-color-scheme="light"] .glee-main .glee-search-page__title,
+html[data-color-scheme="light"] .glee-main .glee-search-page__shortcuts-title { color: var(--color-fg, #2e2b29); }
+html[data-color-scheme="light"] .glee-main .glee-search-page__lede,
+html[data-color-scheme="light"] .glee-main .glee-search-page__status,
+html[data-color-scheme="light"] .glee-main .glee-search-page__shortcuts-list { color: var(--color-muted, #6b5e57); }
+html[data-color-scheme="light"] .glee-main .glee-search-page__form {
+  background: #ffffff;
+  border-color: rgba(42, 35, 32, 0.12);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__form input[type="search"] { color: var(--color-fg, #2e2b29); }
+html[data-color-scheme="light"] .glee-main .glee-search-page__form input[type="search"]::placeholder {
+  color: rgba(42, 35, 32, 0.35);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__results .glee-search-result {
+  background: #ffffff;
+  border-color: rgba(42, 35, 32, 0.08);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__results .glee-search-result-title { color: var(--color-fg, #2e2b29); }
+html[data-color-scheme="light"] .glee-main .glee-search-page__results .glee-search-result-snippet {
+  color: var(--color-muted, #6b5e57);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__results .glee-search-result-url {
+  color: rgba(42, 35, 32, 0.45);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__nojs {
+  background: var(--color-surface, #fffdfa);
+  border-color: rgba(42, 35, 32, 0.1);
+}
+html[data-color-scheme="light"] .glee-main .glee-search-page__shortcuts-list kbd {
+  background: var(--color-surface, #fffdfa);
+  border-color: rgba(42, 35, 32, 0.14);
+  color: var(--color-fg, #2e2b29);
+}
+html[data-color-scheme="light"] .glee-main .construction-overlay__card {
+  background: #fff7f1;
+  color: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .keep-exploring {
+  background: #f0ece6;
+  border-top-color: #d9cfc5;
+}
+html[data-color-scheme="light"] .glee-main .keep-exploring__link {
+  background: #ffffff;
+  border-color: #d9cfc5;
+  color: #2e2b29;
+}
+html[data-color-scheme="light"] .glee-main .keep-exploring__link:hover,
+html[data-color-scheme="light"] .glee-main .keep-exploring__link:focus-visible {
+  background: #fff9f5;
+  border-color: #c46a2c;
+  box-shadow: 0 2px 8px rgba(195, 106, 44, 0.18);
+}
+html[data-color-scheme="light"] .glee-main .latest-pill {
+  background: #ffe7e0;
+  color: #d94f63;
+}

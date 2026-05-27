@@ -916,3 +916,82 @@ document.addEventListener("DOMContentLoaded", () => {
     attachInline: attachInline,
   };
 })();
+
+
+// ──────────────────────────────────────────────────────────────
+// Glee color-scheme toggle (sun ☀ / moon ☽)
+// Injects a circular icon button before .nav-toggle in the Glee
+// site header. Stores user preference in localStorage under
+// "glee-color-scheme". Sets data-color-scheme on <html> so the
+// CSS [data-color-scheme] blocks override the OS @media preference.
+// ──────────────────────────────────────────────────────────────
+(function () {
+  var STORAGE_KEY = "glee-color-scheme";
+  var HTML = document.documentElement;
+
+  // SVG icons — inlined for zero extra requests
+  // Sun  = currently in dark mode, click to go light
+  var ICON_SUN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  // Moon = currently in light mode, click to go dark
+  var ICON_MOON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+  function getEffective() {
+    var stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "dark" || stored === "light") { return stored; }
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark" : "light";
+  }
+
+  function syncButton(btn, scheme) {
+    var isDark = scheme === "dark";
+    btn.innerHTML = isDark ? ICON_SUN : ICON_MOON;
+    btn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    btn.setAttribute("aria-pressed", isDark ? "true" : "false");
+    btn.title = isDark ? "Light mode" : "Dark mode";
+  }
+
+  function init() {
+    if (!document.body || !document.body.classList.contains("glee-main")) { return; }
+
+    // Restore stored preference (backup for pages not yet processed by
+    // inject-color-scheme-init.py, which provides the inline anti-FOSC script)
+    var stored = localStorage.getItem(STORAGE_KEY);
+    if ((stored === "dark" || stored === "light") && !HTML.hasAttribute("data-color-scheme")) {
+      HTML.setAttribute("data-color-scheme", stored);
+    }
+
+    var header = document.querySelector(".site-header");
+    if (!header) { return; }
+    if (header.querySelector(".glee-color-toggle")) { return; } // idempotent
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "glee-color-toggle";
+    syncButton(btn, getEffective());
+
+    btn.addEventListener("click", function () {
+      var current = HTML.getAttribute("data-color-scheme") ||
+        (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark" : "light");
+      var next = current === "dark" ? "light" : "dark";
+      HTML.setAttribute("data-color-scheme", next);
+      localStorage.setItem(STORAGE_KEY, next);
+      syncButton(btn, next);
+    });
+
+    // Insert before .nav-toggle (hamburger) so it sits at the nav's right edge
+    var container = header.querySelector(".container");
+    var navToggle = container && container.querySelector(".nav-toggle");
+    if (navToggle) {
+      container.insertBefore(btn, navToggle);
+    } else if (container) {
+      container.appendChild(btn);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
