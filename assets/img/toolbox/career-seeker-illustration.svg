@@ -1,21 +1,132 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright dashboard showing job leads organized across Applied, Interviewing, and Offer columns with a branching career tree at top">
+  <defs>
+    <filter id="cs-shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Paper background -->
   <rect width="800" height="534" fill="#f6f2ee"/>
-  <rect x="60" y="60" width="680" height="414" rx="18" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="2"/>
-  <!-- Retro-stripe accent bar -->
-  <rect x="60" y="60" width="680" height="8" rx="4" fill="#d35b2d"/>
-  <!-- Illustrated elements: branching tree / dashboard motif -->
-  <circle cx="400" cy="200" r="60" fill="#d35b2d" opacity="0.15"/>
-  <circle cx="400" cy="200" r="40" fill="#d35b2d" opacity="0.25"/>
-  <!-- Branch lines -->
-  <line x1="400" y1="240" x2="260" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
-  <line x1="400" y1="240" x2="400" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
-  <line x1="400" y1="240" x2="540" y2="340" stroke="#9e3b2e" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="260" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
-  <circle cx="400" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
-  <circle cx="540" cy="350" r="20" fill="#d35b2d" opacity="0.7"/>
-  <!-- Label area -->
-  <rect x="200" y="410" width="400" height="36" rx="8" fill="#d35b2d" opacity="0.12"/>
-  <text x="400" y="433" font-family="Georgia, serif" font-size="14" fill="#9e3b2e" text-anchor="middle" font-style="italic">Illustration coming soon</text>
-  <!-- Central icon suggestion -->
-  <text x="400" y="213" font-family="Georgia, serif" font-size="36" fill="#9e3b2e" text-anchor="middle">🌳</text>
+
+  <!-- Retro top stripe -->
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+
+  <!-- Main panel -->
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#cs-shadow)"/>
+
+  <!-- Header bar -->
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+
+  <!-- Header title -->
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Career Seeker</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Your job‑search dashboard, all in one conversation</text>
+
+  <!-- Dots / window chrome -->
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+
+  <!-- Career tree at top-right -->
+  <line x1="650" y1="100" x2="590" y2="140" stroke="#9e3b2e" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <line x1="650" y1="100" x2="650" y2="145" stroke="#9e3b2e" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <line x1="650" y1="100" x2="710" y2="140" stroke="#9e3b2e" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <circle cx="650" cy="97" r="10" fill="#d35b2d" opacity="0.7"/>
+  <circle cx="590" cy="143" r="7" fill="#6b7c3f" opacity="0.6"/>
+  <circle cx="650" cy="148" r="7" fill="#c9922d" opacity="0.6"/>
+  <circle cx="710" cy="143" r="7" fill="#2d7c7c" opacity="0.6"/>
+  <text x="650" y="167" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle" font-style="italic" opacity="0.7">career path</text>
+
+  <!-- ─── KANBAN COLUMNS ─── -->
+
+  <!-- Column 1: Applied -->
+  <rect x="40" y="96" width="208" height="380" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="96" width="208" height="32" rx="10" fill="#6b7c3f"/>
+  <rect x="40" y="116" width="208" height="12" fill="#6b7c3f"/>
+  <text x="144" y="118" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#f6f2ee" text-anchor="middle">Applied  •  4</text>
+
+  <!-- Card A1 -->
+  <rect x="52" y="138" width="184" height="68" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="52" y="138" width="5" height="68" rx="3" fill="#6b7c3f"/>
+  <text x="70" y="155" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">UX Researcher</text>
+  <text x="70" y="169" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Bloom Studio · Remote</text>
+  <rect x="70" y="176" width="44" height="16" rx="4" fill="#6b7c3f" opacity="0.15"/>
+  <text x="92" y="187" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">Applied</text>
+  <text x="210" y="199" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">May 18</text>
+
+  <!-- Card A2 -->
+  <rect x="52" y="214" width="184" height="68" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="52" y="214" width="5" height="68" rx="3" fill="#6b7c3f"/>
+  <text x="70" y="231" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Content Strategist</text>
+  <text x="70" y="245" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Maple &amp; Co. · Hybrid</text>
+  <rect x="70" y="252" width="50" height="16" rx="4" fill="#6b7c3f" opacity="0.15"/>
+  <text x="95" y="263" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">Applied</text>
+  <text x="210" y="275" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">May 20</text>
+
+  <!-- Card A3 -->
+  <rect x="52" y="290" width="184" height="56" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="52" y="290" width="5" height="56" rx="3" fill="#6b7c3f"/>
+  <text x="70" y="308" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Brand Copywriter</text>
+  <text x="70" y="321" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Sundry Press · On-site</text>
+  <text x="210" y="339" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">May 22</text>
+
+  <!-- Card A4 -->
+  <rect x="52" y="354" width="184" height="56" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="52" y="354" width="5" height="56" rx="3" fill="#6b7c3f"/>
+  <text x="70" y="372" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Ops Coordinator</text>
+  <text x="70" y="385" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Fern Labs · Remote</text>
+  <text x="210" y="403" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">May 24</text>
+
+  <!-- Column 2: Interviewing -->
+  <rect x="264" y="96" width="208" height="380" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="264" y="96" width="208" height="32" rx="10" fill="#c9922d"/>
+  <rect x="264" y="116" width="208" height="12" fill="#c9922d"/>
+  <text x="368" y="118" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#f6f2ee" text-anchor="middle">Interviewing  •  2</text>
+
+  <!-- Card B1 -->
+  <rect x="276" y="138" width="184" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="276" y="138" width="5" height="80" rx="3" fill="#c9922d"/>
+  <text x="294" y="155" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Product Designer</text>
+  <text x="294" y="169" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Solstice Apps · Remote</text>
+  <rect x="294" y="176" width="68" height="16" rx="4" fill="#c9922d" opacity="0.2"/>
+  <text x="328" y="187" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Round 2 ✓</text>
+  <text x="294" y="209" font-family="Georgia, serif" font-size="8" fill="#c9bfb2">Next: take-home  →  Jun 1</text>
+
+  <!-- Card B2 -->
+  <rect x="276" y="228" width="184" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="276" y="228" width="5" height="80" rx="3" fill="#c9922d"/>
+  <text x="294" y="245" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Research Lead</text>
+  <text x="294" y="259" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Hazel &amp; Birch · Hybrid</text>
+  <rect x="294" y="266" width="56" height="16" rx="4" fill="#c9922d" opacity="0.2"/>
+  <text x="322" y="277" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Phone ✓</text>
+  <text x="294" y="299" font-family="Georgia, serif" font-size="8" fill="#c9bfb2">Next: panel  →  Jun 3</text>
+
+  <!-- Column 3: Offer / Archive -->
+  <rect x="488" y="96" width="208" height="380" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="488" y="96" width="208" height="32" rx="10" fill="#2d7c7c"/>
+  <rect x="488" y="116" width="208" height="12" fill="#2d7c7c"/>
+  <text x="592" y="118" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#f6f2ee" text-anchor="middle">Offer / Archive  •  2</text>
+
+  <!-- Card C1 — Offer received! -->
+  <rect x="500" y="138" width="184" height="90" rx="7" fill="#fff" stroke="#2d7c7c" stroke-width="1.5"/>
+  <rect x="500" y="138" width="5" height="90" rx="3" fill="#2d7c7c"/>
+  <text x="518" y="155" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#3a3530">Sr. UX Writer</text>
+  <text x="518" y="169" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">Paperweight Co. · Remote</text>
+  <rect x="518" y="176" width="74" height="18" rx="5" fill="#2d7c7c"/>
+  <text x="555" y="188" font-family="Georgia, serif" font-size="9" font-weight="bold" fill="#f6f2ee" text-anchor="middle">🎉 Offer!</text>
+  <text x="518" y="219" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" font-style="italic">Deadline: Jun 7 · Decide by Fri</text>
+
+  <!-- Card C2 — Closed -->
+  <rect x="500" y="240" width="184" height="68" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1" opacity="0.7"/>
+  <rect x="500" y="240" width="5" height="68" rx="3" fill="#c9bfb2"/>
+  <text x="518" y="257" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#9e3b2e" opacity="0.6">Junior PM</text>
+  <text x="518" y="271" font-family="Georgia, serif" font-size="9" fill="#c9bfb2">Driftwood Inc. · On-site</text>
+  <rect x="518" y="278" width="46" height="16" rx="4" fill="#c9bfb2" opacity="0.4"/>
+  <text x="541" y="289" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle" opacity="0.7">Passed</text>
+
+  <!-- Progress bar at bottom -->
+  <rect x="40" y="490" width="720" height="8" rx="4" fill="#e8e3dc"/>
+  <rect x="40" y="490" width="288" height="8" rx="4" fill="#d35b2d" opacity="0.6"/>
+  <text x="40" y="510" font-family="Georgia, serif" font-size="9" fill="#9e3b2e">8 leads tracked · 1 offer pending decision</text>
+  <text x="760" y="510" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="end">via Career Seeker · Glee-fully Toolbox</text>
 </svg>
