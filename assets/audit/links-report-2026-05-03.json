@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 61,
-  "internal_links": 2417,
-  "external_links": 1223,
+  "internal_links": 2412,
+  "external_links": 1228,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -223,8 +223,8 @@
     },
     {
       "path": "toolbox/05-organized-life/index.html",
-      "internal_links": 54,
-      "external_links": 19
+      "internal_links": 49,
+      "external_links": 24
     },
     {
       "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
