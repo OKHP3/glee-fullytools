@@ -36,6 +36,20 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 
 This gate prevents regressions (deprecated meta tags, broken hrefs, missing metadata, stale search index) from reaching the live GitHub Pages deployment.
 
+## Agent Governance
+
+The file `agent-skills.md` at the repo root is the operating constitution for any AI agent working on this codebase. **Read it before making any changes.**
+
+It contains:
+- **6 Core Constraints** (never violate): static-only architecture, no build steps without approval, brand voice, trunk→branch→tool-ette taxonomy, no fabricated content, idempotent scripts only
+- **CSS Scope Map** with rules on where to place new styles
+- **Auto-generated file registry** — files that must not be hand-edited
+- **Mermaid referral invariant** — enforced by `validate-site.py`
+- **10 named agent skills** covering audit, responsive QA, portfolio positioning, brand, accessibility, SEO, conversion, artifact proof, staleness detection, and safety governance
+- **Script quick reference** with the correct run order
+
+Before any session: run `python3 scripts/validate-site.py` and `python3 scripts/check-links.py` to confirm a clean baseline. Run both again after your changes. The site must exit 0 on both validators when you hand back.
+
 ## Deployment
 
 Configured as a **static** deployment with `publicDir: "."` — no build step needed.
