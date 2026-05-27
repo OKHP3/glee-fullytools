@@ -4001,6 +4001,62 @@ html:has(
 }
 
 
+/* ===== PORTFOLIO STATEMENT — About page ================================== */
+
+.glee-main .portfolio-statement {
+  background: var(--color-bg);
+}
+
+.glee-main .portfolio-statement .section-header h2 {
+  color: var(--color-rust, #d35b2d);
+}
+
+.glee-main .portfolio-statement .section-header p {
+  max-width: 60ch;
+}
+
+.portfolio-pillars {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .portfolio-pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .portfolio-pillars {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portfolio-pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.portfolio-pillar-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.portfolio-pillar h3 {
+  color: var(--color-rust, #d35b2d);
+  margin-bottom: 0.4rem;
+}
+
+.portfolio-pillar p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
 /* ╔══════════════════════════════════════════════════════════════════════════╗
    ║                       ASK JAMIE — askjamie.bot                             ║
    ║  Mid-century paper + teal brand chrome triggered by <body class=           ║
