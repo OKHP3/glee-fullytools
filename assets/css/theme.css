@@ -1491,6 +1491,13 @@ body.construction-dismissed .construction-overlay,
   object-fit: cover;
   flex-shrink: 0;
   margin-bottom: 0.25rem;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.card--tool-ette:hover .card__tool-icon,
+.card--tool-ette:focus-within .card__tool-icon {
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .card__bestfor {
@@ -1502,6 +1509,22 @@ body.construction-dismissed .construction-overlay,
 .card--tool-ette .btn {
   margin-top: 0.5rem;
   align-self: flex-start;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card__tool-icon {
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .glee-main .card__bestfor {
+    color: var(--color-text-muted, #b0a090);
+  }
+  .glee-main .card--tool-ette:hover .card__tool-icon,
+  .glee-main .card--tool-ette:focus-within .card__tool-icon {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
 }
 
 
