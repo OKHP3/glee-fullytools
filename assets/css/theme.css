@@ -4080,6 +4080,14 @@ html:has(
   line-height: 1.65;
 }
 
+.portfolio-statement-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 /* ╔══════════════════════════════════════════════════════════════════════════╗
    ║                       ASK JAMIE — askjamie.bot                             ║
    ║  Mid-century paper + teal brand chrome triggered by <body class=           ║
