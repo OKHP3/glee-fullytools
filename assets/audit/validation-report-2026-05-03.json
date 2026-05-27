@@ -1,5 +1,5 @@
 {
-  "scanned": 60,
+  "scanned": 61,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -42,6 +42,11 @@
       "issues": [],
       "warnings": [],
       "path": "search/index.html"
+    },
+    {
+      "issues": [],
+      "warnings": [],
+      "path": "showcase/index.html"
     },
     {
       "issues": [],
