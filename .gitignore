@@ -9,7 +9,27 @@ Thumbs.db
 
 # Editor
 .vscode/
+.idea/
 *.swp
+
+# Replit working-buffer artifacts
+attached_assets/
+attached-assets/
+_unused/
+unused/
+
+# Test and build output
+test-results/
+playwright-report/
+coverage/
+dist/
+build/
+.next/
+.vite/
+
+# Node
+node_modules/
+*.log
 
 # Generated audit artifacts (do not commit run-time reports)
 scripts/audit-report.md
