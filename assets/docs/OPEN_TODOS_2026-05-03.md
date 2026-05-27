@@ -1,6 +1,6 @@
 # Open TODOs — Editorial / Owner Action Required
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
 This file surfaces every `<!-- TODO -->` comment still embedded in the production
 HTML so the human owner can resolve them in one pass. Each item is a placeholder
@@ -33,7 +33,7 @@ deferred items. Re-listed here for one-stop visibility:
 - **B1** — Stronger branch-page visual indices (icon cards).
 - **B2** — "Suggested next" / "Keep exploring" tray on tool-ettes.
 - **B3** — Reconcile README copy onto `/about/` or homepage.
-- **B5** — Construction overlays on complete branch pages. ✅ RESOLVED 2026-05-26 — branches 01–04, 07 converted to slim `.construction-badge--slim` strip via `scripts/reclassify-construction-banners.py`; branch 06 keeps full overlay (incomplete tool-ette links remain).
+- **B5** — Construction overlays on complete branch pages. ✅ RESOLVED 2026-05-27 — branches 01–04, 07 converted to slim `.construction-badge--slim` strip 2026-05-26; branch 06 converted 2026-05-27 after Calm Keep (06b) and Medi Minder (06d) GPT URLs were supplied and wired. All 6 branches now show the slim badge.
 - **C2** — Visible "Last updated" `<time datetime>` blocks (placement is a brand call).
 - **C3** — Per-tool FAQ JSON-LD (one Q/A per tool — editorial work).
 - **WebP / PurgeCSS** — Requires a build step; currently violates "no-build" philosophy.

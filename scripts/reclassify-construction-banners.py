@@ -7,13 +7,13 @@ Decision rule:
   INCOMPLETE content (href="#" placeholders or stub sections) → keep overlay.
   NO overlay → skip.
 
-2026-05-26 status:
+2026-05-27 status:
   01-discovered-careers  → SLIM  (all 6 tool-ettes have real GPT links)
   02-treasured-finds     → SLIM  (all 7 tool-ettes have real GPT links, 02c fixed)
   03-tasty-tracker       → SLIM  (all 5 tool-ettes have real GPT links)
   04-travelers-guide     → SLIM  (all 5 tool-ettes have real GPT links, 04d+04e fixed)
   05-organized-life      → SKIP  (no overlay present)
-  06-healthy-bee-ing     → KEEP  (Care Check, Calm Keep, Snappy Count, Medi Minder are href="#")
+  06-healthy-bee-ing     → SLIM  (all 6 tool-ettes now have real GPT links — Task #6)
   07-identity-known      → SLIM  (all 7 tool-ettes have real ChatGPT URLs)
 """
 from pathlib import Path
@@ -26,6 +26,7 @@ SLIM_BRANCHES = [
     "toolbox/02-treasured-finds/index.html",
     "toolbox/03-tasty-tracker/index.html",
     "toolbox/04-travelers-guide/index.html",
+    "toolbox/06-healthy-bee-ing/index.html",
     "toolbox/07-identity-known/index.html",
 ]
 
