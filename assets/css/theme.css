@@ -2499,6 +2499,220 @@ html.glee-search-open body {
 }
 
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE — @media (prefers-color-scheme: dark)
+   Glee-fully brand (body.glee-main) only. The OKH default is already dark.
+   Retro-bright accents (coral, gold, rust) stay vivid on warm-dark surfaces.
+   Key contrast ratios: fg #f0e8e0 / bg #1a1210 → 16.7:1 ✓
+                        muted #b09080 / bg #1a1210 → 5.9:1 ✓
+                        accent #f07585 / surface #241c1a → 4.9:1 ✓
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-color-scheme: dark) {
+
+  /* ── Token layer: override Glee-fully light-mode defaults ── */
+  .glee-main {
+    --color-bg:            #1a1210;
+    --color-surface:       #241c1a;
+    --color-surface-soft:  #2a2320;
+    --color-fg:            #f0e8e0;
+    --color-muted:         #b09080;
+    --color-accent:        #f07585;   /* coral lightened for dark-bg contrast */
+    --color-border-subtle: rgba(240, 220, 210, 0.12);
+    background: #1a1210;
+    color: #f0e8e0;
+  }
+
+  /* ── Hero card: warm-dark paper panel ── */
+  .glee-main .glee-hero-card::before {
+    background: #2a2320;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  }
+
+  /* ── Alternate stripe sections ── */
+  .glee-main .stripe-bg {
+    background: #1f1512;
+    border-top-color: rgba(240, 220, 210, 0.08);
+    border-bottom-color: rgba(240, 220, 210, 0.08);
+  }
+
+  /* ── Pre-opening status note ── */
+  .glee-main .site-status {
+    background: #261616;
+    border-color: rgba(240, 105, 120, 0.3);
+  }
+
+  /* ── Sparkle "Today's Sparkle" banner ── */
+  .glee-main .site-specials--glee {
+    background: #3d2b00;
+    color: #f9e4a0;
+  }
+
+  /* ── Nav submenu dropdown (desktop hover panel) ── */
+  .glee-main .primary-nav .submenu,
+  .glee-main .primary-nav .has-submenu > .submenu {
+    background-color: #2a2320;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ── Footer ── */
+  .glee-main .site-footer {
+    background: #120d0b;
+    border-top-color: rgba(240, 220, 210, 0.1);
+  }
+
+  /* ── Search nav trigger ── */
+  .glee-main .glee-search-trigger {
+    border-color: rgba(240, 220, 210, 0.25);
+  }
+
+  /* ── Search modal panel ── */
+  .glee-main .glee-search-panel {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.18);
+    color: #f0e8e0;
+  }
+  .glee-main .glee-search-header,
+  .glee-main .glee-search-footer {
+    background: #2a2320;
+    border-color: rgba(240, 220, 210, 0.12);
+  }
+  .glee-main .glee-search-label {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.18);
+  }
+  .glee-main .glee-search-footer kbd {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.2);
+    color: #f0e8e0;
+  }
+  .glee-main #glee-search-input {
+    color: #f0e8e0;
+  }
+  .glee-main .glee-search-result-link:hover,
+  .glee-main .glee-search-result.is-active .glee-search-result-link {
+    background: #2a2320;
+    border-color: rgba(240, 220, 210, 0.15);
+  }
+  .glee-main .glee-search-result-title {
+    color: #f0e8e0;
+  }
+  .glee-main .glee-search-result-snippet {
+    color: rgba(240, 232, 224, 0.8);
+  }
+
+  /* ── Dedicated /search/ page ── */
+  .glee-main .glee-search-page { background: #1a1210; }
+  .glee-main .glee-search-page__title,
+  .glee-main .glee-search-page__shortcuts-title { color: #f0e8e0; }
+  .glee-main .glee-search-page__lede,
+  .glee-main .glee-search-page__status,
+  .glee-main .glee-search-page__shortcuts-list {
+    color: rgba(240, 232, 224, 0.78);
+  }
+  .glee-main .glee-search-page__form {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.2);
+  }
+  .glee-main .glee-search-page__form input[type="search"] { color: #f0e8e0; }
+  .glee-main .glee-search-page__form input[type="search"]::placeholder {
+    color: rgba(240, 232, 224, 0.4);
+  }
+  .glee-main .glee-search-page__results .glee-search-result {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.1);
+  }
+  .glee-main .glee-search-page__results .glee-search-result-title { color: #f0e8e0; }
+  .glee-main .glee-search-page__results .glee-search-result-snippet {
+    color: rgba(240, 232, 224, 0.78);
+  }
+  .glee-main .glee-search-page__results .glee-search-result-url {
+    color: rgba(240, 232, 224, 0.5);
+  }
+  .glee-main .glee-search-page__nojs {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.12);
+  }
+  .glee-main .glee-search-page__shortcuts-list kbd {
+    background: #241c1a;
+    border-color: rgba(240, 220, 210, 0.2);
+    color: #f0e8e0;
+  }
+
+  /* ── Under-construction overlay card ── */
+  .glee-main .construction-overlay__card {
+    background: #2a2320;
+    color: #f0e8e0;
+  }
+
+  /* ── Keep-exploring bottom-nav tray ── */
+  .glee-main .keep-exploring {
+    background: #1f1512;
+    border-top-color: rgba(240, 220, 210, 0.1);
+  }
+  .glee-main .keep-exploring__link {
+    background: #2a2320;
+    border-color: rgba(240, 220, 210, 0.15);
+    color: #f0e8e0;
+  }
+  .glee-main .keep-exploring__link:hover,
+  .glee-main .keep-exploring__link:focus-visible {
+    background: #342820;
+    border-color: #f07585;
+    box-shadow: 0 2px 8px rgba(240, 117, 133, 0.2);
+  }
+
+  /* ── Latest milestone pill ── */
+  .glee-main .latest-pill {
+    background: rgba(240, 117, 133, 0.2);
+    color: #f093a5;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MICRO-ANIMATIONS — Brand polish for Glee-fully
+   Card hover lift · button compound scale · hero h1 page-load fade-in.
+   Nav underline slide-in already present via ::after width transition (L 243).
+   Wrapped in prefers-reduced-motion: no-preference — zero motion for users
+   who prefer it (global suppression block at line ~2807 also applies).
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── Card: lift 2px + deepen shadow on hover (150ms) ── */
+  .glee-main .card {
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+  .glee-main .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+  }
+
+  /* ── Primary button: compound scale(1.02) + lift on hover (100ms) ── */
+  .glee-main .btn-primary:hover {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.65);
+  }
+
+  /* ── Quiet/ghost button: subtle scale on hover (100ms) ── */
+  .glee-main .btn-quiet {
+    transition: transform 100ms ease, border-color 150ms ease, color 150ms ease;
+  }
+  .glee-main .btn-quiet:hover {
+    transform: scale(1.02);
+  }
+
+  /* ── Hero h1: fade-in + rise from 12px below on page load (400ms) ── */
+  @keyframes gleeHeroH1In {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .glee-main .glee-hero h1 {
+    animation: gleeHeroH1In 400ms ease-out both;
+  }
+}
+
+
 /* ╔══════════════════════════════════════════════════════════════════════════╗
    ║                  OVERKILL HILL P³ — overkillhill.com                       ║
    ║  Default brand chrome (no .glee-main / .askjamie-main on body).            ║
