@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright calm and stress management tracker showing breathing exercise, mood timeline, stress gauge and relaxation toolkit">
+  <defs>
+    <filter id="ck" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#ck)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Calm Keep</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Less stress. More calmness. Starting now.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="280" height="200" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="180" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="middle" font-weight="bold">4-7-8 Breathing</text>
+  <circle cx="180" cy="180" r="72" fill="#2d7c7c" stroke="#2d7c7c" stroke-width="1"/>
+  <circle cx="180" cy="180" r="54" fill="#2d7c7c" stroke="#2d7c7c" stroke-width="1"/>
+  <circle cx="180" cy="180" r="36" fill="#2d7c7c" stroke="#2d7c7c" stroke-width="1"/>
+  <circle cx="180" cy="180" r="18" fill="#2d7c7c"/>
+  <text x="180" y="184" font-family="Georgia, serif" font-size="12" fill="#3a3530" text-anchor="middle">🫁</text>
+  <text x="180" y="145" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" text-anchor="middle" font-weight="bold">Inhale  4s</text>
+  <text x="250" y="180" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start" font-weight="bold">Hold  7s</text>
+  <text x="180" y="245" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Exhale  8s</text>
+  <text x="110" y="180" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">Cycle 2/4</text>
+  <rect x="40" y="300" width="280" height="100" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="180" y="324" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Stress level today</text>
+  <rect x="60" y="334" width="240" height="14" rx="3" fill="#e8e3dc"/>
+  <rect x="60" y="334" width="144" height="14" rx="3" fill="#c9922d"/>
+  <text x="180" y="360" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="middle">6 / 10 — manageable</text>
+  <text x="60" y="380" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Last week avg: 7.2 · Trend: improving ↓</text>
+  <rect x="40" y="412" width="280" height="76" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="180" y="436" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Calm toolkit</text>
+  <rect x="60" y="444" width="78" height="22" rx="11" fill="#2d7c7c"/>
+  <text x="99" y="458" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">🫁  Breathe</text>
+  <rect x="146" y="444" width="72" height="22" rx="11" fill="#6b7c3f"/>
+  <text x="182" y="458" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">🧘  Grounding</text>
+  <rect x="60" y="470" width="78" height="22" rx="11" fill="#c9922d"/>
+  <text x="99" y="484" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">📔  Journal</text>
+  <rect x="146" y="470" width="72" height="22" rx="11" fill="#d35b2d"/>
+  <text x="182" y="484" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">🎧  Sounds</text>
+  <rect x="340" y="88" width="424" height="220" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="552" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Mood this week</text>
+  <text x="375" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Mon</text>
+  <rect x="358" y="154" width="34" height="36" rx="4" fill="#c9922d" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="375" y="148" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="middle">3</text>
+  <text x="431" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Tue</text>
+  <rect x="414" y="130" width="34" height="60" rx="4" fill="#6b7c3f" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="431" y="124" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">4</text>
+  <text x="487" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Wed</text>
+  <rect x="470" y="142" width="34" height="48" rx="4" fill="#6b7c3f" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="487" y="136" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">4</text>
+  <text x="543" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Thu</text>
+  <rect x="526" y="166" width="34" height="24" rx="4" fill="#c9922d" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="543" y="160" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="middle">2</text>
+  <text x="599" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Fri</text>
+  <rect x="582" y="130" width="34" height="60" rx="4" fill="#6b7c3f" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="599" y="124" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">4</text>
+  <text x="655" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Sat</text>
+  <rect x="638" y="118" width="34" height="72" rx="4" fill="#2d7c7c" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="655" y="112" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" text-anchor="middle">5</text>
+  <text x="722" y="190" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Sun</text>
+  <rect x="705" y="130" width="34" height="60" rx="4" fill="#6b7c3f" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="722" y="124" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">4</text>
+  <text x="552" y="218" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">Avg: 3.7 / 5 · Best: Saturday ☀️ · Hardest: Thursday 🌧️</text>
+  <text x="552" y="234" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Triggers logged: long meeting Mon · deadline Thu</text>
+  <text x="552" y="250" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" text-anchor="middle">Pattern: meetings → stress spike. Try: 5-min breathe pre-meeting.</text>
+  <text x="552" y="266" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">Positive: Sat walk · Fri evening off-screen · good sleep streak</text>
+  <rect x="340" y="322" width="424" height="166" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="360" y="346" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Calm Keep insights:</text>
+  <text x="360" y="364" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Sleep improves your mood score by +1.2 pts on avg</text>
+  <text x="360" y="380" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">⚠  Thu stress spike linked to deadline days (3/3 weeks)</text>
+  <text x="360" y="396" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Breathing sessions: 8 this week — your best streak!</text>
+  <text x="360" y="414" font-family="Georgia, serif" font-size="9" fill="#2d7c7c" text-anchor="start">💡  Try: 10-min walk before your Monday morning meeting</text>
+  <text x="360" y="434" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Walk me through the 5-4-3-2-1 grounding exercise"</text>
+  <text x="360" y="450" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Calm Keep tracks · notices · gently guides. Never judges.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Calm Keep · Glee-fully Toolbox</text>
+</svg>

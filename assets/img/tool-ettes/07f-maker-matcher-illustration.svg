@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright maker and brand identification panel showing product with logo comparison, authenticity checker, and provenance timeline">
+  <defs>
+    <filter id="mkm" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#mkm)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Maker Matcher</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Who made it? Is it real? Where can you get another?</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="350" height="200" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="88" width="350" height="28" rx="10" fill="#c9922d"/>
+  <text x="215" y="107" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" text-anchor="middle" font-weight="bold">Brand Identification</text>
+  <rect x="60" y="124" width="100" height="100" rx="6" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="110" y="178" font-family="Georgia, serif" font-size="32" fill="#3a3530" text-anchor="middle">⌚</text>
+  <text x="176" y="136" font-family="Georgia, serif" font-size="13" fill="#3a3530" text-anchor="start" font-weight="bold">Brand: Seiko</text>
+  <text x="176" y="152" font-family="Georgia, serif" font-size="10" fill="#c9922d" text-anchor="start">Model: Seiko 5 SNK809</text>
+  <text x="176" y="168" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Era: 2004–present</text>
+  <text x="176" y="184" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Case: 37mm stainless · automatic</text>
+  <text x="176" y="200" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Movement: 7S26 (17 jewels)</text>
+  <text x="176" y="216" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">RRP: £80–£110 · Used: £40–£70</text>
+  <text x="176" y="232" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Authenticity check: 3 of 4 markers ✓</text>
+  <text x="176" y="246" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">⚠  Check: dial text spacing at 12 o'clock</text>
+  <rect x="176" y="260" width="76" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="214" y="271" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Likely genuine</text>
+  <rect x="40" y="300" width="350" height="188" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="324" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Authenticity checklist:</text>
+  <text x="60" y="342" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Case back: correctly engraved caseback text</text>
+  <text x="60" y="358" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Movement: rotor spins smoothly, correct click</text>
+  <text x="60" y="374" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Crystal: Hardlex, correct profile</text>
+  <text x="60" y="390" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">⚠  Dial: SEIKO text weight appears slightly thin</text>
+  <text x="60" y="406" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">     Recommend: compare against authenticated reference</text>
+  <text x="60" y="426" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Sources: WatchUSeek forum · Seiko authentication guide</text>
+  <text x="60" y="444" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Show me what a fake SNK809 dial looks like"</text>
+  <text x="60" y="460" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"What should I pay for this in good condition?"</text>
+  <text x="60" y="474" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Where can I find another — vintage market?"</text>
+  <rect x="410" y="88" width="354" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="430" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Provenance timeline</text>
+  <circle cx="450" cy="142" r="5" fill="#c9922d"/>
+  <line x1="450" y1="147" x2="450" y2="180" stroke="#c9bfb2" stroke-width="1.5"/>
+  <text x="464" y="146" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">1881 — Kintaro Hattori founds Seiko, Tokyo</text>
+  <circle cx="450" cy="184" r="5" fill="#c9922d"/>
+  <line x1="450" y1="189" x2="450" y2="222" stroke="#c9bfb2" stroke-width="1.5"/>
+  <text x="464" y="188" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">1913 — First Japanese wristwatch produced</text>
+  <circle cx="450" cy="226" r="5" fill="#c9922d"/>
+  <line x1="450" y1="231" x2="450" y2="264" stroke="#c9bfb2" stroke-width="1.5"/>
+  <text x="464" y="230" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">1969 — First quartz watch (Seiko Quartz Astron)</text>
+  <circle cx="450" cy="268" r="5" fill="#d35b2d"/>
+  <line x1="450" y1="273" x2="450" y2="306" stroke="#c9bfb2" stroke-width="1.5"/>
+  <text x="464" y="272" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">1993 — Seiko 5 range introduced (incl. SNK line)</text>
+  <circle cx="450" cy="310" r="5" fill="#6b7c3f"/>
+  <text x="464" y="314" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">2004 — SNK809 specific ref. begins production</text>
+  <rect x="430" y="332" width="314" height="2" fill="#c9bfb2"/>
+  <text x="430" y="352" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Find a genuine one:</text>
+  <text x="430" y="368" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">✓  Seiko official stockists</text>
+  <text x="430" y="384" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">✓  WatchUSeek marketplace (vetted)</text>
+  <text x="430" y="400" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">✓  Watchfinder · Chrono24 (buy with cover)</text>
+  <text x="430" y="416" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start">✗  Generic eBay listings — extra caution</text>
+  <text x="430" y="436" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Is this pottery mark from a specific maker?"</text>
+  <text x="430" y="452" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">"Maker Matcher knows stamps,</text>
+  <text x="430" y="466" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">signatures, and hallmarks too."</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Maker Matcher · Glee-fully Toolbox</text>
+</svg>

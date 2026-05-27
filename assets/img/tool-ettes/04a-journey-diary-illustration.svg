@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright travel journal showing passport-style stamps, daily diary entries, a mini map with route line, and photo placeholders">
+  <defs>
+    <filter id="jd" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#jd)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Journey Diary</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Every trip remembered — long after the jet lag fades.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="450" height="408" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="232" y="100" width="2" height="384" fill="#c9bfb2"/>
+  <circle cx="100" cy="130" r="36" fill="#d35b2d" stroke="#d35b2d" stroke-width="2.5"/>
+  <circle cx="100" cy="130" r="28" fill="#d35b2d" opacity="0.1"/>
+  <text x="100" y="122" font-family="Georgia, serif" font-size="10" fill="#d35b2d" text-anchor="middle" font-weight="bold">TOKYO</text>
+  <text x="100" y="135" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="middle">2026</text>
+  <text x="100" y="148" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="middle">JAPAN</text>
+  <circle cx="195" cy="118" r="26" fill="#6b7c3f" stroke="#6b7c3f" stroke-width="2"/>
+  <text x="195" y="112" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="middle" font-weight="bold">KYOTO</text>
+  <text x="195" y="125" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="middle">MAY</text>
+  <text x="56" y="180" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Day 3 — May 14</text>
+  <text x="56" y="196" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Woke to temple bells. Walked Philosopher's Path at 6am —</text>
+  <text x="56" y="209" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">the light through the cherry trees was almost embarrassingly</text>
+  <text x="56" y="222" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">beautiful. Matcha latte and a book at % Arabica.</text>
+  <text x="56" y="235" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Fushimi Inari in the afternoon — went beyond the crowds.</text>
+  <text x="56" y="260" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Day 4 — May 15</text>
+  <text x="56" y="276" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Nishiki Market for breakfast snacks. Best: fresh tofu with</text>
+  <text x="56" y="289" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">ponzu, sesame dumplings. Kinkaku-ji golden and blinding.</text>
+  <text x="56" y="302" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Evening: kappo counter, chef's choice. Outstanding.</text>
+  <text x="56" y="320" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Today's highlight: ⭐⭐⭐⭐⭐</text>
+  <text x="56" y="335" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Spend: ¥12,400 (£65) · Steps: 24,102</text>
+  <text x="252" y="112" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Route</text>
+  <rect x="252" y="118" width="212" height="120" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <circle cx="290" cy="158" r="6" fill="#d35b2d"/>
+  <text x="302" y="156" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="start">Tokyo</text>
+  <line x1="290" y1="158" x2="330" y2="190" stroke="#d35b2d" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <circle cx="330" cy="192" r="5" fill="#c9922d"/>
+  <text x="342" y="190" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="start">Hakone</text>
+  <line x1="330" y1="192" x2="360" y2="215" stroke="#c9922d" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <circle cx="362" cy="217" r="5" fill="#6b7c3f"/>
+  <text x="374" y="215" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="start">Kyoto</text>
+  <line x1="362" y1="217" x2="410" y2="222" stroke="#6b7c3f" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <circle cx="412" cy="222" r="4" fill="#c9bfb2"/>
+  <text x="420" y="220" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">Osaka</text>
+  <text x="288" y="232" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">12 days · 4 cities</text>
+  <rect x="252" y="248" width="100" height="72" rx="5" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="302" y="288" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="middle">⛩️ Fushimi</text>
+  <rect x="362" y="248" width="100" height="72" rx="5" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="412" y="288" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="middle">🏯 Kinkaku-ji</text>
+  <text x="252" y="346" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Memories logged:</text>
+  <text x="252" y="362" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">31 moments · 14 photos</text>
+  <text x="252" y="378" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">6 restaurants · 4 temples</text>
+  <text x="252" y="394" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">3 day trips · 1 bullet train</text>
+  <text x="252" y="410" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Total spend: £2,140</text>
+  <rect x="510" y="88" width="254" height="408" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="530" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Trip archive</text>
+  <text x="530" y="132" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start" font-weight="bold">🇯🇵  Japan 2026</text>
+  <text x="530" y="148" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">12 days · 4 cities</text>
+  <text x="530" y="168" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🇮🇹  Italy 2025</text>
+  <text x="530" y="184" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">10 days · Rome, Amalfi</text>
+  <text x="530" y="204" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🇵🇹  Portugal 2024</text>
+  <text x="530" y="220" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">8 days · Lisbon, Porto</text>
+  <text x="530" y="240" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🇲🇽  Mexico 2023</text>
+  <text x="530" y="256" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">14 days · CDMX, Oaxaca</text>
+  <rect x="530" y="272" width="214" height="2" fill="#c9bfb2"/>
+  <text x="530" y="292" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Countries: 12 total</text>
+  <text x="530" y="308" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Nights away: 148</text>
+  <text x="530" y="324" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Diary entries: 204</text>
+  <text x="530" y="340" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Food moments: 89</text>
+  <rect x="530" y="356" width="214" height="2" fill="#c9bfb2"/>
+  <text x="530" y="376" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Summarise Japan 2026</text>
+  <text x="530" y="390" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">into a postcard I can</text>
+  <text x="530" y="404" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">send to family."</text>
+  <text x="530" y="436" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Diary started: 2019</text>
+  <text x="530" y="450" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Last entry: today</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Journey Diary · Glee-fully Toolbox</text>
+</svg>

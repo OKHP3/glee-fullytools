@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
-  "pages_scanned": 61,
+  "pages_scanned": 62,
   "internal_links": 2417,
-  "external_links": 1223,
+  "external_links": 1226,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -11,6 +11,11 @@
     "extra_in_sitemap": []
   },
   "by_page": [
+    {
+      "path": ".agents/skills/skill-creator/eval-viewer/viewer.html",
+      "internal_links": 0,
+      "external_links": 3
+    },
     {
       "path": "404.html",
       "internal_links": 27,

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright household supply tracker showing a grid of items with stock level indicators and reorder alerts">
+  <defs>
+    <filter id="sh" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#sh)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Supply Haus</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Home inventory management — no more running out mid-recipe.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="48" y="96" width="68" height="22" rx="11" fill="#d35b2d"/>
+  <text x="82" y="110" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">Kitchen 🍳</text>
+  <rect x="124" y="96" width="72" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="160" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">Bathroom 🚿</text>
+  <rect x="204" y="96" width="60" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="234" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">Cleaning 🧹</text>
+  <rect x="272" y="96" width="60" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="302" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">Pantry 🥫</text>
+  <rect x="40" y="126" width="476" height="360" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="148" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Kitchen essentials</text>
+  <rect x="60" y="158" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="110" y="178" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🫒</text>
+  <text x="110" y="198" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Olive oil</text>
+  <rect x="68" y="208" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="68" y="208" width="16" height="5" rx="3" fill="#d35b2d"/>
+  <text x="110" y="228" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle" font-weight="bold">LOW ⚠</text>
+  <rect x="170" y="158" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="220" y="178" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">☕</text>
+  <text x="220" y="198" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Coffee beans</text>
+  <rect x="178" y="208" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="178" y="208" width="63" height="5" rx="3" fill="#6b7c3f"/>
+  <text x="220" y="228" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <rect x="280" y="158" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="330" y="178" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🧼</text>
+  <text x="330" y="198" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Dish soap</text>
+  <rect x="288" y="208" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="288" y="208" width="37" height="5" rx="3" fill="#c9922d"/>
+  <text x="330" y="228" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="middle">getting low</text>
+  <rect x="390" y="158" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="440" y="178" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍝</text>
+  <text x="440" y="198" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Pasta</text>
+  <rect x="398" y="208" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="398" y="208" width="84" height="5" rx="3" fill="#6b7c3f"/>
+  <text x="440" y="228" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">stocked ✓</text>
+  <rect x="60" y="248" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="110" y="268" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥫</text>
+  <text x="110" y="288" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Tomatoes (tin)</text>
+  <rect x="68" y="298" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="68" y="298" width="42" height="5" rx="3" fill="#c9922d"/>
+  <text x="110" y="318" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="middle">2 tins left</text>
+  <rect x="170" y="248" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="220" y="268" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥚</text>
+  <text x="220" y="288" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Eggs</text>
+  <rect x="178" y="298" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="178" y="298" width="0" height="5" rx="3" fill="#d35b2d"/>
+  <text x="220" y="318" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle" font-weight="bold">OUT 🚨</text>
+  <rect x="280" y="248" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="330" y="268" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍞</text>
+  <text x="330" y="288" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Bread</text>
+  <rect x="288" y="298" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="288" y="298" width="29" height="5" rx="3" fill="#d35b2d"/>
+  <text x="330" y="318" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle">LOW ⚠</text>
+  <rect x="390" y="248" width="100" height="80" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="440" y="268" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥛</text>
+  <text x="440" y="288" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle" font-weight="bold">Milk</text>
+  <rect x="398" y="298" width="84" height="5" rx="3" fill="#e8e3dc"/>
+  <rect x="398" y="298" width="55" height="5" rx="3" fill="#6b7c3f"/>
+  <text x="440" y="318" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <rect x="60" y="340" width="430" height="40" rx="7" fill="#d35b2d"/>
+  <text x="60" y="354" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="start" font-weight="bold">   🛒  Need soon:</text>
+  <text x="60" y="368" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="start">        Olive oil · Eggs · Bread · Dish soap (4 items)</text>
+  <rect x="60" y="392" width="430" height="80" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="80" y="412" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Auto-generated shopping list:</text>
+  <text x="80" y="428" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Olive oil (extra virgin, 1 litre)  ☐  Free-range eggs (12)</text>
+  <text x="80" y="444" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Bread (sourdough)  ☐  Dish soap (Method or Ecover)</text>
+  <text x="80" y="460" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">☐  Tinned tomatoes ×4  (top up while at it)</text>
+  <rect x="536" y="126" width="228" height="360" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="556" y="150" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Quick stats</text>
+  <text x="556" y="170" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Items tracked: 47</text>
+  <text x="556" y="186" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Well stocked:  31  ✓</text>
+  <text x="556" y="202" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">Getting low:    8  →</text>
+  <text x="556" y="218" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start">Out of stock:   3  ⚠</text>
+  <rect x="556" y="232" width="188" height="2" fill="#c9bfb2"/>
+  <text x="556" y="250" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Last restocked:</text>
+  <text x="556" y="266" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Coffee, pasta, milk</text>
+  <text x="556" y="280" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">May 24  (3 days ago)</text>
+  <rect x="556" y="296" width="188" height="2" fill="#c9bfb2"/>
+  <text x="556" y="316" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Monthly spend trend:</text>
+  <rect x="556" y="324" width="188" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="556" y="324" width="150" height="8" rx="3" fill="#d35b2d"/>
+  <text x="556" y="348" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">May: ~£84</text>
+  <rect x="556" y="356" width="188" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="556" y="356" width="110" height="8" rx="3" fill="#c9bfb2"/>
+  <text x="556" y="380" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Apr: ~£61</text>
+  <rect x="556" y="394" width="188" height="2" fill="#c9bfb2"/>
+  <text x="556" y="414" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"When should I buy</text>
+  <text x="556" y="428" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">olive oil in bulk?</text>
+  <text x="556" y="442" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">Is Costco worth it?"</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Supply Haus · Glee-fully Toolbox</text>
+</svg>

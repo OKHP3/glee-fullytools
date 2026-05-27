@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright off-the-beaten-path travel discovery board showing a stylised map with coloured pins for hidden gems">
+  <defs>
+    <filter id="dc" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#dc)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Detour Discoverer</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Skip the top 10 lists. Find where the locals actually go.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="430" height="320" rx="10" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <line x1="80" y1="280" x2="440" y2="280" stroke="#f6f2ee" stroke-width="4"/>
+  <line x1="80" y1="220" x2="440" y2="220" stroke="#f6f2ee" stroke-width="3"/>
+  <line x1="200" y1="100" x2="200" y2="400" stroke="#f6f2ee" stroke-width="3"/>
+  <line x1="320" y1="100" x2="320" y2="400" stroke="#f6f2ee" stroke-width="2"/>
+  <rect x="210" y="108" width="60" height="40" rx="3" fill="#c9bfb2"/>
+  <rect x="280" y="230" width="48" height="36" rx="3" fill="#c9bfb2"/>
+  <rect x="100" y="234" width="72" height="32" rx="3" fill="#c9bfb2"/>
+  <circle cx="160" cy="200" r="12" fill="#d35b2d"/>
+  <text x="160" y="204" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="middle">🍜</text>
+  <circle cx="260" cy="155" r="12" fill="#6b7c3f"/>
+  <text x="260" y="159" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="middle">🌿</text>
+  <circle cx="350" cy="255" r="12" fill="#c9922d"/>
+  <text x="350" y="259" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="middle">🛒</text>
+  <circle cx="130" cy="310" r="12" fill="#2d7c7c"/>
+  <text x="130" y="314" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="middle">🎨</text>
+  <circle cx="390" cy="140" r="14" fill="#d35b2d" stroke="#f6f2ee" stroke-width="2"/>
+  <text x="390" y="144" font-family="Georgia, serif" font-size="11" fill="#3a3530" text-anchor="middle">🍵</text>
+  <text x="390" y="162" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle">Selected</text>
+  <line x1="56" y1="388" x2="112" y2="388" stroke="#9e3b2e" stroke-width="1.5"/>
+  <text x="56" y="382" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">0</text>
+  <text x="112" y="382" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">500m</text>
+  <rect x="40" y="416" width="430" height="72" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="416" width="5" height="72" fill="#d35b2d"/>
+  <text x="56" y="436" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">☕  Kissa Y — hidden kissaten, Shinjuku 6-chome</text>
+  <text x="56" y="452" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">70yr-old jazz café · no wifi · no tourists · perfect</text>
+  <text x="56" y="466" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Open Tue–Sat 11–18:00 · Cash only · Arrive before noon</text>
+  <rect x="490" y="88" width="274" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="510" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Hidden gems · Kyoto</text>
+  <text x="510" y="134" font-family="Georgia, serif" font-size="10" fill="#d35b2d" text-anchor="start" font-weight="bold">🍜  Local food</text>
+  <text x="510" y="150" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Kissa Y jazz café · Nishiki back-alleys</text>
+  <text x="510" y="166" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Grandma's tofu shop, Fushimi</text>
+  <rect x="510" y="180" width="234" height="2" fill="#c9bfb2"/>
+  <text x="510" y="198" font-family="Georgia, serif" font-size="10" fill="#6b7c3f" text-anchor="start" font-weight="bold">🌿  Nature spots</text>
+  <text x="510" y="214" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Kameyama Park at dawn</text>
+  <text x="510" y="230" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Otagi Nenbutsu-ji temple</text>
+  <text x="510" y="246" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Wisteria trail near Byodoin</text>
+  <rect x="510" y="260" width="234" height="2" fill="#c9bfb2"/>
+  <text x="510" y="278" font-family="Georgia, serif" font-size="10" fill="#c9922d" text-anchor="start" font-weight="bold">🛒  Markets</text>
+  <text x="510" y="294" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Toji temple flea market</text>
+  <text x="510" y="310" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Nishiki side alleys Tues AM</text>
+  <rect x="510" y="326" width="234" height="2" fill="#c9bfb2"/>
+  <text x="510" y="344" font-family="Georgia, serif" font-size="10" fill="#2d7c7c" text-anchor="start" font-weight="bold">🎨  Culture</text>
+  <text x="510" y="360" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Urasenke tea ceremony (small)</text>
+  <text x="510" y="376" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Hiiragiya ryokan lobby tour</text>
+  <rect x="510" y="394" width="234" height="2" fill="#c9bfb2"/>
+  <text x="510" y="414" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Find me a bar where locals</text>
+  <text x="510" y="428" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">drink on Friday nights in Gion</text>
+  <text x="510" y="442" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">— no tourists."</text>
+  <text x="510" y="462" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">22 detours found · Updated today</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Detour Discoverer · Glee-fully Toolbox</text>
+</svg>

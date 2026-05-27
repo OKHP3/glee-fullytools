@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright photo analysis tool showing an uploaded image with colour palette extraction, object labels, metadata readout and context interpretation">
+  <defs>
+    <filter id="sd" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#sd)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Snap Decoder</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Upload a photo. Get the story behind it.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="360" height="300" rx="10" fill="#3a3530" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="56" y="104" width="328" height="200" rx="6" fill="#2d7c7c"/>
+  <rect x="56" y="104" width="328" height="80" rx="6" fill="#2d7c7c"/>
+  <rect x="56" y="184" width="328" height="120" rx="6" fill="#6b7c3f"/>
+  <rect x="140" y="140" width="120" height="100" rx="4" fill="#c9922d"/>
+  <polygon points="140,140 200,100 260,140" fill="#d35b2d" opacity="0.6"/>
+  <rect x="80" y="108" width="52" height="14" rx="3" fill="#d35b2d"/>
+  <text x="106" y="118" font-family="Georgia, serif" font-size="7" fill="#f6f2ee" text-anchor="middle">SKY 92%</text>
+  <rect x="270" y="145" width="78" height="14" rx="3" fill="#c9922d"/>
+  <text x="309" y="155" font-family="Georgia, serif" font-size="7" fill="#f6f2ee" text-anchor="middle">BUILDING 88%</text>
+  <rect x="80" y="230" width="60" height="14" rx="3" fill="#6b7c3f"/>
+  <text x="110" y="240" font-family="Georgia, serif" font-size="7" fill="#f6f2ee" text-anchor="middle">GARDEN 84%</text>
+  <rect x="56" y="290" width="328" height="14" rx="3" fill="#3a3530"/>
+  <text x="220" y="300" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">IMG_4831.jpg · iPhone 15 Pro · May 25, 14:32 · 51.54N, -0.05E</text>
+  <rect x="40" y="398" width="360" height="90" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="418" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Dominant colours:</text>
+  <rect x="60" y="426" width="52" height="32" rx="4" fill="#2d7c7c"/>
+  <text x="86" y="470" font-family="Georgia, serif" font-size="7" fill="#2d7c7c" text-anchor="middle">#2d7c7c</text>
+  <rect x="120" y="426" width="52" height="32" rx="4" fill="#6b7c3f"/>
+  <text x="146" y="470" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">#6b7c3f</text>
+  <rect x="180" y="426" width="52" height="32" rx="4" fill="#c9922d"/>
+  <text x="206" y="470" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="middle">#c9922d</text>
+  <rect x="240" y="426" width="52" height="32" rx="4" fill="#d35b2d"/>
+  <text x="266" y="470" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle">#d35b2d</text>
+  <rect x="300" y="426" width="52" height="32" rx="4" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="326" y="470" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">#e8e3dc</text>
+  <text x="60" y="482" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Mood: warm, natural, architectural · Style cue: Mediterranean</text>
+  <rect x="420" y="88" width="344" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="440" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Photo analysis</text>
+  <text x="440" y="134" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Scene type:</text>
+  <text x="440" y="150" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Exterior architecture · residential · sunny day</text>
+  <text x="440" y="172" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Location clues:</text>
+  <text x="440" y="188" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">🌍  GPS: Lisbon, Portugal (from EXIF)</text>
+  <text x="440" y="204" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🏛️  Azulejo tiles visible (blue/white)</text>
+  <text x="440" y="220" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🌡️  Shadow angle → approx 2:30pm local</text>
+  <text x="440" y="242" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Architecture style:</text>
+  <text x="440" y="258" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Pombaline · late 18th century · typical Baixa</text>
+  <text x="440" y="274" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Ornate ironwork · terracotta roof tiles</text>
+  <text x="440" y="296" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Context interpretation:</text>
+  <text x="440" y="312" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">"This appears to be a residential building in</text>
+  <text x="440" y="326" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Lisbon's Alfama or Baixa district, built post-1755</text>
+  <text x="440" y="340" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">earthquake in the Pombaline style. The azulejo</text>
+  <text x="440" y="354" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">panels are characteristic of this era."</text>
+  <rect x="440" y="370" width="304" height="2" fill="#c9bfb2"/>
+  <text x="440" y="390" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Quick asks:</text>
+  <text x="440" y="406" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"What neighbourhood is this?"</text>
+  <text x="440" y="420" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Tell me about the tilework style"</text>
+  <text x="440" y="438" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Confidence: 87% · EXIF verified</text>
+  <text x="440" y="454" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Snap Decoder turns any photo into a story.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Snap Decoder · Glee-fully Toolbox</text>
+</svg>

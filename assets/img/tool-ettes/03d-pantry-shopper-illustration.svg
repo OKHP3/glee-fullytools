@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright pantry inventory split-screen showing shelf contents and generated shopping list">
+  <defs>
+    <filter id="ps" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#ps)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Pantry Shopper</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Know what's in your pantry. Shop smarter, waste less.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="380" height="400" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="230" y="112" font-family="Georgia, serif" font-size="12" fill="#9e3b2e" text-anchor="middle" font-weight="bold">My Pantry</text>
+  <rect x="56" y="122" width="348" height="6" rx="2" fill="#c9bfb2" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="80" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🫒</text>
+  <text x="80" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Olive oil</text>
+  <text x="80" y="170" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle" font-weight="bold">LOW ⚠</text>
+  <text x="140" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥫</text>
+  <text x="140" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Tomatoes (x3)</text>
+  <text x="140" y="170" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="200" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍝</text>
+  <text x="200" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Pasta</text>
+  <text x="200" y="170" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">2 types</text>
+  <text x="260" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🌾</text>
+  <text x="260" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Flour</text>
+  <text x="260" y="170" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="320" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🫘</text>
+  <text x="320" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Chickpeas</text>
+  <text x="320" y="170" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">x2</text>
+  <text x="375" y="142" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍚</text>
+  <text x="375" y="160" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Rice</text>
+  <text x="375" y="170" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <rect x="56" y="184" width="348" height="6" rx="2" fill="#c9bfb2" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="80" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🫙</text>
+  <text x="80" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Tahini</text>
+  <text x="80" y="232" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="140" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍯</text>
+  <text x="140" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Honey</text>
+  <text x="140" y="232" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="200" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🌶️</text>
+  <text x="200" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Chilli flakes</text>
+  <text x="200" y="232" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="260" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🧂</text>
+  <text x="260" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Sea salt</text>
+  <text x="260" y="232" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="320" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥥</text>
+  <text x="320" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Coconut milk</text>
+  <text x="320" y="232" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle" font-weight="bold">LOW ⚠</text>
+  <text x="375" y="204" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍬</text>
+  <text x="375" y="222" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Sugar</text>
+  <text x="375" y="232" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <rect x="56" y="246" width="348" height="6" rx="2" fill="#c9bfb2" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="80" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">☕</text>
+  <text x="80" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Coffee</text>
+  <text x="80" y="294" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="140" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🍵</text>
+  <text x="140" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Tea bags</text>
+  <text x="140" y="294" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="200" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥜</text>
+  <text x="200" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Almond butter</text>
+  <text x="200" y="294" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="260" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🌿</text>
+  <text x="260" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Dried herbs</text>
+  <text x="260" y="294" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <text x="320" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🫚</text>
+  <text x="320" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Veg stock</text>
+  <text x="320" y="294" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle" font-weight="bold">OUT ⚠</text>
+  <text x="375" y="266" font-family="Georgia, serif" font-size="18" fill="#3a3530" text-anchor="middle">🥣</text>
+  <text x="375" y="284" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Oats</text>
+  <text x="375" y="294" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">ok</text>
+  <rect x="56" y="310" width="348" height="56" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="72" y="330" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">What I can make tonight:</text>
+  <text x="72" y="347" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🍝 Pasta arrabiata  ·  🥗 Chickpea &amp; tahini bowl  ·  🍛 Coconut dal</text>
+  <text x="72" y="363" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start" font-style="italic">(All from current pantry — no shopping needed!)</text>
+  <rect x="56" y="378" width="348" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="56" y="378" width="244" height="8" rx="3" fill="#6b7c3f"/>
+  <text x="56" y="400" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Pantry health: 70% · 3 items need restocking</text>
+  <text x="56" y="416" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Waste saved this month: ~£28 (used 8 expiring items)</text>
+  <text x="56" y="436" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">Next audit: 7 days · Ask: "recipes with what I have"</text>
+  <rect x="440" y="88" width="324" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="460" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Generated list</text>
+  <text x="460" y="128" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Based on: low stock + next week's menu</text>
+  <text x="460" y="152" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-weight="bold">MUST BUY</text>
+  <rect x="460" y="158" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="174" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Olive oil — extra virgin 750ml</text>
+  <rect x="460" y="190" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="206" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Vegetable stock — 1L carton ×2</text>
+  <rect x="460" y="222" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="238" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Eggs — free range 12pk</text>
+  <text x="460" y="268" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start" font-weight="bold">GETTING LOW</text>
+  <rect x="460" y="274" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="290" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Coconut milk ×2</text>
+  <rect x="460" y="306" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="322" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Tinned tomatoes ×4</text>
+  <text x="460" y="352" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start" font-weight="bold">FOR THIS WEEK'S MENU</text>
+  <rect x="460" y="358" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="374" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Chicken thighs 600g</text>
+  <rect x="460" y="390" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="406" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Baby spinach 250g</text>
+  <rect x="460" y="422" width="284" height="26" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="466" y="438" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">☐  Lemons ×4</text>
+  <text x="460" y="468" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Est. total: £34 · 3 stores optimised</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Pantry Shopper · Glee-fully Toolbox</text>
+</svg>

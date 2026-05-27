@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright flavour profile dashboard with a taste radar chart and tasting notes log">
+  <defs>
+    <filter id="fm" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#fm)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Flavor Meister</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Know your palate. Talk about taste like you mean it.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="340" height="340" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="210" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Your Flavour Profile</text>
+  <polygon points="210,128 296,188 264,288 156,288 124,188" fill="none" stroke="#c9bfb2" stroke-width="1.5"/>
+  <polygon points="210,148 276,198 250,276 170,276 144,198" fill="none" stroke="#c9bfb2" stroke-width="1" opacity="0.5"/>
+  <polygon points="210,168 256,208 236,264 184,264 164,208" fill="none" stroke="#c9bfb2" stroke-width="0.8" opacity="0.3"/>
+  <line x1="210" y1="128" x2="210" y2="240" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="296" y1="188" x2="210" y2="240" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="264" y1="288" x2="210" y2="240" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="156" y1="288" x2="210" y2="240" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="124" y1="188" x2="210" y2="240" stroke="#c9bfb2" stroke-width="0.5"/>
+  <polygon points="210,136 284,193 252,280 168,280 136,195" fill="#d35b2d" fill-opacity="0.2" stroke="#d35b2d" stroke-width="2"/>
+  <circle cx="210" cy="136" r="5" fill="#d35b2d"/>
+  <circle cx="284" cy="193" r="5" fill="#c9922d"/>
+  <circle cx="252" cy="280" r="5" fill="#6b7c3f"/>
+  <circle cx="168" cy="280" r="5" fill="#2d7c7c"/>
+  <circle cx="136" cy="195" r="5" fill="#9e3b2e"/>
+  <text x="210" y="122" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="middle" font-weight="bold">SWEET</text>
+  <text x="304" y="192" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start" font-weight="bold">UMAMI</text>
+  <text x="270" y="304" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">SALTY</text>
+  <text x="150" y="302" font-family="Georgia, serif" font-size="9" fill="#2d7c7c" text-anchor="end" font-weight="bold">SOUR</text>
+  <text x="116" y="194" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="end" font-weight="bold">BITTER</text>
+  <text x="210" y="346" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Loves:</text>
+  <rect x="70" y="354" width="90" height="18" rx="9" fill="#d35b2d"/>
+  <text x="115" y="365" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Honey + cream</text>
+  <rect x="168" y="354" width="72" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="204" y="365" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Miso · soy</text>
+  <rect x="248" y="354" width="80" height="18" rx="9" fill="#c9922d"/>
+  <text x="288" y="365" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Caramelised</text>
+  <rect x="70" y="378" width="64" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="102" y="389" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Citrus zest</text>
+  <rect x="142" y="378" width="88" height="18" rx="9" fill="#9e3b2e"/>
+  <text x="186" y="389" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Dark chocolate</text>
+  <text x="58" y="410" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Dislikes: raw onion · blue cheese · very spicy</text>
+  <rect x="400" y="88" width="364" height="228" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="420" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Tasting Notes</text>
+  <rect x="420" y="122" width="324" height="50" rx="6" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="420" y="122" width="4" height="50" fill="#d35b2d"/>
+  <text x="430" y="140" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Tonkotsu ramen — Ippudo</text>
+  <text x="430" y="154" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Rich umami pork broth · springy noodles · jammy egg</text>
+  <text x="430" y="166" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">Sweet ●●●  Umami ●●●●●  Salty ●●●  Sour ●</text>
+  <rect x="420" y="180" width="324" height="50" rx="6" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="420" y="180" width="4" height="50" fill="#c9922d"/>
+  <text x="430" y="198" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Brown butter miso cookies — home</text>
+  <text x="430" y="212" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Caramelised · nutty · sweet-salty balance is PERFECT</text>
+  <text x="430" y="224" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Sweet ●●●●  Umami ●●  Salty ●●  Bitter ●</text>
+  <rect x="420" y="238" width="324" height="50" rx="6" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="420" y="238" width="4" height="50" fill="#6b7c3f"/>
+  <text x="430" y="256" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Roasted beetroot + goat cheese salad</text>
+  <text x="430" y="270" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Earthy sweetness, tangy cream, bitter walnut finish</text>
+  <text x="430" y="282" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Sweet ●●●  Sour ●●  Bitter ●●  Umami ●</text>
+  <rect x="400" y="332" width="364" height="156" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="420" y="356" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Recommended next:</text>
+  <text x="420" y="374" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🍜  Dan Dan Mian — umami + chilli + sesame sweet</text>
+  <text x="420" y="392" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🧀  Aged Comté — buttery, nutty, long sweet finish</text>
+  <text x="420" y="410" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🍫  Valrhona Manjari 64% — fruity dark, not too bitter</text>
+  <text x="420" y="428" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🥃  Speyside 15yr sherry cask — sweet-umami harmony</text>
+  <text x="420" y="452" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">Based on: 34 logged meals · Ask: "wine pairing for my palate?"</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Flavor Meister · Glee-fully Toolbox</text>
+</svg>

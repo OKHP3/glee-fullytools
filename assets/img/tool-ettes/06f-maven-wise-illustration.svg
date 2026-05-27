@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright health knowledge base showing topic cards on sleep, nutrition, movement and stress with evidence-level badges">
+  <defs>
+    <filter id="mw" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#mw)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Maven Wise</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Evidence-based health knowledge — in plain English.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="48" y="96" width="500" height="28" rx="14" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="68" y="113" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">🔍  Ask anything — e.g. "does magnesium help sleep?" or "best time to exercise"</text>
+  <rect x="40" y="134" width="220" height="130" rx="10" fill="#2d7c7c"/>
+  <text x="150" y="158" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" text-anchor="middle" font-weight="bold">💤  SLEEP</text>
+  <text x="60" y="176" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start" font-style="italic">"I sleep 7h but wake at 3am."</text>
+  <text x="60" y="192" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">Could be cortisol, light exposure,</text>
+  <text x="60" y="206" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">or sleep pressure. Let's diagnose.</text>
+  <rect x="60" y="218" width="90" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="105" y="229" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Evidence: A</text>
+  <rect x="158" y="218" width="68" height="18" rx="9" fill="#e8e3dc"/>
+  <text x="192" y="229" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">8 studies</text>
+  <text x="60" y="250" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-weight="bold">→ Start here →</text>
+  <rect x="272" y="134" width="220" height="130" rx="10" fill="#6b7c3f"/>
+  <text x="382" y="158" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" text-anchor="middle" font-weight="bold">🥦  NUTRITION</text>
+  <text x="292" y="176" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start" font-style="italic">"I'm always tired after lunch."</text>
+  <text x="292" y="192" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">Blood sugar crash? Carb-heavy meal?</text>
+  <text x="292" y="206" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">Protein timing matters a lot here.</text>
+  <rect x="292" y="218" width="90" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="337" y="229" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Evidence: A</text>
+  <rect x="390" y="218" width="68" height="18" rx="9" fill="#e8e3dc"/>
+  <text x="424" y="229" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">12 studies</text>
+  <rect x="504" y="134" width="260" height="130" rx="10" fill="#d35b2d"/>
+  <text x="634" y="158" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" text-anchor="middle" font-weight="bold">🏃  MOVEMENT</text>
+  <text x="524" y="176" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start" font-style="italic">"Does morning vs evening gym matter?"</text>
+  <text x="524" y="192" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">Yes — for testosterone, cortisol, and</text>
+  <text x="524" y="206" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">sleep quality. It's complicated.</text>
+  <rect x="524" y="218" width="90" height="18" rx="9" fill="#d35b2d"/>
+  <text x="569" y="229" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Evidence: B</text>
+  <rect x="622" y="218" width="80" height="18" rx="9" fill="#e8e3dc"/>
+  <text x="662" y="229" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Mixed views</text>
+  <rect x="40" y="280" width="724" height="120" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="304" font-family="Georgia, serif" font-size="12" fill="#9e3b2e" text-anchor="start" font-weight="bold">Featured: Why Magnesium Actually Helps Sleep (For Most People)</text>
+  <text x="60" y="322" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Evidence level: A · Reviewed 2026 · 6 RCTs · Sources: PubMed, Examine.com</text>
+  <text x="60" y="340" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Magnesium glycinate at 200–400mg taken 1–2h before bed has been shown in multiple</text>
+  <text x="60" y="354" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">randomised controlled trials to improve sleep onset latency and sleep quality.</text>
+  <text x="60" y="368" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Caveats: not effective for all insomnia types · choose glycinate form · check with GP</text>
+  <rect x="40" y="418" width="460" height="70" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="440" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Library topics:</text>
+  <rect x="60" y="448" width="46" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="83" y="459" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Sleep</text>
+  <rect x="114" y="448" width="68" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="148" y="459" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Nutrition</text>
+  <rect x="190" y="448" width="74" height="18" rx="9" fill="#d35b2d"/>
+  <text x="227" y="459" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Movement</text>
+  <rect x="272" y="448" width="52" height="18" rx="9" fill="#c9922d"/>
+  <text x="298" y="459" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Stress</text>
+  <rect x="332" y="448" width="58" height="18" rx="9" fill="#9e3b2e"/>
+  <text x="361" y="459" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Hormones</text>
+  <rect x="398" y="448" width="70" height="18" rx="9" fill="#c9bfb2"/>
+  <text x="433" y="459" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Longevity</text>
+  <text x="60" y="476" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">118 articles · All evidence-graded · Updated quarterly</text>
+  <rect x="520" y="418" width="244" height="70" rx="10" fill="#d35b2d"/>
+  <text x="642" y="442" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle" font-style="italic">"What can I do about</text>
+  <text x="642" y="458" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle" font-style="italic">my 3am wake-ups?"</text>
+  <text x="642" y="474" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle" font-weight="bold">Ask Maven Wise →</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Maven Wise · Glee-fully Toolbox</text>
+</svg>

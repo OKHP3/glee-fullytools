@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright mood journal showing a colour-coded monthly calendar, pattern insights panel, and a journal entry form">
+  <defs>
+    <filter id="mlog" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#mlog)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Moody Log</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Understand your emotional patterns. No judgment — just data.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="420" height="280" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="250" y="112" font-family="Georgia, serif" font-size="12" fill="#9e3b2e" text-anchor="middle" font-weight="bold">May 2026 — Mood Calendar</text>
+  <text x="76" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">M</text>
+  <text x="112" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">T</text>
+  <text x="148" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">W</text>
+  <text x="184" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">T</text>
+  <text x="220" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">F</text>
+  <text x="256" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">S</text>
+  <text x="292" y="132" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">S</text>
+  <rect x="62" y="140" width="28" height="28" rx="4" fill="#d35b2d"/>
+  <rect x="98" y="140" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="134" y="140" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="170" y="140" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="206" y="140" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="242" y="140" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="278" y="140" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="62" y="174" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="98" y="174" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="134" y="174" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="170" y="174" width="28" height="28" rx="4" fill="#d35b2d"/>
+  <rect x="206" y="174" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="242" y="174" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="278" y="174" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="62" y="208" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="98" y="208" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="134" y="208" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="170" y="208" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="206" y="208" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="242" y="208" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="278" y="208" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="62" y="242" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="98" y="242" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="134" y="242" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="170" y="242" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="206" y="242" width="28" height="28" rx="4" fill="#c9922d"/>
+  <rect x="242" y="242" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="278" y="242" width="28" height="28" rx="4" fill="#2d7c7c"/>
+  <rect x="314" y="242" width="28" height="28" rx="4" fill="#6b7c3f"/>
+  <rect x="340" y="242" width="28" height="28" rx="4" fill="#6b7c3f" stroke="#d35b2d" stroke-width="2"/>
+  <text x="354" y="258" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="middle">→</text>
+  <rect x="378" y="168" width="12" height="12" rx="2" fill="#2d7c7c"/>
+  <text x="396" y="178" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Great 😄</text>
+  <rect x="378" y="186" width="12" height="12" rx="2" fill="#6b7c3f"/>
+  <text x="396" y="196" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Good 😊</text>
+  <rect x="378" y="204" width="12" height="12" rx="2" fill="#c9922d"/>
+  <text x="396" y="214" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Okay 😐</text>
+  <rect x="378" y="222" width="12" height="12" rx="2" fill="#d35b2d"/>
+  <text x="396" y="232" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Hard 😕</text>
+  <text x="250" y="278" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">May avg: Good (3.8/5) · Best week: W3 · Hardest: W1 Mon</text>
+  <text x="250" y="294" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Good days: 17 (61%) · Great days: 7 (25%) · Okay: 4 (14%)</text>
+  <text x="250" y="310" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="middle">Pattern: weekends consistently better · Mondays often dip</text>
+  <rect x="40" y="376" width="420" height="112" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="400" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Today's entry (May 27):</text>
+  <text x="60" y="418" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-style="italic">Feeling good today. Slept 8h, gym done, nice lunch outside.</text>
+  <text x="60" y="434" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-style="italic">Had a productive focus block. Small back twinge but not bad.</text>
+  <text x="60" y="450" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Energy: 7/10 · Mood: 4/5 (Good) · Grateful for: sunshine.</text>
+  <text x="60" y="466" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Triggers: none today · Highlights: outdoor lunch, gym PR (bench)</text>
+  <rect x="480" y="88" width="284" height="400" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="500" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Mood patterns</text>
+  <text x="500" y="132" font-family="Georgia, serif" font-size="9" fill="#2d7c7c" text-anchor="start" font-weight="bold">Best days: Sat, Sun</text>
+  <text x="500" y="148" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Weekend mood: +0.8 vs weekday</text>
+  <text x="500" y="168" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Mood boosters:</text>
+  <text x="500" y="184" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">😊  Good sleep (+1.2pts)</text>
+  <text x="500" y="198" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">😊  Exercise (+0.9pts)</text>
+  <text x="500" y="212" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">😊  Social time (+0.7pts)</text>
+  <text x="500" y="228" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">😐  Deadlines (-0.8pts)</text>
+  <text x="500" y="244" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">😐  Poor sleep (-1.1pts)</text>
+  <rect x="500" y="260" width="244" height="2" fill="#c9bfb2"/>
+  <text x="500" y="280" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Journaling streak:</text>
+  <text x="500" y="296" font-family="Georgia, serif" font-size="10" fill="#d35b2d" text-anchor="start" font-weight="bold">🔥  21 days in a row!</text>
+  <text x="500" y="316" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Total entries: 87</text>
+  <text x="500" y="332" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Avg mood (all time): 3.7</text>
+  <rect x="500" y="350" width="244" height="2" fill="#c9bfb2"/>
+  <text x="500" y="370" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Why am I always in a</text>
+  <text x="500" y="384" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">bad mood on Mondays?</text>
+  <text x="500" y="398" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">Show me the pattern."</text>
+  <text x="500" y="432" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Moody Log sees what</text>
+  <text x="500" y="446" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">your brain forgets.</text>
+  <text x="500" y="462" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">No judgment. Just insight.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Moody Log · Glee-fully Toolbox</text>
+</svg>

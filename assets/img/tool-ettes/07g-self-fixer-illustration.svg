@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright DIY repair guide showing a step-by-step fix-it flow with numbered instruction cards, tool list, difficulty rating and safety checklist">
+  <defs>
+    <filter id="sf" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#sf)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Self Fixer</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Fix it yourself. Save money. Actually feel good about it.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="460" height="60" rx="10" fill="#d35b2d"/>
+  <text x="270" y="112" font-family="Georgia, serif" font-size="12" fill="#f6f2ee" text-anchor="middle" font-weight="bold">🔧  Repair task: Dripping bathroom tap</text>
+  <text x="270" y="130" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">Difficulty: ⭐⭐  Easy · Est. time: 45 min · Cost: £8–£20 · Tools: wrench, flathead</text>
+  <rect x="40" y="158" width="220" height="64" rx="8" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <circle cx="60" cy="182" r="12" fill="#d35b2d"/>
+  <text x="60" y="186" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle" font-weight="bold">1</text>
+  <text x="80" y="174" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Turn off the water supply</text>
+  <text x="80" y="188" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Under the sink, turn the isolation</text>
+  <text x="80" y="202" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">valve clockwise. Run tap until empty.</text>
+  <rect x="270" y="158" width="220" height="64" rx="8" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <circle cx="290" cy="182" r="12" fill="#d35b2d"/>
+  <text x="290" y="186" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle" font-weight="bold">2</text>
+  <text x="310" y="174" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Remove the tap handle</text>
+  <text x="310" y="188" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Pry off the decorative cap, unscrew</text>
+  <text x="310" y="202" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">with flathead, lift off the handle.</text>
+  <rect x="40" y="230" width="220" height="64" rx="8" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <circle cx="60" cy="254" r="12" fill="#c9922d"/>
+  <text x="60" y="258" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle" font-weight="bold">3</text>
+  <text x="80" y="246" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Replace the washer</text>
+  <text x="80" y="260" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Undo the packing nut with a wrench.</text>
+  <text x="80" y="274" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Pull out spindle. Pop new washer on.</text>
+  <rect x="270" y="230" width="220" height="64" rx="8" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <circle cx="290" cy="254" r="12" fill="#c9922d"/>
+  <text x="290" y="258" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle" font-weight="bold">4</text>
+  <text x="310" y="246" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Reassemble and test</text>
+  <text x="310" y="260" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Screw the packing nut back, refit</text>
+  <text x="310" y="274" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">handle. Turn supply on. Check. Done! ✓</text>
+  <rect x="40" y="302" width="220" height="100" rx="8" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="322" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Tools you need:</text>
+  <text x="60" y="338" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">🔧  Adjustable wrench</text>
+  <text x="60" y="352" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">🪛  Flathead screwdriver</text>
+  <text x="60" y="366" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">💧  Old towels / small bucket</text>
+  <text x="60" y="380" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">🛒  Replacement washer (~£2)</text>
+  <text x="60" y="394" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">Take old washer to B&amp;Q to match</text>
+  <rect x="270" y="302" width="220" height="100" rx="8" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="290" y="322" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Safety checks:</text>
+  <text x="290" y="338" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">✓  Water supply OFF first</text>
+  <text x="290" y="352" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">✓  Place a towel under pipe</text>
+  <text x="290" y="366" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">✓  Do not overtighten nuts</text>
+  <text x="290" y="380" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">⚠  If pipe is corroded — stop</text>
+  <text x="290" y="394" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">     Call a plumber instead</text>
+  <rect x="40" y="410" width="450" height="78" rx="8" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="430" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">What you're saving:</text>
+  <text x="60" y="446" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">Plumber call-out: £80–£150 · Your cost: £8–£20 · Saved: £60–£130  ✓</text>
+  <text x="60" y="462" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Time: 45 min · Skill gained: tap repair (works on most household taps)</text>
+  <text x="60" y="478" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Next level: replacing tap valves · O-ring seals · concealed cistern flushers</text>
+  <rect x="520" y="88" width="244" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="540" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Fix-it history</text>
+  <text x="540" y="132" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Jobs completed: 11</text>
+  <text x="540" y="148" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">Total saved: £840</text>
+  <text x="540" y="164" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Avg per fix: £76</text>
+  <rect x="540" y="180" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="200" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Recent fixes:</text>
+  <text x="540" y="216" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Dripping tap  (today)</text>
+  <text x="540" y="232" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Stuck door hinge  (May 20)</text>
+  <text x="540" y="248" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Running toilet  (May 10)</text>
+  <text x="540" y="264" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Stiff window latch  (Apr)</text>
+  <text x="540" y="280" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✓  Cracked tile  (Apr)</text>
+  <rect x="540" y="296" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="316" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Quick asks:</text>
+  <text x="540" y="332" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"My toilet runs constantly —</text>
+  <text x="540" y="346" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">is it the flapper?"</text>
+  <text x="540" y="364" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"My door won't close in</text>
+  <text x="540" y="378" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">summer — is it the frame?"</text>
+  <text x="540" y="396" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Can I paint over old</text>
+  <text x="540" y="410" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">wallpaper?"</text>
+  <text x="540" y="440" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">Self Fixer diagnoses,</text>
+  <text x="540" y="456" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">guides, and celebrates</text>
+  <text x="540" y="472" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">every fix you complete.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Self Fixer · Glee-fully Toolbox</text>
+</svg>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright spirits tasting journal showing a whisky notes card with colour, nose, palate and finish descriptors, and a bottle collection grid">
+  <defs>
+    <filter id="spj" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#spj)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Spirited Journal</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Nose it. Taste it. Remember it. Every dram catalogued.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="440" height="340" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="88" width="440" height="36" rx="10" fill="#c9922d"/>
+  <text x="60" y="111" font-family="Georgia, serif" font-size="12" fill="#f6f2ee" text-anchor="start" font-weight="bold">Tasting Note — Glenfarclas 15 Year</text>
+  <text x="60" y="127" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="start">Highland Single Malt Scotch · 46% ABV · Non-chill filtered</text>
+  <rect x="60" y="136" width="64" height="64" rx="6" fill="#c9922d"/>
+  <text x="92" y="215" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="middle">Deep amber</text>
+  <text x="140" y="148" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Nose:</text>
+  <text x="140" y="163" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Rich sherry, dried fruits, dark chocolate,</text>
+  <text x="140" y="176" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">hints of orange zest and warm baking spice.</text>
+  <text x="140" y="189" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Marzipan emerges after a few minutes.</text>
+  <rect x="40" y="240" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="258" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Palate:</text>
+  <text x="60" y="273" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Full-bodied and luscious. Oloroso sherry dominates,</text>
+  <text x="60" y="286" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">layered with Christmas cake, raisins, cinnamon.</text>
+  <text x="60" y="299" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Water opens it beautifully — reveals hazelnut praline.</text>
+  <rect x="40" y="310" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="326" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Finish:</text>
+  <text x="60" y="341" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Long, warming, and remarkably smooth. Dried fruit</text>
+  <text x="60" y="354" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">and oak spice linger. Excellent.</text>
+  <rect x="40" y="368" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="386" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">Complexity</text>
+  <rect x="160" y="378" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="160" y="378" width="180" height="8" rx="3" fill="#c9922d"/>
+  <text x="368" y="386" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">9/10</text>
+  <text x="60" y="402" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">Balance</text>
+  <rect x="160" y="394" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="160" y="394" width="160" height="8" rx="3" fill="#d35b2d"/>
+  <text x="368" y="402" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start">8/10</text>
+  <text x="60" y="418" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">Value</text>
+  <rect x="160" y="410" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="160" y="410" width="140" height="8" rx="3" fill="#6b7c3f"/>
+  <text x="368" y="418" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">7/10</text>
+  <text x="60" y="440" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Overall: 9/10 ⭐  Would buy again: Absolutely · Paid: £62</text>
+  <rect x="500" y="88" width="264" height="340" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="520" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Cabinet</text>
+  <rect x="524" y="130" width="20" height="56" rx="4" fill="#c9922d"/>
+  <rect x="527" y="122" width="14" height="8" rx="2" fill="#c9922d"/>
+  <text x="534" y="196" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="middle">Glenfar.</text>
+  <rect x="556" y="136" width="20" height="50" rx="4" fill="#6b7c3f"/>
+  <rect x="559" y="128" width="14" height="8" rx="2" fill="#6b7c3f"/>
+  <text x="566" y="196" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">Bruichl.</text>
+  <rect x="588" y="128" width="20" height="58" rx="4" fill="#d35b2d"/>
+  <rect x="591" y="120" width="14" height="8" rx="2" fill="#d35b2d"/>
+  <text x="598" y="196" font-family="Georgia, serif" font-size="7" fill="#d35b2d" text-anchor="middle">Ardbeg</text>
+  <rect x="620" y="134" width="20" height="52" rx="4" fill="#2d7c7c"/>
+  <rect x="623" y="126" width="14" height="8" rx="2" fill="#2d7c7c"/>
+  <text x="630" y="196" font-family="Georgia, serif" font-size="7" fill="#2d7c7c" text-anchor="middle">Auchnh.</text>
+  <rect x="652" y="132" width="20" height="54" rx="4" fill="#9e3b2e"/>
+  <rect x="655" y="124" width="14" height="8" rx="2" fill="#9e3b2e"/>
+  <text x="662" y="196" font-family="Georgia, serif" font-size="7" fill="#9e3b2e" text-anchor="middle">GlenDr.</text>
+  <rect x="520" y="208" width="220" height="2" fill="#c9bfb2"/>
+  <text x="520" y="228" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Collection: 18 bottles</text>
+  <text x="520" y="244" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Notes logged: 34 drams</text>
+  <text x="520" y="260" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Regions: Highland, Islay, Speyside</text>
+  <text x="520" y="280" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">Top style: Sherry matured</text>
+  <text x="520" y="296" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Wish list: 6 bottles</text>
+  <rect x="520" y="310" width="220" height="2" fill="#c9bfb2"/>
+  <text x="520" y="330" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Find me a Speyside under</text>
+  <text x="520" y="344" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">£50 with sherry notes like</text>
+  <text x="520" y="358" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">my Glenfarclas 15."</text>
+  <rect x="500" y="444" width="264" height="96" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="520" y="468" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Average score: 7.8 / 10</text>
+  <text x="520" y="484" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Total spent: £847</text>
+  <text x="520" y="500" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Events logged: 4 tastings</text>
+  <text x="520" y="516" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Next: Feis Ile (Islay) May 2027</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Spirited Journal · Glee-fully Toolbox</text>
+</svg>

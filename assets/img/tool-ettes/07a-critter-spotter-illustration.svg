@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright wildlife identification card showing an animal field guide layout with sighting log, habitat map pins, and species detail panel">
+  <defs>
+    <filter id="crs" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#crs)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Critter Spotter</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Name what you saw. Learn its story. Log the encounter.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="340" height="280" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="88" width="340" height="28" rx="10" fill="#6b7c3f"/>
+  <text x="210" y="107" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" text-anchor="middle" font-weight="bold">Identification Result</text>
+  <rect x="60" y="126" width="100" height="100" rx="8" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="110" y="183" font-family="Georgia, serif" font-size="36" fill="#3a3530" text-anchor="middle">🦊</text>
+  <text x="176" y="136" font-family="Georgia, serif" font-size="14" fill="#3a3530" text-anchor="start" font-weight="bold">Red Fox</text>
+  <text x="176" y="152" font-family="Georgia, serif" font-size="10" fill="#6b7c3f" text-anchor="start" font-style="italic">Vulpes vulpes</text>
+  <text x="176" y="168" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Family: Canidae</text>
+  <rect x="176" y="178" width="56" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="204" y="189" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Mammal</text>
+  <rect x="240" y="178" width="60" height="18" rx="9" fill="#c9922d"/>
+  <text x="270" y="189" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Common</text>
+  <text x="176" y="212" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Confidence: 94%</text>
+  <rect x="176" y="220" width="184" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="176" y="220" width="172" height="8" rx="3" fill="#6b7c3f"/>
+  <text x="60" y="244" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Diet: Omnivore · rodents, berries, scraps</text>
+  <text x="60" y="258" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Habitat: Urban gardens, woodland edges, parks</text>
+  <text x="60" y="272" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Active: Primarily nocturnal · peak: dusk/dawn</text>
+  <text x="60" y="286" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">Range: Europe, North America, Asia, Australia</text>
+  <text x="60" y="300" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Conservation: Least Concern (IUCN)</text>
+  <text x="60" y="316" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start" font-style="italic">Interesting: Fox cubs learn to hunt at 3 months!</text>
+  <text x="60" y="330" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start" font-style="italic">Did you know? Urban foxes are 20% heavier than rural ones.</text>
+  <text x="60" y="344" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Best time to spot: Nov–Jan (mating calls)</text>
+  <rect x="40" y="376" width="340" height="112" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="400" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Log this sighting:</text>
+  <text x="60" y="418" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">📍  Hackney Marshes · 27 May 2026 · 20:47</text>
+  <text x="60" y="434" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🌤️  Clear evening · Good light · Adult male</text>
+  <text x="60" y="450" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Notes: Spotted near the towpath, carrying food. Sat and watched ~4 min.</text>
+  <rect x="270" y="452" width="84" height="22" rx="11" fill="#6b7c3f"/>
+  <text x="312" y="466" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">Log sighting ✓</text>
+  <rect x="400" y="88" width="364" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="420" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">My sightings</text>
+  <text x="420" y="132" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Critters spotted: 48</text>
+  <text x="420" y="148" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Species: 23 unique</text>
+  <text x="420" y="164" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start" font-weight="bold">Rarest: Water vole ✦</text>
+  <rect x="420" y="180" width="324" height="2" fill="#c9bfb2"/>
+  <text x="420" y="200" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Recent sightings:</text>
+  <text x="420" y="218" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🦊  Red Fox · Hackney · today</text>
+  <text x="420" y="234" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🦜  Ring-necked Parakeet · Regents Park</text>
+  <text x="420" y="250" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🦡  Badger · Epping Forest · May 20</text>
+  <text x="420" y="266" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🐢  Common Toad · garden · May 14</text>
+  <text x="420" y="282" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🦋  Brimstone butterfly · park · May 10</text>
+  <rect x="420" y="298" width="324" height="2" fill="#c9bfb2"/>
+  <text x="420" y="318" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Near you (Hackney):</text>
+  <text x="420" y="334" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start" font-weight="bold">🐦  Peregrine Falcon nesting!</text>
+  <text x="420" y="350" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">📍  Tesco carpark roof, Mare St.</text>
+  <text x="420" y="366" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Season alert: Swift season starts</text>
+  <text x="420" y="380" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">June 1 — look up at dawn!</text>
+  <rect x="420" y="396" width="324" height="2" fill="#c9bfb2"/>
+  <text x="420" y="416" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"What's that bird making a</text>
+  <text x="420" y="430" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">loud peeping call at 5am</text>
+  <text x="420" y="444" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">in my garden?"</text>
+  <text x="420" y="462" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Snap a photo or describe it →</text>
+  <text x="420" y="476" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Critter Spotter will name it.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Critter Spotter · Glee-fully Toolbox</text>
+</svg>

@@ -1,8 +1,24 @@
 {
-  "scanned": 61,
-  "total_issues": 0,
-  "total_warnings": 0,
+  "scanned": 62,
+  "total_issues": 5,
+  "total_warnings": 4,
   "pages": [
+    {
+      "issues": [
+        "missing meta description",
+        "missing canonical",
+        "missing theme-color",
+        "missing SVG favicon link",
+        "missing manifest link"
+      ],
+      "warnings": [
+        "missing robots meta",
+        "app.js not wired in",
+        "missing skip-to-content link",
+        "missing <main id=\"main\">"
+      ],
+      "path": ".agents/skills/skill-creator/eval-viewer/viewer.html"
+    },
     {
       "issues": [],
       "warnings": [],

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright split-screen showing a job description matched against a tailored resume with keyword highlighting and match score">
+  <defs>
+    <filter id="rc" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#rc)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Resume Customizer</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">One base resume, infinite tailored versions — without starting over.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="336" height="260" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="88" width="336" height="28" rx="10" fill="#6b7c3f"/>
+  <text x="56" y="107" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="start" font-weight="bold">Job Description</text>
+  <text x="56" y="130" font-family="Georgia, serif" font-size="12" fill="#3a3530" text-anchor="start" font-weight="bold">Senior UX Researcher — Solstice Apps</text>
+  <text x="56" y="145" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Remote · $95k–$120k</text>
+  <text x="56" y="165" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">We're looking for a researcher to lead discovery</text>
+  <text x="56" y="178" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">sprints and synthesise insights across product lines.</text>
+  <text x="56" y="191" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Mixed-methods research and Dovetail experience.</text>
+  <text x="56" y="210" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start" font-weight="bold">Key terms:</text>
+  <rect x="56" y="218" width="100" height="16" rx="8" fill="#d35b2d"/>
+  <text x="106" y="228" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">mixed-methods</text>
+  <rect x="164" y="218" width="64" height="16" rx="8" fill="#c9922d"/>
+  <text x="196" y="228" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Dovetail</text>
+  <rect x="236" y="218" width="46" height="16" rx="8" fill="#6b7c3f"/>
+  <text x="259" y="228" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Figma</text>
+  <rect x="290" y="218" width="70" height="16" rx="8" fill="#2d7c7c"/>
+  <text x="325" y="228" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">synthesis</text>
+  <rect x="56" y="240" width="80" height="16" rx="8" fill="#9e3b2e"/>
+  <text x="96" y="250" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">discovery</text>
+  <rect x="144" y="240" width="104" height="16" rx="8" fill="#6b7c3f"/>
+  <text x="196" y="250" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">stakeholders</text>
+  <text x="56" y="270" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">11 keywords · 8 matched · 3 gaps flagged ⚠</text>
+  <line x1="384" y1="218" x2="420" y2="218" stroke="#d35b2d" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="418,213 426,218 418,223" fill="#d35b2d"/>
+  <text x="402" y="210" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="middle">tailor</text>
+  <rect x="424" y="88" width="352" height="260" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="424" y="88" width="352" height="28" rx="10" fill="#d35b2d"/>
+  <text x="440" y="107" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="start" font-weight="bold">Your Tailored Resume</text>
+  <text x="440" y="130" font-family="Georgia, serif" font-size="11" fill="#3a3530" text-anchor="start" font-weight="bold">Jane Doe — customised for Solstice Apps</text>
+  <text x="440" y="148" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">SUMMARY (rewritten for match ✓)</text>
+  <text x="440" y="163" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Mixed-methods researcher with 6 yrs leading discovery</text>
+  <text x="440" y="177" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">sprints and synthesising insights for cross-functional</text>
+  <text x="440" y="191" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">teams. Fluent in Dovetail, Figma, and Miro.</text>
+  <text x="440" y="210" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Experience bullets — enhanced:</text>
+  <text x="440" y="224" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Ran 15 discovery sprints, reducing misalignment 40%</text>
+  <text x="440" y="238" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Synthesised in Dovetail across 6 product lines</text>
+  <text x="440" y="252" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Led stakeholder workshops with 8-person cross-func teams</text>
+  <rect x="440" y="268" width="320" height="12" rx="3" fill="#e8e3dc"/>
+  <rect x="440" y="268" width="272" height="12" rx="3" fill="#6b7c3f"/>
+  <text x="440" y="294" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Match score: 85% (+27% from base)  🎯</text>
+  <rect x="40" y="356" width="736" height="72" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="376" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Saved versions:</text>
+  <rect x="60" y="384" width="130" height="20" rx="10" fill="#d35b2d"/>
+  <text x="125" y="396" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Solstice Apps v1 ✓</text>
+  <rect x="198" y="384" width="120" height="20" rx="10" fill="#6b7c3f"/>
+  <text x="258" y="396" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Bloom Studio v2</text>
+  <rect x="326" y="384" width="128" height="20" rx="10" fill="#c9922d"/>
+  <text x="390" y="396" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Maple &amp; Co. v1</text>
+  <rect x="462" y="384" width="110" height="20" rx="10" fill="#2d7c7c"/>
+  <text x="517" y="396" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Fern Labs v1</text>
+  <rect x="580" y="384" width="88" height="20" rx="10" fill="#e8e3dc"/>
+  <text x="624" y="396" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">+ new version</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Resume Customizer · Glee-fully Toolbox</text>
+</svg>

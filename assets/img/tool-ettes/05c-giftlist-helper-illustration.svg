@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright gift organiser showing a person-by-person gift list with budget tracking bars and smart suggestion panel">
+  <defs>
+    <filter id="glh" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#glh)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Giftlist Helper</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">The right gift, for the right person — every time.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="48" y="96" width="90" height="22" rx="11" fill="#d35b2d"/>
+  <text x="93" y="110" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">🎄 Christmas</text>
+  <rect x="146" y="96" width="86" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="189" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">🎂 Birthdays</text>
+  <rect x="240" y="96" width="88" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="284" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">💍 Occasions</text>
+  <rect x="336" y="96" width="70" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="371" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">🎁 All gifts</text>
+  <rect x="40" y="126" width="460" height="60" rx="10" fill="#d35b2d"/>
+  <text x="56" y="150" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="start" font-weight="bold">🎄  Christmas 2026 · Budget: £600 · Saved so far: £180/£600</text>
+  <rect x="56" y="160" width="400" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="56" y="160" width="120" height="8" rx="3" fill="#f6f2ee"/>
+  <text x="56" y="180" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="start">20% funded · 7 months to go</text>
+  <rect x="40" y="196" width="460" height="48" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="196" width="5" height="48" fill="#6b7c3f"/>
+  <text x="56" y="214" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Mum  (budget: £80)</text>
+  <text x="56" y="228" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Silk wrap · pottery class · Ottolenghi book signed</text>
+  <rect x="380" y="204" width="100" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="380" y="204" width="45" height="8" rx="3" fill="#6b7c3f"/>
+  <text x="380" y="226" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">£80</text>
+  <rect x="40" y="252" width="460" height="48" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="252" width="5" height="48" fill="#c9922d"/>
+  <text x="56" y="270" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Dad  (budget: £60)</text>
+  <text x="56" y="284" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Walking poles · whisky tasting · history audio book sub</text>
+  <rect x="380" y="260" width="100" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="380" y="260" width="0" height="8" rx="3" fill="#c9922d"/>
+  <text x="380" y="282" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">£60</text>
+  <rect x="40" y="308" width="460" height="48" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="308" width="5" height="48" fill="#d35b2d"/>
+  <text x="56" y="326" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Partner  (budget: £150)</text>
+  <text x="56" y="340" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Weekend away · jewellery · experience day</text>
+  <rect x="380" y="316" width="100" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="380" y="316" width="60" height="8" rx="3" fill="#d35b2d"/>
+  <text x="380" y="338" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">£150</text>
+  <rect x="40" y="364" width="460" height="48" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="364" width="5" height="48" fill="#2d7c7c"/>
+  <text x="56" y="382" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Sofia  (budget: £40)</text>
+  <text x="56" y="396" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Art supplies · Lego botanicals · book voucher</text>
+  <rect x="380" y="372" width="100" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="380" y="372" width="0" height="8" rx="3" fill="#2d7c7c"/>
+  <text x="380" y="394" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" text-anchor="start">£40</text>
+  <rect x="40" y="420" width="460" height="36" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="56" y="443" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start">Total committed: £135 / £600 · Still to buy: 6 gifts · Avg per gift: £86</text>
+  <text x="56" y="458" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Tip: buy Dad and Sofia gifts together — one Amazon order saves shipping</text>
+  <rect x="520" y="126" width="244" height="330" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="540" y="150" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Gift ideas</text>
+  <text x="540" y="168" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start" font-weight="bold">For Dad — £40–£60:</text>
+  <text x="540" y="184" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🎙️ Audible 12-month gift card</text>
+  <text x="540" y="198" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🥃  Whisky tasting evening (2)</text>
+  <text x="540" y="212" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🥾  Osprey day pack (hiking)</text>
+  <text x="540" y="226" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">📖  Churchill biography — signed</text>
+  <rect x="540" y="244" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="264" font-family="Georgia, serif" font-size="9" fill="#2d7c7c" text-anchor="start" font-weight="bold">For Sofia — £30–£40:</text>
+  <text x="540" y="280" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🎨  Caran d'Ache watercolour set</text>
+  <text x="540" y="294" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🌿  Lego Botanical succulents</text>
+  <text x="540" y="308" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">📚  Jacqueline Wilson special ed.</text>
+  <rect x="540" y="324" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="344" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Suggest 5 gifts for Mum,</text>
+  <text x="540" y="358" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">she likes wellness + cooking,</text>
+  <text x="540" y="372" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">budget £80, no candles."</text>
+  <rect x="520" y="472" width="244" height="54" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="540" y="492" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">People in your giftlist: 7</text>
+  <text x="540" y="508" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Gifts tracked: 23 · Gifted: 8</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Giftlist Helper · Glee-fully Toolbox</text>
+</svg>

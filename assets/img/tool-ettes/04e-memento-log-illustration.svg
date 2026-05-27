@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright travel keepsake journal showing a scrapbook layout with souvenir tags, photo placeholders, ticket stubs and memory captions">
+  <defs>
+    <filter id="ml" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#ml)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Memento Log</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Collect the things that actually meant something.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="480" height="400" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="50" y="98" width="460" height="380" rx="9" fill="none" stroke="#c9bfb2" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="280" y="122" font-family="Georgia, serif" font-size="13" fill="#9e3b2e" text-anchor="middle" font-weight="bold">🗾  Japan 2026 — Mementos</text>
+  <rect x="70" y="132" width="130" height="90" rx="5" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="135" y="181" font-family="Georgia, serif" font-size="24" fill="#3a3530" text-anchor="middle">⛩️</text>
+  <text x="135" y="228" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle" font-style="italic">Fushimi Inari, 6am</text>
+  <rect x="216" y="132" width="120" height="50" rx="5" fill="#d35b2d" stroke="#d35b2d" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="276" y="150" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="middle" font-weight="bold">🚅  SHINKANSEN</text>
+  <text x="276" y="165" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="middle">Tokyo → Kyoto</text>
+  <text x="276" y="178" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">May 13 · ¥13,870</text>
+  <rect x="356" y="132" width="110" height="50" rx="5" fill="#c9922d"/>
+  <text x="411" y="152" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle">🪄  Nishiki</text>
+  <text x="411" y="168" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">mochi · ¥450</text>
+  <text x="411" y="180" font-family="Georgia, serif" font-size="7" fill="#f6f2ee" text-anchor="middle" font-style="italic">"best mochi ever"</text>
+  <rect x="216" y="196" width="250" height="100" rx="5" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="341" y="248" font-family="Georgia, serif" font-size="32" fill="#3a3530" text-anchor="middle">🏯</text>
+  <text x="341" y="302" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle" font-style="italic">Kinkaku-ji reflection · taken at 7:15am</text>
+  <rect x="70" y="234" width="130" height="62" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="135" y="252" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Best moment:</text>
+  <text x="135" y="267" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Finding Kissa Y jazz</text>
+  <text x="135" y="280" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">café by accident.</text>
+  <text x="135" y="293" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle" font-style="italic">— Day 3, Tokyo</text>
+  <rect x="70" y="308" width="396" height="60" rx="5" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="90" y="326" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">🍱  Kappo Nakamura — Gion · May 15</text>
+  <text x="90" y="342" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">8-course omakase · 2 pax · ¥16,000 total</text>
+  <text x="90" y="358" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start" font-style="italic">"Course 5: lotus root and sea urchin — will remember this for decades"</text>
+  <rect x="70" y="378" width="396" height="56" rx="5" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="90" y="396" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Brought home:</text>
+  <text x="90" y="412" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="start">🍵 matcha kit · 🪨 ceramic cup · 📕 woodblock print book · 🎎 daruma</text>
+  <text x="90" y="428" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="start">Total souvenirs: 6 items · Budget: ¥12,000 (£60) · All carry-on safe</text>
+  <rect x="540" y="88" width="224" height="400" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="560" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Memory vault</text>
+  <text x="560" y="132" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start" font-weight="bold">🗾  Japan 2026</text>
+  <text x="560" y="148" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">31 memories saved</text>
+  <text x="560" y="168" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🇮🇹  Italy 2025</text>
+  <text x="560" y="184" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">24 memories saved</text>
+  <text x="560" y="204" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🇵🇹  Portugal 2024</text>
+  <text x="560" y="220" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">18 memories saved</text>
+  <rect x="560" y="236" width="184" height="2" fill="#c9bfb2"/>
+  <text x="560" y="256" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-weight="bold">Total mementos: 73</text>
+  <text x="560" y="272" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Souvenirs logged: 28</text>
+  <text x="560" y="288" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Restaurant moments: 34</text>
+  <text x="560" y="304" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Tickets and stubs: 18</text>
+  <rect x="560" y="320" width="184" height="2" fill="#c9bfb2"/>
+  <text x="560" y="340" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Write a travel letter from</text>
+  <text x="560" y="354" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">Japan to my future self,</text>
+  <text x="560" y="368" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">slightly overwhelmed by</text>
+  <text x="560" y="382" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">all the beauty."</text>
+  <text x="560" y="420" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Memento Log makes</text>
+  <text x="560" y="434" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">every trip unforgettable.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Memento Log · Glee-fully Toolbox</text>
+</svg>

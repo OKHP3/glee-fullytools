@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright dream trip vision board showing destination cards with flags, season tags, and a bucket list tracker">
+  <defs>
+    <filter id="dlj" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#dlj)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Dreamland Journeys</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">From daydream to departure gate — plan the trip of your life.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <text x="400" y="108" font-family="Georgia, serif" font-size="13" fill="#9e3b2e" text-anchor="middle" font-weight="bold">✨  Dream Trip Planner</text>
+  <rect x="40" y="118" width="220" height="140" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="118" width="220" height="50" rx="10" fill="#c9bfb2"/>
+  <text x="150" y="146" font-family="Georgia, serif" font-size="16" fill="#3a3530" text-anchor="middle">🇯🇵  Japan</text>
+  <text x="150" y="162" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Cherry blossom season</text>
+  <rect x="50" y="176" width="52" height="18" rx="9" fill="#d35b2d"/>
+  <text x="76" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Spring</text>
+  <rect x="110" y="176" width="76" height="18" rx="9" fill="#c9922d"/>
+  <text x="148" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">14 days</text>
+  <rect x="194" y="176" width="48" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="218" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">£2.8k</text>
+  <text x="50" y="212" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Status:</text>
+  <rect x="90" y="204" width="140" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="90" y="204" width="98" height="8" rx="3" fill="#d35b2d"/>
+  <text x="50" y="230" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">70% planned 🎯</text>
+  <rect x="270" y="118" width="220" height="140" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="270" y="118" width="220" height="50" rx="10" fill="#c9bfb2"/>
+  <text x="380" y="146" font-family="Georgia, serif" font-size="16" fill="#3a3530" text-anchor="middle">🇵🇪  Peru</text>
+  <text x="380" y="162" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Machu Picchu trek</text>
+  <rect x="280" y="176" width="52" height="18" rx="9" fill="#d35b2d"/>
+  <text x="306" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Sept</text>
+  <rect x="340" y="176" width="76" height="18" rx="9" fill="#c9922d"/>
+  <text x="378" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">10 days</text>
+  <rect x="424" y="176" width="48" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="448" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">£3.2k</text>
+  <text x="280" y="212" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Status:</text>
+  <rect x="320" y="204" width="140" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="320" y="204" width="42" height="8" rx="3" fill="#d35b2d"/>
+  <text x="280" y="230" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">30% planned 💭</text>
+  <rect x="500" y="118" width="220" height="140" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="500" y="118" width="220" height="50" rx="10" fill="#c9bfb2"/>
+  <text x="610" y="146" font-family="Georgia, serif" font-size="16" fill="#3a3530" text-anchor="middle">🇮🇸  Iceland</text>
+  <text x="610" y="162" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Northern lights + hot springs</text>
+  <rect x="510" y="176" width="52" height="18" rx="9" fill="#d35b2d"/>
+  <text x="536" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Winter</text>
+  <rect x="570" y="176" width="76" height="18" rx="9" fill="#c9922d"/>
+  <text x="608" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">8 days</text>
+  <rect x="654" y="176" width="48" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="678" y="187" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">£1.9k</text>
+  <text x="510" y="212" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Status:</text>
+  <rect x="550" y="204" width="140" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="550" y="204" width="14" height="8" rx="3" fill="#d35b2d"/>
+  <text x="510" y="230" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">10% planned 🌟</text>
+  <rect x="40" y="272" width="450" height="216" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="60" y="296" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Dream destinations bucket list:</text>
+  <text x="60" y="316" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">✅  Italy (2025) · Portugal (2024) · Japan (2026)</text>
+  <text x="60" y="332" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start">🎯  Peru (2027) · Japan deep dive (2027) · Iceland (2028)</text>
+  <text x="60" y="348" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">💭  Morocco · Vietnam · New Zealand · Patagonia</text>
+  <text x="60" y="368" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">Trips planned: 2 · Countries dreamed: 8 · Bucket %: 28%</text>
+  <rect x="60" y="380" width="410" height="2" fill="#c9bfb2"/>
+  <text x="60" y="400" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Travel savings goal: £10,000/yr · On track: 74%</text>
+  <rect x="60" y="408" width="410" height="10" rx="3" fill="#e8e3dc"/>
+  <rect x="60" y="408" width="304" height="10" rx="3" fill="#6b7c3f"/>
+  <text x="60" y="432" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Saved: £7,400 · Needed: £2,600 · By: Dec 2026</text>
+  <text x="60" y="452" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Build my Japan 2027 budget month by month"</text>
+  <text x="60" y="466" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"What is the best month to visit Peru?"</text>
+  <rect x="510" y="272" width="254" height="216" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="530" y="296" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Quick plan:</text>
+  <text x="530" y="316" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">📅  Flights: set fare alert</text>
+  <text x="530" y="332" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🏨  Accommodation shortlist</text>
+  <text x="530" y="348" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">💉  Vaccinations required?</text>
+  <text x="530" y="364" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🎒  Gear checklist</text>
+  <text x="530" y="380" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🛂  Visa requirements</text>
+  <text x="530" y="396" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">📖  Phrase book started?</text>
+  <rect x="530" y="412" width="214" height="2" fill="#c9bfb2"/>
+  <text x="530" y="432" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Plan a 10-day Peru trip</text>
+  <text x="530" y="446" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">for 2 people, budget £6k,</text>
+  <text x="530" y="460" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">September, fit + culture."</text>
+  <text x="530" y="476" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start">Dreamland Journeys builds it.</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Dreamland Journeys · Glee-fully Toolbox</text>
+</svg>

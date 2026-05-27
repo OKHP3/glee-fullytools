@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright home decor mood board showing colour swatches, furniture sketches, style tags and a room planning grid">
+  <defs>
+    <filter id="dd" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#dd)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Decor Detective</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Identify what you love — then find more of it.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="460" height="408" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="270" y="112" font-family="Georgia, serif" font-size="12" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Living Room Mood Board</text>
+  <rect x="60" y="122" width="96" height="18" rx="9" fill="#d35b2d"/>
+  <text x="108" y="133" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Mid-century Modern</text>
+  <rect x="164" y="122" width="72" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="200" y="133" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Scandi Minimal</text>
+  <rect x="244" y="122" width="80" height="18" rx="9" fill="#c9922d"/>
+  <text x="284" y="133" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Warm Neutrals</text>
+  <text x="60" y="154" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Palette:</text>
+  <rect x="60" y="162" width="44" height="44" rx="5" fill="#c9bfb2"/>
+  <rect x="110" y="162" width="44" height="44" rx="5" fill="#d35b2d"/>
+  <rect x="160" y="162" width="44" height="44" rx="5" fill="#c9922d"/>
+  <rect x="210" y="162" width="44" height="44" rx="5" fill="#6b7c3f"/>
+  <rect x="260" y="162" width="44" height="44" rx="5" fill="#3a3530"/>
+  <rect x="310" y="162" width="44" height="44" rx="5" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="82" y="218" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Linen</text>
+  <text x="132" y="218" font-family="Georgia, serif" font-size="7" fill="#9e3b2e" text-anchor="middle">Terracotta</text>
+  <text x="182" y="218" font-family="Georgia, serif" font-size="7" fill="#c9922d" text-anchor="middle">Ochre</text>
+  <text x="232" y="218" font-family="Georgia, serif" font-size="7" fill="#6b7c3f" text-anchor="middle">Sage</text>
+  <text x="282" y="218" font-family="Georgia, serif" font-size="7" fill="#3a3530" text-anchor="middle">Espresso</text>
+  <text x="332" y="218" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Paper</text>
+  <text x="60" y="252" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Saved pieces:</text>
+  <rect x="60" y="260" width="124" height="90" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="60" y="260" width="124" height="52" rx="7" fill="#c9bfb2"/>
+  <text x="122" y="288" font-family="Georgia, serif" font-size="22" fill="#3a3530" text-anchor="middle">🛋️</text>
+  <text x="122" y="328" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">3-seat sofa</text>
+  <text x="122" y="342" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Terracotta velvet</text>
+  <rect x="196" y="260" width="124" height="90" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="196" y="260" width="124" height="52" rx="7" fill="#c9bfb2"/>
+  <text x="258" y="288" font-family="Georgia, serif" font-size="22" fill="#3a3530" text-anchor="middle">🪑</text>
+  <text x="258" y="328" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Coffee table</text>
+  <text x="258" y="342" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Oak + brass legs</text>
+  <rect x="332" y="260" width="148" height="90" rx="7" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="332" y="260" width="148" height="52" rx="7" fill="#c9bfb2"/>
+  <text x="406" y="288" font-family="Georgia, serif" font-size="22" fill="#3a3530" text-anchor="middle">💡</text>
+  <text x="406" y="328" font-family="Georgia, serif" font-size="8" fill="#3a3530" text-anchor="middle">Arc floor lamp</text>
+  <text x="406" y="342" font-family="Georgia, serif" font-size="7" fill="#c9bfb2" text-anchor="middle">Brushed brass</text>
+  <rect x="60" y="362" width="420" height="80" rx="7" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="80" y="382" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Where to find similar:</text>
+  <text x="80" y="398" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">🏪  West Elm · CB2 · Etsy vintage · Facebook Marketplace</text>
+  <text x="80" y="414" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start" font-style="italic">💡  Ask: 'show me 5 sofas under $800 in terracotta or rust'</text>
+  <text x="80" y="430" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">📸  Snap a photo → Decor Detective names the style instantly</text>
+  <rect x="520" y="88" width="244" height="408" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="540" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Style DNA</text>
+  <text x="540" y="130" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Detected from your saves:</text>
+  <rect x="540" y="138" width="204" height="10" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="138" width="184" height="10" rx="3" fill="#d35b2d"/>
+  <text x="540" y="162" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">90%  Warm tones</text>
+  <rect x="540" y="170" width="204" height="10" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="170" width="156" height="10" rx="3" fill="#6b7c3f"/>
+  <text x="540" y="194" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">76%  Natural materials</text>
+  <rect x="540" y="202" width="204" height="10" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="202" width="128" height="10" rx="3" fill="#c9922d"/>
+  <text x="540" y="226" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">62%  Clean lines</text>
+  <rect x="540" y="234" width="204" height="10" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="234" width="102" height="10" rx="3" fill="#2d7c7c"/>
+  <text x="540" y="258" font-family="Georgia, serif" font-size="8" fill="#2d7c7c" text-anchor="start">50%  Vintage touches</text>
+  <rect x="540" y="272" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="292" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Room: Living Room</text>
+  <text x="540" y="308" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Budget: $2,400 total</text>
+  <text x="540" y="324" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Spent: $1,050 · Left: $1,350</text>
+  <rect x="540" y="338" width="204" height="2" fill="#c9bfb2"/>
+  <text x="540" y="358" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Similar designers:</text>
+  <text x="540" y="374" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Justina Blakeney</text>
+  <text x="540" y="390" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Amber Lewis</text>
+  <text x="540" y="406" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Studio McGee (warm ed.)</text>
+  <text x="540" y="436" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-weight="bold">📌 Share board →</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Decor Detective · Glee-fully Toolbox</text>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright career fitness dashboard showing a skills radar chart and professional development checklist">
+  <defs>
+    <filter id="cf" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#cf)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Career Fitness</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Know where you stand. Strengthen what the next role needs.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="40" y="88" width="380" height="340" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="230" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Skills Radar</text>
+  <polygon points="230,140 310,185 310,275 230,320 150,275 150,185" fill="none" stroke="#c9bfb2" stroke-width="1.5"/>
+  <polygon points="230,160 295,196 295,268 230,304 165,268 165,196" fill="none" stroke="#c9bfb2" stroke-width="1" opacity="0.5"/>
+  <polygon points="230,180 280,208 280,260 230,288 180,260 180,208" fill="none" stroke="#c9bfb2" stroke-width="0.8" opacity="0.3"/>
+  <line x1="230" y1="140" x2="230" y2="320" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="310" y1="185" x2="150" y2="275" stroke="#c9bfb2" stroke-width="0.5"/>
+  <line x1="150" y1="185" x2="310" y2="275" stroke="#c9bfb2" stroke-width="0.5"/>
+  <polygon points="230,148 298,200 290,262 230,308 170,265 165,196" fill="#d35b2d" fill-opacity="0.2" stroke="#d35b2d" stroke-width="2"/>
+  <circle cx="230" cy="148" r="5" fill="#d35b2d"/>
+  <circle cx="298" cy="200" r="5" fill="#c9922d"/>
+  <circle cx="290" cy="262" r="5" fill="#6b7c3f"/>
+  <circle cx="230" cy="308" r="5" fill="#2d7c7c"/>
+  <circle cx="170" cy="265" r="5" fill="#9e3b2e"/>
+  <circle cx="165" cy="196" r="5" fill="#c9bfb2"/>
+  <text x="230" y="136" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle" font-weight="bold">Research</text>
+  <text x="316" y="200" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start" font-weight="bold">Synthesis</text>
+  <text x="296" y="276" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">Communication</text>
+  <text x="230" y="330" font-family="Georgia, serif" font-size="9" fill="#2d7c7c" text-anchor="middle" font-weight="bold">Facilitation</text>
+  <text x="100" y="276" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Leadership</text>
+  <text x="100" y="200" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start" font-weight="bold">Technical</text>
+  <text x="230" y="396" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">Overall fitness score</text>
+  <rect x="80" y="406" width="300" height="14" rx="3" fill="#e8e3dc"/>
+  <rect x="80" y="406" width="228" height="14" rx="3" fill="#d35b2d"/>
+  <text x="230" y="432" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="middle" font-weight="bold">76 / 100</text>
+  <rect x="440" y="88" width="320" height="340" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="460" y="112" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Growth Checklist</text>
+  <rect x="460" y="124" width="14" height="14" rx="3" fill="#6b7c3f"/>
+  <text x="467" y="135" font-family="Georgia, serif" font-size="10" fill="#fff" text-anchor="middle">✓</text>
+  <text x="480" y="135" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Update portfolio with 3 case studies</text>
+  <rect x="460" y="146" width="14" height="14" rx="3" fill="#6b7c3f"/>
+  <text x="467" y="157" font-family="Georgia, serif" font-size="10" fill="#fff" text-anchor="middle">✓</text>
+  <text x="480" y="157" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Complete Dovetail certification</text>
+  <rect x="460" y="168" width="14" height="14" rx="3" fill="#c9922d"/>
+  <text x="467" y="179" font-family="Georgia, serif" font-size="10" fill="#fff" text-anchor="middle">→</text>
+  <text x="480" y="179" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Attend 2 industry events this quarter</text>
+  <rect x="460" y="190" width="14" height="14" rx="3" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="480" y="201" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Write 1 LinkedIn article on synthesis</text>
+  <rect x="460" y="212" width="14" height="14" rx="3" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="480" y="223" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Complete leadership micro-course</text>
+  <rect x="460" y="234" width="14" height="14" rx="3" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="480" y="245" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Request 3 informational interviews</text>
+  <rect x="440" y="260" width="320" height="2" fill="#c9bfb2"/>
+  <text x="460" y="278" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Strengths to highlight:</text>
+  <rect x="460" y="284" width="100" height="18" rx="9" fill="#d35b2d"/>
+  <text x="510" y="295" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">User Research</text>
+  <rect x="568" y="284" width="78" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="607" y="295" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Facilitation</text>
+  <rect x="460" y="308" width="80" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="500" y="319" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Synthesis</text>
+  <rect x="548" y="308" width="80" height="18" rx="9" fill="#c9922d"/>
+  <text x="588" y="319" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Dovetail</text>
+  <text x="460" y="348" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Gap to close:</text>
+  <rect x="460" y="356" width="116" height="18" rx="9" fill="#c9bfb2"/>
+  <text x="518" y="367" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="middle">Technical skills ↑</text>
+  <text x="460" y="392" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Next target role:</text>
+  <text x="460" y="406" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Research Lead · 12 months out</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Career Fitness · Glee-fully Toolbox</text>
+</svg>

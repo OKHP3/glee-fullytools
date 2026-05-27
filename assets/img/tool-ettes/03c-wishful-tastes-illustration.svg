@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright restaurant wishlist showing venue cards with cuisine tags, occasion badges, and a dining tracker">
+  <defs>
+    <filter id="wt" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#wt)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Wishful Tastes</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">The restaurant list that finally gets eaten through.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <rect x="48" y="96" width="50" height="22" rx="11" fill="#d35b2d"/>
+  <text x="73" y="110" font-family="Georgia, serif" font-size="9" fill="#f6f2ee" text-anchor="middle">All  42</text>
+  <rect x="106" y="96" width="74" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="143" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">🎂 Special</text>
+  <rect x="188" y="96" width="64" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="220" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">🍜 Ramen</text>
+  <rect x="260" y="96" width="62" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="291" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">💵 Budget</text>
+  <rect x="330" y="96" width="60" height="22" rx="11" fill="#e8e3dc"/>
+  <text x="360" y="110" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="middle">✅ Visited</text>
+  <rect x="40" y="126" width="460" height="80" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="126" width="5" height="80" fill="#d35b2d"/>
+  <text x="56" y="148" font-family="Georgia, serif" font-size="12" fill="#3a3530" text-anchor="start" font-weight="bold">Kiln, Soho</text>
+  <text x="56" y="164" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Thai wood-fired · Soho, London · ££ · Booking needed</text>
+  <text x="56" y="186" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start" font-style="italic">"Go for the lamb skewers and smoked mango rice — life-changing."</text>
+  <rect x="56" y="172" width="76" height="18" rx="9" fill="#d35b2d"/>
+  <text x="94" y="183" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">🎂  Special</text>
+  <rect x="140" y="172" width="44" height="18" rx="9" fill="#c9922d"/>
+  <text x="162" y="183" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Thai</text>
+  <rect x="192" y="172" width="64" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="224" y="183" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Wood-fired</text>
+  <rect x="40" y="216" width="460" height="80" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="216" width="5" height="80" fill="#6b7c3f"/>
+  <text x="56" y="238" font-family="Georgia, serif" font-size="12" fill="#3a3530" text-anchor="start" font-weight="bold">Hoppers, King's Cross</text>
+  <text x="56" y="254" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Sri Lankan · King's Cross · £ · Walk-ins after 17:30</text>
+  <text x="56" y="276" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start" font-style="italic">Order: egg hopper with pol sambol · lamb kottu</text>
+  <rect x="56" y="262" width="68" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="90" y="273" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Sri Lankan</text>
+  <rect x="132" y="262" width="52" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="158" y="273" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Casual</text>
+  <rect x="40" y="306" width="460" height="80" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="40" y="306" width="5" height="80" fill="#c9922d"/>
+  <text x="56" y="328" font-family="Georgia, serif" font-size="12" fill="#3a3530" text-anchor="start" font-weight="bold">Manteca, Shoreditch</text>
+  <text x="56" y="344" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Italian-influenced · Shoreditch · ££ · Book 2 weeks ahead</text>
+  <text x="56" y="366" font-family="Georgia, serif" font-size="8" fill="#9e3b2e" text-anchor="start" font-style="italic">Order: pig's trotter pappardelle · beef fat candle bread</text>
+  <rect x="56" y="352" width="74" height="18" rx="9" fill="#c9922d"/>
+  <text x="93" y="363" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Italian</text>
+  <rect x="138" y="352" width="72" height="18" rx="9" fill="#d35b2d"/>
+  <text x="174" y="363" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Nose-to-tail</text>
+  <rect x="40" y="396" width="460" height="50" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="270" y="423" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="middle" font-style="italic">+ Add a restaurant or ask for recommendations</text>
+  <rect x="520" y="126" width="244" height="320" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="540" y="150" font-family="Georgia, serif" font-size="11" fill="#9e3b2e" text-anchor="start" font-weight="bold">Your dining life</text>
+  <text x="540" y="170" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">On the list: 42 restaurants</text>
+  <text x="540" y="186" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Visited this year: 11 ✓</text>
+  <text x="540" y="202" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">Booked upcoming: 2</text>
+  <rect x="540" y="216" width="200" height="2" fill="#c9bfb2"/>
+  <text x="540" y="236" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Next reservation:</text>
+  <text x="540" y="252" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Kiln, Soho</text>
+  <text x="540" y="268" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">June 14 · 20:00 · 2 pax</text>
+  <rect x="540" y="284" width="200" height="2" fill="#c9bfb2"/>
+  <text x="540" y="304" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">Cuisine favourites:</text>
+  <rect x="540" y="312" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="312" width="160" height="8" rx="3" fill="#d35b2d"/>
+  <text x="540" y="334" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start">South-East Asian · 80%</text>
+  <rect x="540" y="342" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="342" width="120" height="8" rx="3" fill="#c9922d"/>
+  <text x="540" y="364" font-family="Georgia, serif" font-size="8" fill="#c9922d" text-anchor="start">Italian · 60%</text>
+  <rect x="540" y="372" width="200" height="8" rx="3" fill="#e8e3dc"/>
+  <rect x="540" y="372" width="80" height="8" rx="3" fill="#6b7c3f"/>
+  <text x="540" y="394" font-family="Georgia, serif" font-size="8" fill="#6b7c3f" text-anchor="start">Middle Eastern · 40%</text>
+  <rect x="540" y="410" width="200" height="2" fill="#c9bfb2"/>
+  <text x="540" y="428" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">"Best romantic restaurant</text>
+  <text x="540" y="442" font-family="Georgia, serif" font-size="8" fill="#d35b2d" text-anchor="start" font-style="italic">for our 5th anniversary?"</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Wishful Tastes · Glee-fully Toolbox</text>
+</svg>

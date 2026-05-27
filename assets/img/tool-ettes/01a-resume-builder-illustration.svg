@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 534" width="800" height="534" role="img" aria-label="A retro-bright resume document with structured Contact, Summary, Experience, Education sections in a paper card layout">
+  <defs>
+    <filter id="rb" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#9e3b2e" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="800" height="534" fill="#f6f2ee"/>
+  <rect x="0" y="0" width="800" height="6" fill="#d35b2d"/>
+  <rect x="24" y="22" width="752" height="490" rx="14" fill="#e8e3dc" stroke="#c9bfb2" stroke-width="1.5" filter="url(#rb)"/>
+  <rect x="24" y="22" width="752" height="52" rx="14" fill="#d35b2d"/>
+  <rect x="24" y="52" width="752" height="22" fill="#d35b2d"/>
+  <text x="48" y="54" font-family="Georgia, serif" font-size="18" font-weight="bold" fill="#f6f2ee" letter-spacing="0.5">Resume Builder</text>
+  <text x="48" y="70" font-family="Georgia, serif" font-size="11" fill="#f6f2ee" opacity="0.8" font-style="italic">Polished, keyword-savvy resumes — no keyboard meltdown required.</text>
+  <circle cx="720" cy="38" r="7" fill="#f6f2ee" opacity="0.3"/>
+  <circle cx="738" cy="38" r="7" fill="#f6f2ee" opacity="0.5"/>
+  <circle cx="756" cy="38" r="7" fill="#f6f2ee" opacity="0.7"/>
+  <!-- Resume doc panel -->
+  <rect x="48" y="88" width="440" height="408" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
+  <rect x="48" y="88" width="440" height="36" rx="10" fill="#d35b2d"/>
+  <text x="68" y="112" font-family="Georgia, serif" font-size="13" fill="#9e3b2e" text-anchor="start" font-weight="bold">Jane Doe · UX Researcher · Portland, OR</text>
+  <text x="68" y="127" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">jane@email.com · linkedin.com/in/janedoe · (503) 555-0121</text>
+  <rect x="48" y="132" width="4" height="52" fill="#d35b2d"/>
+  <text x="60" y="148" font-family="Georgia, serif" font-size="9" fill="#d35b2d" text-anchor="start" font-weight="bold">SUMMARY</text>
+  <text x="60" y="162" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Human-centred designer with 6 yrs shaping digital products.</text>
+  <text x="60" y="176" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Adept at research synthesis, workshop facilitation, and</text>
+  <text x="60" y="190" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">cross-functional collaboration. Fluent in Figma and Dovetail.</text>
+  <rect x="48" y="194" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="210" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start" font-weight="bold">EXPERIENCE</text>
+  <text x="60" y="224" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">Senior UX Researcher · Bloom Studio</text>
+  <text x="60" y="238" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">2022 – present · Remote</text>
+  <text x="60" y="252" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Led 40+ usability sessions; reduced onboarding drop 31%</text>
+  <text x="60" y="266" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Built a 3-sprint generative research programme</text>
+  <text x="60" y="280" font-family="Georgia, serif" font-size="10" fill="#3a3530" text-anchor="start" font-weight="bold">UX Designer · Maple &amp; Co.</text>
+  <text x="60" y="294" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">2019 – 2022 · Hybrid</text>
+  <text x="60" y="308" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">• Redesigned checkout flow, lifting conversion by 18%</text>
+  <rect x="48" y="318" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="334" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start" font-weight="bold">SKILLS</text>
+  <rect x="60" y="340" width="90" height="18" rx="9" fill="#d35b2d"/>
+  <text x="105" y="351" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">User Research</text>
+  <rect x="158" y="340" width="58" height="18" rx="9" fill="#6b7c3f"/>
+  <text x="187" y="351" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Figma</text>
+  <rect x="224" y="340" width="76" height="18" rx="9" fill="#2d7c7c"/>
+  <text x="262" y="351" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Facilitation</text>
+  <rect x="308" y="340" width="78" height="18" rx="9" fill="#c9922d"/>
+  <text x="347" y="351" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">Dovetail</text>
+  <rect x="48" y="366" width="440" height="2" fill="#c9bfb2"/>
+  <text x="60" y="382" font-family="Georgia, serif" font-size="9" fill="#9e3b2e" text-anchor="start" font-weight="bold">EDUCATION</text>
+  <text x="60" y="396" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">MSc Information Design · University of Brighton · 2019</text>
+  <text x="60" y="410" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">BA Visual Communication · Portland State · 2017</text>
+  <!-- Sidebar -->
+  <rect x="508" y="88" width="256" height="408" rx="10" fill="#f6f2ee" stroke="#c9bfb2" stroke-width="1"/>
+  <text x="528" y="112" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">ATS Score</text>
+  <rect x="528" y="120" width="216" height="14" rx="3" fill="#e8e3dc"/>
+  <rect x="528" y="120" width="172" height="14" rx="3" fill="#6b7c3f"/>
+  <text x="528" y="148" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">80% keyword match</text>
+  <text x="528" y="168" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start" font-style="italic">Tailored for: "Sr UX Researcher"</text>
+  <text x="528" y="210" font-family="Georgia, serif" font-size="9" fill="#c9bfb2" text-anchor="start">Word count: 342</text>
+  <text x="528" y="224" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Action verbs: 12 ✓</text>
+  <text x="528" y="238" font-family="Georgia, serif" font-size="9" fill="#c9922d" text-anchor="start">Jargon flags: 2 ⚠</text>
+  <rect x="528" y="268" width="216" height="60" rx="7" fill="#d35b2d"/>
+  <text x="636" y="293" font-family="Georgia, serif" font-size="10" fill="#f6f2ee" text-anchor="middle" font-weight="bold">Export ready</text>
+  <text x="636" y="308" font-family="Georgia, serif" font-size="8" fill="#f6f2ee" text-anchor="middle">PDF · DOCX · Plain text</text>
+  <text x="760" y="520" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="end">via Resume Builder · Glee-fully Toolbox</text>
+</svg>
