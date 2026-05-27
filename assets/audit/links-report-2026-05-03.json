@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 61,
-  "internal_links": 2423,
-  "external_links": 1217,
+  "internal_links": 2417,
+  "external_links": 1223,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -258,8 +258,8 @@
     },
     {
       "path": "toolbox/06-healthy-bee-ing/index.html",
-      "internal_links": 51,
-      "external_links": 19
+      "internal_links": 45,
+      "external_links": 25
     },
     {
       "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
