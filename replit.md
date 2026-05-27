@@ -136,6 +136,10 @@ python3 scripts/generate-feed.py      # rebuilds /feed.xml
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
 python3 scripts/validate-site.py      # every-page metadata + structure checks
 python3 scripts/check-links.py        # every internal href + sitemap parity
+
+# 4. One-shot helpers (run when specific content changes)
+python3 scripts/update-placeholder-dimensions.py  # update img width/height once artwork is uploaded
+python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds search index)
 ```
 
 Validators write machine-readable JSON to `audit/`. The Markdown audit covers
