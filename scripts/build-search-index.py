@@ -163,6 +163,8 @@ def derive_section(url: str) -> str:
         return "Ecosystem"
     if url.startswith("/universe/"):
         return "Universe"
+    if url.startswith("/showcase/"):
+        return "Showcase"
     return "Page"
 
 

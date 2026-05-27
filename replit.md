@@ -18,9 +18,9 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
-- `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/` — Supporting pages
+- `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
-- `sitemap.xml` — 57 URLs
+- `sitemap.xml` — 59 URLs
 
 ## Workflows
 
@@ -215,6 +215,8 @@ Machine-readable JSON outputs live in `assets/audit/` (written by tools on each 
 `assets/audit/validation-report-2026-05-03.json`, `assets/audit/links-report-2026-05-03.json`, `assets/audit/asset-inventory-2026-05-03.json`
 
 ## Recent Changes
+
+- **2026-05-27 — /showcase/ portfolio case-study page (Task #24).** Created `showcase/index.html` — a 6-section interior page covering: design challenge, information architecture (trunk→branch→tool-ette), technical architecture (zero-dependency frontend, client-side search, Python CI toolchain), design system (CSS scope map, token layer), governance model (agent-skills.md, AUTOGEN markers, template library), and a 6-pillar portfolio claims section. JSON-LD WebPage + BreadcrumbList, visible breadcrumb, keep-exploring CTA tray. `scripts/inject-showcase-footer.py` added /showcase/ to the footer nav on all 57 existing pages (idempotent, anchors on About Us entry). About page: "Read the full case study" + "Explore the Toolbox" CTAs added after portfolio-statement pillars. `sitemap.xml` updated to 59 URLs (lastmod 2026-05-27). `build-search-index.py` updated with "Showcase" section label. Exit: 61/61 validator pages 0 issues, 0 warnings; 0 broken links (2,415 internal); 59/59 sitemap URLs; 68 pages 148.2 KB search index.
 
 - **2026-05-26 — Accessibility, performance & final report (Task #3).** Static audit across all 60 pages: 0 images missing alt text, 0 buttons without accessible label, skip links confirmed on all 60 pages, focus rings on all interactive elements, ARIA roles verified on search modal + nav toggle, reduced-motion respected. Colour contrast analysis: accent orange (#d94f63/#d35b2d) at 3.4–3.6:1 passes WCAG AA for UI components/large bold text — documented as P2 advisory (no fix required). Replit footer credit (#f26207) at 2.89:1 noted as P3 deferred. Performance: 0 render-blocking external scripts, GA4 async, app.js + sparkle-loader deferred, Mermaid on 2 pages only, 4 preconnect hints on all 60 pages. Two P3 perf items deferred (construction-overlay lazy image, 12 images missing width/height). `assets/docs/LIVE_SITE_EVALUATION_2026-05-26.md` rewritten as the final 10-section report covering all 2026-05-26 session work. Exit: 60/60 validator pages 0 issues, 0 warnings; 0 broken links (2 323 internal); 58/58 sitemap URLs; 67 pages 145.8 KB search index.
 
