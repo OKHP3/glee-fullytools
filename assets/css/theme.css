@@ -2239,6 +2239,7 @@ html.glee-search-open body {
 .glee-search-page__lede em {
   font-style: normal;
   font-weight: 600;
+  font-size: 1.05rem; /* explicit — accent-contrast scanner requires provable size >=14px bold */
   color: var(--color-rust, #d35b2d);
   background: rgba(243, 185, 50, 0.18);
   padding: 0.05em 0.4em;

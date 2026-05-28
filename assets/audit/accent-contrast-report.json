@@ -12,7 +12,7 @@
       "selector": ".glee-search-page__lede em",
       "tag": "em",
       "rule": "css-rule-accent-color",
-      "detail": "CSS rule '.glee-search-page__lede em' targets <em> with accent color (bold-weight in same block \u2014 INFO only).",
+      "detail": "CSS rule '.glee-search-page__lede em' targets <em> with accent color (bold + explicit font-size >=14px in same block \u2014 INFO only).",
       "snippet": ".glee-search-page__lede em { color: <accent>; }"
     }
   ],

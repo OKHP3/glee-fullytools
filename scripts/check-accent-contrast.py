@@ -63,8 +63,15 @@ BG_BORDER_RE = re.compile(r"(background|border)-color", re.IGNORECASE)
 # CSS variable definition line (--foo: ...) — not a text-color usage
 CSS_VAR_DEF_RE = re.compile(r"^\s*--")
 
-# Bold font-weight in the same rule block → bold text passes AA at >=14 px
+# Bold font-weight in the same rule block (prerequisite for INFO downgrade)
 BOLD_WEIGHT_RE = re.compile(r"font-weight\s*:\s*(bold|bolder|[6-9]\d\d)", re.IGNORECASE)
+
+# Explicit font-size in the same rule block — extracts the numeric value in rem/px/pt
+# Used alongside BOLD_WEIGHT_RE to confirm the qualifying threshold is provably met.
+# Rule: bold text >= 14 px passes WCAG AA at these accent contrast ratios.
+FONT_SIZE_RE = re.compile(
+    r"font-size\s*:\s*([\d.]+)(rem|em|px|pt)\b", re.IGNORECASE
+)
 
 # CSS utility classes known to apply accent color to text
 ACCENT_TEXT_CLASSES = {"text-accent", "link-accent"}
@@ -95,6 +102,34 @@ CSS_FILES = [Path("assets/css/theme.css")]
 # ---------------------------------------------------------------------------
 # CSS utilities
 # ---------------------------------------------------------------------------
+
+def _approx_px(value: float, unit: str) -> float:
+    """Approximate pixel size from a CSS length at standard 16 px root."""
+    unit = unit.lower()
+    if unit in ("rem", "em"):
+        return value * 16.0
+    if unit == "px":
+        return value
+    if unit == "pt":
+        return value * (4.0 / 3.0)
+    return value * 16.0  # conservative fallback
+
+
+def _block_qualifies_for_bold_exemption(declarations: str) -> bool:
+    """
+    Return True if this CSS rule block explicitly declares:
+      - font-weight >= 600 / bold, AND
+      - font-size that computes to >= 14 px (bold WCAG AA threshold)
+    Both must be present in the same block — inherited values are not provable.
+    """
+    if not BOLD_WEIGHT_RE.search(declarations):
+        return False
+    fs_m = FONT_SIZE_RE.search(declarations)
+    if not fs_m:
+        return False  # no explicit size — cannot prove threshold is met
+    approx = _approx_px(float(fs_m.group(1)), fs_m.group(2))
+    return approx >= 14.0
+
 
 def extract_final_element(selector: str) -> str | None:
     """
@@ -298,8 +333,8 @@ def scan_css_file(path: Path) -> list[dict]:
         if not has_accent_text_color:
             continue
 
-        # Does this rule block also declare a bold font weight?
-        is_bold_rule = bool(BOLD_WEIGHT_RE.search(declarations))
+        # INFO exemption: same block must prove bold weight + explicit size >= 14 px
+        qualifies_for_exemption = _block_qualifies_for_bold_exemption(declarations)
 
         # Inspect each comma-separated selector part
         for sel_part in selector_raw.split(","):
@@ -312,9 +347,11 @@ def scan_css_file(path: Path) -> list[dict]:
                 continue  # class/id/attribute-only selector — skip
 
             if element in RISKY_TAGS:
-                # Bold-weight in same block means body-text threshold met
-                # (bold >=14 px passes WCAG AA for these accent ratios)
-                severity = "INFO" if is_bold_rule else "ADVISORY"
+                # Downgrade to INFO only when the same rule block provably
+                # declares both bold weight (>=600) AND explicit font-size
+                # >=14 px — the WCAG AA threshold for bold accent text.
+                # Inherited values do not count (not provable by static analysis).
+                severity = "INFO" if qualifies_for_exemption else "ADVISORY"
                 findings.append({
                     "file": str(path),
                     "line": lineno,
@@ -324,9 +361,12 @@ def scan_css_file(path: Path) -> list[dict]:
                     "rule": "css-rule-accent-color",
                     "detail": (
                         f"CSS rule '{sel_part}' targets <{element}> with accent color"
-                        + (" (bold-weight in same block — INFO only)." if is_bold_rule
-                           else " -- verify this element is always large/bold text "
-                                "(>=18.67 px normal or >=14 px bold).")
+                        + (
+                            " (bold + explicit font-size >=14px in same block — INFO only)."
+                            if qualifies_for_exemption
+                            else " -- verify this element is always large/bold text "
+                                 "(>=18.67 px normal or >=14 px bold)."
+                        )
                     ),
                     "snippet": f"{sel_part[:70]} {{ color: <accent>; }}",
                 })
