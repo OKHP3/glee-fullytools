@@ -919,42 +919,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ──────────────────────────────────────────────────────────────
-// Glee color-scheme toggle (sun ☀ / moon ☽)
-// Injects a circular icon button before .nav-toggle in the Glee
-// site header. Stores user preference in localStorage under
-// "glee-color-scheme". Sets data-color-scheme on <html> so the
-// CSS [data-color-scheme] blocks override the OS @media preference.
+// Glee color-scheme toggle — three-state: light ☀ / dark 🌑 / auto 🌓
+// Cycles: stored "light" → stored "dark" → auto (key deleted) → stored "light"
+// In "auto" state the data-color-scheme attribute is removed and the
+// localStorage key is deleted, so @media (prefers-color-scheme) governs again.
+// Icon represents the CURRENT state; aria-label describes the NEXT action.
 // ──────────────────────────────────────────────────────────────
 (function () {
   var STORAGE_KEY = "glee-color-scheme";
   var HTML = document.documentElement;
 
   // SVG icons — inlined for zero extra requests
-  // Sun  = currently in dark mode, click to go light
-  var ICON_SUN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-  // Moon = currently in light mode, click to go dark
+  // Sun ☀ = currently in light mode
+  var ICON_SUN  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  // Moon 🌑 = currently in dark mode
   var ICON_MOON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  // Half-filled circle 🌓 = currently following device / auto
+  var ICON_AUTO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/></svg>';
 
-  function getEffective() {
-    var stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "dark" || stored === "light") { return stored; }
-    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark" : "light";
+  // Returns "light", "dark", or "auto" based solely on localStorage
+  function getStoredState() {
+    var s = localStorage.getItem(STORAGE_KEY);
+    if (s === "light") { return "light"; }
+    if (s === "dark")  { return "dark";  }
+    return "auto";
   }
 
-  function syncButton(btn, scheme) {
-    var isDark = scheme === "dark";
-    btn.innerHTML = isDark ? ICON_SUN : ICON_MOON;
-    btn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
-    btn.setAttribute("aria-pressed", isDark ? "true" : "false");
-    btn.title = isDark ? "Light mode" : "Dark mode";
+  // light → dark → auto → light
+  function cycleState(current) {
+    if (current === "light") { return "dark"; }
+    if (current === "dark")  { return "auto"; }
+    return "light";
+  }
+
+  function applyState(state) {
+    if (state === "auto") {
+      HTML.removeAttribute("data-color-scheme");
+      localStorage.removeItem(STORAGE_KEY);
+    } else {
+      HTML.setAttribute("data-color-scheme", state);
+      localStorage.setItem(STORAGE_KEY, state);
+    }
+  }
+
+  function syncButton(btn, state) {
+    if (state === "light") {
+      btn.innerHTML = ICON_SUN;
+      btn.setAttribute("aria-label", "Switch to dark mode");
+      btn.setAttribute("aria-pressed", "false");
+      btn.title = "Dark mode";
+    } else if (state === "dark") {
+      btn.innerHTML = ICON_MOON;
+      btn.setAttribute("aria-label", "Switch to system (auto) mode");
+      btn.setAttribute("aria-pressed", "true");
+      btn.title = "System (auto) mode";
+    } else {
+      // auto — following device preference
+      btn.innerHTML = ICON_AUTO;
+      btn.setAttribute("aria-label", "Switch to light mode");
+      btn.setAttribute("aria-pressed", "mixed");
+      btn.title = "Light mode";
+    }
   }
 
   function init() {
     if (!document.body || !document.body.classList.contains("glee-main")) { return; }
 
-    // Restore stored preference (backup for pages not yet processed by
-    // inject-color-scheme-init.py, which provides the inline anti-FOSC script)
+    // Restore stored preference (backup for pages without the anti-FOSC inline script)
     var stored = localStorage.getItem(STORAGE_KEY);
     if ((stored === "dark" || stored === "light") && !HTML.hasAttribute("data-color-scheme")) {
       HTML.setAttribute("data-color-scheme", stored);
@@ -967,15 +998,11 @@ document.addEventListener("DOMContentLoaded", () => {
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "glee-color-toggle";
-    syncButton(btn, getEffective());
+    syncButton(btn, getStoredState());
 
     btn.addEventListener("click", function () {
-      var current = HTML.getAttribute("data-color-scheme") ||
-        (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark" : "light");
-      var next = current === "dark" ? "light" : "dark";
-      HTML.setAttribute("data-color-scheme", next);
-      localStorage.setItem(STORAGE_KEY, next);
+      var next = cycleState(getStoredState());
+      applyState(next);
       syncButton(btn, next);
     });
 

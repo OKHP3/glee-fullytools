@@ -5114,9 +5114,10 @@ html:has(
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GLEE COLOR-SCHEME TOGGLE — sun ☀ / moon ☽ button in site header
-   Base styles scoped to .glee-main. Dark-mode overrides follow in the
-   [data-color-scheme] blocks below and in the @media supplement block.
+   GLEE COLOR-SCHEME TOGGLE — three-state: light ☀ / dark 🌑 / auto 🌓
+   Cycles: light → dark → auto (follow device) → light. In auto state
+   data-color-scheme is removed so @media (prefers-color-scheme) governs.
+   Base styles scoped to .glee-main. Dark-mode overrides follow below.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .glee-main .glee-color-toggle {
