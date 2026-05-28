@@ -162,7 +162,13 @@ python3 scripts/generate-feed.py         # rebuilds /feed.xml
 python3 scripts/validate-site.py      # every-page metadata + structure checks
 python3 scripts/check-links.py        # every internal href + sitemap parity
 
-# 4. One-shot helpers (run when specific content changes)
+# 4. WebP image pipeline (run when new PNG images are added)
+python3 scripts/convert-hero-webp.py       # Wide 1536 butterfly hero PNGs → WebP at 768/1024/1536w
+python3 scripts/inject-hero-picture.py    # wraps butterfly hero <img> in <picture> with WebP sources
+python3 scripts/convert-gpt-icons-webp.py  # GPT icon PNGs → WebP at 512/1024w (all RetroStripe variants)
+python3 scripts/inject-gpt-icon-picture.py # wraps GPT icon <img> in <picture> with WebP sources
+
+# 5. One-shot helpers (run when specific content changes)
 python3 scripts/update-placeholder-dimensions.py  # update img width/height once artwork is uploaded
 python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds index + syncs portfolio stats)
 ```

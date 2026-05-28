@@ -258,11 +258,18 @@
           <figure class="latest-image">
             <a class="latest-image-link"
               href="toolbox/05-organized-life/05f-neighborly-bazaar/">
-              <img src="assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-1024.png"
+              <picture>
+                <source
+                  type="image/webp"
+                  srcset="/assets/img/webp/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-512.webp 512w,
+            /assets/img/webp/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-1024.webp 1024w"
+                  sizes="(max-width: 768px) 512px, 1024px" />
+                <img src="assets/img/Glee-fullyTools-GPTIcon-05f-Neighborly-Bazaar-Background-RetroStripe-Square-1024.png"
                   alt="Neighborly Bazaar Tool-ette icon"
                   width="300"
                   height="300"
-                  loading="lazy" />
+                  loading="eager" fetchpriority="high">
+              </picture>
             </a>
             <figcaption class="latest-submenu">
               <a>Open the Tool&#8209;ette →</a>
