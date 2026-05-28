@@ -40,3 +40,14 @@ jobs:
             exit 1
           fi
           echo "Search index OK: $(wc -c < assets/data/search-index.json) bytes"
+
+      - name: Accent contrast advisory scan
+        run: python3 scripts/check-accent-contrast.py
+        # Advisory-only mode: exits 0 regardless of findings.
+        # Output is surfaced in the CI log for visibility on every push.
+
+      - name: Accent contrast regression gate (strict)
+        run: python3 scripts/check-accent-contrast.py --strict
+        # Exits 1 if any ADVISORY findings exist (accent color on body-text elements).
+        # The site currently has 0 advisories; this step guards against regressions
+        # where a new commit accidentally puts accent color on normal-weight body text.
