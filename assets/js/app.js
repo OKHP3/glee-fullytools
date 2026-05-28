@@ -966,6 +966,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function syncButton(btn, state) {
+    // Stamp data-state so CSS can style each mode distinctly
+    btn.setAttribute("data-state", state);
     if (state === "light") {
       btn.innerHTML = ICON_SUN;
       btn.setAttribute("aria-label", "Switch to dark mode");

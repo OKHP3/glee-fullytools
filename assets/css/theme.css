@@ -5170,6 +5170,18 @@ html:has(
   display: block;
 }
 
+/* "auto" state — dashed border signals "following device", not an explicit choice */
+.glee-main .glee-color-toggle[data-state="auto"] {
+  border-style: dashed;
+  border-color: rgba(42, 35, 32, 0.28);
+  opacity: 0.75;
+}
+.glee-main .glee-color-toggle[data-state="auto"]:hover,
+.glee-main .glee-color-toggle[data-state="auto"]:focus-visible {
+  border-style: solid;
+  opacity: 1;
+}
+
 /* Toggle button in OS-dark (no explicit user choice stored yet) */
 @media (prefers-color-scheme: dark) {
   .glee-main .glee-color-toggle {
@@ -5180,6 +5192,17 @@ html:has(
     background: rgba(240, 220, 210, 0.08);
     border-color: rgba(240, 220, 210, 0.4);
     color: #f0e8e0;
+  }
+  /* auto state on dark OS */
+  .glee-main .glee-color-toggle[data-state="auto"] {
+    border-style: dashed;
+    border-color: rgba(240, 220, 210, 0.35);
+    opacity: 0.72;
+  }
+  .glee-main .glee-color-toggle[data-state="auto"]:hover,
+  .glee-main .glee-color-toggle[data-state="auto"]:focus-visible {
+    border-style: solid;
+    opacity: 1;
   }
 }
 
