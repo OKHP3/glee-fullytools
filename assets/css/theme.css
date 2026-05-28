@@ -1443,7 +1443,7 @@ body.construction-dismissed .construction-overlay,
 }
 
 .keep-exploring__label {
-  font-size: 0.7rem;
+  font-size: 0.75rem; /* raised from 0.7rem; 12px at 16px root — QA readability floor */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;

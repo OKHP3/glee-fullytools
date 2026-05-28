@@ -1,0 +1,407 @@
+{
+  "date": "2026-05-28",
+  "base_url": "http://localhost:5000",
+  "viewports_tested": [
+    "320",
+    "375",
+    "390",
+    "414",
+    "768",
+    "1024",
+    "1280",
+    "1440"
+  ],
+  "pages_tested": 7,
+  "total_combinations": 56,
+  "total_issues": 0,
+  "total_warnings": 0,
+  "screenshots_dir": "assets/audit/screenshots/2026-05-28",
+  "environment_note": "libgbm.so.1 stub compiled from scripts/run-viewport-qa.py embedded source. All Chrome system deps installed via Nix. --disable-gpu mode; GPU/GBM code paths not exercised.",
+  "results": [
+    {
+      "page": "/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "slug": "tool-06d",
+      "url": "http://localhost:5000/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "slug": "tool-06e",
+      "url": "http://localhost:5000/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "slug": "tool-06f",
+      "url": "http://localhost:5000/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/07-identity-known/07a-critter-spotter/",
+      "slug": "tool-07a",
+      "url": "http://localhost:5000/toolbox/07-identity-known/07a-critter-spotter/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/07-identity-known/07b-roost-wrangler/",
+      "slug": "tool-07b",
+      "url": "http://localhost:5000/toolbox/07-identity-known/07b-roost-wrangler/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/07-identity-known/07c-sight-seeker/",
+      "slug": "tool-07c",
+      "url": "http://localhost:5000/toolbox/07-identity-known/07c-sight-seeker/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/07-identity-known/07d-snap-decoder/",
+      "slug": "tool-07d",
+      "url": "http://localhost:5000/toolbox/07-identity-known/07d-snap-decoder/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

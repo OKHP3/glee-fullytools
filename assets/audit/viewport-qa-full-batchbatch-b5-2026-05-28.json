@@ -1,0 +1,407 @@
+{
+  "date": "2026-05-28",
+  "base_url": "http://localhost:5000",
+  "viewports_tested": [
+    "320",
+    "375",
+    "390",
+    "414",
+    "768",
+    "1024",
+    "1280",
+    "1440"
+  ],
+  "pages_tested": 7,
+  "total_combinations": 56,
+  "total_issues": 0,
+  "total_warnings": 0,
+  "screenshots_dir": "assets/audit/screenshots/2026-05-28",
+  "environment_note": "libgbm.so.1 stub compiled from scripts/run-viewport-qa.py embedded source. All Chrome system deps installed via Nix. --disable-gpu mode; GPU/GBM code paths not exercised.",
+  "results": [
+    {
+      "page": "/toolbox/02-treasured-finds/02f-supply-haus/",
+      "slug": "tool-02f",
+      "url": "http://localhost:5000/toolbox/02-treasured-finds/02f-supply-haus/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "slug": "tool-02g",
+      "url": "http://localhost:5000/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "slug": "tool-03a",
+      "url": "http://localhost:5000/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "slug": "tool-03b",
+      "url": "http://localhost:5000/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "slug": "tool-03c",
+      "url": "http://localhost:5000/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "slug": "tool-03d",
+      "url": "http://localhost:5000/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "page": "/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "slug": "tool-03e",
+      "url": "http://localhost:5000/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "viewports": [
+        {
+          "viewport": "320",
+          "width": 320,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "375",
+          "width": 375,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "390",
+          "width": 390,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "414",
+          "width": 414,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "768",
+          "width": 768,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1024",
+          "width": 1024,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1280",
+          "width": 1280,
+          "issues": [],
+          "warnings": []
+        },
+        {
+          "viewport": "1440",
+          "width": 1440,
+          "issues": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}
