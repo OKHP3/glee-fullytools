@@ -639,14 +639,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ── Inject the search button into the primary nav ──────────
+  // ── Inject the search button into the header container ────
   function injectNavButton() {
-    const nav = document.querySelector(".primary-nav ul");
-    if (!nav) return;
-    if (nav.querySelector("[data-glee-search-trigger]")) return;
-
-    const li = document.createElement("li");
-    li.className = "glee-search-nav";
+    const container = document.querySelector(".site-header .container");
+    if (!container) return;
+    if (container.querySelector("[data-glee-search-trigger]")) return;
 
     const btn = document.createElement("button");
     btn.type = "button";
@@ -660,11 +657,17 @@ document.addEventListener("DOMContentLoaded", () => {
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
       <span class="glee-search-trigger-label">Search</span>
+      <kbd class="glee-search-trigger-kbd">Ctrl+K</kbd>
     `;
     btn.addEventListener("click", () => openModal());
 
-    li.appendChild(btn);
-    nav.appendChild(li);
+    // Insert directly after .primary-nav so order is: nav | search | toggle | hamburger
+    const primaryNav = container.querySelector(".primary-nav");
+    if (primaryNav && primaryNav.nextSibling) {
+      container.insertBefore(btn, primaryNav.nextSibling);
+    } else {
+      container.appendChild(btn);
+    }
   }
 
   // ── Global key bindings ────────────────────────────────────

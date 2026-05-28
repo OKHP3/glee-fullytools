@@ -1875,7 +1875,8 @@ html.glee-search-open body {
   overflow: hidden;
 }
 
-/* Nav magnifier button */
+/* Nav magnifier button — standalone sibling of .primary-nav in .container */
+/* .glee-search-nav is no longer used (search moved out of the <ul>) */
 .glee-search-nav { display: flex; align-items: center; }
 
 .glee-search-trigger {
@@ -1892,6 +1893,9 @@ html.glee-search-open body {
   cursor: pointer;
   line-height: 1;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  /* Push search (and everything after it) to the right of the nav links */
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .glee-search-trigger:hover,
@@ -1913,9 +1917,25 @@ html.glee-search-open body {
 
 .glee-search-trigger-label { display: inline; }
 
+/* Ctrl+K shortcut badge — matches overkillhill.com style */
+.glee-search-trigger-kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1em 0.38em;
+  font-size: 0.72rem;
+  font-family: inherit;
+  font-style: normal;
+  border: 1px solid var(--color-border, #d7d7d7);
+  border-radius: 4px;
+  opacity: 0.6;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
 @media (max-width: 720px) {
   .glee-search-trigger { padding: 0.3rem 0.55rem; }
   .glee-search-trigger-label { display: none; }
+  .glee-search-trigger-kbd { display: none; }
 }
 
 /* Modal overlay */
@@ -5133,6 +5153,7 @@ html:has(
   color: var(--color-muted, #6b5e57);
   padding: 0;
   flex-shrink: 0;
+  margin-left: 0.5rem;
   transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
 }
 .glee-main .glee-color-toggle:hover {
