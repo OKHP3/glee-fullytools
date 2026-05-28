@@ -4815,10 +4815,11 @@ html:has(
 }
 
 /* Tighten on small screens so it doesn't wrap badly. */
+/* font-size kept at 0.875rem (≥12px at any root size) per Task #59 a11y fix */
 @media (max-width: 480px) {
   .glee-breadcrumb {
     padding: 0.6rem 0.85rem 0;
-    font-size: 0.8rem;
+    font-size: 0.875rem;
   }
   .glee-breadcrumb-item + .glee-breadcrumb-item::before {
     margin-right: 0.35rem;
