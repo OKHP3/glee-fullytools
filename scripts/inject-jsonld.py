@@ -158,8 +158,10 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
             image_obj["caption"] = meta["og_image_alt"]
     crumbs = crumbs_for(rel_path)
 
-    breadcrumb = {
+    breadcrumb_id = canonical + "#breadcrumb"
+    breadcrumb_node = {
         "@type": "BreadcrumbList",
+        "@id": breadcrumb_id,
         "itemListElement": [
             {"@type": "ListItem", "position": i + 1, "name": n, "item": u}
             for i, (n, u) in enumerate(crumbs)
@@ -174,7 +176,7 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
             "url": canonical,
             "description": desc,
             "applicationCategory": "ProductivityApplication",
-            "operatingSystem": "Any (web)",
+            "operatingSystem": "Web",
             "isAccessibleForFree": True,
             "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
             "creator": {"@type": "Organization", "name": "Glee-fully Personalizable Tools™",
@@ -211,8 +213,10 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
         if image_obj:
             node["primaryImageOfPage"] = image_obj
 
-    node["breadcrumb"] = breadcrumb
-    payload = {"@context": "https://schema.org", "@graph": [node]}
+    # BreadcrumbList is a top-level @graph node (referenced by @id from the main node),
+    # so Google can evaluate it independently for breadcrumb rich results.
+    node["breadcrumb"] = {"@id": breadcrumb_id}
+    payload = {"@context": "https://schema.org", "@graph": [node, breadcrumb_node]}
     body = json.dumps(payload, indent=2, ensure_ascii=False)
     return (f"    {START}\n"
             f"    <script type=\"application/ld+json\">\n"
