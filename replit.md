@@ -153,9 +153,10 @@ python3 scripts/inject-jsonld.py      # JSON-LD @graph + BreadcrumbList
 python3 scripts/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
 
 # 2. Index / asset / feed regenerators
-python3 scripts/build-search-index.py # rebuilds assets/data/search-index.json
-python3 scripts/audit-assets.py       # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
-python3 scripts/generate-feed.py      # rebuilds /feed.xml
+python3 scripts/build-search-index.py    # rebuilds assets/data/search-index.json
+python3 scripts/sync-portfolio-stats.py  # patches About page stat counts from search-index.json
+python3 scripts/audit-assets.py          # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
+python3 scripts/generate-feed.py         # rebuilds /feed.xml
 
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
 python3 scripts/validate-site.py      # every-page metadata + structure checks
@@ -163,7 +164,7 @@ python3 scripts/check-links.py        # every internal href + sitemap parity
 
 # 4. One-shot helpers (run when specific content changes)
 python3 scripts/update-placeholder-dimensions.py  # update img width/height once artwork is uploaded
-python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds search index)
+python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds index + syncs portfolio stats)
 ```
 
 Validators write machine-readable JSON to `audit/`. The Markdown audit covers
