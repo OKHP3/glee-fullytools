@@ -20,6 +20,11 @@ Walks every HTML page (excluding curated skips) and checks:
   * JSON-LD blocks parse as valid JSON
   * Exactly one <h1>
 
+Global invariant checks (outside per-page loop):
+  * CSS-lines drift: <!-- STAT:CSS-LINES --> in showcase/index.html must be
+    within ±50 lines of the actual assets/css/theme.css line count.
+    Run scripts/sync-portfolio-stats.py to fix a drift failure.
+
 Writes:
   assets/audit/validation-report-2026-05-03.json   (machine-readable detail)
 
@@ -173,7 +178,45 @@ def main() -> int:
                 print(f"  - {p['path']}")
                 for i in p["issues"]:
                     print(f"      ! {i}")
+
+    # ── Global invariant: CSS-lines drift ────────────────────────────────────
+    # The showcase page displays the theme.css line count via a STAT marker.
+    # Catch drift >±50 lines so stale numbers don't reach production.
+    # To fix: run  python3 scripts/sync-portfolio-stats.py
+    CSS_DRIFT_TOLERANCE = 50
+    css_drift_issue = _check_css_lines_drift(CSS_DRIFT_TOLERANCE)
+    if css_drift_issue:
+        print(f"\nCSS-lines drift: {css_drift_issue}")
+        print("  Fix: python3 scripts/sync-portfolio-stats.py")
+        total_issues += 1
+
     return 1 if total_issues else 0
+
+
+def _check_css_lines_drift(tolerance: int = 50) -> str:
+    """Return an error string if STAT:CSS-LINES in showcase/index.html
+    differs from the actual theme.css line count by more than *tolerance*.
+    Returns empty string when the check passes or cannot run."""
+    theme_css = ROOT / "assets" / "css" / "theme.css"
+    showcase = ROOT / "showcase" / "index.html"
+    if not theme_css.exists() or not showcase.exists():
+        return ""
+
+    actual = sum(1 for _ in theme_css.open(encoding="utf-8", errors="replace"))
+
+    html = showcase.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r"<!--\s*STAT:CSS-LINES\s*-->([\d,]+)<!--\s*/STAT:CSS-LINES\s*-->", html)
+    if not m:
+        return "STAT:CSS-LINES marker not found in showcase/index.html"
+
+    recorded = int(m.group(1).replace(",", ""))
+    drift = abs(actual - recorded)
+    if drift > tolerance:
+        return (
+            f"theme.css has {actual:,} lines but showcase shows {recorded:,} "
+            f"(drift {drift:+d}, tolerance ±{tolerance})"
+        )
+    return ""
 
 
 if __name__ == "__main__":
