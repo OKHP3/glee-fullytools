@@ -30,7 +30,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 
 `.github/workflows/validate.yml` runs on every push and pull request to `main`:
 
-1. **`validate-site.py`** — checks all pages for title, h1, description, canonical, og:url, theme-color, manifest, favicon, skip link, JSON-LD parseability, Mermaid referral invariant. Exits non-zero on any critical issue.
+1. **`validate-site.py`** — checks all pages for title, h1, description, canonical, og:url, theme-color, manifest, favicon, skip link, JSON-LD parseability, Mermaid referral invariant. Also enforces a global **CSS-lines drift invariant**: the `<!-- STAT:CSS-LINES -->` value in `showcase/index.html` must be within ±50 lines of the actual `theme.css` line count (fix by running `python3 scripts/sync-portfolio-stats.py`). Exits non-zero on any critical issue.
 2. **`check-links.py`** — validates every internal href against the filesystem and cross-references against `sitemap.xml`. Exits non-zero on broken links or sitemap mismatches.
 3. **`build-search-index.py`** — rebuilds `assets/data/search-index.json`; fails the workflow if the index file is missing after the build.
 
