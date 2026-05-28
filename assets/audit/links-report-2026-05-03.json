@@ -1,7 +1,7 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 61,
-  "internal_links": 2411,
+  "internal_links": 2412,
   "external_links": 1228,
   "broken_links": [],
   "style_issues": [],
@@ -33,7 +33,7 @@
     },
     {
       "path": "index.html",
-      "internal_links": 32,
+      "internal_links": 33,
       "external_links": 16
     },
     {
