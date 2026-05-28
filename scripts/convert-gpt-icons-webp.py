@@ -25,7 +25,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 IMG_DIR = REPO / "assets" / "img"
 WEBP_DIR = REPO / "assets" / "img" / "webp"
-TARGET_WIDTHS = [512, 1024]
+TARGET_WIDTHS = [150, 300, 512, 600, 1024]
 WEBP_QUALITY = 85
 
 
