@@ -1,8 +1,24 @@
 {
-  "generated": "2026-05-27",
-  "files_scanned": 61,
+  "generated": "2026-05-28",
+  "html_files_scanned": 70,
+  "css_files_scanned": 1,
   "advisory_count": 0,
-  "info_count": 0,
-  "findings": [],
-  "rule": "var(--color-accent) (#d94f63 / #d35b2d) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Contrast ratios: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (paper bg #f6f2ee). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but fails for normal body text."
+  "info_count": 1,
+  "findings": [
+    {
+      "file": "assets/css/theme.css",
+      "line": 2239,
+      "severity": "INFO",
+      "selector": ".glee-search-page__lede em",
+      "tag": "em",
+      "rule": "css-rule-accent-color",
+      "detail": "CSS rule '.glee-search-page__lede em' targets <em> with accent color (bold-weight in same block \u2014 INFO only).",
+      "snippet": ".glee-search-page__lede em { color: <accent>; }"
+    }
+  ],
+  "rule": "var(--color-accent) (#d94f63 / #d35b2d) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Contrast ratios: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (paper bg #f6f2ee). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but fails for normal body text.",
+  "passes": [
+    "Pass 1 \u2014 HTML inline style= attributes and utility class names",
+    "Pass 2 \u2014 CSS rule blocks in project stylesheet(s)"
+  ]
 }
