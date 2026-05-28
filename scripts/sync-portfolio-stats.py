@@ -24,7 +24,8 @@ from pathlib import Path
 REPO = Path(__file__).parent.parent
 ABOUT    = REPO / "about" / "index.html"
 SHOWCASE = REPO / "showcase" / "index.html"
-INDEX = REPO / "assets" / "data" / "search-index.json"
+INDEX    = REPO / "assets" / "data" / "search-index.json"
+THEME_CSS = REPO / "assets" / "css" / "theme.css"
 
 AUTOGEN_START = "<!-- AUTOGEN:PORTFOLIO-STATS -->"
 AUTOGEN_END   = "<!-- /AUTOGEN:PORTFOLIO-STATS -->"
@@ -52,11 +53,14 @@ def compute_stats() -> dict:
         if re.search(r"chatgpt\.com|chat\.openai\.com", html):
             gpt_count += 1
 
+    css_lines = sum(1 for _ in THEME_CSS.open(encoding="utf-8"))
+
     return {
         "pages":      len(real),
         "tool_ettes": len(tool_ettes),
         "branches":   len(branches),
         "gpts":       gpt_count,
+        "css_lines":  css_lines,
     }
 
 
@@ -99,11 +103,15 @@ def patch_autogen(html: str, block: str) -> str:
 
 
 def patch_stat_markers(html: str, stats: dict) -> str:
+    css_lines = stats["css_lines"]
+    css_lines_fmt = f"{css_lines:,}"
+
     mapping = {
         "PAGES":      str(stats["pages"]),
         "TOOL-ETTES": str(stats["tool_ettes"]),
         "BRANCHES":   str(stats["branches"]),
         "GPTS":       str(stats["gpts"]),
+        "CSS-LINES":  css_lines_fmt,
     }
     for key, val in mapping.items():
         pattern = re.compile(
@@ -117,7 +125,8 @@ def patch_stat_markers(html: str, stats: dict) -> str:
 def main() -> int:
     stats = compute_stats()
     print(f"  pages={stats['pages']}  tool-ettes={stats['tool_ettes']}  "
-          f"branches={stats['branches']}  gpts={stats['gpts']}")
+          f"branches={stats['branches']}  gpts={stats['gpts']}  "
+          f"css-lines={stats['css_lines']}")
 
     # --- about/index.html (AUTOGEN block + STAT markers) ---
     src = ABOUT.read_text(encoding="utf-8")
