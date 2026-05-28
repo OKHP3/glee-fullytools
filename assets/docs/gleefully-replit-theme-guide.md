@@ -184,73 +184,182 @@ python3 scripts/check-accent-contrast.py
 
 ## Dark Mode Token Reference
 
-Added in Task #26. The Glee-fully dark palette is a warm-dark system — espresso browns replace
-the light paper surfaces while coral and gold stay vivid. It activates automatically via
-`@media (prefers-color-scheme: dark)` on `.glee-main` pages, and is also triggered explicitly
-when `html[data-color-scheme="dark"]` is set by the three-state theme toggle in `app.js`.
+Added in Task #26. The dark palette activates in two ways — both produce identical rendering:
 
-### Core token overrides
+1. **OS preference** — `@media (prefers-color-scheme: dark)` on `.glee-main` pages
+2. **User toggle** — `html[data-color-scheme="dark"]` set by the three-state toggle in `app.js`
+   (specificity `(0,2,1)` beats `@media` `(0,1,0)`, so it wins even in OS-light environments)
 
-| Token | Light mode | Dark mode | Dark contrast ratio | Role |
-|---|---|---|---|---|
-| `--color-bg` | `#f6f2ee` | `#1a1210` | — | Page canvas / body background |
-| `--color-surface` | `#fdfbf7` | `#241c1a` | — | Cards, search modal, search page form |
-| `--color-surface-soft` | `#f6f2ee` | `#2a2320` | — | Nested panels, nav submenu, search header/footer |
-| `--color-fg` | `#2e2b29` | `#f0e8e0` | **16.7 : 1** vs `#1a1210` ✓ | Primary body text |
-| `--color-muted` | `#6b5e57` | `#b09080` | **5.9 : 1** vs `#1a1210` ✓ | Secondary/caption text |
-| `--color-accent` | `#d94f63` | `#f07585` | **4.9 : 1** vs `#241c1a` ✓ | Links, active nav, focus rings |
-| `--color-border-subtle` | *(not set)* | `rgba(240,220,210,0.12)` | — | Hairline dividers in dark context |
-
-> **Why the lightened coral?** The light-mode accent `#d94f63` only reaches 3.37:1 on the
-> dark surface `#241c1a` — failing WCAG AA for UI components (3:1 minimum). Lightening to
-> `#f07585` lifts it to 4.9:1, comfortably passing for both normal text and UI components.
-
-### Component-specific dark values (not token-driven)
-
-These are hardcoded hex values applied directly to component selectors inside the
-`@media (prefers-color-scheme: dark)` block. Use these when building components that
-need to match the existing dark chrome:
-
-| Component | Property | Value | Notes |
-|---|---|---|---|
-| `.site-footer` | background | `#120d0b` | Deepest espresso — slightly darker than page bg |
-| `.stripe-bg` (alternate sections) | background | `#1f1512` | Warm very-dark section divider |
-| `.site-status` (pre-opening note) | background | `#261616` | Warm red-tinted dark |
-| `.site-specials--glee` (sparkle banner) | background | `#3d2b00` | Deep amber-brown |
-| `.site-specials--glee` | color | `#f9e4a0` | Warm gold text on amber-brown |
-| `.glee-hero-card::before` | box-shadow | `0 20px 45px rgba(0,0,0,0.6)` | Deeper shadow in dark |
-| `.latest-pill` | background | `rgba(240,117,133,0.2)` | Coral tint with 20% opacity |
-| `.latest-pill` | color | `#f093a5` | Slightly lighter coral |
-| Primary nav links | color | `#c7bdb1` | Warm gray-pink — below accent weight |
-| Active nav link | color | `#f07585` | Coral accent — matches `--color-accent` |
-| `.keep-exploring__link:hover` | background | `#342820` | Warm dark hover state |
-| `.construction-overlay__card` | background | `#2a2320` | Matches surface-soft |
-
-### What is unchanged in dark mode
-
-These light-mode values carry forward unchanged (no dark override defined):
-
-- **`--color-border`** (`#d7d7d7`) — only `--color-border-subtle` is overridden; avoid using
-  `--color-border` directly in new dark-mode components; use `--color-border-subtle` instead
-- **`glee-rust`** / **`glee-gold`** — the named palette constants keep their values; they are
-  not used as CSS custom properties in most component rules, so they don't affect dark rendering
-- **Stripe palette** (`--okh-teal`, `--okh-olive`, etc.) — these are structural brand tokens and
-  are not overridden; the retro stripe hero background is not shown on dark-mode pages
-
-### Editorial rules for dark mode components
-
-1. **Use tokens, not hex** when the value is one of the core 7 tokens above — this ensures
-   the three-state toggle's explicit `data-color-scheme="dark"` overrides also apply correctly.
-2. **Text on `--color-surface`**: use `--color-fg` (`#f0e8e0`) or `--color-muted` (`#b09080`)
-   — both pass WCAG AA.
-3. **Accent on dark**: `--color-accent` (`#f07585`) passes 4.9:1 on `--color-surface` and
-   9.1:1 on `--color-bg` — safe for links, active states, and focus rings at any text size.
-4. **Never use light-mode `#d94f63` in dark contexts** — it fails contrast on all dark surfaces.
-5. **Shadows**: increase opacity (e.g., `rgba(0,0,0,0.5)` or higher) — dark backgrounds reduce
-   visible shadow contrast, so heavier shadows are needed to maintain depth cues.
-
-*Dark mode palette added 2026-05-27 (Task #26). This reference added 2026-05-28.*
+The `html[data-color-scheme="dark"]` block in `theme.css` mirrors the `@media` block exactly,
+plus two extra rules for `.glee-color-toggle` (noted below).
 
 ---
 
-*Generated from glee-fully.tools theme — 2026-04-11. Color accessibility section added 2026-05-27. Dark mode section added 2026-05-28.*
+### Token layer — `.glee-main` root overrides
+
+Light-mode values come from the `.glee-main` scope block at ~L3382 in `theme.css`.
+
+| CSS custom property | Light value | Dark value | Contrast on dark bg | Role |
+|---|---|---|---|---|
+| `--color-bg` | `#f6f2ee` | `#1a1210` | — | Page canvas / body background |
+| `--color-surface` | `#fffdfa` | `#241c1a` | — | Cards, modals, search panel |
+| `--color-surface-soft` | `#fff7f1` | `#2a2320` | — | Nested panels, submenu, search chrome |
+| `--color-fg` | `#2e2b29` | `#f0e8e0` | **16.7 : 1** vs `#1a1210` ✓ | Primary body text |
+| `--color-muted` | `#6b5e57` | `#b09080` | **5.9 : 1** vs `#1a1210` ✓ | Secondary / caption text |
+| `--color-accent` | `#d94f63` | `#f07585` | **4.9 : 1** vs `#241c1a` ✓ | Links, active nav, focus rings |
+| `--color-border-subtle` | *(not set)* | `rgba(240,220,210,0.12)` | — | Hairline dividers |
+
+> **Why `--color-accent` changes:** `#d94f63` on `#241c1a` reaches only 3.37:1 — below WCAG AA
+> for both normal text (4.5:1) and UI components (3:1 pass, but not comfortably). Lightening to
+> `#f07585` brings it to 4.9:1, passing for normal text and UI components at all sizes.
+
+---
+
+### Component overrides — exhaustive selector map
+
+Every selector in the `@media (prefers-color-scheme: dark)` block, with exact values from `theme.css`.
+
+#### Site header
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.site-header` | background | `#1a1210` |
+| `.site-header` | border-bottom-color | `rgba(240,220,210,0.1)` |
+| `.site-header` | box-shadow | `0 1px 0 rgba(240,220,210,0.08)` |
+| `.site-header.scrolled` | background | `rgba(26,18,16,0.96)` |
+| `.site-header.scrolled` | backdrop-filter | `blur(8px)` |
+
+#### Navigation
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.primary-nav a` | color | `#c7bdb1` (warm gray-pink) |
+| `.primary-nav a[aria-current="page"]`, `.is-current` | color | `#f07585` (= `--color-accent`) |
+| `.nav-toggle` | background | `rgba(42,35,32,0.95)` |
+| `.nav-toggle` | border-color | `rgba(240,220,210,0.18)` |
+| `.nav-toggle .bar` | background | `#f0e8e0` (= `--color-fg`) |
+| `.primary-nav .submenu` | background-color | `#2a2320` (= `--color-surface-soft`) |
+| `.primary-nav .submenu` | box-shadow | `0 8px 24px rgba(0,0,0,0.5)` |
+
+#### Theme toggle button *(explicit `html[data-color-scheme="dark"]` block only — not in `@media`)*
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.glee-color-toggle` | border-color | `rgba(240,220,210,0.25)` |
+| `.glee-color-toggle` | color | `#b09080` (= `--color-muted`) |
+| `.glee-color-toggle:hover` | background | `rgba(240,220,210,0.08)` |
+| `.glee-color-toggle:hover` | border-color | `rgba(240,220,210,0.4)` |
+| `.glee-color-toggle:hover` | color | `#f0e8e0` (= `--color-fg`) |
+
+#### Cards and structural surfaces
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.card` | background | `#2a2320` (= `--color-surface-soft`) |
+| `.card` | border-color | `rgba(240,220,210,0.14)` |
+| `.card` | box-shadow | `0 8px 20px rgba(0,0,0,0.35)` |
+| `.card` | color | `#f0e8e0` (= `--color-fg`) |
+| `.glee-hero-card::before` | background | `#2a2320` |
+| `.glee-hero-card::before` | box-shadow | `0 20px 45px rgba(0,0,0,0.6)` |
+| `.stripe-bg` | background | `#1f1512` |
+| `.stripe-bg` | border-top-color | `rgba(240,220,210,0.08)` |
+| `.stripe-bg` | border-bottom-color | `rgba(240,220,210,0.08)` |
+
+#### Footer, banners, and status
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.site-footer` | background | `#120d0b` (deepest espresso — darker than page bg) |
+| `.site-footer` | border-top-color | `rgba(240,220,210,0.1)` |
+| `.site-status` (pre-opening note) | background | `#261616` |
+| `.site-status` | border-color | `rgba(240,105,120,0.3)` |
+| `.site-specials--glee` (sparkle banner) | background | `#3d2b00` |
+| `.site-specials--glee` | color | `#f9e4a0` (warm gold) |
+| `.latest-pill` | background | `rgba(240,117,133,0.2)` |
+| `.latest-pill` | color | `#f093a5` |
+
+#### Search — nav trigger and modal
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.glee-search-trigger` | border-color | `rgba(240,220,210,0.25)` |
+| `.glee-search-panel` | background | `#241c1a` (= `--color-surface`) |
+| `.glee-search-panel` | border-color | `rgba(240,220,210,0.18)` |
+| `.glee-search-panel` | color | `#f0e8e0` |
+| `.glee-search-header`, `.glee-search-footer` | background | `#2a2320` |
+| `.glee-search-header`, `.glee-search-footer` | border-color | `rgba(240,220,210,0.12)` |
+| `.glee-search-label` | background | `#241c1a` |
+| `.glee-search-label` | border-color | `rgba(240,220,210,0.18)` |
+| `.glee-search-footer kbd` | background | `#241c1a` |
+| `.glee-search-footer kbd` | border-color | `rgba(240,220,210,0.2)` |
+| `.glee-search-footer kbd` | color | `#f0e8e0` |
+| `#glee-search-input` | color | `#f0e8e0` |
+| `.glee-search-result-link:hover`, `.is-active .glee-search-result-link` | background | `#2a2320` |
+| `.glee-search-result-link:hover`, `.is-active .glee-search-result-link` | border-color | `rgba(240,220,210,0.15)` |
+| `.glee-search-result-title` | color | `#f0e8e0` |
+| `.glee-search-result-snippet` | color | `rgba(240,232,224,0.8)` |
+
+#### Search — dedicated `/search/` page
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.glee-search-page` | background | `#1a1210` |
+| `.glee-search-page__title`, `__shortcuts-title` | color | `#f0e8e0` |
+| `.glee-search-page__lede`, `__status`, `__shortcuts-list` | color | `rgba(240,232,224,0.78)` |
+| `.glee-search-page__form` | background | `#241c1a` |
+| `.glee-search-page__form` | border-color | `rgba(240,220,210,0.2)` |
+| `__form input[type="search"]` | color | `#f0e8e0` |
+| `__form input[type="search"]::placeholder` | color | `rgba(240,232,224,0.4)` |
+| `__results .glee-search-result` | background | `#241c1a` |
+| `__results .glee-search-result` | border-color | `rgba(240,220,210,0.1)` |
+| `__results .glee-search-result-title` | color | `#f0e8e0` |
+| `__results .glee-search-result-snippet` | color | `rgba(240,232,224,0.78)` |
+| `__results .glee-search-result-url` | color | `rgba(240,232,224,0.5)` |
+| `.glee-search-page__nojs` | background | `#241c1a` |
+| `.glee-search-page__nojs` | border-color | `rgba(240,220,210,0.12)` |
+| `__shortcuts-list kbd` | background | `#241c1a` |
+| `__shortcuts-list kbd` | border-color | `rgba(240,220,210,0.2)` |
+| `__shortcuts-list kbd` | color | `#f0e8e0` |
+
+#### Under-construction overlay and keep-exploring tray
+
+| Selector | Property | Dark value |
+|---|---|---|
+| `.construction-overlay__card` | background | `#2a2320` |
+| `.construction-overlay__card` | color | `#f0e8e0` |
+| `.keep-exploring` | background | `#1f1512` |
+| `.keep-exploring` | border-top-color | `rgba(240,220,210,0.1)` |
+| `.keep-exploring__link` | background | `#2a2320` |
+| `.keep-exploring__link` | border-color | `rgba(240,220,210,0.15)` |
+| `.keep-exploring__link` | color | `#f0e8e0` |
+| `.keep-exploring__link:hover`, `:focus-visible` | background | `#342820` |
+| `.keep-exploring__link:hover`, `:focus-visible` | border-color | `#f07585` |
+| `.keep-exploring__link:hover`, `:focus-visible` | box-shadow | `0 2px 8px rgba(240,117,133,0.2)` |
+
+---
+
+### What is unchanged in dark mode
+
+These tokens and values are **not** overridden — they carry through from light mode:
+
+- **`--color-border`** (`#d7d7d7`) — not overridden; use `--color-border-subtle` (`rgba(240,220,210,0.12)`) in dark contexts instead
+- **`glee-rust`** (`#d35b2d`) and **`glee-gold`** (`#f3b932`) — named palette constants, not overridden; avoid using them directly in new dark-mode components
+- **Stripe palette** (`--okh-teal`, `--okh-olive`, `--okh-ochre`, etc.) — structural brand tokens, not changed
+- **Micro-animation keyframes** (`gleeHeroH1In`) and transition durations — unchanged; the `prefers-reduced-motion` guard is independent of color scheme
+
+---
+
+### Editorial rules for new dark mode components
+
+1. **Use tokens, not hex** — the toggle's `html[data-color-scheme="dark"]` overrides apply to the same tokens, so token-based rules get both triggers for free.
+2. **Text on `--color-surface`** (`#241c1a`): use `--color-fg` (`#f0e8e0`) or `--color-muted` (`#b09080`) — both pass WCAG AA.
+3. **Accent on dark**: `--color-accent` (`#f07585`) is safe at 4.9:1 on `--color-surface` and 9.1:1 on `--color-bg` — use for links, active states, and focus rings at any text size.
+4. **Never apply light-mode `#d94f63` in dark contexts** — it fails contrast on all dark surfaces.
+5. **Shadows**: increase `rgba(0,0,0,…)` opacity relative to light-mode equivalents; dark backgrounds absorb shadow contrast, so heavier values are needed for visible depth.
+6. **Full-width alternating sections**: use `#1f1512` (matches `.stripe-bg`) rather than raw `#1a1210` — the subtle difference creates visible banding that separates sections visually.
+
+*Dark mode palette added 2026-05-27 (Task #26). This exhaustive reference added 2026-05-28 (Task #47).*
+
+---
+
+*Generated from glee-fully.tools theme — 2026-04-11. Color accessibility section added 2026-05-27. Dark mode reference added 2026-05-28.*
