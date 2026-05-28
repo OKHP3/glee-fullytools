@@ -4767,7 +4767,7 @@ html:has(
   margin: 0 auto;
   padding: 0.75rem 1.25rem 0;
   font-family: var(--font-body, "Open Sans", sans-serif);
-  font-size: 0.875rem;
+  font-size: 0.94rem; /* ≥12px at all tested root sizes (Task #59 a11y fix) */
   line-height: 1.5;
 }
 
@@ -4815,11 +4815,11 @@ html:has(
 }
 
 /* Tighten on small screens so it doesn't wrap badly. */
-/* font-size kept at 0.875rem (≥12px at any root size) per Task #59 a11y fix */
+/* font-size kept at 0.94rem (≥12px at all tested root sizes) per Task #59 */
 @media (max-width: 480px) {
   .glee-breadcrumb {
     padding: 0.6rem 0.85rem 0;
-    font-size: 0.875rem;
+    font-size: 0.94rem;
   }
   .glee-breadcrumb-item + .glee-breadcrumb-item::before {
     margin-right: 0.35rem;
