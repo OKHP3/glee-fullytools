@@ -182,8 +182,20 @@ PAGES = [
 BASE_URL = "http://localhost:5000"
 SCREENSHOTS_ALL = "--all-screenshots" in sys.argv
 import datetime as _dt
+import argparse as _ap
 _TODAY = _dt.date.today().isoformat()
 SCREENSHOTS_DIR = ROOT / "assets" / "audit" / "screenshots" / _TODAY
+
+def _parse_args():
+    p = _ap.ArgumentParser(add_help=False)
+    p.add_argument("--start", type=int, default=0)
+    p.add_argument("--end",   type=int, default=len(PAGES))
+    p.add_argument("--batch", type=str, default=None,
+                   help="Suffix for partial output filename (e.g. '0', '1', …)")
+    p.add_argument("--all-screenshots", action="store_true")
+    args, _ = p.parse_known_args()
+    return args
+
 LAUNCH_ARGS = [
     "--no-sandbox",
     "--disable-dev-shm-usage",
@@ -202,9 +214,10 @@ LAUNCH_ARGS = [
 ]
 
 
-def run_qa(base_url: str = BASE_URL):
+def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
     from playwright.sync_api import sync_playwright
 
+    pages = PAGES[pages_slice] if pages_slice else PAGES
     SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
     results = []
     total_issues = 0
@@ -213,7 +226,7 @@ def run_qa(base_url: str = BASE_URL):
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True, args=LAUNCH_ARGS)
 
-        for page_slug, page_path in PAGES:
+        for page_slug, page_path in pages:
             url = base_url + page_path
             page_result = {
                 "page": page_path,
@@ -233,7 +246,7 @@ def run_qa(base_url: str = BASE_URL):
 
                 try:
                     resp = page.goto(url, wait_until="domcontentloaded", timeout=15000)
-                    time.sleep(0.4)
+                    time.sleep(0.15)
 
                     http_status = resp.status if resp else 0
                     if http_status >= 400:
@@ -362,13 +375,14 @@ def run_qa(base_url: str = BASE_URL):
     # Write JSON report
     out_dir = ROOT / "assets" / "audit"
     out_dir.mkdir(exist_ok=True)
-    report_path = out_dir / f"viewport-qa-full-{_TODAY}.json"
+    suffix = f"-batch{batch_suffix}" if batch_suffix is not None else ""
+    report_path = out_dir / f"viewport-qa-full{suffix}-{_TODAY}.json"
     report = {
         "date": _TODAY,
         "base_url": base_url,
         "viewports_tested": [v["name"] for v in VIEWPORTS],
-        "pages_tested": len(PAGES),
-        "total_combinations": len(PAGES) * len(VIEWPORTS),
+        "pages_tested": len(pages),
+        "total_combinations": len(pages) * len(VIEWPORTS),
         "total_issues": total_issues,
         "total_warnings": total_warnings,
         "screenshots_dir": str(SCREENSHOTS_DIR.relative_to(ROOT)),
@@ -382,9 +396,9 @@ def run_qa(base_url: str = BASE_URL):
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"\n{'='*60}")
-    print(f"Pages tested:        {len(PAGES)}")
+    print(f"Pages tested:        {len(pages)}")
     print(f"Viewports per page:  {len(VIEWPORTS)}")
-    print(f"Total combinations:  {len(PAGES) * len(VIEWPORTS)}")
+    print(f"Total combinations:  {len(pages) * len(VIEWPORTS)}")
     print(f"Total issues:        {total_issues}")
     print(f"Total warnings:      {total_warnings}")
     print(f"Report:              {report_path.relative_to(ROOT)}")
@@ -394,7 +408,13 @@ def run_qa(base_url: str = BASE_URL):
 
 
 if __name__ == "__main__":
+    _args = _parse_args()
+    _start = _args.start
+    _end   = _args.end
+    _batch = _args.batch
     print("Setting up libgbm stub…")
     ensure_stub()
-    print(f"Starting Playwright QA: {len(PAGES)} pages × {len(VIEWPORTS)} viewports\n")
-    sys.exit(run_qa())
+    _page_slice = slice(_start, _end)
+    _n = len(PAGES[_page_slice])
+    print(f"Starting Playwright QA: {_n} pages (indices {_start}–{_end-1}) × {len(VIEWPORTS)} viewports\n")
+    sys.exit(run_qa(pages_slice=_page_slice, batch_suffix=_batch))
