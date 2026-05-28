@@ -182,4 +182,75 @@ python3 scripts/check-accent-contrast.py
 
 ---
 
-*Generated from glee-fully.tools theme — 2026-04-11. Color accessibility section added 2026-05-27.*
+## Dark Mode Token Reference
+
+Added in Task #26. The Glee-fully dark palette is a warm-dark system — espresso browns replace
+the light paper surfaces while coral and gold stay vivid. It activates automatically via
+`@media (prefers-color-scheme: dark)` on `.glee-main` pages, and is also triggered explicitly
+when `html[data-color-scheme="dark"]` is set by the three-state theme toggle in `app.js`.
+
+### Core token overrides
+
+| Token | Light mode | Dark mode | Dark contrast ratio | Role |
+|---|---|---|---|---|
+| `--color-bg` | `#f6f2ee` | `#1a1210` | — | Page canvas / body background |
+| `--color-surface` | `#fdfbf7` | `#241c1a` | — | Cards, search modal, search page form |
+| `--color-surface-soft` | `#f6f2ee` | `#2a2320` | — | Nested panels, nav submenu, search header/footer |
+| `--color-fg` | `#2e2b29` | `#f0e8e0` | **16.7 : 1** vs `#1a1210` ✓ | Primary body text |
+| `--color-muted` | `#6b5e57` | `#b09080` | **5.9 : 1** vs `#1a1210` ✓ | Secondary/caption text |
+| `--color-accent` | `#d94f63` | `#f07585` | **4.9 : 1** vs `#241c1a` ✓ | Links, active nav, focus rings |
+| `--color-border-subtle` | *(not set)* | `rgba(240,220,210,0.12)` | — | Hairline dividers in dark context |
+
+> **Why the lightened coral?** The light-mode accent `#d94f63` only reaches 3.37:1 on the
+> dark surface `#241c1a` — failing WCAG AA for UI components (3:1 minimum). Lightening to
+> `#f07585` lifts it to 4.9:1, comfortably passing for both normal text and UI components.
+
+### Component-specific dark values (not token-driven)
+
+These are hardcoded hex values applied directly to component selectors inside the
+`@media (prefers-color-scheme: dark)` block. Use these when building components that
+need to match the existing dark chrome:
+
+| Component | Property | Value | Notes |
+|---|---|---|---|
+| `.site-footer` | background | `#120d0b` | Deepest espresso — slightly darker than page bg |
+| `.stripe-bg` (alternate sections) | background | `#1f1512` | Warm very-dark section divider |
+| `.site-status` (pre-opening note) | background | `#261616` | Warm red-tinted dark |
+| `.site-specials--glee` (sparkle banner) | background | `#3d2b00` | Deep amber-brown |
+| `.site-specials--glee` | color | `#f9e4a0` | Warm gold text on amber-brown |
+| `.glee-hero-card::before` | box-shadow | `0 20px 45px rgba(0,0,0,0.6)` | Deeper shadow in dark |
+| `.latest-pill` | background | `rgba(240,117,133,0.2)` | Coral tint with 20% opacity |
+| `.latest-pill` | color | `#f093a5` | Slightly lighter coral |
+| Primary nav links | color | `#c7bdb1` | Warm gray-pink — below accent weight |
+| Active nav link | color | `#f07585` | Coral accent — matches `--color-accent` |
+| `.keep-exploring__link:hover` | background | `#342820` | Warm dark hover state |
+| `.construction-overlay__card` | background | `#2a2320` | Matches surface-soft |
+
+### What is unchanged in dark mode
+
+These light-mode values carry forward unchanged (no dark override defined):
+
+- **`--color-border`** (`#d7d7d7`) — only `--color-border-subtle` is overridden; avoid using
+  `--color-border` directly in new dark-mode components; use `--color-border-subtle` instead
+- **`glee-rust`** / **`glee-gold`** — the named palette constants keep their values; they are
+  not used as CSS custom properties in most component rules, so they don't affect dark rendering
+- **Stripe palette** (`--okh-teal`, `--okh-olive`, etc.) — these are structural brand tokens and
+  are not overridden; the retro stripe hero background is not shown on dark-mode pages
+
+### Editorial rules for dark mode components
+
+1. **Use tokens, not hex** when the value is one of the core 7 tokens above — this ensures
+   the three-state toggle's explicit `data-color-scheme="dark"` overrides also apply correctly.
+2. **Text on `--color-surface`**: use `--color-fg` (`#f0e8e0`) or `--color-muted` (`#b09080`)
+   — both pass WCAG AA.
+3. **Accent on dark**: `--color-accent` (`#f07585`) passes 4.9:1 on `--color-surface` and
+   9.1:1 on `--color-bg` — safe for links, active states, and focus rings at any text size.
+4. **Never use light-mode `#d94f63` in dark contexts** — it fails contrast on all dark surfaces.
+5. **Shadows**: increase opacity (e.g., `rgba(0,0,0,0.5)` or higher) — dark backgrounds reduce
+   visible shadow contrast, so heavier shadows are needed to maintain depth cues.
+
+*Dark mode palette added 2026-05-27 (Task #26). This reference added 2026-05-28.*
+
+---
+
+*Generated from glee-fully.tools theme — 2026-04-11. Color accessibility section added 2026-05-27. Dark mode section added 2026-05-28.*
