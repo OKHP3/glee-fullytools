@@ -1,54 +1,33 @@
 #!/usr/bin/env python3
 """
-inject-sparkle-loader.py
-On every page that contains the site-specials sparkle banner:
-  1. Adds data-sparkle-link attribute to the .site-specials-link anchor.
-  2. Adds <script src="/assets/js/sparkle-loader.js" defer></script>
-     immediately before the closing </body> tag (or before existing scripts).
-Idempotent — skips pages already wired up.
-Run from repo root.
+inject-sparkle-loader.py  — RETIRED
+
+This script is no longer functional and must not be re-run.
+
+What it did:
+  Injected <script src="/assets/js/sparkle-loader.js" defer></script>
+  and data-sparkle-link attributes into every page with a sparkle banner.
+
+Why it was retired (task #57, 2026-05-28):
+  sparkle-loader.js no longer exists as a standalone file.
+  The sparkle banner logic was merged into assets/js/app.js during the
+  task-47 governance fix. Re-running this script would inject a broken
+  <script> reference into all 61 pages, causing silent 404 network errors.
+
+Current approach:
+  - Banner content is controlled via assets/data/sparkle.json
+  - The loader runs automatically from assets/js/app.js (already on every page)
+  - To update the banner site-wide, edit assets/data/sparkle.json only
+
+If you see this script referenced in documentation, that reference is
+historical — no action is needed and this script should not be executed.
 """
-import re
-from pathlib import Path
+import sys
 
-SKIP = {'assets/', 'attached_assets/', '.local/'}
-
-LINK_RE = re.compile(
-    r'(<a\s[^>]*class="[^"]*site-specials-link[^"]*"[^>]*)(>)',
-    re.IGNORECASE | re.DOTALL
+print(
+    "ERROR: inject-sparkle-loader.py has been retired.\n"
+    "The sparkle loader is now part of assets/js/app.js — already present\n"
+    "on every page. To update the banner, edit assets/data/sparkle.json.\n"
+    "See script docstring for full context."
 )
-SCRIPT_TAG = '<script src="/assets/js/sparkle-loader.js" defer></script>'
-
-pages = [p for p in Path('.').rglob('*.html')
-         if not any(s in str(p) for s in SKIP)]
-
-updated = 0
-for page in sorted(pages):
-    content = page.read_text(encoding='utf-8', errors='replace')
-
-    # Only process pages that have the sparkle banner
-    if 'site-specials-link' not in content:
-        continue
-
-    changed = False
-
-    # 1. Add data-sparkle-link to the anchor if not already present
-    if 'data-sparkle-link' not in content:
-        def add_attr(m):
-            return m.group(1) + ' data-sparkle-link' + m.group(2)
-        new_content = LINK_RE.sub(add_attr, content, count=1)
-        if new_content != content:
-            content = new_content
-            changed = True
-
-    # 2. Add sparkle-loader.js script tag before </body> if not already there
-    if 'sparkle-loader.js' not in content:
-        content = content.replace('</body>', SCRIPT_TAG + '\n  </body>', 1)
-        changed = True
-
-    if changed:
-        page.write_text(content, encoding='utf-8')
-        updated += 1
-        print(f"  wired: {page}")
-
-print(f"\nSparkle loader injected into: {updated} pages")
+sys.exit(1)
