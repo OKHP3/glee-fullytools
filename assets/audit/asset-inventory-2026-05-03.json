@@ -2252,18 +2252,9 @@
       "referenced_by": []
     },
     {
-      "path": "assets/img/glee-fully-tools-title-horz-rot+17-square-1024.png",
-      "name": "glee-fully-tools-title-horz-rot+17-square-1024.png",
-      "size_bytes": 416146,
-      "class": "other",
-      "referenced": false,
-      "ref_count": 0,
-      "referenced_by": []
-    },
-    {
       "path": "assets/img/glee-fully-tools-title-horz-rot-17-square-1024.png",
       "name": "glee-fully-tools-title-horz-rot-17-square-1024.png",
-      "size_bytes": 326519,
+      "size_bytes": 416146,
       "class": "other",
       "referenced": false,
       "ref_count": 0,
@@ -2300,6 +2291,24 @@
       "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-left-toolbox-right-wide-1536.png",
       "name": "glee-fully-tools-title-low-mid-butterfly-left-toolbox-right-wide-1536.png",
       "size_bytes": 2944129,
+      "class": "other",
+      "referenced": false,
+      "ref_count": 0,
+      "referenced_by": []
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-perch-comp-left-square-1024.png",
+      "name": "glee-fully-tools-title-low-mid-butterfly-perch-comp-left-square-1024.png",
+      "size_bytes": 1583732,
+      "class": "other",
+      "referenced": false,
+      "ref_count": 0,
+      "referenced_by": []
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-perch-comp-right-square-1024.png",
+      "name": "glee-fully-tools-title-low-mid-butterfly-perch-comp-right-square-1024.png",
+      "size_bytes": 1581739,
       "class": "other",
       "referenced": false,
       "ref_count": 0,
@@ -2382,18 +2391,9 @@
       ]
     },
     {
-      "path": "assets/img/glee=fully-tools-title-low-mid-butterfly-perch-comp-left-square-1024.png",
-      "name": "glee=fully-tools-title-low-mid-butterfly-perch-comp-left-square-1024.png",
-      "size_bytes": 1583732,
-      "class": "other",
-      "referenced": false,
-      "ref_count": 0,
-      "referenced_by": []
-    },
-    {
-      "path": "assets/img/glee=fully-tools-title-low-mid-butterfly-perch-comp-right-square-1024.png",
-      "name": "glee=fully-tools-title-low-mid-butterfly-perch-comp-right-square-1024.png",
-      "size_bytes": 1581739,
+      "path": "assets/img/library/.gitkeep",
+      "name": ".gitkeep",
+      "size_bytes": 0,
       "class": "other",
       "referenced": false,
       "ref_count": 0,
