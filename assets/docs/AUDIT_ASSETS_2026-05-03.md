@@ -34,11 +34,11 @@ prefix (`00`, `01a`–`07g`), the four available variants:
 
 ```json
 "01a": {
-  "retro_stripe":     "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-RetroStripe-Square-1024.png",
+  "retro_stripe":     "assets/img/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-1024.png",
   "retro_stripe_alt": null,
-  "transparent":      "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-Transparent-Square-1024.png",
+  "transparent":      "assets/img/glee-fully-tools-gpt-icon-01a-resume-builder-background-transparent-square-1024.png",
   "transparent_alt":  null,
-  "primary":          "assets/img/Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-RetroStripe-Square-1024.png"
+  "primary":          "assets/img/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-1024.png"
 }
 ```
 
@@ -54,14 +54,14 @@ The 17 "other" orphans break down (top by size) as:
 
 | Size | File | Notes |
 |---:|---|---|
-| 3.0 MB | `Glee-fully Neon Butterflies.png` | Source/marketing art; never used on site |
-| 3.0 MB | `Glee-fullyTools TitleLowMidButterflyLeftBigToolboxRight Wide 1536.png` | Hero study; superseded by per-tool icons |
-| 2.9 MB | `Glee-fullyTools TitleRotLowMidButterflyLeftToolboxRight Wide 1536.png` | Same |
-| 2.9 MB | `Glee-fullyTools TitleLowMidButterflyLeftToolboxRight Wide 1536.png` | Same |
-| 2.9 MB | `Glee-fullyTools TitleHighMidButterflyLeftToolboxRight Wide 1536.png` | Same |
-| 2.3 MB | `Glee-fullyTools ButterflyPathLeft Wide 1536.png` | Same |
-| 2.3 MB | `Glee-fullyTools ButterflyLoopRight Wide 1536.png` | Same |
-| 2.3 MB | `Glee-fully Retro Butterfly Design.png` | Source art |
+| 3.0 MB | `glee-fully-neon-butterflies.png` | Source/marketing art; never used on site |
+| 3.0 MB | `glee-fully-tools-title-low-mid-butterfly-left-big-toolbox-right-wide-1536.png` | Hero study; superseded by per-tool icons |
+| 2.9 MB | `glee-fully-tools-title-rot-low-mid-butterfly-left-toolbox-right-wide-1536.png` | Same |
+| 2.9 MB | `glee-fully-tools-title-low-mid-butterfly-left-toolbox-right-wide-1536.png` | Same |
+| 2.9 MB | `glee-fully-tools-title-high-mid-butterfly-left-toolbox-right-wide-1536.png` | Same |
+| 2.3 MB | `glee-fully-tools-butterfly-path-left-wide-1536.png` | Same |
+| 2.3 MB | `glee-fully-tools-butterfly-loop-right-wide-1536.png` | Same |
+| 2.3 MB | `glee-fully-retro-butterfly-design.png` | Source art |
 
 These are roughly **22 MB** of unused PNG.  Removing them would shave the
 GitHub clone size meaningfully but offers no runtime benefit (they are not

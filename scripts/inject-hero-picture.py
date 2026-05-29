@@ -28,13 +28,13 @@ SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", ".pythonlibs",
 WEBP_QUALITY = 85
 
 IMG_TO_WEBP_STEM = {
-    "Glee-fullyTools%20ButterflyLoopLeft%20Wide%201536.png":
+    "glee-fully-tools-butterfly-loop-left-wide-1536.png":
         "Glee-fullyTools-ButterflyLoopLeft-Wide-{w}.webp",
-    "Glee-fullyTools%20ButterflyLoopRight%20Wide%201536.png":
+    "glee-fully-tools-butterfly-loop-right-wide-1536.png":
         "Glee-fullyTools-ButterflyLoopRight-Wide-{w}.webp",
-    "Glee-fullyTools%20TitleMidButterflyMultipleErrorExplosion%20Wide%201536.png":
+    "glee-fully-tools-title-mid-butterfly-multiple-error-explosion-wide-1536.png":
         "Glee-fullyTools-TitleMidButterflyMultipleErrorExplosion-Wide-{w}.webp",
-    "Glee-fullyTools%20TitleUpperLeftButterflyMultipleUnderConstruction%20Wide%201536.png":
+    "glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-1536.png":
         "Glee-fullyTools-TitleUpperLeftButterflyMultipleUnderConstruction-Wide-{w}.webp",
 }
 

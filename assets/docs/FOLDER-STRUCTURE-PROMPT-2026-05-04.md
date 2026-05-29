@@ -174,9 +174,9 @@ Each scope is separated by a `╔══╗` boxed banner comment so edits stay i
 ```
 Examples:
 ```
-Glee-fullyTools ButterflyWaiting Square 1024.png
-Glee-fullyTools ButterflyLoopLeft Wide 1536.png
-Glee-fullyTools TitleUpperLeftButterflyMultipleUnderConstruction Wide 1536.png
+glee-fully-tools-butterfly-waiting-square-1024.png
+glee-fully-tools-butterfly-loop-left-wide-1536.png
+glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-1536.png
 ```
 
 *GPT / product icons (hyphen-separated, machine-readable):*
@@ -185,9 +185,9 @@ Glee-fullyTools TitleUpperLeftButterflyMultipleUnderConstruction Wide 1536.png
 ```
 Examples:
 ```
-Glee-fullyTools-GPTIcon-00-Toolbox-Background-RetroStripe-Square-1024.png
-Glee-fullyTools-GPTIcon-01a-Resume-Builder-Background-Transparent-Square-1024.png
-Glee-fullyTools-GPTIcon-01a-Resume-Builder-Object-Background-Transparent-Square-1024.png
+glee-fully-tools-gpt-icon-00-toolbox-background-retro-stripe-square-1024.png
+glee-fully-tools-gpt-icon-01a-resume-builder-background-transparent-square-1024.png
+glee-fully-tools-gpt-icon-01a-resume-builder-object-background-transparent-square-1024.png
 ```
 
 Icon variants used:

@@ -23,10 +23,10 @@ TARGET_WIDTHS = [768, 1024, 1536]
 WEBP_QUALITY = 85
 
 HERO_IMAGES = [
-    "Glee-fullyTools ButterflyLoopLeft Wide 1536.png",
-    "Glee-fullyTools ButterflyLoopRight Wide 1536.png",
-    "Glee-fullyTools TitleMidButterflyMultipleErrorExplosion Wide 1536.png",
-    "Glee-fullyTools TitleUpperLeftButterflyMultipleUnderConstruction Wide 1536.png",
+    "glee-fully-tools-butterfly-loop-left-wide-1536.png",
+    "glee-fully-tools-butterfly-loop-right-wide-1536.png",
+    "glee-fully-tools-title-mid-butterfly-multiple-error-explosion-wide-1536.png",
+    "glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-1536.png",
 ]
 
 

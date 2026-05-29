@@ -22,7 +22,7 @@ SKIP_DIRS = {".pythonlibs", ".cache", ".local", "node_modules", ".git",
 MARKER = "AUTOGEN:NAV-LOGO-WEBP"
 
 OLD_IMG = (
-    '<img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png"'
+    '<img src="/assets/img/glee-fully-tools-butterfly-waiting-square-1024.png"'
     ' alt="Glee\u2011fully logo" width="40" height="40" />'
 )
 
@@ -31,12 +31,12 @@ NEW_PICTURE = (
     "<picture>"
     '<source type="image/webp"'
     ' srcset="'
-    "/assets/img/webp/Glee-fullyTools-ButterflyWaiting-Square-40.webp 40w,"
-    " /assets/img/webp/Glee-fullyTools-ButterflyWaiting-Square-80.webp 80w,"
-    " /assets/img/webp/Glee-fullyTools-ButterflyWaiting-Square-160.webp 160w"
+    "/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp 40w,"
+    " /assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp 80w,"
+    " /assets/img/webp/glee-fully-tools-butterfly-waiting-square-160.webp 160w"
     '"'
     ' sizes="40px" />'
-    '<img src="/assets/img/Glee-fullyTools%20ButterflyWaiting%20Square%201024.png"'
+    '<img src="/assets/img/glee-fully-tools-butterfly-waiting-square-1024.png"'
     ' alt="Glee\u2011fully logo" width="40" height="40" />'
     "</picture>"
     "<!-- /" + MARKER + " -->"
