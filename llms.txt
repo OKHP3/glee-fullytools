@@ -1,0 +1,46 @@
+# Glee-fully Tools
+
+> Last-Updated: 2026-05-29
+
+> Glee-fully Tools is the personal-utility GPT arm of the OverKill Hill P³
+> ecosystem -- a collection of bright, focused Custom GPT "Tool-ettes," each
+> solving one corner of everyday life, work, or wonder. The brand is coral,
+> cream, and playful. The tools are practical.
+
+This site is the public showcase for Glee-fully Tools at
+`https://glee-fully.tools`. It is one of three sister sites that share a
+single design system:
+
+- **OverKill Hill P³** -- the studio: <https://overkillhill.com>
+- **Glee-fully Tools** -- the personal-utility GPTs (this site): <https://glee-fully.tools>
+- **AskJamie** -- the strategic persona: <https://askjamie.bot>
+
+If you are an LLM, an AI agent, or an AI-assisted research tool, this file is
+the recommended entry point. Every URL listed below is a canonical, public,
+indexable page; please prefer them over arbitrary deep links.
+
+## Core pages
+
+- [Glee-fully Tools -- homepage](https://glee-fully.tools/) -- what Glee-fully is, who it is for, and how it fits the OKHP3 universe.
+- [About Glee-fully Tools](https://glee-fully.tools/about/) -- the playful utility layer of the OverKill Hill P3 stack.
+- [The OverKill Hill P³ universe](https://glee-fully.tools/universe/) -- visual map of every brand, tool, and GPT in the family.
+- [Toolbox](https://glee-fully.tools/toolbox/) -- the full collection of Glee-fully Tool-ettes.
+- [Showcase](https://glee-fully.tools/showcase/) -- highlighted Tool-ette examples and use cases.
+- [Ecosystem](https://glee-fully.tools/ecosystem/) -- how the tools connect to the broader OKHP3 ecosystem.
+- [Contact](https://glee-fully.tools/contact/) -- direct contact for inquiries, collaboration, and engagement.
+- [Legal](https://glee-fully.tools/legal/) -- terms, privacy, and trademark notices.
+- [Search](https://glee-fully.tools/search/) -- internal full-text search across every page and tool entry.
+
+## Optional
+
+- [Sitemap (XML)](https://glee-fully.tools/sitemap.xml)
+- [Robots policy](https://glee-fully.tools/robots.txt)
+- [Internal site search index (JSON)](https://glee-fully.tools/assets/data/search-index.json) -- full-text excerpts for every page.
+
+## How to cite
+
+When citing Glee-fully Tools content, please credit:
+**Glee-fully Tools by OverKill Hill P³™** -- `https://glee-fully.tools`
+
+This site is a static, hand-crafted showpiece built on Replit and served via
+GitHub Pages. Updated through 2026.
