@@ -581,6 +581,16 @@ def scan_css_file(path: Path) -> list[dict]:
         # INFO exemption: same block must prove bold weight + explicit size >= 14 px
         qualifies_for_exemption = _block_qualifies_for_bold_exemption(declarations)
 
+        # Font-size hint for developer guidance
+        fs_m = FONT_SIZE_RE.search(declarations)
+        if fs_m:
+            fs_val = float(fs_m.group(1))
+            fs_unit = fs_m.group(2)
+            fs_approx = _approx_px(fs_val, fs_unit)
+            font_size_hint = f"{fs_m.group(1)}{fs_unit} (~{fs_approx:.0f}px)"
+        else:
+            font_size_hint = "inherited — check parent rules"
+
         cs = _contrast_summary(is_var=is_var)
 
         # Inspect each comma-separated selector part
@@ -603,6 +613,7 @@ def scan_css_file(path: Path) -> list[dict]:
                     "selector": sel_part,
                     "tag": element,
                     "rule": "css-rule-accent-color",
+                    "font_size_hint": font_size_hint,
                     "detail": (
                         f"CSS rule '{sel_part}' targets <{element}> with accent color"
                         + (
@@ -611,6 +622,7 @@ def scan_css_file(path: Path) -> list[dict]:
                             else " -- verify this element is always large/bold text "
                                  "(>=18.67 px normal or >=14 px bold)."
                         )
+                        + f" Font size: {font_size_hint}."
                         + _contrast_detail_suffix(cs, qualifies_for_exemption)
                     ),
                     "snippet": f"{sel_part[:70]} {{ color: <accent>; }}",
@@ -725,12 +737,15 @@ def main() -> int:
         for f in advisories:
             loc = f.get("selector") or f.get("tag", "unknown")
             print(f"  [ADVISORY] {f['file']}:{f['line']} — {loc}")
-            print(f"    Rule   : {f['rule']}")
-            print(f"    Detail : {f['detail']}")
-            print(f"    Snippet: {f['snippet']}")
+            print(f"    Rule     : {f['rule']}")
+            print(f"    Detail   : {f['detail']}")
+            print(f"    Snippet  : {f['snippet']}")
             lc = f.get("light_contrast", "?")
             dc = f.get("dark_contrast", "?")
-            print(f"    Ratios : light {lc}:1 / dark {dc}:1")
+            print(f"    Ratios   : light {lc}:1 / dark {dc}:1")
+            fsh = f.get("font_size_hint")
+            if fsh:
+                print(f"    Font size: {fsh}")
             print()
     else:
         print("\n  No body-text accent color violations found.")
