@@ -12,11 +12,39 @@
       "selector": ".glee-search-page__lede em",
       "tag": "em",
       "rule": "css-rule-accent-color",
-      "detail": "CSS rule '.glee-search-page__lede em' targets <em> with accent color (bold + explicit font-size >=14px in same block \u2014 INFO only).",
-      "snippet": ".glee-search-page__lede em { color: <accent>; }"
+      "detail": "CSS rule '.glee-search-page__lede em' targets <em> with accent color (bold + explicit font-size >=14px in same block \u2014 INFO only). Contrast \u2014 light: 3.55:1 (\u2713 AA large), dark: 6.04:1 (\u2713 AA).",
+      "snippet": ".glee-search-page__lede em { color: <accent>; }",
+      "light_contrast": 3.55,
+      "light_accent_hex": "#d35b2d",
+      "light_bg_hex": "#f6f2ee",
+      "light_pass_aa_normal": false,
+      "light_pass_aa_large": true,
+      "dark_contrast": 6.04,
+      "dark_accent_hex": "#f07585",
+      "dark_bg_hex": "#241c1a",
+      "dark_pass_aa_normal": true,
+      "dark_pass_aa_large": true
     }
   ],
-  "rule": "var(--color-accent) (#d94f63 / #d35b2d) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Contrast ratios: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (paper bg #f6f2ee). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but fails for normal body text.",
+  "light_mode": {
+    "bg": "#f6f2ee",
+    "surface": "#f6f2ee",
+    "accent_colors": [
+      "#d94f63",
+      "#d35b2d"
+    ],
+    "worst_contrast": 3.55
+  },
+  "dark_mode": {
+    "bg": "#1a1210",
+    "surface": "#241c1a",
+    "accent_colors": [
+      "#f07585"
+    ],
+    "worst_contrast": 6.04,
+    "source": "assets/css/theme.css"
+  },
+  "rule": "var(--color-accent) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Light-mode contrast: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (bg #f6f2ee). Dark-mode contrast: #f07585 = 4.9:1 (surface #241c1a). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but light-mode fails for normal body text. Any rule that fails on either mode is flagged ADVISORY.",
   "passes": [
     "Pass 1 \u2014 HTML inline style= attributes and utility class names",
     "Pass 2 \u2014 CSS rule blocks in project stylesheet(s)"

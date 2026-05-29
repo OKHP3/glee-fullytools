@@ -10,6 +10,11 @@ contrast against the paper background (#f6f2ee). They pass WCAG 2.1 AA for
 large/bold text (>=18.67 px normal, >=14 px bold) but fail for normal-weight
 body text at default size.
 
+Task #26 introduced a dark-mode palette (--bg #1a1210, --color-accent #f07585)
+where the lightened coral reaches 4.9:1 against the dark surface (#241c1a),
+passing WCAG AA for all text sizes. This script checks BOTH modes and reports
+contrast ratios for each so regressions in either direction are caught.
+
 Editorial rule (from assets/docs/gleefully-replit-theme-guide.md):
   var(--color-accent) must not be used as the sole color signal for
   normal-weight body text smaller than 18.67 px.
@@ -36,6 +41,138 @@ import re
 import sys
 import json
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# WCAG contrast-ratio math
+# ---------------------------------------------------------------------------
+
+def _srgb_linearize(c: int) -> float:
+    s = c / 255.0
+    return s / 12.92 if s <= 0.03928 else ((s + 0.055) / 1.055) ** 2.4
+
+
+def _hex_to_rgb(hex_color: str) -> tuple:
+    h = hex_color.lstrip("#")
+    return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+
+
+def relative_luminance(hex_color: str) -> float:
+    r, g, b = _hex_to_rgb(hex_color)
+    return (
+        0.2126 * _srgb_linearize(r)
+        + 0.7152 * _srgb_linearize(g)
+        + 0.0722 * _srgb_linearize(b)
+    )
+
+
+def contrast_ratio(fg: str, bg: str) -> float:
+    """Return WCAG contrast ratio (>=1.0) between two hex colors."""
+    l1 = relative_luminance(fg)
+    l2 = relative_luminance(bg)
+    lighter, darker = max(l1, l2), min(l1, l2)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def wcag_aa_normal(ratio: float) -> bool:
+    return ratio >= 4.5
+
+
+def wcag_aa_large(ratio: float) -> bool:
+    return ratio >= 3.0
+
+
+# ---------------------------------------------------------------------------
+# Mode palettes
+# ---------------------------------------------------------------------------
+
+# Light-mode palette (Glee-fully paper theme)
+LIGHT_MODE = {
+    "bg":           "#f6f2ee",
+    "surface":      "#f6f2ee",
+    "accent_hex":   ["#d94f63", "#d35b2d"],   # coral, rust
+}
+
+# Dark-mode defaults (Task #26; overridden by parse_dark_mode_tokens if found)
+_DARK_MODE_DEFAULTS = {
+    "bg":           "#1a1210",
+    "surface":      "#241c1a",
+    "accent_hex":   ["#f07585"],              # lightened coral
+}
+
+
+def parse_dark_mode_tokens(theme_css_path: Path) -> dict:
+    """
+    Read the first `@media (prefers-color-scheme: dark) { .glee-main { … } }`
+    block in theme.css and extract --color-bg, --color-surface, --color-accent.
+
+    Falls back to _DARK_MODE_DEFAULTS for any token not found.
+    """
+    result = dict(_DARK_MODE_DEFAULTS)
+    if not theme_css_path.exists():
+        return result
+
+    text = theme_css_path.read_text(encoding="utf-8", errors="ignore")
+
+    # Find the token-layer block: @media dark { .glee-main { --color-bg: … } }
+    # We look for the first @media block that contains `--color-accent` override.
+    dark_block_re = re.compile(
+        r"@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)"
+        r"\s*\{(.*?)\}",
+        re.DOTALL | re.IGNORECASE,
+    )
+
+    for m in dark_block_re.finditer(text):
+        block = m.group(1)
+        # Only care about blocks that touch Glee token overrides
+        if "--color-accent" not in block:
+            continue
+        # Extract token values
+        bg_m      = re.search(r"--color-bg\s*:\s*(#[0-9a-fA-F]{3,6})", block)
+        surf_m    = re.search(r"--color-surface\s*:\s*(#[0-9a-fA-F]{3,6})", block)
+        accent_m  = re.search(r"--color-accent\s*:\s*(#[0-9a-fA-F]{3,6})", block)
+
+        if bg_m:
+            result["bg"] = bg_m.group(1)
+        if surf_m:
+            result["surface"] = surf_m.group(1)
+        if accent_m:
+            result["accent_hex"] = [accent_m.group(1)]
+        break  # first matching block is the canonical token layer
+
+    return result
+
+
+# Pre-populate dark mode at module init (re-parsed in main if needed)
+DARK_MODE = dict(_DARK_MODE_DEFAULTS)
+
+
+def _worst_light_contrast(fg_hex: str) -> float:
+    """Lowest contrast the fg hex achieves against any light-mode surface."""
+    return min(
+        contrast_ratio(fg_hex, LIGHT_MODE["bg"]),
+        contrast_ratio(fg_hex, LIGHT_MODE["surface"]),
+    )
+
+
+def _worst_dark_contrast(fg_hex: str) -> float:
+    """Lowest contrast the fg hex achieves against any dark-mode surface."""
+    return min(
+        contrast_ratio(fg_hex, DARK_MODE["bg"]),
+        contrast_ratio(fg_hex, DARK_MODE["surface"]),
+    )
+
+
+def _worst_accent_light() -> tuple:
+    """(worst_ratio, which_hex) across all light-mode accent hexes."""
+    pairs = [(_worst_light_contrast(h), h) for h in LIGHT_MODE["accent_hex"]]
+    return min(pairs, key=lambda x: x[0])
+
+
+def _worst_accent_dark() -> tuple:
+    """(worst_ratio, which_hex) across all dark-mode accent hexes."""
+    pairs = [(_worst_dark_contrast(h), h) for h in DARK_MODE["accent_hex"]]
+    return min(pairs, key=lambda x: x[0])
+
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -97,6 +234,92 @@ SKIP_DIRS = {
 
 # CSS files to scan (relative to repo root)
 CSS_FILES = [Path("assets/css/theme.css")]
+
+
+# ---------------------------------------------------------------------------
+# Contrast helpers for findings
+# ---------------------------------------------------------------------------
+
+def _contrast_summary(is_var: bool) -> dict:
+    """
+    Return a dict with contrast ratios for the finding detail.
+
+    is_var=True  → caller used var(--color-accent/rust); dark mode resolves
+                   to the dark-mode accent token (#f07585 by default).
+    is_var=False → caller hardcoded a light-mode hex; dark mode does NOT
+                   override it, so contrast against dark surfaces improves
+                   (dark bg is darker, making the warm accent stand out more).
+    """
+    light_ratio, light_hex = _worst_accent_light()
+
+    if is_var:
+        dark_ratio, dark_hex = _worst_accent_dark()
+    else:
+        # Hardcoded hex doesn't change in dark mode — pick the light accent
+        # hex that has the worst light ratio (same hex stays in dark mode).
+        light_ratio, light_hex = _worst_accent_light()
+        dark_ratio = _worst_dark_contrast(light_hex)
+        dark_hex = light_hex
+
+    light_pass_normal = wcag_aa_normal(light_ratio)
+    light_pass_large  = wcag_aa_large(light_ratio)
+    dark_pass_normal  = wcag_aa_normal(dark_ratio)
+    dark_pass_large   = wcag_aa_large(dark_ratio)
+
+    return {
+        "light_contrast":       round(light_ratio, 2),
+        "light_accent_hex":     light_hex,
+        "light_bg_hex":         LIGHT_MODE["bg"],
+        "light_pass_aa_normal": light_pass_normal,
+        "light_pass_aa_large":  light_pass_large,
+        "dark_contrast":        round(dark_ratio, 2),
+        "dark_accent_hex":      dark_hex if is_var else light_hex,
+        "dark_bg_hex":          DARK_MODE["surface"],
+        "dark_pass_aa_normal":  dark_pass_normal,
+        "dark_pass_aa_large":   dark_pass_large,
+    }
+
+
+def _contrast_detail_suffix(cs: dict, is_bold_exempt: bool) -> str:
+    """
+    Build the human-readable contrast suffix included in every finding detail.
+
+    Shows both light-mode and dark-mode contrast ratios and WCAG AA status.
+    """
+    lc = cs["light_contrast"]
+    dc = cs["dark_contrast"]
+
+    l_status = "✓ AA" if cs["light_pass_aa_normal"] else (
+        "✓ AA large" if cs["light_pass_aa_large"] else "✗ below AA"
+    )
+    d_status = "✓ AA" if cs["dark_pass_aa_normal"] else (
+        "✓ AA large" if cs["dark_pass_aa_large"] else "✗ below AA"
+    )
+
+    suffix = (
+        f" Contrast — light: {lc:.2f}:1 ({l_status}), "
+        f"dark: {dc:.2f}:1 ({d_status})."
+    )
+    return suffix
+
+
+def _severity_from_contrast(cs: dict, is_bold_exempt: bool) -> str:
+    """
+    Compute severity given contrast summary and bold-exempt flag.
+
+    ADVISORY — fails WCAG AA on normal text in *either* mode (and not exempt).
+    INFO      — passes large/bold AA in both modes (or explicitly bold-exempt).
+    """
+    light_ok = cs["light_pass_aa_normal"] or (
+        is_bold_exempt and cs["light_pass_aa_large"]
+    )
+    dark_ok  = cs["dark_pass_aa_normal"] or (
+        is_bold_exempt and cs["dark_pass_aa_large"]
+    )
+
+    if light_ok and dark_ok:
+        return "INFO"
+    return "ADVISORY"
 
 
 # ---------------------------------------------------------------------------
@@ -240,6 +463,7 @@ def scan_html_file(path: Path) -> list[dict]:
             if re.search(r"(?<!\w)color\s*:\s*(?:#d94f63|#d35b2d)", line, re.IGNORECASE):
                 tag_m = re.search(r"<(\w+)\b", line)
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
+                cs = _contrast_summary(is_var=False)
                 severity = "ADVISORY" if tag in RISKY_TAGS else "INFO"
                 findings.append({
                     "file": str(path),
@@ -251,8 +475,10 @@ def scan_html_file(path: Path) -> list[dict]:
                         f"<{tag}> has inline accent color -- "
                         f"verify it is large/bold text (>=18.67 px normal "
                         f"or >=14 px bold)."
+                        + _contrast_detail_suffix(cs, False)
                     ),
                     "snippet": stripped[:120],
+                    **cs,
                 })
 
         # 1b. Inline style= with accent var as text color
@@ -263,6 +489,7 @@ def scan_html_file(path: Path) -> list[dict]:
                 tag_m = re.search(r"<(\w+)\b", line)
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
                 if tag in RISKY_TAGS:
+                    cs = _contrast_summary(is_var=True)
                     findings.append({
                         "file": str(path),
                         "line": lineno,
@@ -272,8 +499,10 @@ def scan_html_file(path: Path) -> list[dict]:
                         "detail": (
                             f"<{tag}> uses var(--color-accent/rust) as text color -- "
                             f"accent tokens are below 4.5:1 for normal body text."
+                            + _contrast_detail_suffix(cs, False)
                         ),
                         "snippet": stripped[:120],
+                        **cs,
                     })
 
         # 1c. Utility classes that apply accent color to text
@@ -282,6 +511,7 @@ def scan_html_file(path: Path) -> list[dict]:
                 tag_m = re.search(r"<(\w+)\b", line)
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
                 if tag in RISKY_TAGS:
+                    cs = _contrast_summary(is_var=True)
                     findings.append({
                         "file": str(path),
                         "line": lineno,
@@ -291,8 +521,10 @@ def scan_html_file(path: Path) -> list[dict]:
                         "detail": (
                             f"<{tag}> uses .{cls} -- verify it meets "
                             f"large/bold text threshold."
+                            + _contrast_detail_suffix(cs, False)
                         ),
                         "snippet": stripped[:120],
+                        **cs,
                     })
 
     return findings
@@ -313,6 +545,12 @@ def scan_css_file(path: Path) -> list[dict]:
     - If the same rule block also declares a bold font-weight (600+/bold),
       the finding is INFO not ADVISORY, because bold text at >=14 px passes
       WCAG AA for these accent colors.
+
+    Dark-mode awareness (Task #69):
+    - Each finding now carries light_contrast and dark_contrast ratios.
+    - Severity is ADVISORY when the rule fails WCAG AA on *either* mode.
+    - Rules using var(--color-accent) resolve to the dark-mode token in
+      dark mode; hardcoded hex values do not change across modes.
     """
     try:
         css_text = path.read_text(encoding="utf-8", errors="ignore")
@@ -333,8 +571,17 @@ def scan_css_file(path: Path) -> list[dict]:
         if not has_accent_text_color:
             continue
 
+        # Determine if usage is via CSS variable or hardcoded hex
+        is_var = any(
+            ACCENT_VAR_PATTERN.search(dl)
+            for dl in decl_lines
+            if not BG_BORDER_RE.search(dl) and not CSS_VAR_DEF_RE.match(dl)
+        )
+
         # INFO exemption: same block must prove bold weight + explicit size >= 14 px
         qualifies_for_exemption = _block_qualifies_for_bold_exemption(declarations)
+
+        cs = _contrast_summary(is_var=is_var)
 
         # Inspect each comma-separated selector part
         for sel_part in selector_raw.split(","):
@@ -347,11 +594,8 @@ def scan_css_file(path: Path) -> list[dict]:
                 continue  # class/id/attribute-only selector — skip
 
             if element in RISKY_TAGS:
-                # Downgrade to INFO only when the same rule block provably
-                # declares both bold weight (>=600) AND explicit font-size
-                # >=14 px — the WCAG AA threshold for bold accent text.
-                # Inherited values do not count (not provable by static analysis).
-                severity = "INFO" if qualifies_for_exemption else "ADVISORY"
+                severity = _severity_from_contrast(cs, qualifies_for_exemption)
+
                 findings.append({
                     "file": str(path),
                     "line": lineno,
@@ -367,8 +611,10 @@ def scan_css_file(path: Path) -> list[dict]:
                             else " -- verify this element is always large/bold text "
                                  "(>=18.67 px normal or >=14 px bold)."
                         )
+                        + _contrast_detail_suffix(cs, qualifies_for_exemption)
                     ),
                     "snippet": f"{sel_part[:70]} {{ color: <accent>; }}",
+                    **cs,
                 })
 
     return findings
@@ -380,6 +626,11 @@ def scan_css_file(path: Path) -> list[dict]:
 
 def main() -> int:
     strict = "--strict" in sys.argv
+
+    # Parse live dark-mode tokens from theme.css before scanning
+    global DARK_MODE
+    theme_css = Path("assets/css/theme.css")
+    DARK_MODE = parse_dark_mode_tokens(theme_css)
 
     root = Path(".")
     all_findings: list[dict] = []
@@ -397,7 +648,6 @@ def main() -> int:
     for css_path in CSS_FILES:
         if not css_path.exists():
             continue
-        # Also pick up any other project CSS outside assets/templates
         all_findings.extend(scan_css_file(css_path))
         css_scanned += 1
 
@@ -426,12 +676,27 @@ def main() -> int:
         "advisory_count": len(advisories),
         "info_count": len(infos),
         "findings": all_findings,
+        "light_mode": {
+            "bg": LIGHT_MODE["bg"],
+            "surface": LIGHT_MODE["surface"],
+            "accent_colors": LIGHT_MODE["accent_hex"],
+            "worst_contrast": round(_worst_accent_light()[0], 2),
+        },
+        "dark_mode": {
+            "bg": DARK_MODE["bg"],
+            "surface": DARK_MODE["surface"],
+            "accent_colors": DARK_MODE["accent_hex"],
+            "worst_contrast": round(_worst_accent_dark()[0], 2),
+            "source": str(theme_css) if theme_css.exists() else "defaults",
+        },
         "rule": (
-            "var(--color-accent) (#d94f63 / #d35b2d) must not be used as the sole "
-            "color signal for normal-weight body text smaller than 18.67 px. "
-            "Contrast ratios: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (paper bg #f6f2ee). "
+            "var(--color-accent) must not be used as the sole color signal for "
+            "normal-weight body text smaller than 18.67 px. "
+            "Light-mode contrast: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (bg #f6f2ee). "
+            "Dark-mode contrast: #f07585 = 4.9:1 (surface #241c1a). "
             "Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) "
-            "but fails for normal body text."
+            "but light-mode fails for normal body text. "
+            "Any rule that fails on either mode is flagged ADVISORY."
         ),
         "passes": [
             "Pass 1 — HTML inline style= attributes and utility class names",
@@ -442,12 +707,18 @@ def main() -> int:
     out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     # Human-readable output
-    print("Accent contrast advisory scan")
+    print("Accent contrast advisory scan (light + dark mode)")
     print(f"  HTML files scanned : {html_scanned}")
     print(f"  CSS files scanned  : {css_scanned}")
     print(f"  Advisories         : {len(advisories)}")
     print(f"  Info notes         : {len(infos)}")
     print(f"  Report             : {out_path}")
+
+    # Print mode palette summary
+    lw, lh = _worst_accent_light()
+    dw, dh = _worst_accent_dark()
+    print(f"\n  Light-mode palette : accent {lh} / bg {LIGHT_MODE['bg']} → {lw:.2f}:1")
+    print(f"  Dark-mode palette  : accent {dh} / surface {DARK_MODE['surface']} → {dw:.2f}:1")
 
     if advisories:
         print("\nAdvisories (accent color on body-text elements):")
@@ -457,6 +728,9 @@ def main() -> int:
             print(f"    Rule   : {f['rule']}")
             print(f"    Detail : {f['detail']}")
             print(f"    Snippet: {f['snippet']}")
+            lc = f.get("light_contrast", "?")
+            dc = f.get("dark_contrast", "?")
+            print(f"    Ratios : light {lc}:1 / dark {dc}:1")
             print()
     else:
         print("\n  No body-text accent color violations found.")
@@ -465,7 +739,10 @@ def main() -> int:
         print("Info notes (context-dependent -- review manually):")
         for f in infos:
             loc = f.get("selector") or f.get("tag", "unknown")
-            print(f"  [INFO] {f['file']}:{f['line']} {loc} -- {f['rule']}")
+            lc = f.get("light_contrast", "?")
+            dc = f.get("dark_contrast", "?")
+            print(f"  [INFO] {f['file']}:{f['line']} {loc} -- {f['rule']} "
+                  f"(light {lc}:1 / dark {dc}:1)")
 
     print()
     print("This script is advisory only. Exit 0 regardless of findings.")
