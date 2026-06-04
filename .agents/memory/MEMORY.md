@@ -1,0 +1,3 @@
+- [Header-controls timing](header-controls-timing.md) — .header-controls must be created in an eager IIFE (before DOMContentLoaded) so the search module's injectTrigger finds it at defer time.
+- [Glee toggle identity](glee-toggle-identity.md) — Glee uses data-color-scheme attr + glee-color-scheme localStorage (not data-theme/okh-theme); toggle styled coral (#d35b2d) for cream header; AskJamie is brand-locked light with no toggle.
+- [Screenshot cache](screenshot-cache.md) — The Replit screenshot browser has a very persistent cache. The homepage is often stale; use a fresh path (e.g. /about/, /contact/) to get an uncached render. A no-cache Python server (serve.py) + ?v=N query stamps help for new sessions.
