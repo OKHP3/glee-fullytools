@@ -4386,6 +4386,20 @@ html[data-color-scheme="dark"] .glee-main .card {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
+/* Site status badge (e.g. "Early Emergence") */
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-status {
+    background: #241c1a;
+    border-color: rgba(240, 200, 190, 0.25);
+    color: #f0e8e0;
+  }
+}
+html[data-color-scheme="dark"] .glee-main .site-status {
+  background: #241c1a;
+  border-color: rgba(240, 200, 190, 0.25);
+  color: #f0e8e0;
+}
+
 /* Stripe sections */
 @media (prefers-color-scheme: dark) {
   html:not([data-color-scheme="light"]) .glee-main .stripe-section     { background: #241c1a; }
