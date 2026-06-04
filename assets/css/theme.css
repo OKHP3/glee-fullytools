@@ -4304,6 +4304,7 @@ html[data-theme="light"] .article-body h2 {
     --color-muted:        rgba(240, 232, 224, 0.58);
     --color-accent:       #f07585;
     --color-border:       rgba(240, 200, 190, 0.15);
+    --mermaid-line-color: #f07585;
   }
 }
 html[data-color-scheme="dark"] .glee-main {
@@ -4314,6 +4315,7 @@ html[data-color-scheme="dark"] .glee-main {
   --color-muted:        rgba(240, 232, 224, 0.58);
   --color-accent:       #f07585;
   --color-border:       rgba(240, 200, 190, 0.15);
+  --mermaid-line-color: #f07585;
 }
 
 /* Explicit light pin — overrides OS dark preference when user chose light */
@@ -4775,6 +4777,23 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
   padding: 0.25rem 0.6rem;
   font-size: 0.75rem;
   border: 1px solid #a63749;
+}
+/* Dark mode – edges and arrowheads must be bright enough to read on dark shell */
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .mermaid .edgePath path,
+  html:not([data-color-scheme="light"]) .glee-main .mermaid .flowchart-link {
+    stroke: #f07585;
+  }
+  html:not([data-color-scheme="light"]) .glee-main .mermaid .arrowheadPath {
+    fill: #f07585;
+  }
+}
+html[data-color-scheme="dark"] .glee-main .mermaid .edgePath path,
+html[data-color-scheme="dark"] .glee-main .mermaid .flowchart-link {
+  stroke: #f07585;
+}
+html[data-color-scheme="dark"] .glee-main .mermaid .arrowheadPath {
+  fill: #f07585;
 }
 
 
