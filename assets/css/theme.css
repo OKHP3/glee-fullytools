@@ -4416,11 +4416,22 @@ html[data-color-scheme="dark"] .glee-main .card {
     border-color: rgba(240, 200, 190, 0.25);
     color: #f0e8e0;
   }
+  /* Hero card stays cream in dark mode — status badge inside must match */
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card .site-status {
+    background: #fffafa;
+    border-color: #ffd8d2;
+    color: #2e2b29;
+  }
 }
 html[data-color-scheme="dark"] .glee-main .site-status {
   background: #241c1a;
   border-color: rgba(240, 200, 190, 0.25);
   color: #f0e8e0;
+}
+html[data-color-scheme="dark"] .glee-main .glee-hero-card .site-status {
+  background: #fffafa;
+  border-color: #ffd8d2;
+  color: #2e2b29;
 }
 
 /* Stripe sections */
