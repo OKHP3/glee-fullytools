@@ -4569,6 +4569,67 @@ html[data-theme="light"] .glee-main {
   border-color: #ffd8d2;
 }
 
+/* Breadcrumb — inline pill style, no numbers */
+.glee-main .glee-breadcrumb {
+  margin: 0.5rem 0 0;
+}
+.glee-main .glee-breadcrumb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.glee-main .glee-breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+/* Separator dot before every item except the first */
+.glee-main .glee-breadcrumb-item + .glee-breadcrumb-item::before {
+  content: "·";
+  margin: 0 0.4rem;
+  opacity: 0.5;
+  font-size: 0.9em;
+}
+.glee-main .glee-breadcrumb-item a {
+  color: #6b5e57;
+  text-decoration: none;
+}
+.glee-main .glee-breadcrumb-item a:hover {
+  color: #d35b2d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.glee-main .glee-breadcrumb-current {
+  color: #d35b2d;
+  font-weight: 500;
+}
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-item a {
+    color: rgba(240, 232, 224, 0.55);
+  }
+  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-item a:hover {
+    color: #f07585;
+  }
+  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-current {
+    color: #f07585;
+  }
+}
+html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-item a {
+  color: rgba(240, 232, 224, 0.55);
+}
+html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-item a:hover {
+  color: #f07585;
+}
+html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
+  color: #f07585;
+}
+
 .glee-main .site-header {
   border-bottom-color: #ffdcd2;
 }
