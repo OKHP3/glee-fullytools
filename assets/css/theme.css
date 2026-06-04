@@ -4370,26 +4370,27 @@ html[data-color-scheme="dark"] .glee-main .nav-dropdown {
   border-color: rgba(240, 200, 190, 0.15);
 }
 
-/* Hero card — both container AND the rotated ::before paper panel */
+/* Hero card — keep cream paper panel in dark mode (preserves stripe harmony),
+   but pin text to dark charcoal so it reads on the warm background */
 @media (prefers-color-scheme: dark) {
   html:not([data-color-scheme="light"]) .glee-main .glee-hero-card {
-    background: #241c1a;
-    border-color: rgba(240, 200, 190, 0.12);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    color: #2e2b29;
   }
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card::before {
-    background: #241c1a;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card h1,
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card h2,
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card p,
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card li {
+    color: #2e2b29;
   }
 }
 html[data-color-scheme="dark"] .glee-main .glee-hero-card {
-  background: #241c1a;
-  border-color: rgba(240, 200, 190, 0.12);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  color: #2e2b29;
 }
-html[data-color-scheme="dark"] .glee-main .glee-hero-card::before {
-  background: #241c1a;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+html[data-color-scheme="dark"] .glee-main .glee-hero-card h1,
+html[data-color-scheme="dark"] .glee-main .glee-hero-card h2,
+html[data-color-scheme="dark"] .glee-main .glee-hero-card p,
+html[data-color-scheme="dark"] .glee-main .glee-hero-card li {
+  color: #2e2b29;
 }
 
 /* General cards */
