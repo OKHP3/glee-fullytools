@@ -4778,23 +4778,9 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
   font-size: 0.75rem;
   border: 1px solid #a63749;
 }
-/* Dark mode – edges and arrowheads must be bright enough to read on dark shell */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .mermaid .edgePath path,
-  html:not([data-color-scheme="light"]) .glee-main .mermaid .flowchart-link {
-    stroke: #f07585;
-  }
-  html:not([data-color-scheme="light"]) .glee-main .mermaid .arrowheadPath {
-    fill: #f07585;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .mermaid .edgePath path,
-html[data-color-scheme="dark"] .glee-main .mermaid .flowchart-link {
-  stroke: #f07585;
-}
-html[data-color-scheme="dark"] .glee-main .mermaid .arrowheadPath {
-  fill: #f07585;
-}
+/* Note: Mermaid edge/arrowhead colours are controlled via themeVariables in
+   mermaid-init.js — SVG-internal <style> blocks override external CSS, so
+   CSS selectors targeting .edgePath or .arrowheadPath have no effect. */
 
 
 /* ===================================================================== */

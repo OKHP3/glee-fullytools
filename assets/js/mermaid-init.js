@@ -12,14 +12,32 @@
 import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 
 // ── Dark-mode detection ────────────────────────────────────────────────────
-// Glee uses data-color-scheme attr + glee-color-scheme localStorage.
-// AskJamie / OKH use the same attr convention.
+// mermaid-init.js runs as an ES module — its top-level code executes BEFORE
+// DOMContentLoaded fires. app.js sets data-color-scheme inside a DOMContentLoaded
+// callback, so that attribute is always null here. We must read directly from
+// localStorage (the same keys app.js writes) to honour the user's saved preference.
 function resolveIsDark() {
-  const attr = document.documentElement.getAttribute("data-color-scheme");
-  if (attr === "dark")  return true;
-  if (attr === "light") return false;
-  // Attr absent → follow OS
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isGlee     = document.body.classList.contains("glee-main");
+  const isAskJamie = document.body.classList.contains("askjamie-main");
+
+  if (isGlee) {
+    const saved = localStorage.getItem("glee-color-scheme");
+    if (saved === "dark")  return true;
+    if (saved === "light") return false;
+    // "system" or absent → follow OS
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  if (!isAskJamie) {
+    // OKH: uses okh-theme localStorage key
+    const saved = localStorage.getItem("okh-theme");
+    if (saved === "dark")  return true;
+    if (saved === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  // AskJamie: brand-locked to light, no toggle
+  return false;
 }
 
 // ── Site-specific themeVariables ───────────────────────────────────────────
