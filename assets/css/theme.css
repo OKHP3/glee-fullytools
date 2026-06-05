@@ -4572,20 +4572,15 @@ html[data-theme="light"] .glee-main {
 }
 
 /* Glee-fully – canonical 6-stripe retro palette (amber-teal spectrum).
-   Overrides .brand-stripes base class: fixed height, no horizontal drift.
-   Wave bottom edge handled via ::after — see gleeWaveRoll rules below.   */
+   Fills the full hero (inset: 0 overrides base -12% bleed — not needed here).
+   Subtle sail-sway animation via gleeSailSway — almost imperceptible.        */
 .brand-stripes--glee {
-  /* Override base .brand-stripes inset: -12% 0 with fixed dimensions */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  height: 280px;
+  /* Fill the full hero, no bleed needed (overflow:hidden on .glee-hero clips) */
+  inset: 0;
   /* Solid colours matching reference artwork */
   opacity: 0.95;
-  /* No horizontal panning — wave ::after provides motion */
   background-size: 100% 100%;
-  animation: none;
+  animation: gleeSailSway 8s ease-in-out infinite;
   background-image: linear-gradient(
     to bottom,
     #e8d4a0  0%,
@@ -4841,19 +4836,15 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
 }
 
 /* Full-width stripe banner — homepage variant (inner pages use .brand-stripes--glee).
-   Fixed 280px height so stripes are NEVER driven by hero-card content height.
-   Rolling wave bottom edge supplied by ::after pseudo — no image files needed.  */
+   Fills the hero completely (inset: 0). Subtle sail-sway animation below.       */
 .glee-hero-stripes {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  height: 280px;
+  inset: 0;
   z-index: -2;
   pointer-events: none;
   opacity: 0.95;
   background-size: 100% 100%;
+  animation: gleeSailSway 8s ease-in-out infinite;
   background-image: linear-gradient(
     to bottom,
     #e8d4a0  0%,
@@ -4871,43 +4862,15 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
   );
 }
 
-/* ── Rolling wave bottom edge (Glee-only, CSS-only, no image files) ───────
-   The ::after is 200% wide; background-size: 50% tiles one SVG wave per
-   viewport-width. translateX(-50%) shifts one full tile → seamless loop.
-   Fill colour matches the page cream so it reads as a wavy cut in the band. */
-.glee-hero-stripes::after,
-.glee-main .brand-stripes--glee::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 200%;
-  height: 56px;
-  pointer-events: none;
-  /* Cream page-bg colour revealed through wave-shaped mask */
-  background-color: #f6f2ee;
-  /* SVG sine-wave mask: opaque where cream should show, transparent elsewhere */
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 56'%3E%3Cpath d='M0,24 C120,4 200,4 360,24 C520,44 600,44 720,24 L720,56 L0,56 Z' fill='black'/%3E%3C/svg%3E");
-  mask-repeat: repeat-x;
-  mask-size: 50% 100%;
-  animation: gleeWaveRoll 10s linear infinite;
-}
-
-@keyframes gleeWaveRoll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* Dark-mode: wave fill swaps to dark surface so the cut still reads cleanly */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-hero-stripes::after,
-  html:not([data-color-scheme="light"]) .glee-main .brand-stripes--glee::after {
-    background-color: #1a1210;
-  }
-}
-html[data-color-scheme="dark"] .glee-hero-stripes::after,
-html[data-color-scheme="dark"] .glee-main .brand-stripes--glee::after {
-  background-color: #1a1210;
+/* ── Glee sail-sway — almost-imperceptible cloth-in-breeze shimmer ──────────
+   Tiny skewX + micro-scaleY oscillation. Amplitude <0.5 deg / <0.3% scale
+   so it reads as texture rather than motion. Scoped to Glee pages only.    */
+@keyframes gleeSailSway {
+  0%   { transform: skewX(-0.30deg) scaleY(1.0005); }
+  28%  { transform: skewX( 0.20deg) scaleY(1.0000); }
+  57%  { transform: skewX( 0.35deg) scaleY(1.0020); }
+  78%  { transform: skewX(-0.15deg) scaleY(1.0008); }
+  100% { transform: skewX(-0.30deg) scaleY(1.0005); }
 }
 
 .glee-hero .hero-inner {
