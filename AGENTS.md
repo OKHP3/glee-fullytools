@@ -15,21 +15,36 @@ invariant).
 - If you need config/secrets, stop and ask. Never invent credentials.
 - Summarize what you changed and why at the end.
 
-> **AGENTS.md sync circuit** -- This file is one of five kept in lockstep.
-> Any structural edit to Sections 1-8 must be propagated to the other four repos
+---
+
+## Project Identity
+
+| Field | Value |
+|---|---|
+| Suite | Glee-fully |
+| Type | Website / Suite Root |
+| Status | Active |
+| GitHub | https://github.com/OKHP3/Glee-fullyTools |
+| Notion Anchor | https://app.notion.com/p/2cc812e0ced480f3862af0b8caee1aa8 |
+
+**Purpose:** Root website for the Glee-fully personalizable GPT tools suite. Serves as the public hub and entry point for all Glee-fully tool branches.
+
+**Local dev paths:**
+- Windows: `C:\Users\jamie\OKH-Local\Websites\glee-fullytools`
+- Mac: `/Volumes/OKH-Local/04_GitHub_Mirrors/Glee-fullyTools`
+
+**Related repos:**
+- [Glee-fullyTools-FoundRy](https://github.com/OKHP3/Glee-fullyTools-FoundRy)
+- [glee-fully-gpt00-personalizable-tools](https://github.com/OKHP3/glee-fully-gpt00-personalizable-tools)
+
+> **AGENTS.md sync circuit** — This file is one of three kept in lockstep.
+> Any structural edit to sections 1–5 must be propagated to the other two repos
 > before the session closes. Section 2.2.1 (per-site inventory) is intentionally
-> site-specific and does not need to match line for line. When this file is silent
-> or ambiguous on any governance matter, defer to the primary authority:
-> <https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md>
+> site-specific and does not need to match line-for-line.
 >
-> Static site repos:
-> - **OverKill Hill P3:** <https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md>
-> - **AskJamie:** <https://github.com/OKHP3/AskJamie/blob/main/AGENTS.md>
-> - **Glee-fully Tools:** <https://github.com/OKHP3/Glee-fullyTools/blob/main/AGENTS.md>
->
-> Web application repos:
-> - **BPMN for Mermaid:** <https://github.com/OKHP3/mermaid-diagram-bpmn/blob/main/AGENTS.md>
-> - **Mermaid Theme Builder:** <https://github.com/OKHP3/mermaid-theme-builder/blob/main/AGENTS.md>
+> - **OverKill Hill P³:** https://github.com/OKHP3/OverKill-Hill/blob/main/AGENTS.md
+> - **AskJamie™:** https://github.com/OKHP3/AskJamie/blob/main/AGENTS.md
+> - **Glee-fully Tools:** https://github.com/OKHP3/Glee-fullyTools/blob/main/AGENTS.md
 
 ---
 
@@ -37,7 +52,7 @@ invariant).
 **Brand:** Glee-fully Tools (Coral / Cream)
 **Body scope class:** `glee-main` (pages set `<body class="glee-main">`)
 **Canonical stylesheet:** https://raw.githubusercontent.com/OKHP3/OverKill-Hill/main/assets/css/theme.css
-**Version:** 2.4
+**Version:** 2.3
 
 This section governs how files and folders are named, what structure all sibling
 repos share, what counts as detritus, and the brand contract this repo serves.
@@ -342,11 +357,6 @@ Expected naming patterns:
 May contain sub-folders for organizing related documents (e.g., `sister-site-sync/`
 for cross-site coordination files). Machine-generated JSON output belongs in
 `assets/audit/`, not here. Superseded docs move to `docs/archive/`.
-
----
-
-**`assets/downloads/`**
-*(See above.)*
 
 ---
 
@@ -711,6 +721,11 @@ These apply in every session, regardless of task:
 - No new dependencies unless explicitly requested.
 - All user-facing content must use US English per the Language Standard in
   Section 0. UK and Commonwealth spellings are defects, not stylistic variants.
+- **ROY principle:** ratio of understanding produced to explanation invested.
+  Verbosity must earn its space. Prefer punchy standalone lines over prose
+  consolidation. Do not pad responses.
+- **AutoCAD version:** R10 (locked, not negotiable). Do not reference or suggest
+  any other AutoCAD release in this project's documentation or tooling.
 
 ---
 

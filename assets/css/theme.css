@@ -1,25 +1,25 @@
 /* OverKill Hill P³ — Industrial Blueprint Theme
    Shared layout + motion across overkillhill.com, glee-fully.tools, and askjamie.bot.
 
-   ┌────────────────────────────────────────────────────────────────┐
-   │  STRUCTURE (canonical order — mirror this in sibling repos)    │
-   │   1. GLOBAL        tokens, reset, base, shared utilities,      │
-   │                    components used by all three sites          │
-   │   2. OVERKILL HILL site-specific (default)                     │
-   │   3. GLEE-FULLY    `.glee-main`-scoped overrides               │
-   │   4. ASKJAMIE      `.askjamie-main`-scoped overrides           │
-   │                                                                │
-   │  Maintenance: edit here, then run                              │
-   │    python3 assets/scripts/reorg-theme-css.py --dry-run         │
-   │  to verify the section a new rule lands in.                    │
-   └────────────────────────────────────────────────────────────────┘
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │  STRUCTURE (canonical order — mirror this in sibling repos)            │
+   │   1. GLOBAL        tokens, reset, base, shared utilities,               │
+   │                    components used by all three sites                  │
+   │   2. OVERKILL HILL site-specific (default)                             │
+   │   3. GLEE-FULLY    `.glee-main`-scoped overrides                      │
+   │   4. ASKJAMIE      `.askjamie-main`-scoped overrides                  │
+   │                                                                         │
+   │  Maintenance: edit here, then run                                      │
+   │    python3 assets/scripts/reorg-theme-css.py --dry-run                │
+   │  to verify the section a new rule lands in.                           │
+   └─────────────────────────────────────────────────────────────────────────┘
 */
 
 
-/* ╔════════════════════════════════════════════════════════════════════════════╗
-   ║  SECTION · GLOBAL                                                          ║
-   ║  Tokens, reset, base, shared utilities + components                        ║
-   ╚════════════════════════════════════════════════════════════════════════════╝ */
+/* ╔═════════════════════════════════════════════════════════════════════════╗
+   ║  SECTION · GLOBAL                                                      ║
+   ║  Tokens, reset, base, shared utilities + components                    ║
+   ╚═════════════════════════════════════════════════════════════════════════╝ */
 
 /* OverKill Hill P³ – 2025 Industrial Blueprint Theme
    Shared layout + motion for OverKill Hill, Ask Jamie (subsite), and sibling sites.
@@ -58,10 +58,9 @@
   --mermaid-edge-label-bg: #181f26;
 
   /* Typography – OverKill Hill default */
-  --font-heading: "Alfa Slab One", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  --font-body: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  --font-heading: "Alfa Slab One", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
   /* Layout */
   --max-width: 1120px;
@@ -75,7 +74,6 @@
   --color-text-heading:     var(--color-fg);          /* heading text color */
   --color-link:             var(--color-fg);           /* default link color */
   --color-link-hover:       var(--okh-orange);         /* link hover state */
-  --font-mono:              "JetBrains Mono", "Fira Code", ui-monospace, monospace;
   --radius-sm:              4px;
 
   /* --- Spacing scale --- */
@@ -102,7 +100,7 @@
   --color-accent: var(--okh-orange);
 }
 
-/* ── Body background: JS sets data-theme on <html>, not <body> ────────── */
+/* ── Body background: JS sets data-theme on <html>, not <body> ───────────── */
 html[data-theme="dark"] body {
   background: radial-gradient(circle at top, #1f2933, #020617);
 }
@@ -180,19 +178,17 @@ html[data-theme="light"] .projects-main .hero {
   text-decoration-color: var(--okh-orange);
 }
 
-/* Footer — hardcoded #020617 bg on OKH; keep footer text readable.
-   Scoped to non-Glee pages: Glee uses a cream footer (#fff7f1) and has its
-   own dark-mode overrides; applying near-white text there makes it invisible. */
-html[data-theme="light"] body:not(.glee-main) .site-footer {
+/* Footer — hardcoded #020617 bg; keep all footer text readable */
+html[data-theme="light"] .site-footer {
   color: rgba(229, 231, 235, 0.75);
 }
-html[data-theme="light"] body:not(.glee-main) .footer-column a {
+html[data-theme="light"] .footer-column a {
   color: rgba(229, 231, 235, 0.6);
 }
-html[data-theme="light"] body:not(.glee-main) .footer-column a:hover {
+html[data-theme="light"] .footer-column a:hover {
   color: var(--okh-orange);
 }
-html[data-theme="light"] body:not(.glee-main) .footer-bottom {
+html[data-theme="light"] .footer-bottom {
   color: rgba(229, 231, 235, 0.45);
 }
 
@@ -223,6 +219,10 @@ html,
 body {
   margin: 0;
   padding: 0;
+}
+
+html {
+  overflow-x: hidden; /* iOS Safari: prevents horizontal scroll at root level */
 }
 
 body {
@@ -312,11 +312,6 @@ button {
   }
 }
 
-.grid {
-  display: grid;
-  gap: 1.75rem;
-}
-
 /* ===== UTILS & LAYOUT ==================================================== */
 
 .grid {
@@ -326,7 +321,7 @@ button {
 
 /* Define .grid-3 once.  Use a smaller minimum size so a column can shrink on phones. */
 .grid-3 {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
 }
 
 /* Collapse to a single column sooner (tablet + phone). */
@@ -497,28 +492,6 @@ button {
   .data-table-wrap table {
     max-width: none;
   }
-}
-
-/* ===== SKIP LINK (a11y — visually hidden until keyboard focus) ============ */
-
-.skip-to-content {
-  position: absolute;
-  top: -100%;
-  left: 1rem;
-  z-index: 9999;
-  padding: 0.5rem 1rem;
-  background: var(--color-accent, #d35b2d);
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 0 0 0.5rem 0.5rem;
-  text-decoration: none;
-  transition: top 0.15s ease;
-}
-.skip-to-content:focus {
-  top: 0;
-  outline: 3px solid #fff;
-  outline-offset: 2px;
 }
 
 /* ===== HEADER & NAV ====================================================== */
@@ -779,6 +752,9 @@ button {
 
 .site-specials-link {
   text-decoration: underline;
+  min-width: 0;           /* flex item: allows shrink below natural text width */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .site-specials--okh { /* forge / industrial */
@@ -1124,7 +1100,11 @@ button {
 .project-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+}
+
+.project-card > p:last-child {
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 /* About */
@@ -1531,6 +1511,16 @@ body.construction-dismissed .construction-overlay,
   color: initial;
 }
 
+/* Override color:initial for OKH diagrams that use the dark Mermaid palette.
+   .okh-mermaid-shell scopes the universe page map; higher specificity
+   (2 classes vs 1 class) beats the color:initial rule above without !important. */
+.okh-mermaid-shell .mermaid foreignObject,
+.okh-mermaid-shell .mermaid foreignObject div,
+.okh-mermaid-shell .mermaid foreignObject p,
+.okh-mermaid-shell .mermaid foreignObject span {
+  color: var(--mermaid-primary-text-color);
+}
+
 /* Prompts section: h3 subtitle beneath h2 */
 .section-subtitle {
   font-family: var(--font-body);
@@ -1803,20 +1793,23 @@ body.construction-dismissed .construction-overlay,
   border-top: 1px solid var(--color-border-subtle, #2a2f37);
   padding: 0.55rem 1rem;
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   color: var(--color-muted, #9ca3af);
   background: rgba(0, 0, 0, 0.2);
 }
 .okh-search-footer .okh-search-keys {
   display: flex;
-  gap: 0.6rem;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
   align-items: center;
 }
 .okh-search-footer kbd {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   padding: 0.05rem 0.35rem;
   border: 1px solid var(--color-border-subtle, #2a2f37);
   border-radius: 4px;
@@ -2570,19 +2563,19 @@ body:not(.askjamie-main):not(.glee-main) .mermaid svg {
   height: auto;
 }
 
-/* Nodes */
+/* Nodes — use stable mermaid tokens so fills stay dark in both page themes */
 body:not(.askjamie-main):not(.glee-main) .mermaid .node rect,
 body:not(.askjamie-main):not(.glee-main) .mermaid .node circle {
   rx: 6px;
   ry: 6px;
-  fill: var(--color-surface-soft);
-  stroke: var(--color-accent);
+  fill: var(--mermaid-primary-color);
+  stroke: var(--mermaid-primary-border-color);
   stroke-width: 1.5px;
 }
 
-/* Labels */
+/* Labels — use stable mermaid tokens so text stays light in both page themes */
 body:not(.askjamie-main):not(.glee-main) .mermaid .label text {
-  fill: var(--color-fg);
+  fill: var(--mermaid-primary-text-color);
   font-family: var(--font-body);
   font-size: 0.9rem;
 }
@@ -2607,6 +2600,29 @@ body:not(.askjamie-main):not(.glee-main) .mermaidTooltip {
   padding: 0.25rem 0.6rem;
   font-size: 0.75rem;
   border: 1px solid rgba(148, 163, 184, 0.8);
+}
+
+/* OKH universe map – Mermaid diagram shell (used in universe/index.html) */
+.okh-mermaid-shell {
+  margin: 0;
+  width: 100%;
+  max-width: 960px;
+}
+
+.okh-mermaid-shell .mermaid {
+  width: 100%;
+  min-height: 22rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 640px) {
+  .okh-mermaid-shell .mermaid {
+    min-height: 18rem;
+    padding: 1rem;
+  }
 }
 
 
@@ -4289,262 +4305,6 @@ html[data-theme="light"] .article-body h2 {
    ║  glee-fully.tools — scoped via .glee-main                                  ║
    ╚════════════════════════════════════════════════════════════════════════════╝ */
 
-/* ── Glee dark mode ───────────────────────────────────────────────────────────
-   Triggered by OS (prefers-color-scheme: dark) unless user pinned light, OR by
-   JS setting html[data-color-scheme="dark"] via the header toggle button.
-   When toggle is "system" the attr is absent; the media query takes over.
-   Token palette: bg #1a1210, surface #241c1a, fg #f0e8e0, accent #f07585.    */
-
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main {
-    --color-bg:           #1a1210;
-    --color-surface:      #241c1a;
-    --color-surface-soft: #2e2220;
-    --color-fg:           #f0e8e0;
-    --color-muted:        rgba(240, 232, 224, 0.58);
-    --color-accent:       #f07585;
-    --color-border:       rgba(240, 200, 190, 0.15);
-    --mermaid-line-color: #f07585;
-  }
-}
-html[data-color-scheme="dark"] .glee-main {
-  --color-bg:           #1a1210;
-  --color-surface:      #241c1a;
-  --color-surface-soft: #2e2220;
-  --color-fg:           #f0e8e0;
-  --color-muted:        rgba(240, 232, 224, 0.58);
-  --color-accent:       #f07585;
-  --color-border:       rgba(240, 200, 190, 0.15);
-  --mermaid-line-color: #f07585;
-}
-
-/* Explicit light pin — overrides OS dark preference when user chose light */
-html[data-color-scheme="light"] .glee-main {
-  --color-bg:           #f6f2ee;
-  --color-surface:      #fffdfa;
-  --color-surface-soft: #fff7f1;
-  --color-fg:           #2e2b29;
-  --color-muted:        #7a736f;
-  --color-accent:       #d94f63;
-  --color-border:       rgba(46, 43, 41, 0.12);
-}
-
-/* Glee light-mode toggle — coral solid so it's unmistakable on cream header */
-.glee-main .theme-toggle {
-  background: #d35b2d;
-  border-color: #d35b2d;
-  color: #fff;
-}
-.glee-main .theme-toggle:hover,
-.glee-main .theme-toggle:focus-visible {
-  background: #b84a22;
-  border-color: #b84a22;
-  outline: none;
-}
-
-/* Page background */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main { background: #1a1210; }
-}
-html[data-color-scheme="dark"] .glee-main { background: #1a1210; }
-
-/* Site header */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .site-header {
-    background: rgba(26, 18, 16, 0.92);
-    border-color: rgba(240, 200, 190, 0.12);
-  }
-}
-html[data-color-scheme="dark"] .glee-main .site-header {
-  background: rgba(26, 18, 16, 0.92);
-  border-color: rgba(240, 200, 190, 0.12);
-}
-
-/* Nav dropdown submenu */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .nav-dropdown {
-    background: #241c1a;
-    border-color: rgba(240, 200, 190, 0.15);
-  }
-}
-html[data-color-scheme="dark"] .glee-main .nav-dropdown {
-  background: #241c1a;
-  border-color: rgba(240, 200, 190, 0.15);
-}
-
-/* Hero card — keep cream paper panel in dark mode (preserves stripe harmony),
-   but pin text to dark charcoal so it reads on the warm background */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card {
-    color: #2e2b29;
-  }
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card h1,
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card h2,
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card p,
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card li {
-    color: #2e2b29;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .glee-hero-card {
-  color: #2e2b29;
-}
-html[data-color-scheme="dark"] .glee-main .glee-hero-card h1,
-html[data-color-scheme="dark"] .glee-main .glee-hero-card h2,
-html[data-color-scheme="dark"] .glee-main .glee-hero-card p,
-html[data-color-scheme="dark"] .glee-main .glee-hero-card li {
-  color: #2e2b29;
-}
-
-/* General cards */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .card {
-    background: #241c1a;
-    border-color: rgba(240, 200, 190, 0.12);
-    color: #f0e8e0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  }
-}
-html[data-color-scheme="dark"] .glee-main .card {
-  background: #241c1a;
-  border-color: rgba(240, 200, 190, 0.12);
-  color: #f0e8e0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-/* Site status badge (e.g. "Early Emergence") */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .site-status {
-    background: #241c1a;
-    border-color: rgba(240, 200, 190, 0.25);
-    color: #f0e8e0;
-  }
-  /* Hero card stays cream in dark mode — status badge inside must match */
-  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card .site-status {
-    background: #fffafa;
-    border-color: #ffd8d2;
-    color: #2e2b29;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .site-status {
-  background: #241c1a;
-  border-color: rgba(240, 200, 190, 0.25);
-  color: #f0e8e0;
-}
-html[data-color-scheme="dark"] .glee-main .glee-hero-card .site-status {
-  background: #fffafa;
-  border-color: #ffd8d2;
-  color: #2e2b29;
-}
-
-/* Stripe sections */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .stripe-section     { background: #241c1a; }
-  html:not([data-color-scheme="light"]) .glee-main .stripe-section--alt { background: #2e2220; }
-}
-html[data-color-scheme="dark"] .glee-main .stripe-section     { background: #241c1a; }
-html[data-color-scheme="dark"] .glee-main .stripe-section--alt { background: #2e2220; }
-
-/* Sparkle banner */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .site-specials {
-    background: rgba(240, 117, 133, 0.14);
-    border-color: rgba(240, 117, 133, 0.25);
-    color: #f0e8e0;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .site-specials {
-  background: rgba(240, 117, 133, 0.14);
-  border-color: rgba(240, 117, 133, 0.25);
-  color: #f0e8e0;
-}
-
-/* Footer */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .site-footer {
-    background: #120d0b;
-    border-color: rgba(240, 200, 190, 0.1);
-    color: rgba(240, 232, 224, 0.7);
-  }
-  html:not([data-color-scheme="light"]) .glee-main .footer-column a       { color: rgba(240, 232, 224, 0.58); }
-  html:not([data-color-scheme="light"]) .glee-main .footer-column a:hover  { color: #f07585; }
-  html:not([data-color-scheme="light"]) .glee-main .footer-bottom {
-    color: rgba(240, 232, 224, 0.38);
-    border-color: rgba(240, 200, 190, 0.1);
-  }
-}
-html[data-color-scheme="dark"] .glee-main .site-footer {
-  background: #120d0b;
-  border-color: rgba(240, 200, 190, 0.1);
-  color: rgba(240, 232, 224, 0.7);
-}
-html[data-color-scheme="dark"] .glee-main .footer-column a      { color: rgba(240, 232, 224, 0.58); }
-html[data-color-scheme="dark"] .glee-main .footer-column a:hover { color: #f07585; }
-html[data-color-scheme="dark"] .glee-main .footer-bottom {
-  color: rgba(240, 232, 224, 0.38);
-  border-color: rgba(240, 200, 190, 0.1);
-}
-
-/* Search modal */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .search-modal-backdrop { background: rgba(26, 18, 16, 0.85); }
-  html:not([data-color-scheme="light"]) .glee-main .search-modal          { background: #241c1a; border-color: rgba(240, 200, 190, 0.15); }
-  html:not([data-color-scheme="light"]) .glee-main .search-input          { background: #2e2220; border-color: rgba(240, 200, 190, 0.2); color: #f0e8e0; }
-  html:not([data-color-scheme="light"]) .glee-main .search-result-item:hover { background: #2e2220; }
-}
-html[data-color-scheme="dark"] .glee-main .search-modal-backdrop { background: rgba(26, 18, 16, 0.85); }
-html[data-color-scheme="dark"] .glee-main .search-modal          { background: #241c1a; border-color: rgba(240, 200, 190, 0.15); }
-html[data-color-scheme="dark"] .glee-main .search-input          { background: #2e2220; border-color: rgba(240, 200, 190, 0.2); color: #f0e8e0; }
-html[data-color-scheme="dark"] .glee-main .search-result-item:hover { background: #2e2220; }
-
-/* Search page inline results */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main [data-glee-search-inline-results] .search-result-item {
-    background: #241c1a;
-    border-color: rgba(240, 200, 190, 0.1);
-  }
-}
-html[data-color-scheme="dark"] .glee-main [data-glee-search-inline-results] .search-result-item {
-  background: #241c1a;
-  border-color: rgba(240, 200, 190, 0.1);
-}
-
-/* Keep-exploring tray */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .keep-exploring {
-    background: #2e2220;
-    border-color: rgba(240, 200, 190, 0.12);
-  }
-}
-html[data-color-scheme="dark"] .glee-main .keep-exploring {
-  background: #2e2220;
-  border-color: rgba(240, 200, 190, 0.12);
-}
-
-/* Latest pill */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .latest-pill { background: rgba(240, 117, 133, 0.18); color: #f07585; }
-}
-html[data-color-scheme="dark"] .glee-main .latest-pill { background: rgba(240, 117, 133, 0.18); color: #f07585; }
-
-/* Construction overlay */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .construction-overlay { background: rgba(26, 18, 16, 0.97); }
-}
-html[data-color-scheme="dark"] .glee-main .construction-overlay { background: rgba(26, 18, 16, 0.97); }
-
-/* Header toggle button tint on Glee dark pages */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .theme-toggle {
-    background: rgba(36, 28, 26, 0.85);
-    border-color: rgba(240, 200, 190, 0.22);
-    color: #f0e8e0;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .theme-toggle {
-  background: rgba(36, 28, 26, 0.85);
-  border-color: rgba(240, 200, 190, 0.22);
-  color: #f0e8e0;
-}
 
 /* ── Light-mode brand surface tones ──────────────────────────────────────────
    The shared :root[data-theme="light"] sets OKH's warm-paper baseline.
@@ -4613,67 +4373,6 @@ html[data-theme="light"] .glee-main {
   border-color: #ffd8d2;
 }
 
-/* Breadcrumb — inline pill style, no numbers */
-.glee-main .glee-breadcrumb {
-  margin: 0.5rem 0 0;
-}
-.glee-main .glee-breadcrumb-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0;
-  font-size: 0.8rem;
-  color: var(--color-muted);
-}
-.glee-main .glee-breadcrumb-item {
-  display: flex;
-  align-items: center;
-}
-/* Separator dot before every item except the first */
-.glee-main .glee-breadcrumb-item + .glee-breadcrumb-item::before {
-  content: "·";
-  margin: 0 0.4rem;
-  opacity: 0.5;
-  font-size: 0.9em;
-}
-.glee-main .glee-breadcrumb-item a {
-  color: #6b5e57;
-  text-decoration: none;
-}
-.glee-main .glee-breadcrumb-item a:hover {
-  color: #d35b2d;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.glee-main .glee-breadcrumb-current {
-  color: #d35b2d;
-  font-weight: 500;
-}
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-item a {
-    color: rgba(240, 232, 224, 0.55);
-  }
-  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-item a:hover {
-    color: #f07585;
-  }
-  html:not([data-color-scheme="light"]) .glee-main .glee-breadcrumb-current {
-    color: #f07585;
-  }
-}
-html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-item a {
-  color: rgba(240, 232, 224, 0.55);
-}
-html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-item a:hover {
-  color: #f07585;
-}
-html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
-  color: #f07585;
-}
-
 .glee-main .site-header {
   border-bottom-color: #ffdcd2;
 }
@@ -4712,22 +4411,32 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
 
 .glee-mermaid-shell .mermaid {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 22rem;
   padding: 1.25rem 1.5rem;
   border-radius: 1.5rem;
   background: var(--color-surface);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
   overflow-x: auto;  /* allows wide diagrams to scroll on mobile */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 } 
 
 .glee-mermaid-shell--mini .mermaid {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 12rem;
   padding: 0.75rem 0.9rem;
   border-radius: 1rem;
   background: var(--color-surface);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
   overflow-x: auto; /* scroll on mobile if needed */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 640px) {
@@ -4786,9 +4495,6 @@ html[data-color-scheme="dark"] .glee-main .glee-breadcrumb-current {
   font-size: 0.75rem;
   border: 1px solid #a63749;
 }
-/* Note: Mermaid edge/arrowhead colours are controlled via themeVariables in
-   mermaid-init.js — SVG-internal <style> blocks override external CSS, so
-   CSS selectors targeting .edgePath or .arrowheadPath have no effect. */
 
 
 /* ===================================================================== */

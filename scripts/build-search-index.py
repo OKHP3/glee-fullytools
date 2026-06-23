@@ -19,12 +19,24 @@ import os
 import re
 import sys
 from html.parser import HTMLParser
+from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_FILES = {"404.html", "under-construction.html"}
-EXCLUDE_DIRS = {".git", ".local", ".cache", "node_modules", "attached_assets",
-                "tools", ".github", ".vscode", ".agents", ".pythonlibs"}
+EXCLUDE_DIRS = {
+    ".git",
+    ".local",
+    ".cache",
+    "node_modules",
+    "attached_assets",
+    "tools",
+    ".github",
+    ".vscode",
+    ".agents",
+    ".pythonlibs",
+    "assets/templates",
+}
 
 SKIP_TAGS = {"script", "style", "noscript", "svg", "template"}
 HEADING_TAGS = {"h1", "h2", "h3"}
@@ -181,7 +193,10 @@ def derive_branch(url: str) -> str:
 def collect_html_files() -> list[Path]:
     files: list[Path] = []
     for path in REPO_ROOT.rglob("*.html"):
-        if any(part in EXCLUDE_DIRS for part in path.relative_to(REPO_ROOT).parts):
+        rel_parts = path.relative_to(REPO_ROOT).parts
+        if rel_parts[:2] == ("assets", "templates"):
+            continue
+        if any(part in EXCLUDE_DIRS for part in rel_parts):
             continue
         if path.name in EXCLUDE_FILES:
             continue
@@ -300,7 +315,7 @@ def main() -> int:
         print("\nIndex written but VALIDATION FAILED — please review.", file=sys.stderr)
 
     payload = {
-        "generated_at": __import__("datetime").datetime.utcnow().isoformat() + "Z",
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "version": 1,
         "site": "https://glee-fully.tools",
         "count": len(entries),

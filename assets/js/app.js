@@ -31,21 +31,6 @@
   );
 })();
 
-// ── Header controls wrapper — created EAGERLY during defer, before the search
-//    module's start() runs (readyState is already "interactive" at defer time).
-//    This ensures injectTrigger() finds .header-controls and places the search
-//    button inside it, adjacent to the theme toggle, not as a raw container sibling.
-(function createHeaderControls() {
-  const hdr = document.querySelector(".site-header");
-  if (!hdr) return;
-  const container = hdr.querySelector(".container");
-  if (!container || container.querySelector(".header-controls")) return;
-  const div = document.createElement("div");
-  div.className = "header-controls";
-  const nt = container.querySelector(".nav-toggle");
-  container.insertBefore(div, nt || null);
-}());
-
 // ── 2. Page interactions: nav, year, theme toggle, scroll reveal ───────────
 document.addEventListener("DOMContentLoaded", () => {
   const header = document.querySelector(".site-header");
@@ -81,71 +66,43 @@ document.addEventListener("DOMContentLoaded", () => {
     if (el) el.textContent = year;
   });
 
-  // ── Header controls wrapper — already created eagerly above; just query it.
-  let headerControls = header
-    ? header.querySelector(".header-controls")
-    : null;
-
-  // Theme toggle — three independent implementations:
-  //   OKH:      3-state (system/light/dark) via data-theme attr + okh-theme localStorage
-  //   Glee:     3-state via data-color-scheme attr + glee-color-scheme localStorage
-  //   AskJamie: brand-locked to light, no toggle rendered
-  const isGlee     = body.classList.contains("glee-main");
-  const isAskJamie = body.classList.contains("askjamie-main");
-
-  const TT_STATES = ["system", "light", "dark"];
-  const TT_ICONS  = {
-    system: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-    light:  '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
-    dark:   '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
-  };
-  const TT_ARIA = {
-    system: "Switch to light mode",
-    light:  "Switch to dark mode",
-    dark:   "Switch to system mode",
-  };
-
-  function spawnToggle(state, onCycle) {
-    const btn = document.createElement("button");
-    btn.classList.add("theme-toggle");
-    btn.dataset.state = state;
-    btn.setAttribute("aria-label", TT_ARIA[state]);
-    btn.innerHTML = TT_ICONS[state];
-    const target = headerControls || (header && header.querySelector(".container"));
-    if (target) target.appendChild(btn);
-    btn.addEventListener("click", () => {
-      const next = TT_STATES[(TT_STATES.indexOf(btn.dataset.state) + 1) % TT_STATES.length];
-      btn.dataset.state = next;
-      btn.setAttribute("aria-label", TT_ARIA[next]);
-      btn.innerHTML = TT_ICONS[next];
-      onCycle(next);
-    });
-    return btn;
-  }
-
-  if (isGlee) {
-    // Glee: data-color-scheme drives CSS dark-mode rules; absent = follow OS
-    const saved     = localStorage.getItem("glee-color-scheme");
-    let gleeState   = TT_STATES.includes(saved) ? saved : "system";
-    function applyGleeState(s) {
-      if (s === "system") {
-        document.documentElement.removeAttribute("data-color-scheme");
+  // ── Header controls wrapper (holds search + theme toggle) ───────────────────
+  // Created on all pages so injectTrigger() always has a consistent target.
+  let headerControls = null;
+  if (header) {
+    const container = header.querySelector(".container");
+    if (container) {
+      headerControls = document.createElement("div");
+      headerControls.className = "header-controls";
+      const navTogglePre = container.querySelector(".nav-toggle");
+      if (navTogglePre) {
+        container.insertBefore(headerControls, navTogglePre);
       } else {
-        document.documentElement.setAttribute("data-color-scheme", s);
+        container.appendChild(headerControls);
       }
     }
+  }
 
-    applyGleeState(gleeState);
-    spawnToggle(gleeState, (next) => {
-      gleeState = next;
-      applyGleeState(next);
-      localStorage.setItem("glee-color-scheme", next);
-    });
+  // Theme toggle – only for core OverKill Hill pages (brand-locked sites force light)
+  const brandLocked =
+    body.classList.contains("glee-main") ||
+    body.classList.contains("askjamie-main");
 
-  } else if (!isAskJamie) {
-    // OKH: data-theme drives CSS dark-mode rules
+  if (!brandLocked) {
+    const STATES      = ["system", "light", "dark"];
+    const STATE_ICONS = {
+      system: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+      light:  '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+      dark:   '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    };
+    const STATE_ARIA  = {
+      system: "Switch to light mode",
+      light:  "Switch to dark mode",
+      dark:   "Switch to system mode",
+    };
+
     const savedTheme = localStorage.getItem("okh-theme");
-    let currentState = TT_STATES.includes(savedTheme) ? savedTheme : "system";
+    let currentState = STATES.includes(savedTheme) ? savedTheme : "system";
 
     function applyThemeState(state) {
       if (state === "system") {
@@ -157,18 +114,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     applyThemeState(currentState);
-    spawnToggle(currentState, (next) => {
-      currentState = next;
-      applyThemeState(next);
-      localStorage.setItem("okh-theme", next);
+
+    const themeToggle = document.createElement("button");
+    themeToggle.classList.add("theme-toggle");
+    themeToggle.dataset.state = currentState;
+    themeToggle.setAttribute("aria-label", STATE_ARIA[currentState]);
+    themeToggle.innerHTML = STATE_ICONS[currentState];
+
+    if (headerControls) {
+      headerControls.appendChild(themeToggle);
+    } else if (header && header.querySelector(".container")) {
+      header.querySelector(".container").appendChild(themeToggle);
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const idx    = STATES.indexOf(currentState);
+      currentState = STATES[(idx + 1) % STATES.length];
+      themeToggle.dataset.state = currentState;
+      themeToggle.setAttribute("aria-label", STATE_ARIA[currentState]);
+      themeToggle.innerHTML = STATE_ICONS[currentState];
+      applyThemeState(currentState);
+      localStorage.setItem("okh-theme", currentState);
     });
 
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
       if (currentState === "system") applyThemeState("system");
     });
-
   } else {
-    // AskJamie: brand-locked to light, no toggle
+    // Subsites stay on their brand "light" look
     document.documentElement.setAttribute("data-theme", "light");
   }
 
@@ -309,6 +282,33 @@ document.addEventListener("DOMContentLoaded", () => {
       tocH = toc.offsetHeight;
     }
   });
+}());
+
+// ── 4b. TOC scrollspy — active-link tracking for #toc-widget ───────────
+// Works on any page that has id="toc-widget" with .toc-list anchor links.
+// Pairs with Section 4's lerp scroll-follow. No-op when widget is absent.
+(function () {
+  var links = Array.from(document.querySelectorAll('#toc-widget .toc-list a[href^="#"]'));
+  if (!links.length) return;
+
+  var targets = links
+    .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+    .filter(Boolean);
+  if (!targets.length) return;
+
+  function setActive() {
+    var triggerY = window.scrollY + window.innerHeight * 0.20;
+    var activeId = null;
+    targets.forEach(function (el) {
+      if (el.getBoundingClientRect().top + window.scrollY <= triggerY) activeId = el.id;
+    });
+    links.forEach(function (a) {
+      a.classList.toggle('toc-active', a.getAttribute('href').slice(1) === activeId);
+    });
+  }
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setTimeout(setActive, 100);
 }());
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
