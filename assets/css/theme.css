@@ -1049,6 +1049,31 @@ button {
   outline-offset: 2px;
 }
 
+/* ── Skip-to-content (Glee-fully pages use this class name) ──────────────
+   Visually hidden by default; slides into view only on keyboard focus.
+   Same pattern as .okh-skip-link above but using Glee brand colours.    */
+.skip-to-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.75rem 1rem;
+  background: #2e2b29;        /* Glee ink/charcoal */
+  color: #f6f2ee;             /* Glee cream */
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 0 0 6px 0;
+  z-index: 9999;
+  transform: translateY(-150%);
+  transition: transform 120ms ease-out;
+}
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #d94f63; /* Glee coral */
+  outline-offset: 2px;
+}
+
 /* ===== SECTION STYLES ==================================================== */
 
 .section-header {
@@ -4314,6 +4339,53 @@ html[data-theme="light"] .glee-main {
   --color-bg:           #f6f2ee;   /* cream — one tone warmer than OKH baseline */
   --color-surface:      #fffdfa;   /* near-white with warmth */
   --color-surface-soft: #fff7f1;   /* soft warm inset */
+}
+
+/* ── Glee breadcrumb nav ─────────────────────────────────────────────────
+   Rendered by scripts/inject-breadcrumb.py as:
+     <nav class="glee-breadcrumb">
+       <ol class="glee-breadcrumb-list">
+         <li class="glee-breadcrumb-item"><a>…</a></li>
+         <li class="glee-breadcrumb-item glee-breadcrumb-current">…</li>
+       </ol>
+     </nav>
+   Displayed inline below the sparkle banner; suppressed on the homepage. */
+.glee-breadcrumb {
+  padding: 0.35rem 1.25rem;
+  background: transparent;
+  font-size: 0.82rem;
+}
+.glee-breadcrumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.glee-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  color: #6b6460;
+}
+.glee-breadcrumb-item + .glee-breadcrumb-item::before {
+  content: "/";
+  margin-right: 0.25rem;
+  color: #b8afa8;
+  aria-hidden: true;
+}
+.glee-breadcrumb-item a {
+  color: #2d6f7e;             /* Glee teal */
+  text-decoration: none;
+}
+.glee-breadcrumb-item a:hover {
+  color: #d94f63;             /* Glee coral on hover */
+  text-decoration: underline;
+}
+.glee-breadcrumb-current {
+  color: #2e2b29;             /* Glee ink — current page, no link */
+  font-weight: 500;
 }
 
 .site-specials--glee { /* bright & playful */
