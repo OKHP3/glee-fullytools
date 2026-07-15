@@ -30,12 +30,87 @@ invariant).
 **Purpose:** Root website for the Glee-fully personalizable GPT tools suite. Serves as the public hub and entry point for all Glee-fully tool branches.
 
 **Local dev paths:**
-- Windows: `C:\Users\jamie\OKH-Local\Websites\glee-fullytools`
+- Windows: `C:\Users\jamie\OKH-Local\04_GitHub_Mirrors\glee-fullytools`
 - Mac: `/Volumes/OKH-Local/04_GitHub_Mirrors/Glee-fullyTools`
 
 **Related repos:**
 - [Glee-fullyTools-FoundRy](https://github.com/OKHP3/Glee-fullyTools-FoundRy)
 - [glee-fully-gpt00-personalizable-tools](https://github.com/OKHP3/glee-fully-gpt00-personalizable-tools)
+
+## Verified repository context (2026-07-13)
+
+This section records the current project understanding from repository evidence.
+Update it when the structure, runtime, deployment model, or validation baseline
+changes. Historical audit notes elsewhere in the repository retain their original
+dates and counts.
+
+### Target and scope
+
+- The target is one Git repository at `/Volumes/OKH-Local/04_GitHub_Mirrors/Glee-fullyTools`.
+- No nested Git repositories or separate application roots were found.
+- This guide is canonical for agent behavior. `CLAUDE.md` points here. `replit.md`
+  and `agent-skills.md` provide site-specific implementation notes and skills.
+
+### Understanding
+
+- **Confirmed purpose:** This is the public hub for a suite of personalizable
+  Custom GPT tools. Visitors browse a seven-branch Toolbox, read tool-ette
+  descriptions, and follow links to the corresponding GPT experiences.
+- **Confirmed user value:** The homepage, README, and Showcase position the suite
+  as a warm, approachable way to use domain-specific AI for everyday life, work,
+  planning, and personal organization.
+- **Inferred vision:** Grow the suite while preserving one shared design language,
+  the trunk-to-branch-to-tool-ette taxonomy, and a coherent visitor path.
+- **Current status:** The site is implemented and deployable as a static website.
+  The homepage still describes the product as in a pre-opening or early-emergence
+  state, so content completeness should not be assumed.
+
+### Architecture and entry points
+
+- Production content is 61 HTML pages: the homepage, supporting pages, the
+  Toolbox hub, seven branch pages, and 42 tool-ette pages. HTML under `assets/`
+  and `.agents/` is development or agent content and is excluded by site tools.
+- `assets/css/theme.css` is the shared stylesheet. `assets/js/app.js` provides
+  shared browser behavior, including navigation, search, theme handling, and
+  reading progress. `mermaid-init.js` is loaded only for the two Mermaid pages.
+- Python scripts under `scripts/` maintain pages, indexes, feeds, icons, and QA
+  reports. Site content has no framework or application build step.
+- `package.json` and `package-lock.json` exist for optional local Lighthouse and
+  Puppeteer tooling. They do not define the website runtime or a bundling step.
+- Local development uses `python3 serve.py`, which serves port 5000 with
+  no-cache headers. `.replit` uses the same port and deploys the repository root
+  as a static site. `CNAME` identifies `glee-fully.tools` as the site origin.
+- GitHub Actions runs the Python validation workflow on pushes and pull requests
+  to `main`. A separate workflow runs Playwright viewport QA when HTML, CSS, or
+  JavaScript changes.
+
+### Verified validation baseline
+
+The following commands passed on 2026-07-13 from the repository root:
+
+```bash
+python3 scripts/validate-site.py
+# Scanned 61 pages; 0 issues; 0 warnings
+
+python3 scripts/check-links.py
+# 2,414 internal links; 0 broken links; 59 sitemap URLs; 0 sitemap mismatches
+```
+
+After HTML content changes, rebuild `assets/data/search-index.json` with
+`python3 scripts/build-search-index.py`. Do not hand-edit generated JSON, feed,
+or icon-map files. For responsive browser QA, use the workflow or the verified
+Playwright runner documented in `replit.md`.
+
+### Known gaps and open questions
+
+- Several dated audit sections in `replit.md` describe earlier page counts and
+  earlier CSS line counts. Treat those as historical records, not current state.
+- The validator and link checker write reports with fixed 2026-05-03 filenames.
+  This is an existing tooling convention and was not changed during this context
+  pass.
+- It is unknown whether the optional Lighthouse and Puppeteer package metadata is
+  still actively maintained. Do not add or upgrade dependencies without owner
+  approval.
 
 > **AGENTS.md sync circuit** — This file is one of three kept in lockstep.
 > Any structural edit to sections 1–5 must be propagated to the other two repos
@@ -539,7 +614,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/downloads/` | `.gitkeep` only | Add user-facing downloads when available |
 | `assets/docs/` | 13 Markdown docs | Includes `gleefully-replit-theme-guide.md`, `FOLDER-STRUCTURE-PROMPT.md`, multiple audit and evaluation reports |
 | `assets/img/` | 198+ brand and GPT-icon PNG files + 5 subdirs | Largest image set; includes all tool-ette GPT icon variants |
-| `assets/img/favicons/` | 8 files | Full PNG set; no SVG master yet |
+| `assets/img/favicons/` | 8 files | Full PNG set plus the SVG master |
 | `assets/img/library/` | `.gitkeep` only | Populate with reusable brand variants |
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
 | `assets/js/` | `app.js` (40 KB), `mermaid-init.js`, `sparkle-loader.js` | Only Glee currently has `sparkle-loader.js` |
@@ -745,3 +820,5 @@ Replit Agent:
 > intentionally left unchanged with reason, (6) identifier renaming candidates
 > flagged for separate handling, (7) final confirmation the report itself
 > contains no UK spellings. Wait for "go." No em dashes.
+
+## Imported Claude Cowork project instructions

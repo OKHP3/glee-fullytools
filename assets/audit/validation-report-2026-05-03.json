@@ -1,5 +1,5 @@
 {
-  "scanned": 61,
+  "scanned": 62,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -12,6 +12,11 @@
       "issues": [],
       "warnings": [],
       "path": "about/index.html"
+    },
+    {
+      "issues": [],
+      "warnings": [],
+      "path": "arcade/index.html"
     },
     {
       "issues": [],

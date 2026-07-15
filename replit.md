@@ -4,20 +4,24 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 
 ## Tech Stack
 
-- **Frontend:** Pure HTML5, CSS3, and vanilla JavaScript (no build system)
-- **Styling:** Custom CSS variables with a retro-bright palette (Teal, Olive, Ochre, Rust)
-- **Fonts:** Google Fonts (Fredoka, Open Sans, Poppins, DM Sans, Alfa Slab One)
-- **Dependencies:** Loaded via CDN (Mermaid.js v11, Ko-fi, Google Analytics G-89W66VMGPB)
+- **Frontend:** Pure HTML5, CSS3, and vanilla JavaScript (no application build system)
+- **Styling:** Shared `assets/css/theme.css` with scoped GLOBAL, OVERKILL, GLEE,
+  ASKJAMIE, and CROSS-BRAND sections. Glee-fully pages use the coral and cream
+  brand contract documented in `AGENTS.md`.
+- **Fonts:** Google Fonts (Fredoka, Open Sans, Poppins, and DM Sans)
+- **Dependencies:** Browser services load via CDN (Mermaid.js v11, Ko-fi, and
+  Google Analytics G-89W66VMGPB). Optional local Node metadata exists for
+  Lighthouse and Puppeteer, but the site does not run on Node or a bundler.
 - **Hosting:** Static site served with Python's built-in HTTP server in dev
 
 ## Project Structure
 
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
-- `assets/css/theme.css` — Central stylesheet (4,584 lines), reorganized 2026-05-02 into scope-grouped sections: GLOBAL (L 6) → OVERKILL (L 2215) → GLEE (L 2633) → ASKJAMIE (L 3659) → CROSS-BRAND (L 4116). Each scope has a `╔══╗` boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
-- `assets/js/app.js` — Shared JS (918 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
+- `assets/css/theme.css` — Central stylesheet (5,738 lines as of 2026-07-13), reorganized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
+- `assets/js/app.js` — Shared JS (743 lines as of 2026-07-13): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
-- `toolbox/` — Central hub with 7 thematic branches and their tool-ettes (54 pages total)
+- `toolbox/` — Central hub with 7 thematic branches and 42 tool-ette pages (50 pages total including the hub and branch pages)
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
 - `sitemap.xml` — 59 URLs
@@ -60,11 +64,11 @@ When editing `theme.css`, find the right scope first:
 
 | Scope | Starts at | What lives here | Selector pattern |
 |---|---:|---|---|
-| GLOBAL | L 6 | Tokens, reset, layout, header/nav, footer, scroll-reveal, articles, Ko-fi, search engine, cross-site sync | unscoped or `:root` / `body` |
-| OVERKILL | L 2215 | Default chrome (headings, blueprint-forge hero, brand stripes, default Mermaid skin) | `body:not(.glee-main):not(.askjamie-main) …` |
-| GLEE | L 2633 | This site's brand chrome (paper hero, milestone, Glee Mermaid) | `.glee-main …` / `body.glee-main …` |
-| ASKJAMIE | L 3659 | AskJamie chrome (mid-century paper + teal, system pages) | `.askjamie-main …` / `body.askjamie-main …` |
-| CROSS-BRAND | L 4116 | Glee + AskJamie shared overrides of OverKill default | `.glee-main … , .askjamie-main …` |
+| GLOBAL | L 20 | Tokens, reset, layout, header/nav, footer, scroll-reveal, articles, Ko-fi, search engine, and shared utilities | unscoped or `:root` / `body` |
+| OVERKILL | L 2509 | Default OverKill Hill chrome and Mermaid skin | `body:not(.glee-main):not(.askjamie-main) …` |
+| GLEE | L 4329 | Glee-fully brand chrome and Mermaid skin | `.glee-main …` / `body.glee-main …` |
+| ASKJAMIE | L 5230 | AskJamie chrome and Mermaid skin | `.askjamie-main …` / `body.askjamie-main …` |
+| CROSS-BRAND | No dedicated section | Shared rules remain in GLOBAL or the relevant brand block | Use the existing selector scope |
 
 When diffing against sibling repos: differences inside GLOBAL/CROSS-BRAND blocks should be reconciled; differences inside the OVERKILL/GLEE/ASKJAMIE blocks are intentional brand divergence. Pre-reorg backup at `assets/css/theme.css.bak-prereorg`.
 
@@ -125,7 +129,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 | Component | Path | Purpose |
 |---|---|---|
 | Index builder | `scripts/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
-| Search index | `assets/data/search-index.json` | 57 pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
+| Search index | `assets/data/search-index.json` | 59 indexable pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
 | Runtime | `assets/js/app.js` (search section, line 263+) | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
 | Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
 | Wired into | All 60 HTML pages | `<script src="/assets/js/app.js" defer>` — single script, no separate search.js |
@@ -155,7 +159,7 @@ python3 scripts/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
 # 2. Index / asset / feed regenerators
 python3 scripts/build-search-index.py    # rebuilds assets/data/search-index.json
 python3 scripts/sync-portfolio-stats.py  # patches About page stat counts from search-index.json
-python3 scripts/audit-assets.py          # rebuilds assets/data/icon-map.json + audit/asset-inventory-*.json
+python3 scripts/audit-assets.py          # rebuilds assets/data/icon-map.json + assets/audit/asset-inventory-*.json
 python3 scripts/generate-feed.py         # rebuilds /feed.xml
 
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
@@ -173,13 +177,13 @@ python3 scripts/update-placeholder-dimensions.py  # update img width/height once
 python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds index + syncs portfolio stats)
 ```
 
-Validators write machine-readable JSON to `audit/`. The Markdown audit covers
+Validators write machine-readable JSON to `assets/audit/`. The Markdown audit covers
 (`AUDIT_*_2026-05-03.md`) explain the JSON output for humans. Re-running the
 mutators is byte-idempotent — they are safe to re-run on every content edit.
 
 ## Template library (`assets/templates/`)
 
-Nine structural HTML templates covering all 67 pages of the site.
+Nine structural HTML templates for the current page families.
 Templates live **flat** in `assets/templates/` as `template--[slug].html`.
 Each carries a full comment block enumerating every `[[UPPERCASE-KEBAB-CASE]]`
 token before `<!DOCTYPE html>`. The index and workflow for adding new pages

@@ -5736,3 +5736,60 @@ html[data-theme="light"] .askjamie-main {
   font-size: 0.75rem;
   border: 1px solid #1c4d59;
 }
+
+/* --- Arcade page (/arcade/) -------------------------------------------- */
+.arcade-phone-frame {
+  width: min(400px, 92vw);
+  aspect-ratio: 390 / 780;
+  margin: 0 auto;
+  border-radius: 28px;
+  padding: 10px;
+  background: #1a1f3c;
+  box-shadow: 0 8px 40px rgba(26,31,60,.45),
+              inset 0 0 0 2px rgba(245,213,118,.25);
+}
+.arcade-phone-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 20px;
+  background: #1a1f3c;
+}
+.arcade-embed-note {
+  text-align: center;
+  font-size: .9rem;
+  opacity: .8;
+  max-width: 46ch;
+  margin: .75rem auto 0;
+}
+.glee-notice {
+  background: #fff7f1;
+  border-left: 4px solid #d94f63;
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 0;
+  font-size: 0.95rem;
+  color: #2e2b29;
+}
+.glee-notice p {
+  margin: 0;
+}
+.arcade-closing {
+  font-family: 'Fredoka', 'Poppins', sans-serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+  color: #d94f63;
+  text-align: center;
+  margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-notice {
+    background: #2a1f1d;
+    color: #f0e8e0;
+  }
+}
+html[data-color-scheme="dark"] .glee-notice {
+  background: #2a1f1d;
+  color: #f0e8e0;
+}
+/* --- End Arcade page --- */

@@ -17,7 +17,7 @@ Read it before touching any file. The site is both a working product and a portf
 
 ## Core Constraints (Never Violate)
 
-1. **Static-only architecture.** No Node.js, no bundler, no framework without explicit owner approval.
+1. **Static-only architecture.** No Node-based application runtime, bundler, or framework without explicit owner approval. Node may be used by optional QA tooling.
 2. **No build step without owner approval.** WebP, PurgeCSS, bundling — all require sign-off.
 3. **Preserve brand voice.** Warm, human, retro-bright, approachable. Not corporate or generic SaaS.
 4. **Preserve trunk → branch → tool-ette taxonomy.** Do not flatten, rename, or reorder without instruction.
@@ -32,11 +32,11 @@ Edit `assets/css/theme.css` in the **correct scope only**. Each scope has a `╔
 
 | Scope | Starts at | Selector pattern |
 |---|---:|---|
-| GLOBAL | L 6 | unscoped / `:root` / `body` |
-| OVERKILL | L 2215 | `body:not(.glee-main):not(.askjamie-main) …` |
-| GLEE | L 2633 | `.glee-main …` |
-| ASKJAMIE | L 3659 | `.askjamie-main …` |
-| CROSS-BRAND | L 4116 | `.glee-main … , .askjamie-main …` |
+| GLOBAL | L 20 | unscoped / `:root` / `body` |
+| OVERKILL | L 2509 | `body:not(.glee-main):not(.askjamie-main) …` |
+| GLEE | L 4329 | `.glee-main …` |
+| ASKJAMIE | L 5230 | `.askjamie-main …` |
+| CROSS-BRAND | No dedicated section | Use the existing GLOBAL or brand-specific selector scope |
 
 Never add `<style>` blocks to HTML. Never use hardcoded hex — use `var(--color-*)` tokens.
 
@@ -90,7 +90,7 @@ Each skill uses the same schema: **Purpose · Checks · Off-limits**.
 **Off-limits:** Do not remove `aria-label` from nav toggle, search button, or breadcrumb. Do not remove `role` from search modal without equivalent semantics.
 
 ### skill.seo-schema-curator
-**Purpose:** Maintain structured data and metadata quality across all 60 pages.
+**Purpose:** Maintain structured data and metadata quality across all 61 production pages.
 **Checks:** `<title>` matches the canonical format; `<meta name="description">` is non-empty; `<link rel="canonical">` points to the page's own URL; `og:url` matches canonical; `og:image` resolves to a real file; JSON-LD parses as valid JSON; `BreadcrumbList` JSON-LD matches the visible breadcrumb nav; sitemap includes every indexable page with accurate `lastmod`.
 **Off-limits:** No fabricated FAQ entries. Do not change canonical URLs without also updating sitemap, breadcrumb, and `og:url`.
 
