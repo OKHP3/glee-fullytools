@@ -5163,6 +5163,26 @@ html:has(
   color: var(--color-muted);
   border-top: 1px solid #ffdcd2;
 }
+/* Light-mode fix: the global html[data-theme="light"] .site-footer rule sets
+   near-white text (for the OKH dark footer) and wins on specificity (0,0,2,1)
+   over .glee-main .site-footer (0,0,2,0). These Glee-scoped overrides have
+   specificity (0,0,3,1) so they always win and keep the cream footer readable. */
+html[data-theme="light"] .glee-main .site-footer {
+  color: #2e2b29;
+}
+html[data-theme="light"] .glee-main .footer-column h3,
+html[data-theme="light"] .glee-main .footer-column h4 {
+  color: #2e2b29;
+}
+html[data-theme="light"] .glee-main .footer-column a {
+  color: #5a4a44;
+}
+html[data-theme="light"] .glee-main .footer-column a:hover {
+  color: #d94f63;
+}
+html[data-theme="light"] .glee-main .footer-bottom {
+  color: #6b5e57;
+}
 
 /* Glee: secondary button picks up coral accent and soft border */
 .glee-main .btn-secondary {
