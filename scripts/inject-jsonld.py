@@ -186,6 +186,7 @@ def build_jsonld(rel_path: Path, meta: dict) -> str:
         }
         if image_obj:
             node["image"] = image_obj
+            node["screenshot"] = image_obj
         if meta["keywords"]:
             node["keywords"] = meta["keywords"]
     elif kind in ("branch-hub", "toolbox-hub"):
