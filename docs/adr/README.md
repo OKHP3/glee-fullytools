@@ -21,9 +21,10 @@ close to when a decision is made and updated only to change status — never to 
 
 ## Creating a New ADR
 
-1. Copy an existing ADR to `NNNN-short-title.md`
-2. Fill in Context, Decision, and Consequences
-3. Update this index
+1. Copy `template.md` to `NNNN-short-title.md` (e.g. `0006-image-format-choice.md`)
+2. Fill in all sections; set Status to `Proposed` until decided
+3. Change Status to `Accepted` (or `Rejected`) once the decision is made
+4. Add the new ADR to the index table above
 
 ## ADR Status Values
 
