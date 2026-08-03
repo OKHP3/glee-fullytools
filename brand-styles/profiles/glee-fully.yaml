@@ -1,0 +1,119 @@
+schema_version: "1.0"
+style:
+  id: glee-fully
+  display_name: Glee-fully Personalizable Tools
+  version: "1.1.0"
+  status: active
+  purpose: Retro-bright, emotionally intelligent tools that make organization feel warm and playful.
+  owner_context: owned
+  tags: [retro-bright, playful, warm, personal-tools]
+  created_on: 2026-07-25
+  updated_on: 2026-08-03
+  sources:
+    - type: css
+      locator: https://github.com/OKHP3/Glee-fullyTools/blob/main/assets/css/theme.css
+      authority: declared
+      sampled_on: 2026-07-25
+      notes: Declares warm surfaces, pink and teal accents, and type roles via CSS custom properties.
+    - type: website
+      locator: https://glee-fully.tools
+      authority: observed
+      sampled_on: 2026-07-25
+      notes: Establishes a retro-bright toolbox, clean vector lines, and friendly warmth.
+  evidence_summary:
+    declared: Paper-led surfaces, warm dark text, pink and teal accents; Fredoka, Open Sans, and Kalam font roles declared in theme.css.
+    observed: Bright buttons, playful information framing, and mid-century-adjacent charm visible on the live site.
+    inferred: Encouraging, personal, and organized without feeling childish.
+  evidence:
+    - claim: "Paper-led surfaces use warm dark text with pink and teal accents."
+      source: https://github.com/OKHP3/Glee-fullyTools/blob/main/assets/css/theme.css
+      authority: declared
+      confidence: high
+      notes: "Read from the declared theme source."
+    - claim: "The rendered experience is retro-bright, friendly, and organized."
+      source: https://glee-fully.tools
+      authority: observed
+      confidence: medium
+      notes: "Rendered-site interpretation, not a token declaration."
+    - claim: "Fredoka is the heading font; Open Sans is body; Kalam is accent."
+      source: https://github.com/OKHP3/Glee-fullyTools/blob/main/assets/css/theme.css
+      authority: declared
+      confidence: high
+      notes: "Loaded via Google Fonts CDN; confirmed in link tags across all 60 production pages."
+  tokens:
+    color:
+      foundation:
+        paper: "#f6f2ee"
+        surface: "#fffdfa"
+        soft_surface: "#fff7f1"
+        ink: "#2e2b29"
+        muted: "#6b5e57"
+        pink: "#d94f63"
+        teal: "#2d6f7e"
+      semantic:
+        accent_primary: "#d94f63"
+        accent_secondary: "#2d6f7e"
+    typography:
+      roles:
+        heading:
+          family: Fredoka
+          fallback: [Poppins, sans-serif]
+          notes: Rounded display warmth; used for headings and brand display text.
+        body:
+          family: Open Sans
+          fallback: [system-ui, sans-serif]
+          notes: Clear, friendly utility text; primary reading font.
+        accent:
+          family: Kalam
+          fallback: [system-ui, sans-serif]
+          notes: Use sparingly for hand-drawn personality in call-outs and decorative copy.
+  direction:
+    visual_narrative: A retro-bright toolbox where delight and useful organization coexist.
+    components:
+      - clean vector-like controls
+      - warm cards with paper-surface backgrounds
+      - color-coded guidance (pink for action, teal for information)
+      - friendly labels with rounded typography
+    imagery:
+      - playful domestic or personal-tool metaphors
+      - bright bounded compositions with clear focal subjects
+      - mid-century inspired illustration style
+    motion:
+      - small celebratory feedback moments
+      - never distracting; respect prefers-reduced-motion
+      - entrance animations under 300ms
+    avoid:
+      - cold SaaS dashboard aesthetics
+      - excessive novelty typography
+      - cluttered rainbow palettes
+      - corporate serif + grey color schemes
+  variants:
+    - id: dark-mode
+      applies_to: dark color scheme preference (data-color-scheme=dark)
+      token_overrides:
+        paper: "#1e1b19"
+        surface: "#2a2724"
+        ink: "#f2ede8"
+        muted: "#b5a9a1"
+  application:
+    suitable_targets: [spa, documentation, presentation, image-brief]
+    accessibility_notes:
+      - Do not rely on pink or teal alone for status — always pair with text or icon
+      - Maintain WCAG AA contrast for body text on paper surfaces (#2e2b29 on #f6f2ee passes)
+      - Verify dark-mode token contrast separately; dark surfaces require re-checked values
+    target_constraints:
+      - Preserve existing SPA behavior and framework conventions when applying to an existing app
+      - Verify Google Fonts availability and licensing before shipping to a new target
+    acceptance_checks:
+      - Token layer reviewed against declared source
+      - Representative viewports inspected (mobile, tablet, desktop)
+      - Keyboard focus ring visible on all interactive elements
+      - Contrast checked for each meaningful surface and state
+  conflicts:
+    - "none recorded"
+  confidence:
+    overall: high
+    notes: >
+      Seed derived from declared theme tokens and current site language. Dark-mode
+      token overrides are inferred from usage patterns; verify against rendered dark-mode
+      output before treating as declared.

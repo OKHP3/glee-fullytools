@@ -1,0 +1,16 @@
+schema_version: "1.0"
+library:
+  name: Glee-fully Tools Brand Style Library
+  description: >
+    Visual style profiles for the OverKill Hill P³ ecosystem, maintained by
+    the okhp3-brand-style-registry skill workflow. Profiles are evidence-backed
+    extractions from declared CSS sources and observed site rendering.
+    Do not blend profiles silently — use the primary/supporting selection model.
+  updated_on: 2026-08-03
+  profiles:
+    - id: glee-fully
+      display_name: Glee-fully Personalizable Tools
+      path: profiles/glee-fully.yaml
+      status: active
+      version: "1.1.0"
+      tags: [retro-bright, playful, warm, personal-tools]

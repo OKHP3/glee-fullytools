@@ -2,3 +2,4 @@
 - [Glee toggle identity](glee-toggle-identity.md) — Glee uses data-color-scheme attr + glee-color-scheme localStorage (not data-theme/okh-theme); toggle styled coral (#d35b2d) for cream header; AskJamie is brand-locked light with no toggle.
 - [Screenshot cache](screenshot-cache.md) — The Replit screenshot browser has a very persistent cache. The homepage is often stale; use a fresh path (e.g. /about/, /contact/) to get an uncached render. A no-cache Python server (serve.py) + ?v=N query stamps help for new sessions.
 - [Pseudo-element dark mode](pseudo-element-dark-mode.md) — Dark mode rules on a container don't override ::before pseudo-elements with hardcoded backgrounds. Always add a matching ::before rule in the dark mode block.
+- [Skills compliance pass](skills-compliance-2026-08-03.md) — 14 skills reviewed 2026-08-03; created docs/adr/, brand-styles/, LIFECYCLE.md; okhp3-vite-github-pages and vercel-react-best-practices not applicable (no Vite/React).

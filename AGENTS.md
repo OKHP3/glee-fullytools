@@ -37,7 +37,7 @@ invariant).
 - [Glee-fullyTools-FoundRy](https://github.com/OKHP3/Glee-fullyTools-FoundRy)
 - [glee-fully-gpt00-personalizable-tools](https://github.com/OKHP3/glee-fully-gpt00-personalizable-tools)
 
-## Verified repository context (2026-07-13)
+## Verified repository context (2026-07-24)
 
 This section records the current project understanding from repository evidence.
 Update it when the structure, runtime, deployment model, or validation baseline
@@ -67,8 +67,9 @@ dates and counts.
 
 ### Architecture and entry points
 
-- Production content is 61 HTML pages: the homepage, supporting pages, the
-  Toolbox hub, seven branch pages, and 42 tool-ette pages. HTML under `assets/`
+- Production content is 62 HTML pages: the homepage, supporting pages, the
+  Toolbox hub, seven branch pages, 42 tool-ette pages, and the site's utility
+  pages. HTML under `assets/`
   and `.agents/` is development or agent content and is excluded by site tools.
 - `assets/css/theme.css` is the shared stylesheet. `assets/js/app.js` provides
   shared browser behavior, including navigation, search, theme handling, and
@@ -86,14 +87,16 @@ dates and counts.
 
 ### Verified validation baseline
 
-The following commands passed on 2026-07-13 from the repository root:
+The repository's latest recorded validation passed on 2026-07-13. The current
+tree contains 62 production HTML pages and 60 sitemap URLs. Re-run these
+commands after any content or tooling change to establish a current baseline:
 
 ```bash
 python3 scripts/validate-site.py
-# Scanned 61 pages; 0 issues; 0 warnings
+# Expected: 62 pages; 0 issues; 0 warnings
 
 python3 scripts/check-links.py
-# 2,414 internal links; 0 broken links; 59 sitemap URLs; 0 sitemap mismatches
+# Expected: 0 broken links and 0 sitemap mismatches; link totals vary by content
 ```
 
 After HTML content changes, rebuild `assets/data/search-index.json` with
@@ -111,6 +114,18 @@ Playwright runner documented in `replit.md`.
 - It is unknown whether the optional Lighthouse and Puppeteer package metadata is
   still actively maintained. Do not add or upgrade dependencies without owner
   approval.
+
+### Governance files added 2026-08-03
+
+The following governance files were created during the 14-skill compliance pass:
+
+- `LIFECYCLE.md` — repository lifecycle state (Active); update when state transitions
+- `docs/adr/` — Architecture Decision Records for significant technical decisions;
+  see `docs/adr/README.md` for the index. Add new ADRs here for framework, tooling,
+  or security decisions.
+- `brand-styles/` — Visual brand style registry (okhp3-brand-style-registry format);
+  `brand-styles/profiles/glee-fully.yaml` is the active Glee-fully brand profile.
+  Do not hand-edit the profile — use the brand-style-registry skill workflow instead.
 
 > **AGENTS.md sync circuit** — This file is one of three kept in lockstep.
 > Any structural edit to sections 1–5 must be propagated to the other two repos
@@ -619,7 +634,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
 | `assets/js/` | `app.js` (40 KB), `mermaid-init.js`, `sparkle-loader.js` | Only Glee currently has `sparkle-loader.js` |
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
-| `docs/` | `.gitkeep` only | Add project-level planning docs here |
+| `docs/` | `adr/` subfolder with 5 ADRs + `README.md`; `.gitkeep` | ADRs added 2026-08-03; archive still empty |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
 | `scripts/` | 55 scripts | Largest toolchain; includes Glee-specific GPT-icon and toolbox scripts |
 
