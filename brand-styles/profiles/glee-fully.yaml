@@ -8,7 +8,7 @@ style:
   owner_context: owned
   tags: [retro-bright, playful, warm, personal-tools]
   created_on: 2026-07-25
-  updated_on: 2026-08-03
+  updated_on: 2026-08-03  # dark-mode variant authority verified; tokens remain inferred
   sources:
     - type: css
       locator: https://github.com/OKHP3/Glee-fullyTools/blob/main/assets/css/theme.css
@@ -21,9 +21,13 @@ style:
       sampled_on: 2026-07-25
       notes: Establishes a retro-bright toolbox, clean vector lines, and friendly warmth.
   evidence_summary:
-    declared: Paper-led surfaces, warm dark text, pink and teal accents; Fredoka, Open Sans, and Kalam font roles declared in theme.css.
+    declared: >
+      Paper-led surfaces, warm dark text, pink and teal accents; Fredoka, Open Sans, and
+      Kalam font roles declared in theme.css. Light-mode tokens confirmed in .glee-main
+      block (line 4576). Dark-mode .glee-main token overrides are NOT declared in theme.css
+      as of 2026-08-03; only .glee-notice has a dark-mode rule (verified by full CSS scan).
     observed: Bright buttons, playful information framing, and mid-century-adjacent charm visible on the live site.
-    inferred: Encouraging, personal, and organized without feeling childish.
+    inferred: Encouraging, personal, and organized without feeling childish. Dark-mode surface/ink/muted token values are design-proposal inferences; no CSS implementation found.
   evidence:
     - claim: "Paper-led surfaces use warm dark text with pink and teal accents."
       source: https://github.com/OKHP3/Glee-fullyTools/blob/main/assets/css/theme.css
@@ -90,6 +94,15 @@ style:
   variants:
     - id: dark-mode
       applies_to: dark color scheme preference (data-color-scheme=dark)
+      authority: inferred
+      notes: >
+        Verified 2026-08-03: theme.css contains no html[data-color-scheme="dark"] .glee-main
+        block and no prefers-color-scheme:dark block that overrides .glee-main tokens.
+        The only declared dark-mode Glee styling is .glee-notice (background #2a1f1d,
+        color #f0e8e0) — a single component, not the token layer. All four overrides below
+        remain design-proposal inferences consistent with the warm Glee palette; they must
+        be verified against a rendered dark-mode implementation before being treated as
+        declared.
       token_overrides:
         paper: "#1e1b19"
         surface: "#2a2724"
@@ -114,6 +127,8 @@ style:
   confidence:
     overall: high
     notes: >
-      Seed derived from declared theme tokens and current site language. Dark-mode
-      token overrides are inferred from usage patterns; verify against rendered dark-mode
-      output before treating as declared.
+      Light-mode tokens confirmed declared (verified 2026-08-03 against theme.css).
+      Dark-mode token overrides remain inferred design proposals — no
+      html[data-color-scheme="dark"] .glee-main CSS block exists in theme.css.
+      Do not treat dark-mode variants as declared until a CSS implementation is added
+      and tokens are verified against it.
