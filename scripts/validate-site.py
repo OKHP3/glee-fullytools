@@ -190,7 +190,46 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
         total_issues += 1
 
+    # ── Global invariant: docs/adr/ index sync ────────────────────────────
+    # Every *.md file in docs/adr/ (except README.md and template.md) must be
+    # linked in the README index table. Catch a newly added ADR file that was
+    # never registered, or a stale index row pointing to a deleted file.
+    adr_drift_issue = _check_adr_index_sync()
+    if adr_drift_issue:
+        print(f"\nADR index drift: {adr_drift_issue}")
+        print("  Fix: update docs/adr/README.md index table and AGENTS.md section 2.2.1")
+        total_warnings += 1
+
     return 1 if total_issues else 0
+
+
+def _check_adr_index_sync() -> str:
+    """Return an error string when docs/adr/ files and the README index diverge.
+    Returns empty string when in sync or the directory does not exist."""
+    adr_dir = ROOT / "docs" / "adr"
+    readme = adr_dir / "README.md"
+    if not adr_dir.is_dir() or not readme.exists():
+        return ""
+
+    # ADR files are numbered *.md files -- exclude README.md and template.md
+    adr_files = {
+        p.name for p in adr_dir.glob("*.md")
+        if p.name not in ("README.md", "template.md")
+    }
+
+    # Links in the index table look like: [NNNN](NNNN-title.md)
+    readme_text = readme.read_text(encoding="utf-8", errors="replace")
+    linked = set(re.findall(r'\]\((\d{4}-[^)]+\.md)\)', readme_text))
+
+    unlinked = adr_files - linked
+    dangling = linked - adr_files
+
+    parts = []
+    if unlinked:
+        parts.append(f"files not in index: {', '.join(sorted(unlinked))}")
+    if dangling:
+        parts.append(f"index rows with no file: {', '.join(sorted(dangling))}")
+    return "; ".join(parts)
 
 
 def _check_css_lines_drift(tolerance: int = 50) -> str:

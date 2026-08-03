@@ -25,6 +25,7 @@ close to when a decision is made and updated only to change status — never to 
 2. Fill in all sections; set Status to `Proposed` until decided
 3. Change Status to `Accepted` (or `Rejected`) once the decision is made
 4. Add the new ADR to the index table above
+5. Update the `docs/` row in `AGENTS.md` section 2.2.1 to reflect the new ADR count
 
 ## ADR Status Values
 

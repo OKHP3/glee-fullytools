@@ -634,7 +634,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
 | `assets/js/` | `app.js` (40 KB), `mermaid-init.js`, `sparkle-loader.js` | Only Glee currently has `sparkle-loader.js` |
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
-| `docs/` | `adr/` subfolder with 5 ADRs + `README.md`; `.gitkeep` | ADRs added 2026-08-03; archive still empty |
+| `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
 | `scripts/` | 55 scripts | Largest toolchain; includes Glee-specific GPT-icon and toolbox scripts |
 
