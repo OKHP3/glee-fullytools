@@ -4598,6 +4598,29 @@ html[data-theme="light"] .glee-main {
   background: var(--color-bg);
 }
 
+/* ── Glee-fully dark-mode token overrides ───────────────────────────────────
+   Applied when the user explicitly sets data-color-scheme="dark" on <html>
+   OR when the OS reports prefers-color-scheme: dark (and the user hasn't
+   pinned light mode). Contrast verified 2026-08-03: fg/bg 14.73:1 (AAA),
+   muted/bg 7.47:1 (AAA). ───────────────────────────────────────────────── */
+html[data-color-scheme="dark"] .glee-main {
+  --color-bg:           #1e1b19;   /* warm near-black */
+  --color-surface:      #2a2724;   /* elevated dark surface */
+  --color-surface-soft: #322e2b;   /* soft inset */
+  --color-fg:           #f2ede8;   /* warm near-white ink */
+  --color-muted:        #b5a9a1;   /* muted warm grey */
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main {
+    --color-bg:           #1e1b19;
+    --color-surface:      #2a2724;
+    --color-surface-soft: #322e2b;
+    --color-fg:           #f2ede8;
+    --color-muted:        #b5a9a1;
+  }
+}
+
 /* Glee-fully: lighten striped sections so they feel like paper, not blueprint */
 .glee-main .stripe-bg {
   background: #fff7f1; /* warm paper */
