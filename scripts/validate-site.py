@@ -118,14 +118,18 @@ def check_page(rel: Path, html: str) -> dict:
     elif len(h1s) > 1:
         warnings.append(f"{len(h1s)} <h1> elements (expect 1)")
 
-    # JSON-LD parseability
+    # JSON-LD parseability + @graph structure
     for i, m in enumerate(re.finditer(
             r'<script\s+type="application/ld\+json">\s*(.*?)\s*</script>',
             html, re.DOTALL)):
         try:
-            json.loads(m.group(1))
+            data = json.loads(m.group(1))
         except json.JSONDecodeError as e:
             issues.append(f"JSON-LD block #{i + 1} not parseable: {e.msg}")
+            continue
+        g_issues, g_warnings = validate_jsonld_graph(data, block=i + 1)
+        issues.extend(g_issues)
+        warnings.extend(g_warnings)
 
     # Mermaid referral invariant: any page that embeds a Mermaid diagram
     # MUST surface the paid-referral credit exactly once.
@@ -140,7 +144,116 @@ def check_page(rel: Path, html: str) -> dict:
 
     return {"issues": issues, "warnings": warnings}
 
+def validate_jsonld_graph(data: dict, block: int = 1) -> tuple[list, list]:
+    """Validate the internal @graph structure of a parsed JSON-LD block.
 
+    Checks:
+      1. All @id cross-references within the graph resolve to an actual node.
+      2. SoftwareApplication nodes have name, operatingSystem, applicationCategory,
+         and at least one of offers / aggregateRating.
+      3. BreadcrumbList is a top-level graph node (not nested inside another node)
+         and has at least 2 itemListElement entries.
+
+    Returns (issues, warnings) lists.
+    """
+    issues: list = []
+    warnings: list = []
+
+    graph = data.get("@graph")
+    if not isinstance(graph, list):
+        return issues, warnings  # no @graph -- nothing to validate here
+
+    prefix = f"JSON-LD block #{block} @graph"
+
+    # Build a set of @id values that exist as top-level graph nodes
+    top_level_ids: set = set()
+    for node in graph:
+        if isinstance(node, dict) and "@id" in node:
+            top_level_ids.add(node["@id"])
+
+    # Helper: recursively collect all {"@id": ...} reference objects
+    # (objects whose ONLY key is @id -- i.e. they are references, not nodes)
+    def collect_id_refs(obj, inside_node_id=None):
+        refs = []
+        if isinstance(obj, dict):
+            keys = set(obj.keys())
+            if keys == {"@id"} and inside_node_id is not None:
+                refs.append(obj["@id"])
+            else:
+                node_id = obj.get("@id", inside_node_id)
+                for v in obj.values():
+                    refs.extend(collect_id_refs(v, node_id))
+        elif isinstance(obj, list):
+            for item in obj:
+                refs.extend(collect_id_refs(item, inside_node_id))
+        return refs
+
+    # Check 1: @id cross-references resolve
+    for node in graph:
+        for ref_id in collect_id_refs(node):
+            if ref_id not in top_level_ids:
+                issues.append(
+                    f"{prefix}: @id reference {ref_id!r} does not resolve "
+                    f"to any top-level graph node"
+                )
+
+    # Check 2: SoftwareApplication required fields
+    SA_REQUIRED = ("name", "operatingSystem", "applicationCategory")
+    for node in graph:
+        if not isinstance(node, dict):
+            continue
+        node_type = node.get("@type", "")
+        if node_type != "SoftwareApplication":
+            continue
+        node_id = node.get("@id", "(no @id)")
+        for field in SA_REQUIRED:
+            if not node.get(field):
+                issues.append(
+                    f"{prefix}: SoftwareApplication {node_id!r} missing required field {field!r}"
+                )
+        if not node.get("offers") and not node.get("aggregateRating"):
+            issues.append(
+                f"{prefix}: SoftwareApplication {node_id!r} must have "
+                f"at least one of 'offers' or 'aggregateRating'"
+            )
+
+    # Check 3: BreadcrumbList is a top-level node and has >= 2 items
+    def find_nested_breadcrumbs(obj, depth=0):
+        """Recursively find BreadcrumbList nodes that are NOT top-level."""
+        nested = []
+        if isinstance(obj, dict):
+            if depth > 0 and obj.get("@type") == "BreadcrumbList":
+                nested.append(obj)
+            for v in obj.values():
+                nested.extend(find_nested_breadcrumbs(v, depth + 1))
+        elif isinstance(obj, list):
+            for item in obj:
+                nested.extend(find_nested_breadcrumbs(item, depth))
+        return nested
+
+    for node in graph:
+        if not isinstance(node, dict):
+            continue
+        # Check for nested BreadcrumbList inside this top-level node
+        nested = find_nested_breadcrumbs(node, depth=0)
+        for nb in nested:
+            nb_id = nb.get("@id", "(no @id)")
+            issues.append(
+                f"{prefix}: BreadcrumbList {nb_id!r} is nested inside a node "
+                f"instead of being a top-level graph entry"
+            )
+        # Validate top-level BreadcrumbList item count
+        if node.get("@type") == "BreadcrumbList":
+            node_id = node.get("@id", "(no @id)")
+            items = node.get("itemListElement")
+            if not isinstance(items, list) or len(items) < 2:
+                count = len(items) if isinstance(items, list) else 0
+                issues.append(
+                    f"{prefix}: BreadcrumbList {node_id!r} has {count} itemListElement "
+                    f"(need at least 2)"
+                )
+
+    return issues, warnings
 def main() -> int:
     pages = []
     total_issues = 0
