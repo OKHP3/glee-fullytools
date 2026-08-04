@@ -381,6 +381,22 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-sparkle-fallback.py")
         total_issues += len(sparkle_mismatches)
 
+    # ── Global invariant: Glee dark-mode coverage ─────────────────────────────
+    # Every hardcoded light-hex background in the GLEE section of theme.css must
+    # have a matching dark-mode override.  New rules added without a dark pair
+    # silently break dark mode.
+    # To fix: add a dark-mode override in a html[data-color-scheme="dark"] or
+    #         @media (prefers-color-scheme: dark) block in the GLEE section.
+    glee_dark_issues = _check_glee_dark_coverage()
+    for msg in glee_dark_issues:
+        print(f"\nGlee dark-mode coverage: {msg}")
+    if glee_dark_issues:
+        print(
+            '  Fix: add html[data-color-scheme="dark"] or '
+            "@media (prefers-color-scheme: dark) override in the GLEE section"
+        )
+        total_issues += len(glee_dark_issues)
+
     return 1 if total_issues else 0
 
 
@@ -731,6 +747,36 @@ def _check_sparkle_drift() -> list:
                 )
 
     return mismatches
+
+
+def _check_glee_dark_coverage() -> list:
+    """Return a list of error strings for any GLEE-section light-hex background
+    rule in assets/css/theme.css that has no matching dark-mode override.
+
+    Delegates to scripts/check-glee-dark-coverage.py so the logic lives in
+    one place.  Returns an empty list when all rules are covered or the script
+    cannot run.
+    """
+    import subprocess
+    script = ROOT / "scripts" / "check-glee-dark-coverage.py"
+    if not script.exists():
+        return []
+    result = subprocess.run(
+        [sys.executable, str(script)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        # Parse the output for the individual selector lines
+        issues = []
+        for line in (result.stdout + result.stderr).splitlines():
+            line = line.strip()
+            if line.startswith("theme.css line"):
+                issues.append(line)
+        if not issues:
+            issues.append(result.stdout.strip() or result.stderr.strip())
+        return issues
+    return []
 
 
 def _check_css_lines_drift(tolerance: int = 50) -> str:

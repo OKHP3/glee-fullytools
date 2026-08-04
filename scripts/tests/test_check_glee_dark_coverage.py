@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+"""
+Regression tests for check-glee-dark-coverage.py
+==================================================
+Covers the key correctness properties:
+
+1. A GLEE light-hex background with a matching dark override -> passes.
+2. A GLEE light-hex background with NO dark override -> fails (exit 1).
+3. A GLEE light-hex background inside a *responsive @media block* (not a dark
+   block) with no dark override -> fails.  This is the line-offset regression:
+   inner rules must use absolute line numbers so the GLEE section filter
+   includes them.
+4. Gradient backgrounds are excluded (decorative accent lines, not surfaces).
+5. Comma-grouped selectors: ALL components must be covered, not just one.
+6. Near-collision: selector '.foo' must not be considered covered by a dark rule
+   for '.foo-extended' (endswith guard, no false blob-substring matches).
+"""
+from __future__ import annotations
+
+import importlib.util
+import sys
+import tempfile
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Load the module under test (filename has hyphens -> can't use normal import)
+# ---------------------------------------------------------------------------
+_SCRIPT = Path(__file__).resolve().parent.parent / "check-glee-dark-coverage.py"
+_spec = importlib.util.spec_from_file_location("_check_glee_dark_coverage", _SCRIPT)
+mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(mod)
+
+
+# ---------------------------------------------------------------------------
+# Helper: build a minimal theme.css fixture string
+# ---------------------------------------------------------------------------
+
+# Section banners are plain CSS comments that satisfy the GLEE_START_RE and
+# GLEE_END_RE patterns used by _glee_line_range().
+_GLEE_BANNER = "/* SECTION \xb7 GLEE */\n"
+_ASKJAMIE_BANNER = "/* SECTION \xb7 ASKJAMIE */\n"
+
+
+def _make_css(*glee_body_parts: str) -> str:
+    """Wrap body CSS lines in the GLEE + ASKJAMIE section banners."""
+    return _GLEE_BANNER + "\n".join(glee_body_parts) + "\n" + _ASKJAMIE_BANNER
+
+
+def _run_check(css: str) -> int:
+    """Write css to a temp file, point mod.THEME_CSS at it, run mod.check()."""
+    with tempfile.NamedTemporaryFile(
+        suffix=".css", mode="w", encoding="utf-8", delete=False
+    ) as fh:
+        fh.write(css)
+        tmp = Path(fh.name)
+    orig = mod.THEME_CSS
+    try:
+        mod.THEME_CSS = tmp
+        return mod.check(verbose=False)
+    finally:
+        mod.THEME_CSS = orig
+        tmp.unlink(missing_ok=True)
+
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+
+def test_covered_rule_passes():
+    """A light background with a matching dark override should pass (exit 0)."""
+    css = _make_css(
+        ".glee-main .widget { background: #fff7f1; }",
+        'html[data-color-scheme="dark"] .glee-main .widget { background: #2a2724; }',
+    )
+    assert _run_check(css) == 0, "Expected exit 0 when dark override present"
+
+
+def test_uncovered_rule_fails():
+    """A light background with no dark override should fail (exit 1)."""
+    css = _make_css(
+        ".glee-main .widget { background: #fff7f1; }",
+    )
+    assert _run_check(css) == 1, "Expected exit 1 when dark override missing"
+
+
+def test_nested_responsive_media_rule_is_caught():
+    """
+    A light background inside a non-dark responsive @media block in the GLEE
+    section must be flagged when it has no dark override.
+
+    Line-offset regression: before the fix the inner rule got start_line ~= 2
+    (relative to the @media block content) and escaped the GLEE section filter.
+    """
+    css = _make_css(
+        "@media (min-width: 768px) {",
+        "  .glee-main .responsive-card { background: #ffe8a8; }",
+        "}",
+    )
+    assert _run_check(css) == 1, (
+        "Expected exit 1: light bg inside responsive @media must be detected"
+    )
+
+
+def test_nested_responsive_media_rule_with_dark_override_passes():
+    """A responsive @media light bg that has a dark override should pass."""
+    css = _make_css(
+        "@media (min-width: 768px) {",
+        "  .glee-main .responsive-card { background: #ffe8a8; }",
+        "}",
+        'html[data-color-scheme="dark"] .glee-main .responsive-card { background: #3a2f2a; }',
+    )
+    assert _run_check(css) == 0, (
+        "Expected exit 0 when dark override covers responsive rule"
+    )
+
+
+def test_gradient_background_excluded():
+    """Linear-gradient backgrounds (decorative accents) must not be flagged."""
+    css = _make_css(
+        ".glee-main .nav-line::after { "
+        "background: linear-gradient(90deg, #d35b2d, #f3b932); }",
+    )
+    assert _run_check(css) == 0, "Expected exit 0: gradient is not a surface background"
+
+
+def test_grouped_selector_all_must_be_covered():
+    """
+    Comma-grouped selector: ALL components must have dark overrides.
+    Covering only one component while leaving the other uncovered -> exit 1.
+    """
+    css = _make_css(
+        ".glee-main .alpha,",
+        ".glee-main .beta { background: #fff7f1; }",
+        # Only .alpha is covered
+        'html[data-color-scheme="dark"] .glee-main .alpha { background: #2a2724; }',
+    )
+    assert _run_check(css) == 1, (
+        "Expected exit 1: .beta is uncovered; any() would wrongly pass this"
+    )
+
+
+def test_grouped_selector_all_covered_passes():
+    """All components of a comma-grouped selector covered -> exit 0."""
+    css = _make_css(
+        ".glee-main .alpha,",
+        ".glee-main .beta { background: #fff7f1; }",
+        'html[data-color-scheme="dark"] .glee-main .alpha { background: #2a2724; }',
+        'html[data-color-scheme="dark"] .glee-main .beta { background: #2a2724; }',
+    )
+    assert _run_check(css) == 0, (
+        "Expected exit 0 when all grouped selectors are covered"
+    )
+
+
+def test_no_false_positive_from_selector_prefix_collision():
+    """
+    '.foo' must not be considered covered by a dark rule for '.foo-extended'.
+    Substring blob matching would produce a false positive; endswith must not.
+    """
+    css = _make_css(
+        ".glee-main .foo { background: #fff7f1; }",
+        # Dark rule covers .foo-extended, NOT .foo
+        'html[data-color-scheme="dark"] .glee-main .foo-extended { background: #2a2724; }',
+    )
+    assert _run_check(css) == 1, (
+        "Expected exit 1: '.foo' coverage by '.foo-extended' is a false positive"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Standalone runner
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    _GREEN = "\033[32m"
+    _RED   = "\033[31m"
+    _RESET = "\033[0m"
+
+    _tests = [
+        test_covered_rule_passes,
+        test_uncovered_rule_fails,
+        test_nested_responsive_media_rule_is_caught,
+        test_nested_responsive_media_rule_with_dark_override_passes,
+        test_gradient_background_excluded,
+        test_grouped_selector_all_must_be_covered,
+        test_grouped_selector_all_covered_passes,
+        test_no_false_positive_from_selector_prefix_collision,
+    ]
+
+    failures = 0
+    for fn in _tests:
+        try:
+            fn()
+            print(f"  {_GREEN}PASS{_RESET}  {fn.__name__}")
+        except AssertionError as exc:
+            print(f"  {_RED}FAIL{_RESET}  {fn.__name__}: {exc}")
+            failures += 1
+        except Exception as exc:
+            import traceback
+            print(f"  {_RED}ERR {_RESET}  {fn.__name__}: {type(exc).__name__}: {exc}")
+            traceback.print_exc()
+            failures += 1
+
+    print()
+    if failures:
+        print(f"{failures} test(s) FAILED")
+        sys.exit(1)
+    else:
+        print(f"All {len(_tests)} tests passed.")
+        sys.exit(0)

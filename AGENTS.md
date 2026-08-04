@@ -587,12 +587,13 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories (last updated 2026-08-04 — all 59 scripts classified):
+Script categories (last updated 2026-08-04 — all 60 scripts classified):
 
 - **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
   `audit-site.py`, `audit-meta-versions.py`, `check-accent-contrast.py`,
-  `check-mtb-version.py`, `responsive-audit.py`, `run-viewport-qa.py`,
+  `check-glee-dark-coverage.py`, `check-mtb-version.py`,
+  `responsive-audit.py`, `run-viewport-qa.py`,
   `viewport-qa.py`, `site-audit.py`, `sparkle-qa.py`;
   `responsive-qa.mjs` (Node/Playwright read-only QA runner);
   `post-merge.sh` (read-only integrity check after merges)
@@ -654,7 +655,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->57<!-- /STAT:SCRIPTS-PY --> Python scripts (56 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-04; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->58<!-- /STAT:SCRIPTS-PY --> Python scripts (57 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-04; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
