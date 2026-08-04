@@ -416,6 +416,18 @@ def main() -> int:
         )
         total_issues += len(glee_dark_issues)
 
+    # ── Global invariant: CSS cache-buster token drift ────────────────────────
+    # Every HTML page must reference theme.css with the current SHA-256 token so
+    # browsers never serve a stale stylesheet after theme.css is updated.
+    # To fix: run  python3 scripts/sync-css-version.py
+    import hashlib as _hashlib
+    css_token_issues = _check_css_token_drift(_hashlib)
+    for msg in css_token_issues:
+        print(f"\nCSS token drift: {msg}")
+    if css_token_issues:
+        print("  Fix: python3 scripts/sync-css-version.py")
+        total_issues += len(css_token_issues)
+
     return 1 if total_issues else 0
 
 
@@ -822,6 +834,35 @@ def _check_css_lines_drift(tolerance: int = 50) -> str:
             f"(drift {drift:+d}, tolerance ±{tolerance})"
         )
     return ""
+
+
+def _check_css_token_drift(hashlib_mod) -> list:
+    """Return a list of paths whose theme.css?v=<token> does not match the
+    current SHA-256 of assets/css/theme.css.
+
+    Uses the same first-8-hex-chars hash as scripts/sync-css-version.py.
+    Returns an empty list when all files are in sync or theme.css is absent.
+    """
+    theme_css = ROOT / "assets" / "css" / "theme.css"
+    if not theme_css.exists():
+        return []
+
+    expected = hashlib_mod.sha256(theme_css.read_bytes()).hexdigest()[:8]
+    token_re = re.compile(r"theme\.css\?v=([^\"' >]+)")
+
+    mismatches = []
+    for path in sorted(ROOT.rglob("*.html")):
+        rel = path.relative_to(ROOT)
+        if any(s in rel.parts for s in SKIP_DIRS):
+            continue
+        html = path.read_text(encoding="utf-8", errors="replace")
+        for m in token_re.finditer(html):
+            if m.group(1) != expected:
+                mismatches.append(
+                    f"{rel.as_posix()}: token {m.group(1)!r} != expected {expected!r}"
+                )
+                break  # one report per file is enough
+    return mismatches
 
 
 if __name__ == "__main__":

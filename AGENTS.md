@@ -615,7 +615,7 @@ Script categories (last updated 2026-08-04 — all 60 scripts classified):
   `update-placeholder-dimensions.py`, `picture-upgrade.py`,
   `rename-img-kebab.py`, `cache-bust.py`, `move-orphans-to-library.py`
 - **Sync scripts** (read SVG/data sources and patch HTML; safe to re-run):
-  `sync-image-alt.py`, `sync-portfolio-stats.py`, `sync-sparkle-fallback.py`
+  `sync-css-version.py`, `sync-image-alt.py`, `sync-portfolio-stats.py`, `sync-sparkle-fallback.py`
 - **Image pipeline** (WebP conversion; skips existing output files):
   `png-to-webp.py`, `convert-hero-webp.py`, `convert-gpt-icons-webp.py`
 - **Governance and generation**:
@@ -655,7 +655,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->58<!-- /STAT:SCRIPTS-PY --> Python scripts (57 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-04; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->59<!-- /STAT:SCRIPTS-PY --> Python scripts (57 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-04; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
