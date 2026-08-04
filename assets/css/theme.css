@@ -452,7 +452,7 @@ button {
    "max-width: …" patterns and keep the three sibling sites in sync.
    Both naming conventions (.mt-* and .u-mt-*) are supported so existing
    markup in any of the three repos keeps working without churn.
-================================================================================ */
+   ================================================================================ */
 
 /* Margin-top scale — short form (Glee convention) */
 .mt-075 { margin-top: 0.75rem; }
@@ -4808,6 +4808,47 @@ html[data-color-scheme="dark"] .glee-main .btn-secondary {
   html:not([data-color-scheme="light"]) .glee-main .btn-secondary {
     border-color: rgba(217, 79, 99, 0.35);
     color: var(--color-accent);
+  }
+}
+
+/* ── Glee dark-mode hardcoded-background overrides ──────────────────────────
+   These elements use hardcoded hex values that bypass the token layer, so they
+   need explicit dark-mode rules (see .agents/memory/pseudo-element-dark-mode.md).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Hero card paper panel — ::before uses hardcoded #fff7f1; override it */
+html[data-color-scheme="dark"] .glee-main .glee-hero-card::before {
+  background: #2a2724;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-card::before {
+    background: #2a2724;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Stripe sections — hardcoded warm-paper bg */
+html[data-color-scheme="dark"] .glee-main .stripe-bg {
+  background: #2a2724;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .stripe-bg {
+    background: #2a2724;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Hero stripes gradient — subdue the bright light-tone bands */
+html[data-color-scheme="dark"] .glee-main .glee-hero-stripes {
+  opacity: 0.45;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .glee-hero-stripes {
+    opacity: 0.45;
   }
 }
 
