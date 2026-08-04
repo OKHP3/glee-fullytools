@@ -52,6 +52,15 @@ HOMEPAGE_CANONICAL_OK = {"index.html", "404.html", "under-construction.html"}
 # These are utility/error pages that have no site-specials section.
 SPARKLE_EXEMPT = {"404.html", "under-construction.html"}
 
+# Pages that intentionally omit the anti-FOSC color-scheme init script.
+# The 404 and under-construction pages are standalone utility pages that
+# have no color-scheme toggle, so the init script is not needed there.
+COLOR_SCHEME_INIT_EXEMPT = {"404.html", "under-construction.html"}
+
+# The idempotency marker written by scripts/inject-color-scheme-init.py.
+# Its presence confirms the blocking inline script is in <head>.
+COLOR_SCHEME_INIT_MARKER = "<!-- AUTOGEN:COLOR-SCHEME-INIT -->"
+
 
 def expected_canonical(rel: Path) -> str:
     parts = rel.parts
@@ -140,6 +149,16 @@ def check_page(rel: Path, html: str) -> dict:
     # Run scripts/sync-sparkle-fallback.py to add the element to new pages.
     if "data-sparkle-link" not in html and rel.name not in SPARKLE_EXEMPT:
         warnings.append("missing data-sparkle-link element (run sync-sparkle-fallback.py)")
+
+    # Anti-FOSC color-scheme init script: every Glee page must have the
+    # blocking inline script injected by inject-color-scheme-init.py so users
+    # who have pinned dark mode don't see a flash of the wrong theme on load.
+    # Run scripts/inject-color-scheme-init.py to add it to new pages.
+    if COLOR_SCHEME_INIT_MARKER not in html and rel.name not in COLOR_SCHEME_INIT_EXEMPT:
+        warnings.append(
+            "missing AUTOGEN:COLOR-SCHEME-INIT marker "
+            "(run scripts/inject-color-scheme-init.py)"
+        )
 
     # Mermaid referral invariant: any page that embeds a Mermaid diagram
     # MUST surface the paid-referral credit exactly once.
