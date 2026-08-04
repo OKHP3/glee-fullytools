@@ -451,12 +451,28 @@ def _check_stat_markers_drift(tolerance: int = 2) -> list:
 
 
 def _check_og_image_alt_drift(html_mod) -> list:
-    """Return a list of mismatch descriptions for tool pages whose og:image:alt
-    or twitter:image:alt does not match 'Glee-fully {tool} — {svg[aria-label]}'.
+    """Return a list of mismatch descriptions for pages with missing or mismatched
+    og:image:alt / twitter:image:alt tags.
+
+    Two tiers of checks:
+
+    SVG og:image (tool pages):
+      The alt text must match the formula 'Glee-fully {tool} — {svg[aria-label]}'.
+      Both presence AND value are verified.
+
+    Non-SVG og:image (homepage, about, contact, legal, etc.):
+      Presence-only check — both og:image:alt and twitter:image:alt must exist.
+      The actual text is not constrained (it is page-specific prose, not formula-derived).
+
     Returns an empty list when everything is in sync."""
     import html as _html_mod  # noqa: F811 — already imported by caller; harmless re-import
     mismatches: list = []
     site_prefix = "https://glee-fully.tools/"
+
+    _ALT_CHECKS = (
+        ("og:image:alt",      r'<meta\s+property="og:image:alt"\s+content="([^"]+)"'),
+        ("twitter:image:alt", r'<meta\s+name="twitter:image:alt"\s+content="([^"]+)"'),
+    )
 
     for path in sorted(ROOT.rglob("*.html")):
         rel = path.relative_to(ROOT)
@@ -464,60 +480,71 @@ def _check_og_image_alt_drift(html_mod) -> list:
             continue
         html_text = path.read_text(encoding="utf-8", errors="replace")
 
-        # Only check pages with a .svg og:image pointing to this site
-        img_m = re.search(r'<meta\s+property="og:image"\s+content="([^"]+\.svg)"', html_text)
+        # Require an og:image pointing to this site (any format)
+        img_m = re.search(r'<meta\s+property="og:image"\s+content="([^"]+)"', html_text)
         if not img_m:
             continue
         img_url = img_m.group(1)
         if not img_url.startswith(site_prefix):
             continue
 
-        svg_rel = img_url[len(site_prefix):]
-        svg_path = ROOT / svg_rel
-        if not svg_path.exists():
-            mismatches.append(f"{rel}: SVG not found at {svg_rel}")
-            continue
+        is_svg = img_url.lower().endswith(".svg")
 
-        svg_text = svg_path.read_text(encoding="utf-8", errors="replace")
-        aria_m = re.search(r'<svg\b[^>]*\baria-label="([^"]+)"', svg_text)
-        if not aria_m:
-            mismatches.append(f"{rel}: SVG {svg_rel} has no aria-label")
-            continue
-        aria_label = aria_m.group(1)
-
-        title_m = re.search(r'<meta\s+property="og:title"\s+content="([^"]+)"', html_text)
-        if not title_m:
-            mismatches.append(f"{rel}: no og:title to derive tool name")
-            continue
-        raw_title = _html_mod.unescape(title_m.group(1))
-        for sep in (" \u2014 ", " - "):
-            idx = raw_title.find(sep)
-            if idx != -1:
-                tool_name = raw_title[:idx].strip()
-                break
-        else:
-            tool_name = raw_title.strip()
-
-        expected = f"Glee-fully {tool_name} \u2014 {aria_label}"
-
-        for prop, pattern in (
-            ("og:image:alt",      r'<meta\s+property="og:image:alt"\s+content="([^"]+)"'),
-            ("twitter:image:alt", r'<meta\s+name="twitter:image:alt"\s+content="([^"]+)"'),
-        ):
-            alt_m = re.search(pattern, html_text)
-            if not alt_m:
-                mismatches.append(
-                    f"{rel}: missing {prop} (page has a .svg og:image but no alt tag)\n"
-                    f"    expected: {expected!r}"
-                )
+        if is_svg:
+            # ── SVG pages: presence + value check ──────────────────────────
+            svg_rel = img_url[len(site_prefix):]
+            svg_path = ROOT / svg_rel
+            if not svg_path.exists():
+                mismatches.append(f"{rel}: SVG not found at {svg_rel}")
                 continue
-            actual = _html_mod.unescape(alt_m.group(1))
-            if actual != expected:
-                mismatches.append(
-                    f"{rel} [{prop}]\n"
-                    f"    expected: {expected!r}\n"
-                    f"    actual:   {actual!r}"
-                )
+
+            svg_text = svg_path.read_text(encoding="utf-8", errors="replace")
+            aria_m = re.search(r'<svg\b[^>]*\baria-label="([^"]+)"', svg_text)
+            if not aria_m:
+                mismatches.append(f"{rel}: SVG {svg_rel} has no aria-label")
+                continue
+            aria_label = aria_m.group(1)
+
+            title_m = re.search(r'<meta\s+property="og:title"\s+content="([^"]+)"', html_text)
+            if not title_m:
+                mismatches.append(f"{rel}: no og:title to derive tool name")
+                continue
+            raw_title = _html_mod.unescape(title_m.group(1))
+            for sep in (" \u2014 ", " - "):
+                idx = raw_title.find(sep)
+                if idx != -1:
+                    tool_name = raw_title[:idx].strip()
+                    break
+            else:
+                tool_name = raw_title.strip()
+
+            expected = f"Glee-fully {tool_name} \u2014 {aria_label}"
+
+            for prop, pattern in _ALT_CHECKS:
+                alt_m = re.search(pattern, html_text)
+                if not alt_m:
+                    mismatches.append(
+                        f"{rel}: missing {prop} (page has a .svg og:image but no alt tag)\n"
+                        f"    expected: {expected!r}"
+                    )
+                    continue
+                actual = _html_mod.unescape(alt_m.group(1))
+                if actual != expected:
+                    mismatches.append(
+                        f"{rel} [{prop}]\n"
+                        f"    expected: {expected!r}\n"
+                        f"    actual:   {actual!r}"
+                    )
+
+        else:
+            # ── Non-SVG pages: presence-only check ─────────────────────────
+            # Text is page-specific prose; only absence is flagged.
+            for prop, pattern in _ALT_CHECKS:
+                if not re.search(pattern, html_text):
+                    mismatches.append(
+                        f"{rel}: missing {prop} "
+                        f"(page has a non-SVG og:image but no alt tag)"
+                    )
 
     return mismatches
 
