@@ -20,8 +20,11 @@ on:
 jobs:
   viewport-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    name: Responsive viewport QA (59 pages × 8 viewports)
+    # Budget formula: (pages × 8 viewports × ~2 s/page) + ~5 min overhead.
+    # At 59 pages that is ~21 min; raised to 30 to give headroom as new
+    # tool-ettes are added.  Revisit when the page count exceeds ~100.
+    timeout-minutes: 30
+    name: Responsive viewport QA (all pages × 8 viewports)
 
     steps:
       - name: Checkout repository

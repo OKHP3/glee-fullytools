@@ -3,15 +3,17 @@
 run-viewport-qa.py — Full browser viewport QA runner
 =====================================================
 Sets up the required environment (libgbm stub + Playwright flags) and
-runs the complete 26-page × 8-viewport Playwright test suite.
+runs the full N-page × 8-viewport Playwright test suite.
+The page list is built dynamically from the filesystem so new tool-ettes
+are included automatically without editing this file.
 
 Usage:
     python3 scripts/run-viewport-qa.py
     python3 scripts/run-viewport-qa.py --all-screenshots
 
 Output:
-    assets/audit/viewport-qa-2026-05-26.json   (machine-readable results)
-    assets/audit/screenshots/2026-05-26/        (failure screenshots; all if --all-screenshots)
+    assets/audit/viewport-qa-full-YYYY-MM-DD.json   (machine-readable results)
+    assets/audit/screenshots/YYYY-MM-DD/             (failure screenshots; all if --all-screenshots)
 """
 import os
 import sys
@@ -106,78 +108,57 @@ VIEWPORTS = [
     {"name": "1440", "width": 1440, "height": 900},
 ]
 
-# Pages: (slug, path) — all 59 published pages verified 2026-05-27
-# 10 core + 7 branch hubs + 42 tool-ettes = 59 total
-PAGES = [
-    # ── Core pages (10) ──────────────────────────────────────────────────────
-    ("home",               "/"),
-    ("toolbox",            "/toolbox/"),
-    ("ecosystem",          "/ecosystem/"),
-    ("universe",           "/universe/"),
-    ("search",             "/search/"),
-    ("about",              "/about/"),
-    ("contact",            "/contact/"),
-    ("legal",              "/legal/"),
-    ("persona",            "/persona/"),
-    ("showcase",           "/showcase/"),
-    # ── 7 branch hubs ────────────────────────────────────────────────────────
-    ("branch-01",          "/toolbox/01-discovered-careers/"),
-    ("branch-02",          "/toolbox/02-treasured-finds/"),
-    ("branch-03",          "/toolbox/03-tasty-tracker/"),
-    ("branch-04",          "/toolbox/04-travelers-guide/"),
-    ("branch-05",          "/toolbox/05-organized-life/"),
-    ("branch-06",          "/toolbox/06-healthy-bee-ing/"),
-    ("branch-07",          "/toolbox/07-identity-known/"),
-    # ── Branch 01 — Discovered Careers (6 tool-ettes) ────────────────────────
-    ("tool-01a",           "/toolbox/01-discovered-careers/01a-resume-builder/"),
-    ("tool-01b",           "/toolbox/01-discovered-careers/01b-resume-customizer/"),
-    ("tool-01c",           "/toolbox/01-discovered-careers/01c-career-fitness/"),
-    ("tool-01d",           "/toolbox/01-discovered-careers/01d-letter-composer/"),
-    ("tool-01e",           "/toolbox/01-discovered-careers/01e-blinkin-tuner/"),
-    ("tool-01f",           "/toolbox/01-discovered-careers/01f-career-seeker/"),
-    # ── Branch 02 — Treasured Finds (7 tool-ettes) ───────────────────────────
-    ("tool-02a",           "/toolbox/02-treasured-finds/02a-personal-librarian/"),
-    ("tool-02b",           "/toolbox/02-treasured-finds/02b-decor-detective/"),
-    ("tool-02c",           "/toolbox/02-treasured-finds/02c-present-hoarder/"),
-    ("tool-02d",           "/toolbox/02-treasured-finds/02d-scentinal-journal/"),
-    ("tool-02e",           "/toolbox/02-treasured-finds/02e-spirited-journal/"),
-    ("tool-02f",           "/toolbox/02-treasured-finds/02f-supply-haus/"),
-    ("tool-02g",           "/toolbox/02-treasured-finds/02g-bag-nabbit/"),
-    # ── Branch 03 — Tasty Tracker (5 tool-ettes) ─────────────────────────────
-    ("tool-03a",           "/toolbox/03-tasty-tracker/03a-flavor-meister/"),
-    ("tool-03b",           "/toolbox/03-tasty-tracker/03b-menu-conductor/"),
-    ("tool-03c",           "/toolbox/03-tasty-tracker/03c-wishful-tastes/"),
-    ("tool-03d",           "/toolbox/03-tasty-tracker/03d-pantry-shopper/"),
-    ("tool-03e",           "/toolbox/03-tasty-tracker/03e-palatably-profiled/"),
-    # ── Branch 04 — Traveler's Guide (5 tool-ettes) ──────────────────────────
-    ("tool-04a",           "/toolbox/04-travelers-guide/04a-journey-diary/"),
-    ("tool-04b",           "/toolbox/04-travelers-guide/04b-itinerary-hacker/"),
-    ("tool-04c",           "/toolbox/04-travelers-guide/04c-detour-discoverer/"),
-    ("tool-04d",           "/toolbox/04-travelers-guide/04d-dreamland-journeys/"),
-    ("tool-04e",           "/toolbox/04-travelers-guide/04e-memento-log/"),
-    # ── Branch 05 — Organized Life (6 tool-ettes) ────────────────────────────
-    ("tool-05a",           "/toolbox/05-organized-life/05a-task-maestro/"),
-    ("tool-05b",           "/toolbox/05-organized-life/05b-thrifty-spender/"),
-    ("tool-05c",           "/toolbox/05-organized-life/05c-giftlist-helper/"),
-    ("tool-05d",           "/toolbox/05-organized-life/05d-scheduling-wizard/"),
-    ("tool-05e",           "/toolbox/05-organized-life/05e-lifestyle-wallboard/"),
-    ("tool-05f",           "/toolbox/05-organized-life/05f-neighborly-bazaar/"),
-    # ── Branch 06 — Healthy Bee-ing (6 tool-ettes) ───────────────────────────
-    ("tool-06a",           "/toolbox/06-healthy-bee-ing/06a-care-check/"),
-    ("tool-06b",           "/toolbox/06-healthy-bee-ing/06b-calm-keep/"),
-    ("tool-06c",           "/toolbox/06-healthy-bee-ing/06c-snappy-count/"),
-    ("tool-06d",           "/toolbox/06-healthy-bee-ing/06d-medi-minder/"),
-    ("tool-06e",           "/toolbox/06-healthy-bee-ing/06e-moody-log/"),
-    ("tool-06f",           "/toolbox/06-healthy-bee-ing/06f-maven-wise/"),
-    # ── Branch 07 — Identity Known (7 tool-ettes) ────────────────────────────
-    ("tool-07a",           "/toolbox/07-identity-known/07a-critter-spotter/"),
-    ("tool-07b",           "/toolbox/07-identity-known/07b-roost-wrangler/"),
-    ("tool-07c",           "/toolbox/07-identity-known/07c-sight-seeker/"),
-    ("tool-07d",           "/toolbox/07-identity-known/07d-snap-decoder/"),
-    ("tool-07e",           "/toolbox/07-identity-known/07e-motif-muse/"),
-    ("tool-07f",           "/toolbox/07-identity-known/07f-maker-matcher/"),
-    ("tool-07g",           "/toolbox/07-identity-known/07g-self-fixer/"),
+# ── Core pages (stable set — not under toolbox/) ─────────────────────────────
+# These are listed explicitly because their URL paths cannot be reliably derived
+# from the filesystem structure.  Add new top-level pages here.
+CORE_PAGES = [
+    ("home",      "/"),
+    ("toolbox",   "/toolbox/"),
+    ("ecosystem", "/ecosystem/"),
+    ("universe",  "/universe/"),
+    ("search",    "/search/"),
+    ("about",     "/about/"),
+    ("contact",   "/contact/"),
+    ("legal",     "/legal/"),
+    ("persona",   "/persona/"),
+    ("showcase",  "/showcase/"),
 ]
+
+
+def _discover_toolbox_pages(root: Path) -> list:
+    """Auto-discover toolbox branch hubs and tool-ette pages from the filesystem.
+
+    Scans:
+      toolbox/*/index.html          → branch hub  (slug: branch-NN)
+      toolbox/*/*/index.html        → tool-ette   (slug: tool-NNx)
+
+    Returns a sorted list of (slug, url_path) tuples.  Because folder names
+    start with a zero-padded numeric prefix (e.g. '01-discovered-careers',
+    '01a-resume-builder') alphabetical sort matches publication order.
+    """
+    pages: list = []
+    toolbox_dir = root / "toolbox"
+    if not toolbox_dir.is_dir():
+        return pages
+
+    # Branch hubs — depth 1 under toolbox/
+    for idx in sorted(toolbox_dir.glob("*/index.html")):
+        branch = idx.parent.name
+        nn = branch.split("-")[0]          # e.g. '01'
+        pages.append((f"branch-{nn}", f"/toolbox/{branch}/"))
+
+    # Tool-ettes — depth 2 under toolbox/
+    for idx in sorted(toolbox_dir.glob("*/*/index.html")):
+        tool   = idx.parent.name           # e.g. '01a-resume-builder'
+        branch = idx.parent.parent.name    # e.g. '01-discovered-careers'
+        nnx = tool.split("-")[0]           # e.g. '01a'
+        pages.append((f"tool-{nnx}", f"/toolbox/{branch}/{tool}/"))
+
+    return pages
+
+
+# Build the full page list at import time so --start/--end/--batch use live counts.
+PAGES = CORE_PAGES + _discover_toolbox_pages(ROOT)
 
 BASE_URL = "http://localhost:5000"
 SCREENSHOTS_ALL = "--all-screenshots" in sys.argv
