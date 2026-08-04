@@ -148,7 +148,7 @@ def check_page(rel: Path, html: str) -> dict:
     # <a data-sparkle-link> element so the no-JS fallback is always present.
     # Run scripts/sync-sparkle-fallback.py to add the element to new pages.
     if "data-sparkle-link" not in html and rel.name not in SPARKLE_EXEMPT:
-        warnings.append("missing data-sparkle-link element (run sync-sparkle-fallback.py)")
+        issues.append("missing data-sparkle-link element (run sync-sparkle-fallback.py)")
 
     # Anti-FOSC color-scheme init script: every Glee page must have the
     # blocking inline script injected by inject-color-scheme-init.py so users
