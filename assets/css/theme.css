@@ -4634,11 +4634,6 @@ html[data-color-scheme="dark"] .glee-main .glee-color-toggle[data-state="auto"]:
   stroke: #f3a6b0;
   stroke-width: 1.5px;
 } 
-/* Clusters / groups – pale joyful panels */
-.glee-main .mermaid .cluster rect {
-  fill: #fff7f1;
-  stroke: #f3a6b0;
-}   
 /* Tooltips – coral pills */
 .glee-main .mermaidTooltip {
   background-color: #d94f63;
@@ -4837,7 +4832,8 @@ html[data-color-scheme="dark"] .glee-main .btn-secondary {
    need explicit dark-mode rules (see .agents/memory/pseudo-element-dark-mode.md).
    ─────────────────────────────────────────────────────────────────────────── */
 
-/* Hero card paper panel — ::before uses hardcoded #fff7f1; override it */
+/* Hero card paper panel — ::before uses hardcoded #fffaf5 (canonical base rule:
+   .glee-hero-card::before in the Glee hero section); override for dark mode */
 html[data-color-scheme="dark"] .glee-main .glee-hero-card::before {
   background: #2a2724;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
@@ -4898,8 +4894,10 @@ html[data-color-scheme="dark"] .glee-main .site-status {
   }
 }
 
-/* Mermaid cluster groups — pale peach/cream fill (#fff7f1 / #fff0ea) would
-   wash out on a dark diagram background; swap to the soft inset surface token */
+/* Mermaid cluster groups — pale peach fill (#fff0ea / #ffd1c4 stroke) would
+   wash out on a dark diagram background; swap to the soft inset surface token.
+   Canonical base rule: .glee-main .mermaid .cluster rect in the Glee-fully
+   Mermaid skin section. */
 html[data-color-scheme="dark"] .glee-main .mermaid .cluster rect {
   fill: var(--color-surface-soft);            /* #322e2b */
   stroke: rgba(243, 166, 176, 0.35);          /* softened coral rim */
@@ -4987,14 +4985,15 @@ html[data-color-scheme="dark"] .glee-main .mermaid .cluster rect {
   z-index: 1;
 }
 
-/* The actual paper panel behind the text */
+/* The actual paper panel behind the text — canonical base rule; dark-mode
+   override lives in the "Glee dark-mode hardcoded-background overrides" block */
 .glee-hero-card::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: #fff7f1;  /* warm paper */
+  background: #fffaf5;  /* warm paper */
   border-radius: 1.6rem;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
   transform: rotate(-2.5deg);
   transform-origin: center center;
   z-index: -1;
@@ -5056,50 +5055,6 @@ html[data-color-scheme="dark"] .glee-main .mermaid .cluster rect {
 
 .glee-main .hero-tagline {
   color: var(--color-muted);
-}
-
-/* container padding can stay as-is, but ensure a bit of top space */
-.glee-hero .hero-inner {
-  padding-top: 3.5rem;
-  padding-bottom: 3rem;
-}
-
-.glee-hero-card {
-  position: relative;
-  max-width: 36rem;
-  padding: 2.4rem 2.6rem 2.2rem;
-}
-
-/* Rotated paper background behind the content, but text stays straight */
-.glee-hero-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #fffaf5;
-  border-radius: 1.6rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
-  transform: rotate(-2.5deg);
-  transform-origin: center center;
-  z-index: -1;
-}
-
-.glee-hero-card p,
-.glee-hero-card h1 {
-  position: relative;
-}
-
-@media (max-width: 1024px) {
-  .glee-hero .hero-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .glee-hero-card {
-    margin-bottom: 1.5rem;
-  }
-
-  .glee-hero-card::before {
-    transform: rotate(-1.5deg);
-  }
 }
 
 /* Constrain hero image size across breakpoints */
