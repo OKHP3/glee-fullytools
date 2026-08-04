@@ -206,8 +206,9 @@ def parse_okh_root_tokens(theme_css_path: Path) -> dict:
     return result
 
 
-# Pre-populate dark mode at module init (re-parsed in main if needed)
-DARK_MODE = dict(_DARK_MODE_DEFAULTS)
+# Live-parsed at import time so any caller (tests, imports) sees real CSS tokens.
+# main() re-parses to pick up a --theme-css CLI override if provided.
+DARK_MODE = parse_dark_mode_tokens(Path("assets/css/theme.css"))
 
 
 def _worst_light_contrast(fg_hex: str) -> float:
