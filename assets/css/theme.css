@@ -6159,6 +6159,139 @@ html[data-color-scheme="dark"] .askjamie-main .brand-stripes--jamie {
   border: 1px solid #1c4d59;
 }
 
+/* ── AskJamie dark-mode surface overrides ─────────────────────────────────
+   AskJamie is brand-locked light by default, but OS dark-mode preference
+   (prefers-color-scheme: dark) and an explicit data-color-scheme="dark"
+   attribute can leave hardcoded warm-paper backgrounds blindingly bright.
+   These overrides subdue the most prominent user-visible light surfaces.
+   Both the attribute selector and the @media mirror are required — the
+   attribute selector covers a future explicit dark toggle; the @media block
+   covers OS-dark users immediately.
+
+   Intentionally excluded:
+     .brand-stripes--jamie   — already handled above (opacity reduction)
+     .askjamie-mermaid-shell .mermaid — uses var(--color-surface) token (inherits live)
+     .glee-notice            — already has dark overrides below
+   ─────────────────────────────────────────────────────────────────────── */
+
+html[data-color-scheme="dark"] .site-specials--jamie {
+  background: rgba(228, 240, 238, 0.12);
+}
+html[data-color-scheme="dark"] .askjamie-main .latest-pill {
+  background: rgba(45, 111, 126, 0.22);
+  color: #76b2ba;
+}
+html[data-color-scheme="dark"] .askjamie-main .site-status {
+  background: #2a2724;
+  border-color: rgba(215, 215, 215, 0.18);
+  color: #e8e4e0;
+}
+html[data-color-scheme="dark"] .askjamie-main .stripe-bg {
+  background: rgba(247, 243, 238, 0.05);
+  border-top-color: rgba(0, 0, 0, 0.3);
+  border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+html[data-color-scheme="dark"] .askjamie-main .askjamie-paper {
+  background: #2a2724;
+}
+/* Hero copy sits visually on the paper card — restore legible text when paper darkens.
+   Scoped to .askjamie-main so Glee 404 / under-construction pages are unaffected. */
+html[data-color-scheme="dark"] .askjamie-main .askjamie-hero-copy h1,
+html[data-color-scheme="dark"] .askjamie-main .askjamie-hero-copy .hero-subtitle,
+html[data-color-scheme="dark"] .askjamie-main .askjamie-hero-copy .hero-tagline {
+  color: #e8e4e0;
+}
+html[data-color-scheme="dark"] .askjamie-main .card {
+  background: #2a2724;
+  border-color: rgba(215, 215, 215, 0.15);
+  color: #e8e4e0;
+}
+html[data-color-scheme="dark"] .askjamie-main .chat-bubble.user {
+  background: #2a2724;
+  border-color: rgba(215, 215, 215, 0.15);
+  color: #e8e4e0;
+}
+html[data-color-scheme="dark"] .askjamie-main .chat-bubble.assistant.secondary {
+  background: #2a2724;
+  color: #e8e4e0;
+}
+html[data-color-scheme="dark"] .askjamie-main .site-footer {
+  background: #1e1b18;
+  border-top-color: rgba(224, 217, 210, 0.15);
+  color: #9ca3af;
+}
+html[data-color-scheme="dark"] .askjamie-main .footer-bottom {
+  background: #1e1b18;
+  color: #9ca3af;
+}
+html[data-color-scheme="dark"] .askjamie-main .mermaid .cluster rect {
+  fill: #1e2e2a;
+  stroke: rgba(213, 186, 154, 0.35);
+}
+html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
+  stroke: rgba(213, 186, 154, 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .site-specials--jamie {
+    background: rgba(228, 240, 238, 0.12);
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .latest-pill {
+    background: rgba(45, 111, 126, 0.22);
+    color: #76b2ba;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .site-status {
+    background: #2a2724;
+    border-color: rgba(215, 215, 215, 0.18);
+    color: #e8e4e0;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .stripe-bg {
+    background: rgba(247, 243, 238, 0.05);
+    border-top-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .askjamie-paper {
+    background: #2a2724;
+  }
+  /* Hero copy sits visually on the paper card — restore legible text when paper darkens.
+     Scoped to .askjamie-main so Glee 404 / under-construction pages are unaffected. */
+  html:not([data-color-scheme="light"]) .askjamie-main .askjamie-hero-copy h1,
+  html:not([data-color-scheme="light"]) .askjamie-main .askjamie-hero-copy .hero-subtitle,
+  html:not([data-color-scheme="light"]) .askjamie-main .askjamie-hero-copy .hero-tagline {
+    color: #e8e4e0;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .card {
+    background: #2a2724;
+    border-color: rgba(215, 215, 215, 0.15);
+    color: #e8e4e0;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .chat-bubble.user {
+    background: #2a2724;
+    border-color: rgba(215, 215, 215, 0.15);
+    color: #e8e4e0;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .chat-bubble.assistant.secondary {
+    background: #2a2724;
+    color: #e8e4e0;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .site-footer {
+    background: #1e1b18;
+    border-top-color: rgba(224, 217, 210, 0.15);
+    color: #9ca3af;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .footer-bottom {
+    background: #1e1b18;
+    color: #9ca3af;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .mermaid .cluster rect {
+    fill: #1e2e2a;
+    stroke: rgba(213, 186, 154, 0.35);
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .mermaid .edgePath path {
+    stroke: rgba(213, 186, 154, 0.45);
+  }
+}
+
 /* --- Arcade page (/arcade/) -------------------------------------------- */
 .arcade-phone-frame {
   width: min(400px, 92vw);
