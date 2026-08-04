@@ -1,0 +1,64 @@
+name: Sparkle Banner QA
+
+# Run whenever anything that could break the sparkle loader changes:
+# HTML (new pages), JS (app.js loader), CSS, or sparkle.json itself.
+# Also available on manual trigger.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/css/**'
+      - 'assets/js/**'
+      - 'assets/data/sparkle.json'
+      - '**/*.html'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/css/**'
+      - 'assets/js/**'
+      - 'assets/data/sparkle.json'
+      - '**/*.html'
+  workflow_dispatch:
+
+jobs:
+  sparkle-qa:
+    runs-on: ubuntu-latest
+    # 5 pages × ~20 s/page + server startup + Playwright install overhead ≈ 8 min.
+    # 15 min gives comfortable headroom without masking genuine hangs.
+    timeout-minutes: 15
+    name: Sparkle banner smoke test (5 pages)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install playwright
+
+      - name: Install Playwright browsers and system dependencies
+        run: playwright install --with-deps chromium
+
+      - name: Start local HTTP server
+        # Use serve.py (no-cache headers) so Playwright always fetches fresh assets.
+        run: python3 serve.py > /tmp/serve.log 2>&1 &
+
+      - name: Wait for server to be ready on port 5000
+        # Poll until the server responds or 15 s elapse.
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5000/ > /dev/null && echo "Server ready." && break
+            sleep 0.5
+          done
+          curl -sf http://localhost:5000/ > /dev/null \
+            || { echo "ERROR: server did not start in time"; cat /tmp/serve.log; exit 1; }
+
+      - name: Run sparkle banner smoke test
+        # sparkle-qa.py exits 1 when any assertion fails (element missing, href
+        # mismatch, or label not found in text), causing the workflow to fail.
+        # It also compiles a libgbm.so.1 stub — gcc is pre-installed on ubuntu-latest.
+        run: python3 scripts/sparkle-qa.py
