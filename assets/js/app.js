@@ -741,3 +741,27 @@ document.addEventListener("DOMContentLoaded", () => {
     start();
   }
 }());
+
+// ── 6. Sparkle banner loader ─────────────────────────────────────────────────
+//  Fetches /assets/data/sparkle.json and updates every [data-sparkle-link]
+//  element's href and text content so a single JSON edit propagates site-wide.
+(function () {
+  function applySparkle(data) {
+    var links = document.querySelectorAll("[data-sparkle-link]");
+    if (!links.length) return;
+    var text =
+      (data.emoji ? data.emoji + " " : "") +
+      (data.label || "") +
+      (data.description ? " \u2014 " + data.description : "") +
+      (data.suffix ? " " + data.suffix : "");
+    links.forEach(function (el) {
+      if (data.url) el.href = data.url;
+      if (text) el.textContent = text;
+    });
+  }
+
+  fetch("/assets/data/sparkle.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) { if (data) applySparkle(data); })
+    .catch(function () { /* silently keep static fallback */ });
+}());
