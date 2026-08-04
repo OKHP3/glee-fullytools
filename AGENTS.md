@@ -408,7 +408,7 @@ Expected files:
 - `search-index.json` -- rebuilt by `scripts/build-search-index.py`; powers
   the client-side search engine. Regenerate after any content change.
 - `sparkle.json` -- single-source data for the "Today's Sparkle" banner;
-  managed by `scripts/inject-sparkle-loader.py` (present on sites that use
+  managed via `assets/data/sparkle.json`; loaded automatically by `assets/js/app.js` (present on sites that use
   the Sparkle feature).
 - `icon-map.json` -- mapping of page/tool slugs to image paths; rebuilt by
   `scripts/audit-assets.py` (present on sites with a tool/GPT icon set).
@@ -522,8 +522,8 @@ Expected files:
   bootstrap, theme toggle, reading progress bar, scroll reveal, sticky TOC.
 - `mermaid-init.js` -- Mermaid v11 ESM initializer; loaded only on pages that
   contain diagrams (`ecosystem/`, `universe/`).
-- `sparkle-loader.js` -- loads and renders the "Today's Sparkle" banner from
-  `assets/data/sparkle.json` (present on sites using the Sparkle feature).
+- ~~`sparkle-loader.js`~~ -- **removed 2026-05-28**; logic merged into `app.js`.
+  Banner content is now driven by `assets/data/sparkle.json` loaded at runtime by `app.js`.
 
 Do not add vendor libraries here -- load from CDN per the static-only constraint.
 
@@ -587,23 +587,41 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories:
-- **Validators** (exit non-zero on regressions; safe for CI):
+Script categories (audited 2026-08-03 — all 57 scripts classified):
+
+- **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
-  `audit-site.py`, `audit-meta-versions.py`
-- **Index and feed builders** (regenerate data files):
-  `build-search-index.py`, `generate-feed.py`
-- **Idempotent mutators** (safe to re-run; AUTOGEN-marker-driven):
+  `audit-site.py`, `audit-meta-versions.py`, `check-accent-contrast.py`,
+  `check-mtb-version.py`, `responsive-audit.py`, `run-viewport-qa.py`,
+  `viewport-qa.py`, `site-audit.py`;
+  `responsive-qa.mjs` (Node/Playwright read-only QA runner);
+  `post-merge.sh` (read-only integrity check after merges)
+- **Index / feed / report builders** (regenerate data or output files):
+  `build-search-index.py`, `generate-feed.py`, `generate-illustrations.py`,
+  `generate-templates.py`, `extract-templates.py`
+- **Idempotent mutators** (safe to re-run; AUTOGEN-marker or presence-check-driven):
   `normalize-head.py`, `inject-jsonld.py`, `inject-breadcrumb.py`,
-  `enhance-pages.py`, `apply-modern-baseline.py`,
-  `inject-color-scheme-init.py`, `remove-deprecated-meta.py`
-- **Image pipeline** (WebP conversion and `<picture>` injection):
-  `png-to-webp.py`, `picture-upgrade.py`, `convert-hero-webp.py`,
-  `inject-hero-picture.py`, `inject-nav-logo-webp.py`
-- **Governance and sync**:
-  `push-to-github.py`, `post-merge.sh`, `rename-img-kebab.py`
-- **QA runners**:
-  `responsive-audit.py`, `responsive-qa.mjs`, `viewport-qa.py`
+  `inject-color-scheme-init.py`, `inject-gpt-icon-picture.py`,
+  `inject-hero-picture.py`, `inject-keep-exploring.py`,
+  `inject-nav-logo-webp.py`, `inject-showcase-footer.py`,
+  `inject-showcase-subnav.py`, `inject-toolette-hub.py`,
+  `remove-deprecated-meta.py`, `enhance-pages.py`, `modernize-pages.py`,
+  `apply-modern-baseline.py`, `reclassify-construction-banners.py`,
+  `activate-icons.py`, `add-toolbox-to-footer.py`, `fix-image-performance.py`,
+  `fix-audit-2026-05-12.py`, `fix-footer-nav-2026-07-20.py`,
+  `fix-placeholder-gpt-links.py`, `reorg-theme-css.py`,
+  `wire-illustrations.py`, `update-card-srcsets.py`,
+  `update-placeholder-dimensions.py`, `picture-upgrade.py`,
+  `rename-img-kebab.py`, `cache-bust.py`, `move-orphans-to-library.py`
+- **Sync scripts** (read SVG/data sources and patch HTML; safe to re-run):
+  `sync-image-alt.py`, `sync-portfolio-stats.py`
+- **Image pipeline** (WebP conversion; skips existing output files):
+  `png-to-webp.py`, `convert-hero-webp.py`, `convert-gpt-icons-webp.py`
+- **Governance and generation**:
+  `push-to-github.py`, `cross-site-sync.py`, `release-mtb.py`
+- **⛔ Retired — exit 1; do not re-run** (one-shot mutators whose
+  preconditions no longer hold; re-running would corrupt or double-inject):
+  `inject-sparkle-loader.py` (sparkle-loader.js merged into app.js — 2026-05-28)
 
 When adapting a script for a sibling repo, update these per-site constants:
 `SITE` / `SITE_ORIGIN`, `GA4_ID`, `EXPECTED_THEME_COLOR`, any hardcoded
@@ -632,11 +650,11 @@ baseline -- update it here when the inventory changes materially.
 | `assets/img/favicons/` | 8 files | Full PNG set plus the SVG master |
 | `assets/img/library/` | `.gitkeep` only | Populate with reusable brand variants |
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
-| `assets/js/` | `app.js` (40 KB), `mermaid-init.js`, `sparkle-loader.js` | Only Glee currently has `sparkle-loader.js` |
+| `assets/js/` | `app.js` (40 KB), `mermaid-init.js` | `sparkle-loader.js` removed 2026-05-28; logic merged into `app.js` |
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | 55 scripts | Largest toolchain; includes Glee-specific GPT-icon and toolbox scripts |
+| `scripts/` | 55 scripts (53 active, 2 retired exit-1 stubs) | Audited 2026-08-03; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
@@ -653,7 +671,7 @@ baseline -- update it here when the inventory changes materially.
 `fix-placeholder-gpt-links.py`, `generate-illustrations.py`,
 `inject-gpt-icon-picture.py`, `inject-keep-exploring.py`,
 `inject-showcase-footer.py`, `inject-showcase-subnav.py`,
-`inject-sparkle-loader.py`, `inject-toolette-hub.py`,
+`inject-toolette-hub.py`,
 `reclassify-construction-banners.py`, `run-viewport-qa.py`,
 `sync-portfolio-stats.py`, `update-card-srcsets.py`, `wire-illustrations.py`.
 
