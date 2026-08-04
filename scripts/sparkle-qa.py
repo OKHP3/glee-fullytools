@@ -286,6 +286,36 @@ def run_sparkle_qa(base_url: str, test_pages: list) -> int:
     return 0 if failures == 0 else 1
 
 
+def verify_test_fixtures(test_pages: list) -> bool:
+    """Check that every URL in *test_pages* maps to a real index.html on disk.
+
+    A URL like /toolbox/01-discovered-careers/ resolves to:
+      ROOT/toolbox/01-discovered-careers/index.html
+
+    Returns True if all fixtures exist.  Prints a clear configuration-error
+    message for any missing file and returns False so the caller can exit 1
+    before Playwright launches.
+    """
+    all_ok = True
+    for slug, path in test_pages:
+        # Strip leading slash; trailing slash means index.html lives inside
+        rel = path.lstrip("/")
+        if rel == "" or rel.endswith("/"):
+            candidate = ROOT / rel / "index.html"
+        else:
+            candidate = ROOT / rel
+        if not candidate.exists():
+            print(
+                f"ERROR: test fixture not found: {path}\n"
+                f"  expected file: {candidate.relative_to(ROOT)}\n"
+                f"  Update BRAND_PAGES['glee'] in sparkle-qa.py to match "
+                f"the current toolbox URL.",
+                file=sys.stderr,
+            )
+            all_ok = False
+    return all_ok
+
+
 def main():
     parser = argparse.ArgumentParser(description="Sparkle banner smoke test")
     parser.add_argument(
@@ -306,6 +336,13 @@ def main():
     args = parser.parse_args()
 
     test_pages = BRAND_PAGES[args.brand]
+
+    # Pre-flight: validate that every test URL exists on disk before launching
+    # Playwright.  Skip this check for remote base URLs (AskJamie mode) because
+    # the repo root won't contain the remote site's pages.
+    is_localhost = "localhost" in args.base_url or "127.0.0.1" in args.base_url
+    if is_localhost and not verify_test_fixtures(test_pages):
+        sys.exit(1)
 
     print("Setting up libgbm stub…")
     ensure_stub()
