@@ -4863,6 +4863,44 @@ html[data-color-scheme="dark"] .glee-main .glee-hero-stripes {
   }
 }
 
+/* Site-specials Glee notice — amber (#ffe8a8) would be jarring in dark mode;
+   tone it down to a muted amber tint that still communicates "special" */
+html[data-color-scheme="dark"] .site-specials--glee {
+  background: rgba(200, 146, 26, 0.18);   /* muted amber tint on dark */
+  color: var(--color-fg);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .site-specials--glee {
+    background: rgba(200, 146, 26, 0.18);
+    color: var(--color-fg);
+  }
+}
+
+/* Site-status banner — near-white (#fffafa) → elevated dark surface */
+html[data-color-scheme="dark"] .glee-main .site-status {
+  background: var(--color-surface);           /* #2a2724 */
+  border-color: rgba(255, 216, 210, 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-status {
+    background: var(--color-surface);
+    border-color: rgba(255, 216, 210, 0.12);
+  }
+}
+
+/* Mermaid cluster groups — pale peach/cream fill (#fff7f1 / #fff0ea) would
+   wash out on a dark diagram background; swap to the soft inset surface token */
+html[data-color-scheme="dark"] .glee-main .mermaid .cluster rect {
+  fill: var(--color-surface-soft);            /* #322e2b */
+  stroke: rgba(243, 166, 176, 0.35);          /* softened coral rim */
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .mermaid .cluster rect {
+    fill: var(--color-surface-soft);
+    stroke: rgba(243, 166, 176, 0.35);
+  }
+}
+
 /* Glee-fully: lighten striped sections so they feel like paper, not blueprint */
 .glee-main .stripe-bg {
   background: #fff7f1; /* warm paper */
