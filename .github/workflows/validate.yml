@@ -43,8 +43,8 @@ jobs:
           fi
           echo "Search index OK: $(wc -c < assets/data/search-index.json) bytes"
 
-      - name: Accent contrast advisory scan
-        run: python3 scripts/check-accent-contrast.py
-        # Advisory-only mode: exits 0 regardless of findings.
-        # Output is surfaced in the CI log for visibility on every push.
-        # Use --strict locally when manually reviewing a PR that touches colored text.
+      - name: Accent contrast check (strict)
+        # --strict converts any ADVISORY finding into exit 1, blocking the PR.
+        # Baseline is clean (0 advisories). A future PR introducing a low-contrast
+        # color: rule in a dark-mode block will fail here before it can merge.
+        run: python3 scripts/check-accent-contrast.py --strict
