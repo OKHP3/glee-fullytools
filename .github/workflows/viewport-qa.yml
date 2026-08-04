@@ -21,8 +21,8 @@ jobs:
   viewport-qa:
     runs-on: ubuntu-latest
     # Budget formula: (pages × 8 viewports × ~2 s/page) + ~5 min overhead.
-    # At 59 pages that is ~21 min; raised to 30 to give headroom as new
-    # tool-ettes are added.  Revisit when the page count exceeds ~100.
+    # Page count is reported dynamically in the "Report page count" step.
+    # 30 min gives headroom up to ~100 pages before this needs revisiting.
     timeout-minutes: 30
     name: Responsive viewport QA (all pages × 8 viewports)
 
@@ -55,6 +55,23 @@ jobs:
           done
           curl -sf http://localhost:5000/ > /dev/null \
             || { echo "ERROR: server did not start in time"; cat /tmp/serve.log; exit 1; }
+
+      - name: Report page count
+        # Echo the live page count so it is visible in the Actions log without
+        # hardcoding a number.  Mirrors the glob logic in run-viewport-qa.py:
+        #   CORE_PAGES (10 stable top-level pages, not under toolbox/)
+        #   + toolbox/*/index.html          (branch hubs)
+        #   + toolbox/*/*/index.html        (tool-ettes)
+        run: |
+          python3 - <<'EOF'
+          from pathlib import Path
+          root = Path('.')
+          branches = len(list(root.glob('toolbox/*/index.html')))
+          tools    = len(list(root.glob('toolbox/*/*/index.html')))
+          total    = 10 + branches + tools   # 10 = len(CORE_PAGES) in run-viewport-qa.py
+          print(f'Running viewport QA: {total} pages × 8 viewports')
+          print(f'  core={10}  branches={branches}  tool-ettes={tools}')
+          EOF
 
       - name: Run viewport QA
         # run-viewport-qa.py exits 1 when any horizontal-overflow issue is found,
