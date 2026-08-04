@@ -531,6 +531,77 @@ def scan_html_file(path: Path) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+
+def build_font_size_index(css_text: str) -> dict:
+    """
+    Build a mapping of final-element-type → list of
+    (px_approx, raw_value, lineno, selector_part) for every CSS rule block
+    in *css_text* that carries an explicit font-size declaration.
+
+    Only static values (rem / em / px / pt) are recorded — clamp(), calc(),
+    and percentage values are skipped because they can't be resolved statically.
+
+    Rules are stored in source order so the caller can apply a scoring
+    strategy rather than relying on order alone.
+    """
+    index: dict = {}
+    for selector, declarations, lineno in extract_css_rules(css_text):
+        fs_m = FONT_SIZE_RE.search(declarations)
+        if not fs_m:
+            continue
+        approx = _approx_px(float(fs_m.group(1)), fs_m.group(2))
+        raw = f"{fs_m.group(1)}{fs_m.group(2)}"
+        for sel_part in selector.split(","):
+            el = extract_final_element(sel_part.strip())
+            if el:
+                index.setdefault(el, []).append(
+                    (approx, raw, lineno, sel_part.strip())
+                )
+    return index
+
+
+def _resolve_inherited_font_size(selector: str, font_size_index: dict) -> str:
+    """
+    Best-effort estimate of the computed font-size for *selector* based on
+    rules already collected in *font_size_index*.
+
+    Strategy:
+      1. Find all index entries for the same final element type.
+      2. Score each candidate by counting how many simple tokens (classes,
+         pseudo-classes, element names) from the candidate selector also appear
+         in the flagged selector.  Higher score = closer ancestor or peer rule.
+      3. Return the highest-scoring candidate or a UA-default estimate.
+
+    This is a heuristic — not a full CSS cascade walk — but reliably surfaces
+    the most likely inherited size for selectors nested inside the same scope
+    (e.g. '.glee-main p' will prefer a '.glee-main p' font-size rule over an
+    unrelated '.askjamie-main p' rule).
+    """
+    element = extract_final_element(selector)
+    if element is None:
+        return "inherited — check parent rules"
+
+    candidates = font_size_index.get(element, [])
+
+    if candidates:
+        flagged_tokens = set(re.findall(r'[.#]?[a-zA-Z][a-zA-Z0-9_-]*', selector))
+
+        def _score(cand):
+            _, _, _, csel = cand
+            cand_tokens = set(re.findall(r'[.#]?[a-zA-Z][a-zA-Z0-9_-]*', csel))
+            return len(flagged_tokens & cand_tokens)
+
+        best = max(candidates, key=_score)
+        approx, raw, lineno, csel = best
+        return f"~{approx:.0f}px (~{raw}, from '{csel[:55]}' at L{lineno})"
+
+    # UA defaults for elements that differ from 16 px
+    _UA_DEFAULTS: dict = {
+        "small": 13.3, "sub": 12.0, "sup": 12.0,
+    }
+    ua_px = _UA_DEFAULTS.get(element, 16.0)
+    return f"~{ua_px:.0f}px (browser default for <{element}>)"
+
 # Pass 2 — CSS rule scanning
 # ---------------------------------------------------------------------------
 
@@ -559,6 +630,9 @@ def scan_css_file(path: Path) -> list[dict]:
 
     findings = []
 
+    # Build font-size index for inheritance resolution (Pass 2 only)
+    font_size_index = build_font_size_index(css_text)
+
     for selector_raw, declarations, lineno in extract_css_rules(css_text):
         # Check every declaration line for a text-color accent usage
         decl_lines = [dl.strip() for dl in declarations.splitlines() if dl.strip()]
@@ -581,15 +655,16 @@ def scan_css_file(path: Path) -> list[dict]:
         # INFO exemption: same block must prove bold weight + explicit size >= 14 px
         qualifies_for_exemption = _block_qualifies_for_bold_exemption(declarations)
 
-        # Font-size hint for developer guidance
+        # Font-size hint — explicit value in the same block takes precedence;
+        # if absent, the per-selector inheritance resolver fills it in below.
         fs_m = FONT_SIZE_RE.search(declarations)
         if fs_m:
             fs_val = float(fs_m.group(1))
             fs_unit = fs_m.group(2)
             fs_approx = _approx_px(fs_val, fs_unit)
-            font_size_hint = f"{fs_m.group(1)}{fs_unit} (~{fs_approx:.0f}px)"
+            rule_font_size_hint = f"{fs_m.group(1)}{fs_unit} (~{fs_approx:.0f}px, explicit in rule)"
         else:
-            font_size_hint = "inherited — check parent rules"
+            rule_font_size_hint = None  # resolved per selector part below
 
         cs = _contrast_summary(is_var=is_var)
 
@@ -605,6 +680,13 @@ def scan_css_file(path: Path) -> list[dict]:
 
             if element in RISKY_TAGS:
                 severity = _severity_from_contrast(cs, qualifies_for_exemption)
+
+                # Per-selector font-size resolution
+                font_size_hint = (
+                    rule_font_size_hint
+                    if rule_font_size_hint is not None
+                    else _resolve_inherited_font_size(sel_part, font_size_index)
+                )
 
                 findings.append({
                     "file": str(path),
