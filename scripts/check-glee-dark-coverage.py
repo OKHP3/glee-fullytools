@@ -2,33 +2,42 @@
 """
 check-glee-dark-coverage.py
 ===========================
-Scans the GLEE section of assets/css/theme.css for CSS rules that set a
-hardcoded light-hex background (any value whose first hex digit after # is
-'f' or 'e', e.g. #fff7f1, #ffe8a8, #e8e0d8) and verifies that each such
-selector has a matching dark-mode override inside either:
+Scans the GLEE section of assets/css/theme.css for CSS rules that use a
+hardcoded light-hex value in any of the following surface-forming properties
+and verifies that each such selector has a matching dark-mode override:
+
+  background / background-color
+  border / border-{side} / border-color / border-{side}-color
+  outline / outline-color
+  box-shadow
+
+A "dark-mode override" means the same (normalised) selector appears inside
+either:
 
   html[data-color-scheme="dark"] { … }
 or
   @media (prefers-color-scheme: dark) { … }
 
-A "match" means the whitespace-normalised base selector string appears
-verbatim inside a dark-mode selector that also sets a background or
-background-color property.
+…and that block also sets the *same property group* as the light-hex hit.
+For example, a dark rule that only overrides ``background`` does NOT satisfy
+coverage for a light-hex ``border-color`` hit on the same selector.
 
-What counts as a "light-hex background"
------------------------------------------
+What counts as a "light-hex value"
+-------------------------------------
 Only *flat* hex values trigger this check:
     background: #fff7f1;          ← flagged
-    background-color: #ffe8a8;    ← flagged
-    background: linear-gradient(…, #f3b932, …);  ← skipped (gradient decoration)
+    border-color: #ffd8d2;        ← flagged
+    background: linear-gradient(…, #f3b932, …);  ← skipped for background
+                                                    (gradient decoration)
 
-Gradients are skipped because they are typically decorative accent lines
-(e.g. a hover underline), not surface fill backgrounds, and the light hex
-inside them usually co-exists with a dark companion hex in the same gradient.
+For ``background``/``background-color``, gradient values are skipped because
+they are typically decorative accent lines and the light hex inside them
+usually co-exists with a dark companion hex in the same gradient.
+For border, outline, and shadow properties, gradients do not apply.
 
 Exit codes
 ----------
-  0 — all light-bg GLEE selectors have a dark-mode override (or none found)
+  0 — all light-hex GLEE selectors have dark-mode overrides (or none found)
   1 — one or more selectors are uncovered
 
 Usage
@@ -65,6 +74,37 @@ GRADIENT_RE = re.compile(
     r"^\s*(?:linear|radial|conic|repeating-linear|repeating-radial|repeating-conic)-gradient\s*\(",
     re.IGNORECASE,
 )
+
+# Border properties: border (shorthand), border-color, border-{side},
+# border-{side}-color — but NOT border-radius / border-style / border-width /
+# border-image / border-spacing / border-collapse.
+BORDER_PROP_RE = re.compile(
+    r"\bborder(?:-(?:top|right|bottom|left)(?:-color)?|-color)?\s*:\s*(.+?)(?:\s*;|\s*$)",
+    re.IGNORECASE,
+)
+
+# Outline shorthand and outline-color (not outline-offset/style/width).
+OUTLINE_PROP_RE = re.compile(
+    r"\boutline(?:-color)?\s*:\s*(.+?)(?:\s*;|\s*$)",
+    re.IGNORECASE,
+)
+
+# Box-shadow value.
+BOX_SHADOW_PROP_RE = re.compile(
+    r"\bbox-shadow\s*:\s*(.+?)(?:\s*;|\s*$)",
+    re.IGNORECASE,
+)
+
+# All property groups checked for hardcoded light-hex values.
+# Tuple: (label, regex, skip_gradients)
+#   skip_gradients=True  → decorative gradient values are not flagged
+#   skip_gradients=False → any light hex in the value is flagged
+PROP_CHECKS: list[tuple[str, re.Pattern, bool]] = [
+    ("background", BACKGROUND_PROP_RE, True),
+    ("border",     BORDER_PROP_RE,     False),
+    ("outline",    OUTLINE_PROP_RE,    False),
+    ("shadow",     BOX_SHADOW_PROP_RE, False),
+]
 
 # Markers that delimit the GLEE section in the CSS comment banner
 GLEE_START_RE = re.compile(r"SECTION\s*[·•]\s*GLEE", re.IGNORECASE)
@@ -290,55 +330,56 @@ def check(verbose: bool = False) -> int:
 
     all_rules = _parse_rules(css_text)
 
-    glee_light_rules: list[tuple[CSSRule, list[str]]] = []  # (rule, bad_values)
-    # Individual (non-comma-grouped) normalised dark selector strings that carry
-    # a background override — stored in both raw and dark-qualifier-stripped forms
-    # so coverage matching can use exact / endswith comparison without blob search.
-    dark_individual: set[str] = set()
+    # glee_light_rules: each entry is (rule, hits) where hits is a list of
+    # (prop_type, bad_declaration_string) tuples.
+    glee_light_rules: list[tuple[CSSRule, list[tuple[str, str]]]] = []
+
+    # Per-property-type sets of dark-mode selector strings (both raw and
+    # dark-qualifier-stripped forms), so coverage matching can verify that
+    # the dark override addresses the *same* property group as the hit.
+    dark_by_type: dict[str, set[str]] = {pt: set() for pt, _, _ in PROP_CHECKS}
 
     for rule in all_rules:
         in_glee = glee_start <= rule.start_line <= glee_end
+        is_dark_rule = DARK_SELECTOR_RE.search(rule.selector) or rule.in_dark_media
 
-        # Collect light-hex background values (flat hex only, no gradients)
-        bad_values: list[str] = []
-        for line in rule.declarations.splitlines():
-            bg_m = BACKGROUND_PROP_RE.search(line)
-            if not bg_m:
-                continue
-            value = bg_m.group(1).strip()
-            if GRADIENT_RE.match(value):
-                continue  # decorative gradient — skip
-            if LIGHT_HEX_RE.search(value):
-                bad_values.append(bg_m.group(0).strip())
+        # Collect light-hex hits across all property groups
+        hits: list[tuple[str, str]] = []
+        for prop_type, prop_re, skip_gradients in PROP_CHECKS:
+            for line in rule.declarations.splitlines():
+                m = prop_re.search(line)
+                if not m:
+                    continue
+                value = m.group(1).strip()
+                if skip_gradients and GRADIENT_RE.match(value):
+                    continue  # decorative gradient — skip
+                if LIGHT_HEX_RE.search(value):
+                    hits.append((prop_type, m.group(0).strip()))
 
-        # Dark-mode rule with any background override?
-        is_dark_bg_rule = (
-            (DARK_SELECTOR_RE.search(rule.selector) or rule.in_dark_media)
-            and BACKGROUND_PROP_RE.search(rule.declarations)
-        )
+        if in_glee and hits:
+            glee_light_rules.append((rule, hits))
 
-        if in_glee and bad_values:
-            glee_light_rules.append((rule, bad_values))
+        # Dark-mode coverage: record which property groups this dark rule covers.
+        if is_dark_rule:
+            for prop_type, prop_re, _ in PROP_CHECKS:
+                if prop_re.search(rule.declarations):
+                    # Expand comma-grouped dark selectors into individual
+                    # components and store both the raw normalised form and the
+                    # stripped form (dark qualifier removed).
+                    for raw_comp in rule.selector.split(","):
+                        norm = _ws_norm(raw_comp)
+                        if norm:
+                            dark_by_type[prop_type].add(norm)
+                            stripped = _strip_dark_qualifier(norm)
+                            if stripped:
+                                dark_by_type[prop_type].add(stripped)
 
-        if is_dark_bg_rule:
-            # Expand comma-grouped dark selectors into individual components and
-            # store both the raw normalised form and the stripped form (dark
-            # qualifier removed).  Expanding here means coverage matching later
-            # can work with individual selectors rather than blobs.
-            for raw_comp in rule.selector.split(","):
-                norm = _ws_norm(raw_comp)
-                if norm:
-                    dark_individual.add(norm)
-                    stripped = _strip_dark_qualifier(norm)
-                    if stripped:
-                        dark_individual.add(stripped)
-
-    def _is_covered_by_dark(comp: str) -> bool:
-        """Return True when *comp* is covered by some selector in dark_individual.
+    def _is_covered(comp: str, prop_type: str) -> bool:
+        """Return True when *comp* is covered by a dark rule for *prop_type*.
 
         A dark selector covers a light one when:
         - The dark selector equals the light selector exactly (after the dark
-          qualifier was already stripped into dark_individual), OR
+          qualifier was already stripped into dark_by_type), OR
         - The dark selector ends with ' ' + comp, meaning the dark rule is a
           more-specific selector that appends the same component with an extra
           scoping prefix (e.g. 'html[data-color-scheme="dark"] .glee-main .foo'
@@ -349,41 +390,44 @@ def check(verbose: bool = False) -> int:
         accidentally matching '.foo-extended' or other longer tokens.
         """
         suffix = " " + comp
-        for dark in dark_individual:
+        for dark in dark_by_type[prop_type]:
             if dark == comp or dark.endswith(suffix):
                 return True
         return False
 
-    uncovered: list[tuple[CSSRule, list[str]]] = []
-    for rule, bad_values in glee_light_rules:
+    uncovered: list[tuple[CSSRule, list[tuple[str, str]]]] = []
+    for rule, hits in glee_light_rules:
         base_norm = _ws_norm(rule.selector)
-        # Split comma-grouped selectors.  ALL components must be covered —
-        # if the rule is '.a, .b { background: #fff; }' then both .a and .b
-        # carry the light background and both need a dark-mode override.
+        # Split comma-grouped selectors.  ALL components must be covered for
+        # EACH property-type that has a hit.
         components = [_ws_norm(c) for c in base_norm.split(",") if c.strip()]
-        missing = [comp for comp in components if not _is_covered_by_dark(comp)]
-        if not missing:
+
+        missing_hits: list[tuple[str, str]] = []
+        for prop_type, decl in hits:
+            missing_comps = [c for c in components if not _is_covered(c, prop_type)]
+            if missing_comps:
+                missing_hits.append((prop_type, decl))
+
+        if not missing_hits:
             if verbose:
                 print(f"  PASS  line {rule.start_line:5d}  {base_norm!r}")
         else:
-            uncovered.append((rule, bad_values))
+            uncovered.append((rule, missing_hits))
             if verbose:
-                detail = " | ".join(missing)
                 print(f"  FAIL  line {rule.start_line:5d}  {base_norm!r}")
-                if len(missing) < len(components):
-                    # Some components are covered — flag which are missing
-                    print(f"         missing dark override for: {detail}")
+                for pt, decl in missing_hits:
+                    print(f"         [{pt}] missing dark override for: {decl}")
 
     if uncovered:
         print(
             f"\ncheck-glee-dark-coverage: {len(uncovered)} GLEE selector(s) have "
-            f"a hardcoded light background with no dark-mode override:\n"
+            f"hardcoded light surface value(s) with no dark-mode override:\n"
         )
-        for rule, bad_values in uncovered:
+        for rule, missing_hits in uncovered:
             base_norm = _ws_norm(rule.selector)
             print(f"  theme.css line {rule.start_line}: {base_norm!r}")
-            for v in bad_values:
-                print(f"      {v}")
+            for prop_type, decl in missing_hits:
+                print(f"      [{prop_type}] {decl}")
         print(
             f"\n  Add a dark-mode override for each selector above inside a\n"
             f'  html[data-color-scheme="dark"] block or a\n'
@@ -391,11 +435,19 @@ def check(verbose: bool = False) -> int:
         )
         return 1
 
-    total = len(glee_light_rules)
-    print(
-        f"check-glee-dark-coverage: OK — {total} light-background rule(s) in the "
-        f"GLEE section all have dark-mode overrides."
+    # Tally hits across all property types for the summary line
+    total_rules = len(glee_light_rules)
+    type_counts: dict[str, int] = {}
+    for _, hits in glee_light_rules:
+        for prop_type, _ in hits:
+            type_counts[prop_type] = type_counts.get(prop_type, 0) + 1
+    breakdown = ", ".join(
+        f"{count} {pt}" for pt, count in sorted(type_counts.items()) if count
     )
+    summary = f"{total_rules} light-surface rule(s)"
+    if breakdown:
+        summary += f" ({breakdown})"
+    print(f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have dark-mode overrides.")
     return 0
 
 

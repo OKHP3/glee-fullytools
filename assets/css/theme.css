@@ -4723,6 +4723,16 @@ html[data-color-scheme="dark"] .glee-main .card {
   }
 }
 
+/* Header — cream border-bottom (#ffdcd2) → faint coral rim on dark bg */
+html[data-color-scheme="dark"] .glee-main .site-header {
+  border-bottom-color: rgba(255, 216, 210, 0.15);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-header {
+    border-bottom-color: rgba(255, 216, 210, 0.15);
+  }
+}
+
 /* Footer — cream (#fff7f1) → inky near-black; text tokens already flip via var */
 html[data-color-scheme="dark"] .glee-main .site-footer {
   background: #1a1816;                         /* slightly deeper than body */
