@@ -336,6 +336,16 @@ def main() -> int:
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->")
         total_warnings += 1
 
+    # ── Global invariant: scripts/*.mjs + *.sh count vs AGENTS.md ────────────
+    # When a new non-Python runner is added to scripts/ it must be classified
+    # in the AGENTS.md script-categories table.  This check catches the drift.
+    # To fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-OTHER -->.
+    scripts_non_py_drift = _check_scripts_non_py_drift()
+    if scripts_non_py_drift:
+        print(f"\nscripts/ non-Python count drift: {scripts_non_py_drift}")
+        print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-OTHER -->")
+        total_warnings += 1
+
     # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
     # For every tool page whose og:image is a local .svg, the alt text must be
     # "Glee-fully {tool_name} — {svg[aria-label]}".  If an SVG's aria-label
@@ -601,6 +611,38 @@ def _check_scripts_py_drift() -> str:
             f"scripts/*.py count is {live_count} but AGENTS.md documents {recorded} "
             f"(drift {live_count - recorded:+d}). "
             f"Classify the new/removed script in AGENTS.md and bump the STAT:SCRIPTS-PY marker."
+        )
+    return ""
+
+
+def _check_scripts_non_py_drift() -> str:
+    """Return an error string when the scripts/*.mjs + scripts/*.sh count on disk
+    does not match the <!-- STAT:SCRIPTS-OTHER --> marker in AGENTS.md.
+
+    A mismatch means a new non-Python runner was added (or removed) without
+    updating the classification table, prompting the maintainer to classify it.
+    Returns empty string when counts agree or the marker is absent."""
+    agents_md = ROOT / "AGENTS.md"
+    scripts_dir = ROOT / "scripts"
+    if not agents_md.exists() or not scripts_dir.is_dir():
+        return ""
+
+    live_count = (
+        len(list(scripts_dir.glob("*.mjs")))
+        + len(list(scripts_dir.glob("*.sh")))
+    )
+    agents_text = agents_md.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r"<!-- STAT:SCRIPTS-OTHER -->(\d+)<!-- /STAT:SCRIPTS-OTHER -->", agents_text)
+    if not m:
+        return "STAT:SCRIPTS-OTHER marker not found in AGENTS.md"
+    recorded = int(m.group(1))
+    if live_count != recorded:
+        return (
+            f"scripts/*.mjs + scripts/*.sh count is {live_count} but AGENTS.md "
+            f"documents {recorded} "
+            f"(drift {live_count - recorded:+d}). "
+            f"Classify the new/removed script in AGENTS.md and bump the "
+            f"STAT:SCRIPTS-OTHER marker."
         )
     return ""
 
