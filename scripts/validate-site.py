@@ -464,6 +464,10 @@ def _check_og_image_alt_drift(html_mod) -> list:
         ):
             alt_m = re.search(pattern, html_text)
             if not alt_m:
+                mismatches.append(
+                    f"{rel}: missing {prop} (page has a .svg og:image but no alt tag)\n"
+                    f"    expected: {expected!r}"
+                )
                 continue
             actual = _html_mod.unescape(alt_m.group(1))
             if actual != expected:
