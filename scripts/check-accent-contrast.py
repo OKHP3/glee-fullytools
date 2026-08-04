@@ -445,8 +445,35 @@ def extract_css_rules(css_text: str):
 # Pass 1 — HTML scanning
 # ---------------------------------------------------------------------------
 
-def scan_html_file(path: Path) -> list[dict]:
-    """Return advisory findings for one HTML file (inline styles + utility classes)."""
+def _inline_font_size_hint(line: str, tag: str, font_size_index: dict | None) -> str | None:
+    """
+    Return a font-size hint string for a Pass 1 HTML finding.
+
+    Priority:
+      1. An explicit font-size declared in the same inline style= attribute.
+      2. The CSS inheritance estimate from *font_size_index* (if provided).
+      3. None — caller may omit the hint from the finding.
+    """
+    # Check inline style= first (most specific)
+    inline_fs_m = FONT_SIZE_RE.search(line)
+    if inline_fs_m:
+        approx = _approx_px(float(inline_fs_m.group(1)), inline_fs_m.group(2))
+        return f"{inline_fs_m.group(1)}{inline_fs_m.group(2)} (~{approx:.0f}px, inline style)"
+
+    if font_size_index is not None:
+        return _resolve_inherited_font_size(tag, font_size_index)
+
+    return None
+
+
+def scan_html_file(path: Path, font_size_index: dict | None = None) -> list[dict]:
+    """Return advisory findings for one HTML file (inline styles + utility classes).
+
+    *font_size_index* — optional pre-built mapping from `build_font_size_index()`
+    over the project CSS.  When provided, each finding's detail includes an
+    estimated font size (explicit inline value or CSS inheritance heuristic),
+    matching the hint already shown in Pass 2 (CSS rule) findings.
+    """
     findings = []
     try:
         lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
@@ -465,16 +492,19 @@ def scan_html_file(path: Path) -> list[dict]:
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
                 cs = _contrast_summary(is_var=False)
                 severity = "ADVISORY" if tag in RISKY_TAGS else "INFO"
+                font_size_hint = _inline_font_size_hint(line, tag, font_size_index)
                 findings.append({
                     "file": str(path),
                     "line": lineno,
                     "severity": severity,
                     "tag": tag,
                     "rule": "inline-style-accent-color",
+                    "font_size_hint": font_size_hint,
                     "detail": (
                         f"<{tag}> has inline accent color -- "
                         f"verify it is large/bold text (>=18.67 px normal "
                         f"or >=14 px bold)."
+                        + (f" Font size: {font_size_hint}." if font_size_hint else "")
                         + _contrast_detail_suffix(cs, False)
                     ),
                     "snippet": stripped[:120],
@@ -490,15 +520,18 @@ def scan_html_file(path: Path) -> list[dict]:
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
                 if tag in RISKY_TAGS:
                     cs = _contrast_summary(is_var=True)
+                    font_size_hint = _inline_font_size_hint(line, tag, font_size_index)
                     findings.append({
                         "file": str(path),
                         "line": lineno,
                         "severity": "ADVISORY",
                         "tag": tag,
                         "rule": "inline-style-accent-var",
+                        "font_size_hint": font_size_hint,
                         "detail": (
                             f"<{tag}> uses var(--color-accent/rust) as text color -- "
                             f"accent tokens are below 4.5:1 for normal body text."
+                            + (f" Font size: {font_size_hint}." if font_size_hint else "")
                             + _contrast_detail_suffix(cs, False)
                         ),
                         "snippet": stripped[:120],
@@ -512,15 +545,18 @@ def scan_html_file(path: Path) -> list[dict]:
                 tag = tag_m.group(1).lower() if tag_m else "unknown"
                 if tag in RISKY_TAGS:
                     cs = _contrast_summary(is_var=True)
+                    font_size_hint = _inline_font_size_hint(line, tag, font_size_index)
                     findings.append({
                         "file": str(path),
                         "line": lineno,
                         "severity": "ADVISORY",
                         "tag": tag,
                         "rule": f"utility-class-{cls}",
+                        "font_size_hint": font_size_hint,
                         "detail": (
                             f"<{tag}> uses .{cls} -- verify it meets "
                             f"large/bold text threshold."
+                            + (f" Font size: {font_size_hint}." if font_size_hint else "")
                             + _contrast_detail_suffix(cs, False)
                         ),
                         "snippet": stripped[:120],
@@ -722,14 +758,25 @@ def scan_css_file(path: Path) -> list[dict]:
 
 # Patterns that open a dark-mode scoped block:
 #   @media (prefers-color-scheme: dark) { … }
-#   html[data-color-scheme="dark"] .foo { … }
+#   html[data-color-scheme="dark"] .foo { … }   ← Glee-fully toggle
+#   html[data-theme="dark"] .foo { … }          ← OKH JS toggle
 _DARK_BLOCK_OPEN_RE = re.compile(
     r'(?:'
     r'@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)'
     r'|html\[data-color-scheme=["\'\']dark["\'\'][^{]*'
+    r'|html\[data-theme=["\'\']dark["\'\'][^{]*'
     r')\s*\{',
     re.IGNORECASE,
 )
+
+# OKH dark-mode surfaces (used when the scoped block is data-theme="dark").
+# These are the root defaults for the OKH site — JS writes data-theme="dark"
+# to restore the default dark palette after a light-mode override.
+# Source: :root { --color-bg: #2a2320 (--okh-espresso); --color-surface: #111827 }
+_OKH_DARK_SURFACES = {
+    "bg":      "#2a2320",
+    "surface": "#111827",
+}
 
 # Matches a text `color:` with a hex value (not a CSS var or --def)
 _DM_HEX_COLOR_RE = re.compile(
@@ -788,6 +835,15 @@ def scan_dark_mode_hex_colors(css_paths):
         )
 
         for block_start_line, selector_ctx, block_content in _extract_dark_blocks(clean):
+            # Use OKH dark surfaces for html[data-theme="dark"] blocks;
+            # use the Glee/prefers-color-scheme surfaces for all other dark blocks.
+            if "data-theme" in selector_ctx:
+                _dm_bg      = _OKH_DARK_SURFACES["bg"]
+                _dm_surface = _OKH_DARK_SURFACES["surface"]
+            else:
+                _dm_bg      = DARK_MODE["bg"]
+                _dm_surface = DARK_MODE["surface"]
+
             for ln_offset, raw_line in enumerate(block_content.splitlines()):
                 stripped = raw_line.strip()
                 if stripped.startswith("--"):
@@ -808,11 +864,11 @@ def scan_dark_mode_hex_colors(css_paths):
                     continue
                 seen.add(key)
 
-                bg_ratio   = contrast_ratio(hex_val, DARK_MODE["bg"])
-                surf_ratio = contrast_ratio(hex_val, DARK_MODE["surface"])
+                bg_ratio   = contrast_ratio(hex_val, _dm_bg)
+                surf_ratio = contrast_ratio(hex_val, _dm_surface)
                 worst_ratio = min(bg_ratio, surf_ratio)
                 worst_bg = (
-                    DARK_MODE["bg"] if bg_ratio <= surf_ratio else DARK_MODE["surface"]
+                    _dm_bg if bg_ratio <= surf_ratio else _dm_surface
                 )
 
                 passes_aa_normal = worst_ratio >= 4.5
@@ -864,12 +920,25 @@ def main() -> int:
     root = Path(".")
     all_findings: list[dict] = []
 
+    # Pre-build font-size index from all project CSS files so Pass 1 HTML findings
+    # can include the same "~Npx" inheritance hint that Pass 2 CSS findings carry.
+    _css_for_index = [
+        p for p in sorted(root.rglob("*.css"))
+        if not any(s in p.parts for s in SKIP_DIRS)
+    ]
+    _combined_css_text = "\n".join(
+        p.read_text(encoding="utf-8", errors="ignore")
+        for p in _css_for_index
+        if p.exists()
+    )
+    _font_size_index = build_font_size_index(_combined_css_text)
+
     # Pass 1: HTML files
     html_scanned = 0
     for path in sorted(root.rglob("*.html")):
         if any(s in path.parts for s in SKIP_DIRS):
             continue
-        all_findings.extend(scan_html_file(path))
+        all_findings.extend(scan_html_file(path, _font_size_index))
         html_scanned += 1
 
     # Pass 2: CSS files
