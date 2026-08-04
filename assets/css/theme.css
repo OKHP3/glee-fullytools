@@ -5637,6 +5637,17 @@ html[data-theme="light"] .askjamie-main {
   opacity: 0.6;
 }
 
+/* Inner-page stripe — subdue the bright light-tone bands in dark mode.
+   Mirrors the same treatment applied to .brand-stripes--glee above. */
+html[data-color-scheme="dark"] .askjamie-main .brand-stripes--jamie {
+  opacity: 0.45;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .askjamie-main .brand-stripes--jamie {
+    opacity: 0.45;
+  }
+}
+
 
 
 /* Brand-specific tints */
