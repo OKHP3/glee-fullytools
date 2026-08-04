@@ -632,6 +632,141 @@ def scan_css_file(path: Path) -> list[dict]:
     return findings
 
 
+
+
+# ---------------------------------------------------------------------------
+# Pass 3 — Hardcoded hex colors inside dark-mode CSS blocks
+# ---------------------------------------------------------------------------
+
+# Patterns that open a dark-mode scoped block:
+#   @media (prefers-color-scheme: dark) { … }
+#   html[data-color-scheme="dark"] .foo { … }
+_DARK_BLOCK_OPEN_RE = re.compile(
+    r'(?:'
+    r'@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)'
+    r'|html\[data-color-scheme=["\'\']dark["\'\'][^{]*'
+    r')\s*\{',
+    re.IGNORECASE,
+)
+
+# Matches a text `color:` with a hex value (not a CSS var or --def)
+_DM_HEX_COLOR_RE = re.compile(
+    r'(?<![a-z-])color\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b',
+    re.IGNORECASE,
+)
+
+
+def _extract_dark_blocks(css_text):
+    """Return list of (start_lineno, selector_context, block_content) for dark-mode blocks."""
+    blocks = []
+    for m in _DARK_BLOCK_OPEN_RE.finditer(css_text):
+        selector_ctx = m.group(0).rstrip("{").strip()
+        start_lineno = css_text[: m.start()].count("\n") + 1
+        depth, i = 1, m.end()
+        n = len(css_text)
+        while i < n and depth > 0:
+            if css_text[i] == "{":
+                depth += 1
+            elif css_text[i] == "}":
+                depth -= 1
+            i += 1
+        blocks.append((start_lineno, selector_ctx, css_text[m.end() : i - 1]))
+    return blocks
+
+
+def scan_dark_mode_hex_colors(css_paths):
+    """
+    Pass 3 — scan every dark-mode CSS block in *css_paths* for hardcoded
+    hex values used as text ``color:``.  Each hex is checked against the
+    dark-mode surfaces in DARK_MODE.  A finding is emitted when the color
+    fails WCAG AA normal text (< 4.5:1) against either dark surface.
+
+    This catches cases where a developer writes e.g.:
+        @media (prefers-color-scheme: dark) {
+            .foo p { color: #8b2030; }   /* too dark on dark bg */
+        }
+    whose hex is not in ACCENT_HEX_PATTERN and would otherwise go undetected.
+    """
+    findings = []
+    seen = set()  # (file, hex, lineno) dedup
+
+    for css_path in css_paths:
+        if not css_path.exists():
+            continue
+        try:
+            css_text = css_path.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        # Strip block comments (preserve newlines so line numbers stay accurate)
+        clean = re.sub(
+            r"/\*.*?\*/",
+            lambda m: "\n" * m.group(0).count("\n"),
+            css_text,
+            flags=re.DOTALL,
+        )
+
+        for block_start_line, selector_ctx, block_content in _extract_dark_blocks(clean):
+            for ln_offset, raw_line in enumerate(block_content.splitlines()):
+                stripped = raw_line.strip()
+                if stripped.startswith("--"):
+                    continue
+                if re.search(r"(background|border)-color", stripped, re.IGNORECASE):
+                    continue
+                hex_m = _DM_HEX_COLOR_RE.search(stripped)
+                if not hex_m:
+                    continue
+
+                hex_val = hex_m.group(1).lower()
+                if len(hex_val) == 4:  # expand #abc -> #aabbcc
+                    hex_val = "#" + "".join(c * 2 for c in hex_val[1:])
+
+                lineno = block_start_line + ln_offset
+                key = (str(css_path), hex_val, lineno)
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                bg_ratio   = contrast_ratio(hex_val, DARK_MODE["bg"])
+                surf_ratio = contrast_ratio(hex_val, DARK_MODE["surface"])
+                worst_ratio = min(bg_ratio, surf_ratio)
+                worst_bg = (
+                    DARK_MODE["bg"] if bg_ratio <= surf_ratio else DARK_MODE["surface"]
+                )
+
+                passes_aa_normal = worst_ratio >= 4.5
+                passes_aa_large  = worst_ratio >= 3.0
+
+                if passes_aa_normal:
+                    continue  # passes — no finding
+
+                aa_status = (
+                    "\u2717 AA normal, \u2713 AA large" if passes_aa_large
+                    else "\u2717 below AA (all text sizes)"
+                )
+
+                findings.append({
+                    "file": str(css_path),
+                    "line": lineno,
+                    "severity": "ADVISORY",
+                    "rule": "dark-mode-hardcoded-hex-contrast",
+                    "hex": hex_val,
+                    "dark_bg_checked": worst_bg,
+                    "dark_contrast": round(worst_ratio, 2),
+                    "dark_pass_aa_normal": passes_aa_normal,
+                    "dark_pass_aa_large":  passes_aa_large,
+                    "detail": (
+                        f"Hardcoded {hex_val} as text color inside dark-mode block "
+                        f"(context: '{selector_ctx[:60]}\'). "
+                        f"Contrast against dark surface {worst_bg}: "
+                        f"{worst_ratio:.2f}:1 — {aa_status}. "
+                        f"Fix: lighten the hex or switch to a CSS token that resolves "
+                        f"to a passing value in dark mode."
+                    ),
+                    "snippet": stripped[:120],
+                })
+
+    return findings
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -674,6 +809,14 @@ def main() -> int:
         css_scanned += 1
         css_paths_seen.add(path.resolve())
 
+    # Pass 3: hardcoded hex colors inside dark-mode CSS blocks
+    all_css_paths = list(css_paths_seen) + [
+        p for p in sorted(root.rglob("*.css"))
+        if not any(s in p.parts for s in SKIP_DIRS)
+        and p.resolve() not in css_paths_seen
+    ]
+    all_findings.extend(scan_dark_mode_hex_colors([Path(p) for p in all_css_paths]))
+
     # Separate by severity
     advisories = [f for f in all_findings if f["severity"] == "ADVISORY"]
     infos      = [f for f in all_findings if f["severity"] == "INFO"]
@@ -713,6 +856,7 @@ def main() -> int:
         "passes": [
             "Pass 1 — HTML inline style= attributes and utility class names",
             "Pass 2 — CSS rule blocks in project stylesheet(s)",
+            "Pass 3 — Hardcoded hex text colors inside dark-mode CSS blocks",
         ],
     }
     out_path = out_dir / "accent-contrast-report.json"
