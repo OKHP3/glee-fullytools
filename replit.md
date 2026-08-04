@@ -142,6 +142,24 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Two surfaces, one engine:** The search section of `app.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. On boot it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
 
+## Today's Sparkle management
+
+The sparkle banner (`<section class="site-specials">`) appears in the `<header>` of all 62 HTML pages. It highlights the current featured GPT Tool.
+
+| Component | Path | Purpose |
+|---|---|---|
+| Source of truth | `assets/data/sparkle.json` | `emoji`, `label`, `description`, `suffix`, `url`, `updated` — edit this to change the sparkle |
+| Runtime loader | `assets/js/app.js` §6 | Fetches sparkle.json on page load, overwrites `[data-sparkle-link]` href + text in the browser |
+| Static fallback sync | `scripts/sync-sparkle-fallback.py` | Patches every HTML file's `[data-sparkle-link]` href + text so the pre-JS state matches the JSON |
+
+**When you update the sparkle (change `assets/data/sparkle.json`):**
+
+1. Edit `assets/data/sparkle.json` with the new `emoji`, `label`, `description`, `suffix`, and `url`.
+2. Run `python3 scripts/sync-sparkle-fallback.py` to patch the static fallback in all 62 HTML files.
+3. The runtime loader in `app.js` §6 handles live browser updates automatically — no JS changes needed.
+
+The sync script is idempotent: safe to re-run; it skips files already up to date.
+
 ## Validation tooling (2026-05-03)
 
 Seven standalone Python scripts under `scripts/` keep the site honest. **Run order
