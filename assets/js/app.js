@@ -141,8 +141,70 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentState === "system") applyThemeState("system");
     });
   } else {
-    // Subsites stay on their brand "light" look
+    // ── Glee-fully / AskJamie: brand-light surface + optional dark-scheme toggle ──
+    // Both subsites keep data-theme="light" so their html[data-theme="light"] CSS rules
+    // fire. They manage dark mode via a separate data-color-scheme attribute + their own
+    // localStorage key (glee-color-scheme / askjamie-color-scheme).
     document.documentElement.setAttribute("data-theme", "light");
+
+    const isGlee     = body.classList.contains("glee-main");
+    const LS_KEY     = isGlee ? "glee-color-scheme" : "askjamie-color-scheme";
+    const SCH_STATES = ["auto", "light", "dark"];
+
+    // Icons shared with the OKH toggle (same SVG paths, same .tt-icon class)
+    const SCH_ICONS = {
+      auto:  '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+      light: '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+      dark:  '<svg class="tt-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    };
+    const SCH_ARIA = {
+      auto:  "Color scheme: following your device — click to pin light",
+      light: "Color scheme: pinned light — click to switch to dark",
+      dark:  "Color scheme: pinned dark — click to follow device",
+    };
+
+    // Restore saved state (the early-init <head> script already applied it before
+    // first paint for pages that include it; this just syncs the button).
+    const savedScheme = localStorage.getItem(LS_KEY);
+    let schemeState   = SCH_STATES.includes(savedScheme) ? savedScheme : "auto";
+
+    function applySchemeState(state) {
+      if (state === "auto") {
+        document.documentElement.removeAttribute("data-color-scheme");
+      } else {
+        document.documentElement.setAttribute("data-color-scheme", state);
+      }
+    }
+
+    // Apply on load (handles pages that don't have the early-init script)
+    applySchemeState(schemeState);
+
+    // Create the toggle button
+    const schemeToggle = document.createElement("button");
+    schemeToggle.classList.add("glee-color-toggle");
+    schemeToggle.dataset.state = schemeState;
+    schemeToggle.setAttribute("aria-label", SCH_ARIA[schemeState]);
+    schemeToggle.innerHTML = SCH_ICONS[schemeState];
+
+    if (headerControls) {
+      headerControls.appendChild(schemeToggle);
+    } else if (header && header.querySelector(".container")) {
+      header.querySelector(".container").appendChild(schemeToggle);
+    }
+
+    schemeToggle.addEventListener("click", () => {
+      const idx   = SCH_STATES.indexOf(schemeState);
+      schemeState = SCH_STATES[(idx + 1) % SCH_STATES.length];
+      schemeToggle.dataset.state = schemeState;
+      schemeToggle.setAttribute("aria-label", SCH_ARIA[schemeState]);
+      schemeToggle.innerHTML = SCH_ICONS[schemeState];
+      applySchemeState(schemeState);
+      if (schemeState === "auto") {
+        localStorage.removeItem(LS_KEY);
+      } else {
+        localStorage.setItem(LS_KEY, schemeState);
+      }
+    });
   }
 
   // Scroll reveal

@@ -895,6 +895,31 @@ button {
   flex: 0 0 auto;
 }
 
+/* Glee-fully + AskJamie color-scheme toggle — base button shape.
+   Brand-specific colours are applied in the GLEE and ASKJAMIE sections below.
+   The `data-state="auto"` dashed-border cue is also applied per-brand below. */
+.glee-color-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1.5px solid transparent;  /* brand overrides below */
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+.glee-color-toggle .tt-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
 /* ===== HERO – BLUEPRINT FORGE =========================================== */
 
 .hero {
@@ -4462,6 +4487,19 @@ html[data-theme="light"] .glee-main {
   color: #d35b2d; /* Glee rust */
 }
 
+/* ── Glee color-scheme toggle – base brand styles ───────────────────────────
+   Coral border + Glee ink; solid border in light/dark states.
+   The auto-state dashed-border cue overrides border-style below. */
+.glee-main .glee-color-toggle {
+  border-color: rgba(217, 79, 99, 0.55);  /* coral, slightly muted */
+  color: #2e2b29;                          /* Glee ink, readable on cream header */
+}
+.glee-main .glee-color-toggle:hover,
+.glee-main .glee-color-toggle:focus-visible {
+  border-color: #d94f63;
+  outline: none;
+}
+
 /* ── Glee color-scheme toggle – auto-state "following device" dashed-border cue ──
    data-state="auto" means the user hasn't pinned a scheme; the toggle follows the OS.
    Dashed coral border + mild opacity communicate this passive state visually.
@@ -5483,6 +5521,19 @@ html[data-theme="light"] .askjamie-main {
 .askjamie-main .primary-nav a[aria-current="page"],
 .askjamie-main .primary-nav a.is-current {
   color: #2d6f7e; /* AskJamie teal */
+}
+
+/* ── AskJamie color-scheme toggle – base brand styles ──────────────────────
+   Teal border + AskJamie ink; solid border in light/dark states.
+   The auto-state dashed-border cue overrides border-style below. */
+.askjamie-main .glee-color-toggle {
+  border-color: rgba(45, 111, 126, 0.55);  /* teal, slightly muted */
+  color: #2e2b29;                           /* AskJamie ink, readable on paper header */
+}
+.askjamie-main .glee-color-toggle:hover,
+.askjamie-main .glee-color-toggle:focus-visible {
+  border-color: #2d6f7e;
+  outline: none;
 }
 
 /* ── AskJamie color-scheme toggle – auto-state "following device" dashed-border cue ──
