@@ -363,7 +363,7 @@ def main() -> int:
     if scripts_drift:
         print(f"\nscripts/ count drift: {scripts_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->")
-        total_warnings += 1
+        total_issues += 1
 
     # ── Global invariant: scripts/*.mjs + *.sh count vs AGENTS.md ────────────
     # When a new non-Python runner is added to scripts/ it must be classified
@@ -373,7 +373,7 @@ def main() -> int:
     if scripts_non_py_drift:
         print(f"\nscripts/ non-Python count drift: {scripts_non_py_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-OTHER -->")
-        total_warnings += 1
+        total_issues += 1
 
     # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
     # For every tool page whose og:image is a local .svg, the alt text must be
