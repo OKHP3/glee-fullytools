@@ -142,6 +142,70 @@ def parse_dark_mode_tokens(theme_css_path: Path) -> dict:
     return result
 
 
+def parse_okh_root_tokens(theme_css_path: Path) -> dict:
+    """Extract OKH default dark-mode surface colors from the bare :root {…} block
+    in theme.css.
+
+    The OKH default palette lives in :root (not inside any dark-mode at-rule):
+      --okh-espresso: #2a2320   → resolved value of --color-bg: var(--okh-espresso)
+      --color-surface: #111827
+
+    One level of var() indirection is resolved: if --color-bg refers to
+    var(--okh-espresso) the function follows the alias to the raw hex.
+
+    Returns {"bg": <hex>, "surface": <hex>}.  Falls back to
+    _OKH_DARK_SURFACE_DEFAULTS for any token not found or if the file is absent.
+    """
+    result = dict(_OKH_DARK_SURFACE_DEFAULTS)
+    if not theme_css_path.exists():
+        return result
+
+    text = theme_css_path.read_text(encoding="utf-8", errors="ignore")
+
+    # Match the bare :root { … } block — not :root[data-theme="…"] variants.
+    # Use a negative lookbehind to skip :root[…] and :root.foo selectors.
+    root_open_re = re.compile(r"(?<![a-zA-Z0-9\[\]\"'_\-]):root\s*\{", re.IGNORECASE)
+    m = root_open_re.search(text)
+    if not m:
+        return result
+
+    # Walk forward to find the matching closing brace
+    depth, i, n = 1, m.end(), len(text)
+    while i < n and depth > 0:
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+        i += 1
+    block = text[m.end() : i - 1]
+
+    # Collect all bare-hex token definitions: --foo: #rrggbb
+    token_values: dict = {}
+    for tok_m in re.finditer(r"--([\w-]+)\s*:\s*(#[0-9a-fA-F]{3,6})\b", block):
+        token_values[tok_m.group(1)] = tok_m.group(2)
+
+    # Collect single-level var() references: --foo: var(--bar)
+    var_refs: dict = {}
+    for ref_m in re.finditer(r"--([\w-]+)\s*:\s*var\(\s*--([\w-]+)\s*\)", block):
+        var_refs[ref_m.group(1)] = ref_m.group(2)
+
+    # Resolve --color-bg → may be var(--okh-espresso) or a direct hex
+    bg_hex = token_values.get("color-bg")
+    if not bg_hex:
+        ref = var_refs.get("color-bg")
+        if ref:
+            bg_hex = token_values.get(ref)
+    if bg_hex:
+        result["bg"] = bg_hex
+
+    # --color-surface is a direct hex in :root
+    surface_hex = token_values.get("color-surface")
+    if surface_hex:
+        result["surface"] = surface_hex
+
+    return result
+
+
 # Pre-populate dark mode at module init (re-parsed in main if needed)
 DARK_MODE = dict(_DARK_MODE_DEFAULTS)
 
@@ -769,14 +833,18 @@ _DARK_BLOCK_OPEN_RE = re.compile(
     re.IGNORECASE,
 )
 
-# OKH dark-mode surfaces (used when the scoped block is data-theme="dark").
-# These are the root defaults for the OKH site — JS writes data-theme="dark"
-# to restore the default dark palette after a light-mode override.
-# Source: :root { --color-bg: #2a2320 (--okh-espresso); --color-surface: #111827 }
-_OKH_DARK_SURFACES = {
-    "bg":      "#2a2320",
-    "surface": "#111827",
+# OKH dark-mode surface fallbacks — mirrors :root tokens in theme.css.
+# Overridden at startup by parse_okh_root_tokens() so the scanner stays in
+# sync with the CSS even when the root token values change.
+# Source: :root { --color-bg: var(--okh-espresso)=#2a2320; --color-surface: #111827 }
+_OKH_DARK_SURFACE_DEFAULTS = {
+    "bg":      "#2a2320",  # --okh-espresso
+    "surface": "#111827",  # --color-surface
 }
+
+# Live-parsed at import time; falls back to _OKH_DARK_SURFACE_DEFAULTS if the
+# CSS file is absent or the tokens cannot be resolved.
+_OKH_DARK_SURFACES = parse_okh_root_tokens(Path("assets/css/theme.css"))
 
 # Matches a text `color:` with a hex value (not a CSS var or --def)
 _DM_HEX_COLOR_RE = re.compile(
