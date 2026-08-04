@@ -313,7 +313,88 @@ def main() -> int:
         print("  Fix: update docs/adr/README.md index table and AGENTS.md section 2.2.1")
         total_warnings += 1
 
+    # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
+    # For every tool page whose og:image is a local .svg, the alt text must be
+    # "Glee-fully {tool_name} — {svg[aria-label]}".  If an SVG's aria-label
+    # changes the HTML meta tags won't update automatically — catch it here.
+    # To fix: run  python3 scripts/sync-image-alt.py
+    import html as _html_mod
+    alt_mismatches = _check_og_image_alt_drift(_html_mod)
+    for msg in alt_mismatches:
+        print(f"\nog:image:alt drift: {msg}")
+    if alt_mismatches:
+        print("  Fix: python3 scripts/sync-image-alt.py")
+        total_issues += len(alt_mismatches)
+
     return 1 if total_issues else 0
+
+
+def _check_og_image_alt_drift(html_mod) -> list:
+    """Return a list of mismatch descriptions for tool pages whose og:image:alt
+    or twitter:image:alt does not match 'Glee-fully {tool} — {svg[aria-label]}'.
+    Returns an empty list when everything is in sync."""
+    import html as _html_mod  # noqa: F811 — already imported by caller; harmless re-import
+    mismatches: list = []
+    site_prefix = "https://glee-fully.tools/"
+
+    for path in sorted(ROOT.rglob("*.html")):
+        rel = path.relative_to(ROOT)
+        if any(s in rel.parts for s in SKIP_DIRS):
+            continue
+        html_text = path.read_text(encoding="utf-8", errors="replace")
+
+        # Only check pages with a .svg og:image pointing to this site
+        img_m = re.search(r'<meta\s+property="og:image"\s+content="([^"]+\.svg)"', html_text)
+        if not img_m:
+            continue
+        img_url = img_m.group(1)
+        if not img_url.startswith(site_prefix):
+            continue
+
+        svg_rel = img_url[len(site_prefix):]
+        svg_path = ROOT / svg_rel
+        if not svg_path.exists():
+            mismatches.append(f"{rel}: SVG not found at {svg_rel}")
+            continue
+
+        svg_text = svg_path.read_text(encoding="utf-8", errors="replace")
+        aria_m = re.search(r'<svg\b[^>]*\baria-label="([^"]+)"', svg_text)
+        if not aria_m:
+            mismatches.append(f"{rel}: SVG {svg_rel} has no aria-label")
+            continue
+        aria_label = aria_m.group(1)
+
+        title_m = re.search(r'<meta\s+property="og:title"\s+content="([^"]+)"', html_text)
+        if not title_m:
+            mismatches.append(f"{rel}: no og:title to derive tool name")
+            continue
+        raw_title = _html_mod.unescape(title_m.group(1))
+        for sep in (" \u2014 ", " - "):
+            idx = raw_title.find(sep)
+            if idx != -1:
+                tool_name = raw_title[:idx].strip()
+                break
+        else:
+            tool_name = raw_title.strip()
+
+        expected = f"Glee-fully {tool_name} \u2014 {aria_label}"
+
+        for prop, pattern in (
+            ("og:image:alt",      r'<meta\s+property="og:image:alt"\s+content="([^"]+)"'),
+            ("twitter:image:alt", r'<meta\s+name="twitter:image:alt"\s+content="([^"]+)"'),
+        ):
+            alt_m = re.search(pattern, html_text)
+            if not alt_m:
+                continue
+            actual = _html_mod.unescape(alt_m.group(1))
+            if actual != expected:
+                mismatches.append(
+                    f"{rel} [{prop}]\n"
+                    f"    expected: {expected!r}\n"
+                    f"    actual:   {actual!r}"
+                )
+
+    return mismatches
 
 
 def _check_adr_index_sync() -> str:
