@@ -6,18 +6,35 @@ Verifies that the sparkle loader in assets/js/app.js (section 6) correctly
 fetches /assets/data/sparkle.json and rewrites every [data-sparkle-link]
 element's href and visible text at runtime.
 
-Checks ≥3 representative page types:
-  • homepage        /
-  • branch hub      /toolbox/01-discovered-careers/
-  • tool-ette leaf  /toolbox/01-discovered-careers/01a-resume-builder/
+The sparkle loader (app.js §6) is brand-agnostic: it runs on every page and
+queries document.querySelectorAll("[data-sparkle-link]") regardless of body
+class.  Two brands are supported:
+
+  glee      — glee-fully.tools  (this repo; all pages use body.glee-main)
+  askjamie  — askjamie.bot      (separate repo OKHP3/AskJamie; run with
+                                  --brand askjamie --base-url <askjamie-server>)
+
+Page sets:
+  Glee (5 pages covering all major layout families):
+    • homepage        /
+    • branch hub      /toolbox/01-discovered-careers/
+    • tool-ette leaf  /toolbox/01-discovered-careers/01a-resume-builder/
+    • showcase        /showcase/     (STAT-marker content page)
+    • about           /about/        (prose page)
+
+  AskJamie (3 representative pages):
+    • homepage        /
+    • search          /search/
+    • about           /about/
 
 Exit codes:
   0  all assertions passed
   1  one or more assertions failed (or Playwright error)
 
 Usage:
-    python3 scripts/sparkle-qa.py
+    python3 scripts/sparkle-qa.py                              # Glee, localhost:5000
     python3 scripts/sparkle-qa.py --base-url http://localhost:5000
+    python3 scripts/sparkle-qa.py --brand askjamie --base-url https://askjamie.bot
 """
 import os
 import sys
@@ -92,12 +109,27 @@ LAUNCH_ARGS = [
     "--mute-audio",
 ]
 
-# Three representative page types required by the task spec.
-TEST_PAGES = [
-    ("homepage",    "/"),
-    ("branch-hub",  "/toolbox/01-discovered-careers/"),
-    ("tool-ette",   "/toolbox/01-discovered-careers/01a-resume-builder/"),
-]
+# Brand-specific page lists.
+# Run with --brand glee (default) against this repo's dev server, or
+# --brand askjamie --base-url <askjamie-server> against the AskJamie deployment.
+BRAND_PAGES = {
+    "glee": [
+        # 5 pages covering all major HTML layout families in this repo.
+        # All use body class="glee-main" (Glee-fully brand).
+        ("homepage",    "/"),
+        ("branch-hub",  "/toolbox/01-discovered-careers/"),
+        ("tool-ette",   "/toolbox/01-discovered-careers/01a-resume-builder/"),
+        ("showcase",    "/showcase/"),
+        ("about",       "/about/"),
+    ],
+    "askjamie": [
+        # 3 representative pages for the AskJamie brand (OKHP3/AskJamie repo).
+        # Use: python3 scripts/sparkle-qa.py --brand askjamie --base-url https://askjamie.bot
+        ("homepage",    "/"),
+        ("search",      "/search/"),
+        ("about",       "/about/"),
+    ],
+}
 
 
 def ensure_stub():
@@ -129,10 +161,9 @@ def load_sparkle_json():
         return json.load(f)
 
 
-def run_sparkle_qa(base_url: str) -> int:
+def run_sparkle_qa(base_url: str, test_pages: list) -> int:
     """
-    Open each TEST_PAGE in a real Chromium context (network-serving the local
-    dev server) and assert:
+    Open each page in *test_pages* in a real Chromium context and assert:
 
       1. [data-sparkle-link] element is present in the DOM.
       2. After JS executes, its href matches sparkle.json → url.
@@ -163,7 +194,7 @@ def run_sparkle_qa(base_url: str) -> int:
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True, args=LAUNCH_ARGS)
 
-        for slug, path in TEST_PAGES:
+        for slug, path in test_pages:
             url = base_url.rstrip("/") + path
             ctx  = browser.new_context(
                 viewport={"width": 1280, "height": 800},
@@ -243,7 +274,7 @@ def run_sparkle_qa(base_url: str) -> int:
 
     print()
     print("=" * 50)
-    print(f"Pages checked : {len(TEST_PAGES)}")
+    print(f"Pages checked : {len(test_pages)}")
     print(f"Passed        : {passed}")
     print(f"Failed        : {failures}")
 
@@ -262,12 +293,24 @@ def main():
         default="http://localhost:5000",
         help="Base URL of the running dev server (default: http://localhost:5000)",
     )
+    parser.add_argument(
+        "--brand",
+        choices=list(BRAND_PAGES.keys()),
+        default="glee",
+        help=(
+            "Which brand's page set to test (default: glee). "
+            "Use --brand askjamie --base-url <askjamie-server> to test "
+            "the AskJamie deployment (separate repo: OKHP3/AskJamie)."
+        ),
+    )
     args = parser.parse_args()
+
+    test_pages = BRAND_PAGES[args.brand]
 
     print("Setting up libgbm stub…")
     ensure_stub()
-    print(f"Running sparkle QA against {args.base_url}\n")
-    sys.exit(run_sparkle_qa(args.base_url))
+    print(f"Running sparkle QA — brand: {args.brand}  base-url: {args.base_url}\n")
+    sys.exit(run_sparkle_qa(args.base_url, test_pages))
 
 
 if __name__ == "__main__":
