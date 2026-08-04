@@ -4737,7 +4737,7 @@ html[data-color-scheme="dark"] .glee-main .footer-column a {
   color: var(--color-muted);
 }
 html[data-color-scheme="dark"] .glee-main .footer-column a:hover {
-  color: #d94f63;
+  color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
 }
 html[data-color-scheme="dark"] .glee-main .footer-bottom {
   color: var(--color-muted);
@@ -4756,7 +4756,7 @@ html[data-color-scheme="dark"] .glee-main .footer-bottom {
     color: var(--color-muted);
   }
   html:not([data-color-scheme="light"]) .glee-main .footer-column a:hover {
-    color: #d94f63;
+    color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
   }
   html:not([data-color-scheme="light"]) .glee-main .footer-bottom {
     color: var(--color-muted);
@@ -4775,7 +4775,7 @@ html[data-color-scheme="dark"] .glee-breadcrumb-item a {
   color: #5ab8c8;   /* brightened teal, 7.39:1 on #1e1b19 */
 }
 html[data-color-scheme="dark"] .glee-breadcrumb-item a:hover {
-  color: #d94f63;
+  color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
 }
 html[data-color-scheme="dark"] .glee-breadcrumb-current {
   color: var(--color-fg);
@@ -4788,7 +4788,7 @@ html[data-color-scheme="dark"] .glee-breadcrumb-current {
     color: #5ab8c8;
   }
   html:not([data-color-scheme="light"]) .glee-breadcrumb-item a:hover {
-    color: #d94f63;
+    color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
   }
   html:not([data-color-scheme="light"]) .glee-breadcrumb-current {
     color: var(--color-fg);
