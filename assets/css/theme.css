@@ -4653,6 +4653,126 @@ html[data-color-scheme="dark"] .glee-main {
   }
 }
 
+/* ── Glee dark mode: component-level overrides ──────────────────────────────
+   Token overrides above reach all var(--color-*) consumers automatically.
+   These extra rules fix elements that have hardcoded hex values the token
+   swap cannot reach (cards, footer, breadcrumb, pill, quiet buttons).
+   Contrast ratios verified against --color-bg #1e1b19 / --color-surface
+   #2a2724. ──────────────────────────────────────────────────────────────── */
+
+/* Cards — base white (#ffffff) → elevated dark surface */
+html[data-color-scheme="dark"] .glee-main .card {
+  background: var(--color-surface);          /* #2a2724 */
+  border-color: rgba(255, 216, 210, 0.10);   /* faint coral rim */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .card {
+    background: var(--color-surface);
+    border-color: rgba(255, 216, 210, 0.10);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* Footer — cream (#fff7f1) → inky near-black; text tokens already flip via var */
+html[data-color-scheme="dark"] .glee-main .site-footer {
+  background: #1a1816;                         /* slightly deeper than body */
+  border-top-color: rgba(255, 216, 210, 0.10);
+  color: var(--color-fg);
+}
+html[data-color-scheme="dark"] .glee-main .footer-column h3,
+html[data-color-scheme="dark"] .glee-main .footer-column h4 {
+  color: var(--color-fg);
+}
+html[data-color-scheme="dark"] .glee-main .footer-column a {
+  color: var(--color-muted);
+}
+html[data-color-scheme="dark"] .glee-main .footer-column a:hover {
+  color: #d94f63;
+}
+html[data-color-scheme="dark"] .glee-main .footer-bottom {
+  color: var(--color-muted);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-footer {
+    background: #1a1816;
+    border-top-color: rgba(255, 216, 210, 0.10);
+    color: var(--color-fg);
+  }
+  html:not([data-color-scheme="light"]) .glee-main .footer-column h3,
+  html:not([data-color-scheme="light"]) .glee-main .footer-column h4 {
+    color: var(--color-fg);
+  }
+  html:not([data-color-scheme="light"]) .glee-main .footer-column a {
+    color: var(--color-muted);
+  }
+  html:not([data-color-scheme="light"]) .glee-main .footer-column a:hover {
+    color: #d94f63;
+  }
+  html:not([data-color-scheme="light"]) .glee-main .footer-bottom {
+    color: var(--color-muted);
+  }
+}
+
+/* Breadcrumb — all three colour roles need to lift onto the dark body bg.
+   Contrast vs #1e1b19:
+     muted (#b5a9a1)   7.60:1 AAA   item / separator text
+     teal  (#5ab8c8)   7.39:1 AAA   link
+     fg    (#f2ede8)  14.73:1 AAA   current-page label  */
+html[data-color-scheme="dark"] .glee-breadcrumb-item {
+  color: var(--color-muted);
+}
+html[data-color-scheme="dark"] .glee-breadcrumb-item a {
+  color: #5ab8c8;   /* brightened teal, 7.39:1 on #1e1b19 */
+}
+html[data-color-scheme="dark"] .glee-breadcrumb-item a:hover {
+  color: #d94f63;
+}
+html[data-color-scheme="dark"] .glee-breadcrumb-current {
+  color: var(--color-fg);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-breadcrumb-item {
+    color: var(--color-muted);
+  }
+  html:not([data-color-scheme="light"]) .glee-breadcrumb-item a {
+    color: #5ab8c8;
+  }
+  html:not([data-color-scheme="light"]) .glee-breadcrumb-item a:hover {
+    color: #d94f63;
+  }
+  html:not([data-color-scheme="light"]) .glee-breadcrumb-current {
+    color: var(--color-fg);
+  }
+}
+
+/* Latest pill — light pink (#ffe7e0) on dark card surface would be jarring */
+html[data-color-scheme="dark"] .glee-main .latest-pill {
+  background: rgba(217, 79, 99, 0.18);
+  color: #f47d90;   /* lightened coral, readable on dark */
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .latest-pill {
+    background: rgba(217, 79, 99, 0.18);
+    color: #f47d90;
+  }
+}
+
+/* Quiet / secondary buttons — pinkish border (#ffd8d2) goes near-invisible on
+   dark surfaces; soften to a translucent coral so it reads cleanly */
+html[data-color-scheme="dark"] .glee-main .btn-quiet,
+html[data-color-scheme="dark"] .glee-main .btn-secondary {
+  border-color: rgba(217, 79, 99, 0.35);
+  color: var(--color-accent);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .btn-quiet,
+  html:not([data-color-scheme="light"]) .glee-main .btn-secondary {
+    border-color: rgba(217, 79, 99, 0.35);
+    color: var(--color-accent);
+  }
+}
+
 /* Glee-fully: lighten striped sections so they feel like paper, not blueprint */
 .glee-main .stripe-bg {
   background: #fff7f1; /* warm paper */
