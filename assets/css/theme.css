@@ -4462,6 +4462,38 @@ html[data-theme="light"] .glee-main {
   color: #d35b2d; /* Glee rust */
 }
 
+/* ── Glee color-scheme toggle – auto-state "following device" dashed-border cue ──
+   data-state="auto" means the user hasn't pinned a scheme; the toggle follows the OS.
+   Dashed coral border + mild opacity communicate this passive state visually.
+   Hover/focus-visible restore solid border + full opacity on interaction. */
+.glee-main .glee-color-toggle[data-state="auto"] {
+  border-style: dashed;
+  opacity: 0.72;
+}
+.glee-main .glee-color-toggle[data-state="auto"]:hover,
+.glee-main .glee-color-toggle[data-state="auto"]:focus-visible {
+  border-style: solid;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .glee-color-toggle[data-state="auto"] {
+    border-color: rgba(217, 79, 99, 0.5); /* coral softened against dark bg */
+  }
+  html:not([data-color-scheme="light"]) .glee-main .glee-color-toggle[data-state="auto"]:hover,
+  html:not([data-color-scheme="light"]) .glee-main .glee-color-toggle[data-state="auto"]:focus-visible {
+    border-color: #d94f63;
+    border-style: solid;
+  }
+}
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle[data-state="auto"] {
+  border-color: rgba(217, 79, 99, 0.5);
+}
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle[data-state="auto"]:hover,
+html[data-color-scheme="dark"] .glee-main .glee-color-toggle[data-state="auto"]:focus-visible {
+  border-color: #d94f63;
+  border-style: solid;
+}
+
 /* ===================================================================== */
 /* GLEE-FULLY PERSONALIZABLE TOOLS – RETRO JOYFUL MERMAID                */
 /* ===================================================================== */ 
@@ -5331,6 +5363,33 @@ html[data-theme="light"] .askjamie-main {
 .askjamie-main .primary-nav a[aria-current="page"],
 .askjamie-main .primary-nav a.is-current {
   color: #2d6f7e; /* AskJamie teal */
+}
+
+/* ── AskJamie color-scheme toggle – auto-state "following device" dashed-border cue ──
+   Mirrors the Glee pattern; AskJamie uses teal (#2d6f7e) as its accent.
+   data-state="auto": dashed teal border + mild opacity signals "following OS" state.
+   AskJamie is brand-locked light; the dark-OS @media override ensures the cue still
+   reads correctly when the OS is dark while the site renders on its light paper surface. */
+.askjamie-main .glee-color-toggle[data-state="auto"] {
+  border-style: dashed;
+  opacity: 0.72;
+}
+.askjamie-main .glee-color-toggle[data-state="auto"]:hover,
+.askjamie-main .glee-color-toggle[data-state="auto"]:focus-visible {
+  border-style: solid;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark) {
+  /* Site stays light; soften the teal border so it doesn't clash with dark OS chrome */
+  html:not([data-color-scheme="light"]) .askjamie-main .glee-color-toggle[data-state="auto"] {
+    border-color: rgba(45, 111, 126, 0.55);
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .glee-color-toggle[data-state="auto"]:hover,
+  html:not([data-color-scheme="light"]) .askjamie-main .glee-color-toggle[data-state="auto"]:focus-visible {
+    border-color: #2d6f7e;
+    border-style: solid;
+    opacity: 1;
+  }
 }
 
 /* ===================================================================== */
