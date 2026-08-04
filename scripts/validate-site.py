@@ -48,6 +48,10 @@ SITE = "https://glee-fully.tools"
 # Pages that intentionally point canonical to the homepage / are noindex.
 HOMEPAGE_CANONICAL_OK = {"index.html", "404.html", "under-construction.html"}
 
+# Pages that intentionally omit the sparkle banner element.
+# These are utility/error pages that have no site-specials section.
+SPARKLE_EXEMPT = {"404.html", "under-construction.html"}
+
 
 def expected_canonical(rel: Path) -> str:
     parts = rel.parts
@@ -130,6 +134,12 @@ def check_page(rel: Path, html: str) -> dict:
         g_issues, g_warnings = validate_jsonld_graph(data, block=i + 1)
         issues.extend(g_issues)
         warnings.extend(g_warnings)
+
+    # Sparkle banner presence: every published page must carry the
+    # <a data-sparkle-link> element so the no-JS fallback is always present.
+    # Run scripts/sync-sparkle-fallback.py to add the element to new pages.
+    if "data-sparkle-link" not in html and rel.name not in SPARKLE_EXEMPT:
+        warnings.append("missing data-sparkle-link element (run sync-sparkle-fallback.py)")
 
     # Mermaid referral invariant: any page that embeds a Mermaid diagram
     # MUST surface the paid-referral credit exactly once.
