@@ -5154,6 +5154,29 @@ body.glee-main:has(.primary-nav a[aria-current="page"][href*="about"])
   color: #6b5e57; /* softer Glee body color */
 }
 
+/* About: dark-mode overrides — ::before paper and tagline text become unreadable on
+   the bright cream card once the page surface darkens to #2a2724. */
+html[data-color-scheme="dark"] body.glee-main:has(.primary-nav a[aria-current="page"][href*="about"])
+  .hero.glee-hero .hero-grid > div:first-child::before {
+  background: #2a2724;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+html[data-color-scheme="dark"] body.glee-main:has(.primary-nav a[aria-current="page"][href*="about"])
+  .hero.glee-hero .hero-tagline {
+  color: #f2ede8; /* warm near-white — readable on #2a2724 card (≥7:1 AAA) */
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) body.glee-main:has(.primary-nav a[aria-current="page"][href*="about"])
+    .hero.glee-hero .hero-grid > div:first-child::before {
+    background: #2a2724;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  }
+  html:not([data-color-scheme="light"]) body.glee-main:has(.primary-nav a[aria-current="page"][href*="about"])
+    .hero.glee-hero .hero-tagline {
+    color: #f2ede8;
+  }
+}
+
 /* ===== CONTACT PAGE HERO – PAPER EFFECT ============================== */
 /* Contact hero: tilted paper + retro stripes */
 
@@ -5250,6 +5273,28 @@ body.glee-main:has(.primary-nav a[aria-current="page"][href*="contact"])
     inset: 1.25rem 0.5rem 2rem 0.5rem;
     border-radius: 1.2rem;
     transform: rotate(-1.6deg);
+  }
+}
+
+/* Contact: dark-mode overrides — stripe and paper become harsh light patches */
+html[data-color-scheme="dark"] body.glee-main:has(.primary-nav a[aria-current="page"][href*="contact"])
+  main > .content-section:first-of-type::before {
+  opacity: 0.35;
+}
+html[data-color-scheme="dark"] body.glee-main:has(.primary-nav a[aria-current="page"][href*="contact"])
+  main > .content-section:first-of-type::after {
+  background: #2a2724;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) body.glee-main:has(.primary-nav a[aria-current="page"][href*="contact"])
+    main > .content-section:first-of-type::before {
+    opacity: 0.35;
+  }
+  html:not([data-color-scheme="light"]) body.glee-main:has(.primary-nav a[aria-current="page"][href*="contact"])
+    main > .content-section:first-of-type::after {
+    background: #2a2724;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
   }
 }
 
@@ -5358,6 +5403,44 @@ html:has(
     inset: 1.25rem 0.5rem 2rem 0.5rem;
     border-radius: 1.2rem;
     transform: rotate(-1.6deg);
+  }
+}
+
+/* Legal: dark-mode overrides — stripe and paper become harsh light patches */
+html[data-color-scheme="dark"]:has(
+  head > meta[name="description"][content^="Legal notice and usage disclaimer"]
+)
+  body.glee-main
+  main
+  > .content-section:first-of-type::before {
+  opacity: 0.35;
+}
+html[data-color-scheme="dark"]:has(
+  head > meta[name="description"][content^="Legal notice and usage disclaimer"]
+)
+  body.glee-main
+  main
+  > .content-section:first-of-type::after {
+  background: #2a2724;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]):has(
+    head > meta[name="description"][content^="Legal notice and usage disclaimer"]
+  )
+    body.glee-main
+    main
+    > .content-section:first-of-type::before {
+    opacity: 0.35;
+  }
+  html:not([data-color-scheme="light"]):has(
+    head > meta[name="description"][content^="Legal notice and usage disclaimer"]
+  )
+    body.glee-main
+    main
+    > .content-section:first-of-type::after {
+    background: #2a2724;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
   }
 }
 
