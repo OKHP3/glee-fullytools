@@ -793,7 +793,7 @@ def _check_glee_dark_coverage() -> list:
     if not script.exists():
         return []
     result = subprocess.run(
-        [sys.executable, str(script)],
+        [sys.executable, str(script), "--require-both"],
         capture_output=True,
         text=True,
     )

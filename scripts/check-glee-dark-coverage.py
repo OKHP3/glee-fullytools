@@ -35,16 +35,40 @@ they are typically decorative accent lines and the light hex inside them
 usually co-exists with a dark companion hex in the same gradient.
 For border, outline, and shadow properties, gradients do not apply.
 
+Coverage modes
+--------------
+Default mode: exit 1 when any selector has *no* dark override in either form.
+
+``--require-both``: also exit 1 when a selector's dark override appears in
+  only ONE of the two forms:
+    - ``html[data-color-scheme="dark"]`` (explicit toggle)
+    - ``@media (prefers-color-scheme: dark)`` (OS preference fallback)
+
+  A rule covered by only the toggle form works when the user explicitly
+  activates dark mode, but stays bright/broken for OS-dark users who never
+  interact with the toggle.  Similarly, media-only coverage breaks for users
+  who toggle dark mode explicitly.
+
+Validation report symbols
+--------------------------
+  ✓ both   — both html[data-color-scheme="dark"] and @media forms present
+  ⚠ attr-only  — only html[data-color-scheme="dark"] form present
+  ⚠ media-only — only @media (prefers-color-scheme: dark) form present
+  ✗ uncovered  — no dark-mode override in either form
+
 Exit codes
 ----------
   0 — all light-hex GLEE selectors have dark-mode overrides (or none found)
-  1 — one or more selectors are uncovered
+      In ``--require-both`` mode: all selectors also have BOTH forms.
+  1 — one or more selectors are uncovered (always)
+      In ``--require-both`` mode: also when any selector has only one form.
 
 Usage
 -----
-  python3 scripts/check-glee-dark-coverage.py [--verbose]
+  python3 scripts/check-glee-dark-coverage.py [--verbose] [--require-both]
 
-  --verbose   Print each selector checked (pass or fail).
+  --verbose        Print each selector checked (pass or fail).
+  --require-both   Also fail on partial coverage (only one of the two forms).
 
 The check is also called by scripts/validate-site.py as part of the CI gate.
 """
@@ -308,11 +332,93 @@ def _glee_line_range(css_text: str) -> tuple[int, int]:
 
 
 # ---------------------------------------------------------------------------
+# Coverage helpers
+# ---------------------------------------------------------------------------
+
+def _build_dark_sets(
+    all_rules: list[CSSRule],
+) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+    """
+    Walk all parsed rules and populate two per-property-type selector sets:
+
+      dark_attr_by_type  — selectors covered by html[data-color-scheme="dark"]
+      dark_media_by_type — selectors covered by @media (prefers-color-scheme: dark)
+
+    Each set stores both the raw normalised selector and the dark-qualifier-
+    stripped form so the coverage comparison works regardless of how the dark
+    qualifier was attached to the selector.
+    """
+    dark_attr_by_type:  dict[str, set[str]] = {pt: set() for pt, _, _ in PROP_CHECKS}
+    dark_media_by_type: dict[str, set[str]] = {pt: set() for pt, _, _ in PROP_CHECKS}
+
+    for rule in all_rules:
+        is_dark_attr  = bool(DARK_SELECTOR_RE.search(rule.selector))
+        is_dark_media = rule.in_dark_media
+        if not (is_dark_attr or is_dark_media):
+            continue
+
+        for prop_type, prop_re, _ in PROP_CHECKS:
+            if not prop_re.search(rule.declarations):
+                continue
+            for raw_comp in rule.selector.split(","):
+                norm = _ws_norm(raw_comp)
+                if not norm:
+                    continue
+                stripped = _strip_dark_qualifier(norm)
+                if is_dark_attr:
+                    dark_attr_by_type[prop_type].add(norm)
+                    if stripped:
+                        dark_attr_by_type[prop_type].add(stripped)
+                if is_dark_media:
+                    dark_media_by_type[prop_type].add(norm)
+                    if stripped:
+                        dark_media_by_type[prop_type].add(stripped)
+
+    return dark_attr_by_type, dark_media_by_type
+
+
+def _selector_covered_by(
+    comp: str,
+    prop_type: str,
+    dark_dict: dict[str, set[str]],
+) -> bool:
+    """Return True when *comp* is present (directly or as a suffix) in *dark_dict*."""
+    suffix = " " + comp
+    for dark in dark_dict[prop_type]:
+        if dark == comp or dark.endswith(suffix):
+            return True
+    return False
+
+
+# Coverage status constants
+BOTH       = "both"        # both html[…] and @media forms present
+ATTR_ONLY  = "attr_only"   # only html[data-color-scheme="dark"] form
+MEDIA_ONLY = "media_only"  # only @media (prefers-color-scheme: dark) form
+NEITHER    = "neither"     # no dark override at all
+
+_STATUS_SYMBOL = {
+    BOTH:       "✓ both",
+    ATTR_ONLY:  "⚠ attr-only",
+    MEDIA_ONLY: "⚠ media-only",
+    NEITHER:    "✗ uncovered",
+}
+
+
+# ---------------------------------------------------------------------------
 # Main check
 # ---------------------------------------------------------------------------
 
-def check(verbose: bool = False) -> int:
-    """Run the check.  Returns 0 (pass) or 1 (fail)."""
+def check(verbose: bool = False, require_both: bool = False) -> int:
+    """Run the check.  Returns 0 (pass) or 1 (fail).
+
+    Parameters
+    ----------
+    verbose:
+        Print each selector checked (pass or fail) with its coverage status.
+    require_both:
+        When True, also fail on partial coverage — i.e. when a selector has a
+        dark override in only one of the two forms (attr OR media, not both).
+    """
     if not THEME_CSS.exists():
         print(f"ERROR: {THEME_CSS} not found", file=sys.stderr)
         return 1
@@ -330,20 +436,17 @@ def check(verbose: bool = False) -> int:
 
     all_rules = _parse_rules(css_text)
 
-    # glee_light_rules: each entry is (rule, hits) where hits is a list of
-    # (prop_type, bad_declaration_string) tuples.
+    # Build per-form coverage sets
+    dark_attr_by_type, dark_media_by_type = _build_dark_sets(all_rules)
+
+    # Collect all GLEE rules with light-hex hits
     glee_light_rules: list[tuple[CSSRule, list[tuple[str, str]]]] = []
-
-    # Per-property-type sets of dark-mode selector strings (both raw and
-    # dark-qualifier-stripped forms), so coverage matching can verify that
-    # the dark override addresses the *same* property group as the hit.
-    dark_by_type: dict[str, set[str]] = {pt: set() for pt, _, _ in PROP_CHECKS}
-
     for rule in all_rules:
-        in_glee = glee_start <= rule.start_line <= glee_end
-        is_dark_rule = DARK_SELECTOR_RE.search(rule.selector) or rule.in_dark_media
+        if not (glee_start <= rule.start_line <= glee_end):
+            continue
+        if DARK_SELECTOR_RE.search(rule.selector) or rule.in_dark_media:
+            continue  # skip the dark rules themselves
 
-        # Collect light-hex hits across all property groups
         hits: list[tuple[str, str]] = []
         for prop_type, prop_re, skip_gradients in PROP_CHECKS:
             for line in rule.declarations.splitlines():
@@ -352,90 +455,116 @@ def check(verbose: bool = False) -> int:
                     continue
                 value = m.group(1).strip()
                 if skip_gradients and GRADIENT_RE.match(value):
-                    continue  # decorative gradient — skip
+                    continue
                 if LIGHT_HEX_RE.search(value):
                     hits.append((prop_type, m.group(0).strip()))
-
-        if in_glee and hits:
+        if hits:
             glee_light_rules.append((rule, hits))
 
-        # Dark-mode coverage: record which property groups this dark rule covers.
-        if is_dark_rule:
-            for prop_type, prop_re, _ in PROP_CHECKS:
-                if prop_re.search(rule.declarations):
-                    # Expand comma-grouped dark selectors into individual
-                    # components and store both the raw normalised form and the
-                    # stripped form (dark qualifier removed).
-                    for raw_comp in rule.selector.split(","):
-                        norm = _ws_norm(raw_comp)
-                        if norm:
-                            dark_by_type[prop_type].add(norm)
-                            stripped = _strip_dark_qualifier(norm)
-                            if stripped:
-                                dark_by_type[prop_type].add(stripped)
+    # Classify each (rule, hit) pair
+    #   classified: list of (rule, [(prop_type, decl, status), …])
+    classified: list[tuple[CSSRule, list[tuple[str, str, str]]]] = []
 
-    def _is_covered(comp: str, prop_type: str) -> bool:
-        """Return True when *comp* is covered by a dark rule for *prop_type*.
-
-        A dark selector covers a light one when:
-        - The dark selector equals the light selector exactly (after the dark
-          qualifier was already stripped into dark_by_type), OR
-        - The dark selector ends with ' ' + comp, meaning the dark rule is a
-          more-specific selector that appends the same component with an extra
-          scoping prefix (e.g. 'html[data-color-scheme="dark"] .glee-main .foo'
-          becomes '.glee-main .foo' after stripping, which ends with ' .foo' if
-          the light rule is just '.foo').
-
-        Using endswith instead of substring search prevents '.foo' from
-        accidentally matching '.foo-extended' or other longer tokens.
-        """
-        suffix = " " + comp
-        for dark in dark_by_type[prop_type]:
-            if dark == comp or dark.endswith(suffix):
-                return True
-        return False
-
-    uncovered: list[tuple[CSSRule, list[tuple[str, str]]]] = []
     for rule, hits in glee_light_rules:
-        base_norm = _ws_norm(rule.selector)
-        # Split comma-grouped selectors.  ALL components must be covered for
-        # EACH property-type that has a hit.
+        base_norm  = _ws_norm(rule.selector)
         components = [_ws_norm(c) for c in base_norm.split(",") if c.strip()]
 
-        missing_hits: list[tuple[str, str]] = []
+        per_hit: list[tuple[str, str, str]] = []
         for prop_type, decl in hits:
-            missing_comps = [c for c in components if not _is_covered(c, prop_type)]
-            if missing_comps:
-                missing_hits.append((prop_type, decl))
+            has_attr  = all(_selector_covered_by(c, prop_type, dark_attr_by_type)  for c in components)
+            has_media = all(_selector_covered_by(c, prop_type, dark_media_by_type) for c in components)
 
-        if not missing_hits:
-            if verbose:
-                print(f"  PASS  line {rule.start_line:5d}  {base_norm!r}")
-        else:
-            uncovered.append((rule, missing_hits))
-            if verbose:
-                print(f"  FAIL  line {rule.start_line:5d}  {base_norm!r}")
-                for pt, decl in missing_hits:
-                    print(f"         [{pt}] missing dark override for: {decl}")
+            if has_attr and has_media:
+                status = BOTH
+            elif has_attr:
+                status = ATTR_ONLY
+            elif has_media:
+                status = MEDIA_ONLY
+            else:
+                status = NEITHER
 
-    if uncovered:
+            per_hit.append((prop_type, decl, status))
+
+        classified.append((rule, per_hit))
+
+    # Separate into outcome buckets
+    uncovered_rules = [
+        (rule, phs) for rule, phs in classified
+        if any(s == NEITHER for _, _, s in phs)
+    ]
+    partial_rules = [
+        (rule, phs) for rule, phs in classified
+        if all(s != NEITHER for _, _, s in phs)
+        and any(s in (ATTR_ONLY, MEDIA_ONLY) for _, _, s in phs)
+    ]
+    full_rules = [
+        (rule, phs) for rule, phs in classified
+        if all(s == BOTH for _, _, s in phs)
+    ]
+
+    # ── Verbose output ───────────────────────────────────────────────────────
+    if verbose:
+        for rule, per_hit in classified:
+            base_norm = _ws_norm(rule.selector)
+            worst = NEITHER if any(s == NEITHER for _, _, s in per_hit) else (
+                ATTR_ONLY if any(s in (ATTR_ONLY, MEDIA_ONLY) for _, _, s in per_hit) else BOTH
+            )
+            symbol = _STATUS_SYMBOL[worst]
+            print(f"  {symbol}  line {rule.start_line:5d}  {base_norm!r}")
+            if verbose and worst != BOTH:
+                for pt, decl, st in per_hit:
+                    if st != BOTH:
+                        print(f"         [{pt}] {_STATUS_SYMBOL[st]}: {decl}")
+
+    # ── Report uncovered (always blocking) ───────────────────────────────────
+    if uncovered_rules:
         print(
-            f"\ncheck-glee-dark-coverage: {len(uncovered)} GLEE selector(s) have "
+            f"\ncheck-glee-dark-coverage: {len(uncovered_rules)} GLEE selector(s) have "
             f"hardcoded light surface value(s) with no dark-mode override:\n"
         )
-        for rule, missing_hits in uncovered:
+        for rule, per_hit in uncovered_rules:
             base_norm = _ws_norm(rule.selector)
             print(f"  theme.css line {rule.start_line}: {base_norm!r}")
-            for prop_type, decl in missing_hits:
-                print(f"      [{prop_type}] {decl}")
+            for pt, decl, st in per_hit:
+                if st == NEITHER:
+                    print(f"      [{pt}] ✗ {decl}")
         print(
             f"\n  Add a dark-mode override for each selector above inside a\n"
-            f'  html[data-color-scheme="dark"] block or a\n'
+            f'  html[data-color-scheme="dark"] block AND a\n'
             f"  @media (prefers-color-scheme: dark) block in the GLEE section.\n"
         )
         return 1
 
-    # Tally hits across all property types for the summary line
+    # ── Report partial coverage (blocking only with --require-both) ──────────
+    if partial_rules:
+        label = "ERROR" if require_both else "WARNING"
+        print(
+            f"\ncheck-glee-dark-coverage: {len(partial_rules)} GLEE selector(s) have "
+            f"dark-mode coverage in only ONE of the two required forms:\n"
+        )
+        for rule, per_hit in partial_rules:
+            base_norm = _ws_norm(rule.selector)
+            print(f"  theme.css line {rule.start_line}: {base_norm!r}")
+            for pt, decl, st in per_hit:
+                if st != BOTH:
+                    missing_form = (
+                        '@media (prefers-color-scheme: dark)'
+                        if st == ATTR_ONLY
+                        else 'html[data-color-scheme="dark"]'
+                    )
+                    print(f"      [{pt}] {_STATUS_SYMBOL[st]}: {decl}")
+                    print(f"             missing: {missing_form}")
+        print(
+            f"\n  Each override must appear in BOTH forms:\n"
+            f'    html[data-color-scheme="dark"] .selector {{ … }}\n'
+            f"    @media (prefers-color-scheme: dark) {{\n"
+            f"      html:not([data-color-scheme=\"light\"]) .selector {{ … }}\n"
+            f"    }}\n"
+        )
+        if require_both:
+            return 1
+
+    # ── Summary ──────────────────────────────────────────────────────────────
     total_rules = len(glee_light_rules)
     type_counts: dict[str, int] = {}
     for _, hits in glee_light_rules:
@@ -447,10 +576,22 @@ def check(verbose: bool = False) -> int:
     summary = f"{total_rules} light-surface rule(s)"
     if breakdown:
         summary += f" ({breakdown})"
-    print(f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have dark-mode overrides.")
+
+    if require_both:
+        print(
+            f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have "
+            f"dark-mode overrides in both forms."
+        )
+    else:
+        extra = f"; {len(partial_rules)} partial" if partial_rules else ""
+        print(
+            f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have "
+            f"dark-mode overrides ({len(full_rules)} both-forms{extra})."
+        )
     return 0
 
 
 if __name__ == "__main__":
-    verbose = "--verbose" in sys.argv
-    sys.exit(check(verbose=verbose))
+    verbose      = "--verbose"      in sys.argv
+    require_both = "--require-both" in sys.argv
+    sys.exit(check(verbose=verbose, require_both=require_both))
