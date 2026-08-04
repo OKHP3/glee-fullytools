@@ -325,6 +325,17 @@ def main() -> int:
         print("  Fix: update docs/adr/README.md index table and AGENTS.md section 2.2.1")
         total_warnings += 1
 
+    # ── Global invariant: scripts/*.py count vs AGENTS.md classification table ─
+    # When a new .py script is added to scripts/ it must be classified in the
+    # AGENTS.md script-categories table.  This check catches the drift so the
+    # table stays accurate without a manual audit.
+    # To fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->.
+    scripts_drift = _check_scripts_py_drift()
+    if scripts_drift:
+        print(f"\nscripts/ count drift: {scripts_drift}")
+        print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->")
+        total_warnings += 1
+
     # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
     # For every tool page whose og:image is a local .svg, the alt text must be
     # "Glee-fully {tool_name} — {svg[aria-label]}".  If an SVG's aria-label
@@ -507,6 +518,33 @@ def _check_adr_index_sync() -> str:
     if dangling:
         parts.append(f"index rows with no file: {', '.join(sorted(dangling))}")
     return "; ".join(parts)
+
+
+def _check_scripts_py_drift() -> str:
+    """Return an error string when the scripts/*.py count on disk does not match
+    the <!-- STAT:SCRIPTS-PY --> marker in AGENTS.md.
+
+    A mismatch means a new script was added (or removed) without updating the
+    classification table, prompting the maintainer to classify it.
+    Returns empty string when counts agree or the marker is absent."""
+    agents_md = ROOT / "AGENTS.md"
+    scripts_dir = ROOT / "scripts"
+    if not agents_md.exists() or not scripts_dir.is_dir():
+        return ""
+
+    live_count = len(list(scripts_dir.glob("*.py")))
+    agents_text = agents_md.read_text(encoding="utf-8", errors="replace")
+    m = re.search(r"<!-- STAT:SCRIPTS-PY -->(\d+)<!-- /STAT:SCRIPTS-PY -->", agents_text)
+    if not m:
+        return "STAT:SCRIPTS-PY marker not found in AGENTS.md"
+    recorded = int(m.group(1))
+    if live_count != recorded:
+        return (
+            f"scripts/*.py count is {live_count} but AGENTS.md documents {recorded} "
+            f"(drift {live_count - recorded:+d}). "
+            f"Classify the new/removed script in AGENTS.md and bump the STAT:SCRIPTS-PY marker."
+        )
+    return ""
 
 
 def _check_css_lines_drift(tolerance: int = 50) -> str:

@@ -587,13 +587,13 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories (audited 2026-08-03 — all 57 scripts classified):
+Script categories (last updated 2026-08-04 — all 59 scripts classified):
 
 - **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
   `audit-site.py`, `audit-meta-versions.py`, `check-accent-contrast.py`,
   `check-mtb-version.py`, `responsive-audit.py`, `run-viewport-qa.py`,
-  `viewport-qa.py`, `site-audit.py`;
+  `viewport-qa.py`, `site-audit.py`, `sparkle-qa.py`;
   `responsive-qa.mjs` (Node/Playwright read-only QA runner);
   `post-merge.sh` (read-only integrity check after merges)
 - **Index / feed / report builders** (regenerate data or output files):
@@ -614,7 +614,7 @@ Script categories (audited 2026-08-03 — all 57 scripts classified):
   `update-placeholder-dimensions.py`, `picture-upgrade.py`,
   `rename-img-kebab.py`, `cache-bust.py`, `move-orphans-to-library.py`
 - **Sync scripts** (read SVG/data sources and patch HTML; safe to re-run):
-  `sync-image-alt.py`, `sync-portfolio-stats.py`
+  `sync-image-alt.py`, `sync-portfolio-stats.py`, `sync-sparkle-fallback.py`
 - **Image pipeline** (WebP conversion; skips existing output files):
   `png-to-webp.py`, `convert-hero-webp.py`, `convert-gpt-icons-webp.py`
 - **Governance and generation**:
@@ -654,7 +654,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | 55 scripts (53 active, 2 retired exit-1 stubs) | Audited 2026-08-03; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->57<!-- /STAT:SCRIPTS-PY --> Python scripts (56 active, 1 retired exit-1 stub) + `responsive-qa.mjs` + `post-merge.sh` | Updated 2026-08-04; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
