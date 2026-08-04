@@ -20,8 +20,8 @@ on:
 jobs:
   viewport-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    name: Responsive viewport QA (26 pages × 8 viewports)
+    timeout-minutes: 20
+    name: Responsive viewport QA (59 pages × 8 viewports)
 
     steps:
       - name: Checkout repository
@@ -39,23 +39,32 @@ jobs:
         run: playwright install --with-deps chromium
 
       - name: Start local HTTP server
-        # Run in background; sleep gives it time to bind before tests start
+        # Use serve.py (no-cache headers) so Playwright always fetches fresh assets.
+        # Redirect output so the background process doesn't spam the log.
+        run: python3 serve.py > /tmp/serve.log 2>&1 &
+
+      - name: Wait for server to be ready on port 5000
+        # Poll until the server responds or 15 s elapse.
         run: |
-          python3 -m http.server 5000 --bind 0.0.0.0 &
-          sleep 2
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5000/ > /dev/null && echo "Server ready." && break
+            sleep 0.5
+          done
+          curl -sf http://localhost:5000/ > /dev/null \
+            || { echo "ERROR: server did not start in time"; cat /tmp/serve.log; exit 1; }
 
       - name: Run viewport QA
         # run-viewport-qa.py exits 1 when any horizontal-overflow issue is found,
-        # causing this step (and the workflow) to fail. It also compiles a
-        # libgbm.so.1 stub (harmless on Ubuntu since --disable-gpu is used).
+        # causing this step (and the workflow) to fail.  It also compiles a
+        # libgbm.so.1 stub (harmless on Ubuntu where --disable-gpu is used).
         run: python3 scripts/run-viewport-qa.py
 
       - name: Upload QA report and failure screenshots
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: viewport-qa-report
           path: |
-            assets/audit/viewport-qa-*.json
+            assets/audit/viewport-qa-full-*.json
             assets/audit/screenshots/
           retention-days: 30
