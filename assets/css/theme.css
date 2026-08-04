@@ -4734,13 +4734,13 @@ html[data-color-scheme="dark"] .glee-main .footer-column h4 {
   color: var(--color-fg);
 }
 html[data-color-scheme="dark"] .glee-main .footer-column a {
-  color: var(--color-muted);
+  color: #9ca3af; /* lifted from var(--color-muted)=#6b7280 (3.66:1) → 6.97:1 on #1a1816, AA ✓ */
 }
 html[data-color-scheme="dark"] .glee-main .footer-column a:hover {
   color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
 }
 html[data-color-scheme="dark"] .glee-main .footer-bottom {
-  color: var(--color-muted);
+  color: #9ca3af; /* lifted from var(--color-muted)=#6b7280 (3.66:1) → 6.97:1 on #1a1816, AA ✓ */
 }
 @media (prefers-color-scheme: dark) {
   html:not([data-color-scheme="light"]) .glee-main .site-footer {
@@ -4753,13 +4753,13 @@ html[data-color-scheme="dark"] .glee-main .footer-bottom {
     color: var(--color-fg);
   }
   html:not([data-color-scheme="light"]) .glee-main .footer-column a {
-    color: var(--color-muted);
+    color: #9ca3af; /* lifted from var(--color-muted)=#6b7280 (3.66:1) → 6.97:1 on #1a1816, AA ✓ */
   }
   html:not([data-color-scheme="light"]) .glee-main .footer-column a:hover {
     color: #f07585; /* lightened coral — 6.04:1 on #241c1a, passes WCAG AA normal */
   }
   html:not([data-color-scheme="light"]) .glee-main .footer-bottom {
-    color: var(--color-muted);
+    color: #9ca3af; /* lifted from var(--color-muted)=#6b7280 (3.66:1) → 6.97:1 on #1a1816, AA ✓ */
   }
 }
 
