@@ -354,16 +354,23 @@ def main() -> int:
 
 def _check_stat_markers_drift(tolerance: int = 2) -> list:
     """Return a list of drift descriptions for STAT:PAGES, STAT:TOOL-ETTES,
-    STAT:BRANCHES, and STAT:GPTS in showcase/index.html vs live counts derived
-    from assets/data/search-index.json and the toolbox HTML files.
+    STAT:BRANCHES, and STAT:GPTS in showcase/index.html and about/index.html
+    vs live counts derived from assets/data/search-index.json and the toolbox
+    HTML files.
+
+    Both files are patched by scripts/sync-portfolio-stats.py; both are checked
+    here so drift is caught regardless of which page was manually edited.
+    showcase/index.html is expected to carry all four markers — a missing marker
+    there is reported as an error.  about/index.html may only contain a subset
+    of markers (PAGES and GPTS today); absent markers are skipped silently and
+    only present-but-drifted markers are reported.
 
     Uses the same counting logic as scripts/sync-portfolio-stats.py so the
     validator and the sync script stay in lockstep.
 
-    Returns an empty list when all markers are within *tolerance*."""
-    showcase = ROOT / "showcase" / "index.html"
+    Returns an empty list when all present markers are within *tolerance*."""
     index_json = ROOT / "assets" / "data" / "search-index.json"
-    if not showcase.exists() or not index_json.exists():
+    if not index_json.exists():
         return []
 
     # ── Compute live stats (mirrors sync-portfolio-stats.compute_stats()) ──
@@ -395,26 +402,38 @@ def _check_stat_markers_drift(tolerance: int = 2) -> list:
         "GPTS":       gpt_count,
     }
 
-    # ── Read recorded STAT markers from showcase/index.html ──────────────
-    html = showcase.read_text(encoding="utf-8", errors="replace")
     mismatches: list = []
 
-    for key, live_val in live.items():
-        pattern = re.compile(
-            r"<!-- STAT:" + re.escape(key) + r" -->([\d,]+)<!-- /STAT:" + re.escape(key) + r" -->"
-        )
-        # Use first occurrence (marker appears multiple times; all should agree)
-        m = pattern.search(html)
-        if not m:
-            mismatches.append(f"STAT:{key} marker not found in showcase/index.html")
+    # Pages to check: (path, report_if_marker_absent)
+    # showcase must carry all four markers; about may omit some by design.
+    pages_to_check = [
+        (ROOT / "showcase" / "index.html", True),
+        (ROOT / "about"    / "index.html", False),
+    ]
+
+    for page_path, require_all_markers in pages_to_check:
+        if not page_path.exists():
             continue
-        recorded = int(m.group(1).replace(",", ""))
-        drift = abs(live_val - recorded)
-        if drift > tolerance:
-            mismatches.append(
-                f"STAT:{key}: showcase shows {recorded} but live count is {live_val} "
-                f"(drift {live_val - recorded:+d}, tolerance ±{tolerance})"
+        page_label = page_path.relative_to(ROOT).as_posix()
+        html = page_path.read_text(encoding="utf-8", errors="replace")
+
+        for key, live_val in live.items():
+            pattern = re.compile(
+                r"<!-- STAT:" + re.escape(key) + r" -->([\d,]+)<!-- /STAT:" + re.escape(key) + r" -->"
             )
+            # Use first occurrence (marker may appear multiple times; all should agree)
+            m = pattern.search(html)
+            if not m:
+                if require_all_markers:
+                    mismatches.append(f"STAT:{key} marker not found in {page_label}")
+                continue  # absent marker in about is expected — skip silently
+            recorded = int(m.group(1).replace(",", ""))
+            drift = abs(live_val - recorded)
+            if drift > tolerance:
+                mismatches.append(
+                    f"STAT:{key}: {page_label} shows {recorded} but live count is {live_val} "
+                    f"(drift {live_val - recorded:+d}, tolerance ±{tolerance})"
+                )
 
     return mismatches
 
