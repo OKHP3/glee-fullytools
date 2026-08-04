@@ -303,6 +303,18 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
         total_issues += 1
 
+    # ── Global invariant: showcase STAT markers (pages / tool-ettes / etc.) ─
+    # showcase/index.html embeds live counts via <!-- STAT:X --> markers.
+    # Catch drift > ±2 so a new page added without re-running sync is caught
+    # before the showcase shows a stale number.
+    # To fix: run  python3 scripts/sync-portfolio-stats.py
+    stat_drift_issues = _check_stat_markers_drift(tolerance=2)
+    for msg in stat_drift_issues:
+        print(f"\nSTAT marker drift: {msg}")
+    if stat_drift_issues:
+        print("  Fix: python3 scripts/sync-portfolio-stats.py")
+        total_issues += len(stat_drift_issues)
+
     # ── Global invariant: docs/adr/ index sync ────────────────────────────
     # Every *.md file in docs/adr/ (except README.md and template.md) must be
     # linked in the README index table. Catch a newly added ADR file that was
@@ -327,6 +339,73 @@ def main() -> int:
         total_issues += len(alt_mismatches)
 
     return 1 if total_issues else 0
+
+
+def _check_stat_markers_drift(tolerance: int = 2) -> list:
+    """Return a list of drift descriptions for STAT:PAGES, STAT:TOOL-ETTES,
+    STAT:BRANCHES, and STAT:GPTS in showcase/index.html vs live counts derived
+    from assets/data/search-index.json and the toolbox HTML files.
+
+    Uses the same counting logic as scripts/sync-portfolio-stats.py so the
+    validator and the sync script stay in lockstep.
+
+    Returns an empty list when all markers are within *tolerance*."""
+    showcase = ROOT / "showcase" / "index.html"
+    index_json = ROOT / "assets" / "data" / "search-index.json"
+    if not showcase.exists() or not index_json.exists():
+        return []
+
+    # ── Compute live stats (mirrors sync-portfolio-stats.compute_stats()) ──
+    idx = json.loads(index_json.read_text(encoding="utf-8"))
+    pages_list = idx.get("pages", [])
+
+    real = [
+        p for p in pages_list
+        if "/assets/" not in p["url"]
+        and p["url"] not in ("/404/", "/under-construction/")
+    ]
+
+    tool_ette_pat = re.compile(r"^.*/toolbox/\d+-[^/]+/\d+[a-z]-[^/]+/$")
+    branch_pat    = re.compile(r"^.*/toolbox/\d+-[^/]+/$")
+
+    tool_ettes = [p for p in real if tool_ette_pat.match(p["url"])]
+    branches   = [p for p in real if branch_pat.match(p["url"])]
+
+    gpt_count = 0
+    for f in sorted(ROOT.glob("toolbox/*/*/index.html")):
+        html_text = f.read_text(encoding="utf-8", errors="replace")
+        if re.search(r"chatgpt\.com|chat\.openai\.com", html_text):
+            gpt_count += 1
+
+    live = {
+        "PAGES":      len(real),
+        "TOOL-ETTES": len(tool_ettes),
+        "BRANCHES":   len(branches),
+        "GPTS":       gpt_count,
+    }
+
+    # ── Read recorded STAT markers from showcase/index.html ──────────────
+    html = showcase.read_text(encoding="utf-8", errors="replace")
+    mismatches: list = []
+
+    for key, live_val in live.items():
+        pattern = re.compile(
+            r"<!-- STAT:" + re.escape(key) + r" -->([\d,]+)<!-- /STAT:" + re.escape(key) + r" -->"
+        )
+        # Use first occurrence (marker appears multiple times; all should agree)
+        m = pattern.search(html)
+        if not m:
+            mismatches.append(f"STAT:{key} marker not found in showcase/index.html")
+            continue
+        recorded = int(m.group(1).replace(",", ""))
+        drift = abs(live_val - recorded)
+        if drift > tolerance:
+            mismatches.append(
+                f"STAT:{key}: showcase shows {recorded} but live count is {live_val} "
+                f"(drift {live_val - recorded:+d}, tolerance ±{tolerance})"
+            )
+
+    return mismatches
 
 
 def _check_og_image_alt_drift(html_mod) -> list:
