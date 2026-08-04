@@ -349,6 +349,18 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-image-alt.py")
         total_issues += len(alt_mismatches)
 
+    # ── Global invariant: sparkle fallback sync ───────────────────────────────
+    # Every HTML page carries a static <a data-sparkle-link> fallback built from
+    # assets/data/sparkle.json.  If sparkle.json is edited without running
+    # scripts/sync-sparkle-fallback.py the static markup silently goes stale.
+    # To fix: run  python3 scripts/sync-sparkle-fallback.py
+    sparkle_mismatches = _check_sparkle_drift()
+    for msg in sparkle_mismatches:
+        print(f"\nSparkle drift: {msg}")
+    if sparkle_mismatches:
+        print("  Fix: python3 scripts/sync-sparkle-fallback.py")
+        total_issues += len(sparkle_mismatches)
+
     return 1 if total_issues else 0
 
 
@@ -564,6 +576,82 @@ def _check_scripts_py_drift() -> str:
             f"Classify the new/removed script in AGENTS.md and bump the STAT:SCRIPTS-PY marker."
         )
     return ""
+
+
+def _sparkle_build_text(data: dict) -> str:
+    """Build the sparkle display text — mirrors build_text() in sync-sparkle-fallback.py."""
+    parts = []
+    if data.get("emoji"):
+        parts.append(data["emoji"] + " ")
+    if data.get("label"):
+        parts.append(data["label"])
+    if data.get("description"):
+        parts.append(" \u2014 " + data["description"])
+    if data.get("suffix"):
+        parts.append(" " + data["suffix"])
+    return "".join(parts)
+
+
+def _check_sparkle_drift() -> list:
+    """Return a list of mismatch descriptions when any HTML file's
+    [data-sparkle-link] element has drifted from assets/data/sparkle.json.
+
+    Checks both href and text content using the same formula as
+    scripts/sync-sparkle-fallback.py (which is the single source of truth).
+    Returns an empty list when all files are in sync or sparkle.json is absent."""
+    sparkle_json = ROOT / "assets" / "data" / "sparkle.json"
+    if not sparkle_json.exists():
+        return []
+
+    try:
+        data = json.loads(sparkle_json.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return [f"sparkle.json is not valid JSON: {exc}"]
+
+    expected_href = data.get("url", "")
+    expected_text = _sparkle_build_text(data)
+    if not expected_href:
+        return ["sparkle.json missing 'url' field"]
+    if not expected_text:
+        return ["sparkle.json produced empty text — check emoji/label/description fields"]
+
+    # Regex mirrors sync-sparkle-fallback.py SPARKLE_BLOCK_RE / HREF_RE
+    _block_re = re.compile(
+        r'<a\b([^>]*\bdata-sparkle-link\b[^>]*)>(.*?)</a>',
+        re.DOTALL,
+    )
+    _href_re = re.compile(r'\bhref="([^"]*)"')
+
+    mismatches: list = []
+
+    for path in sorted(ROOT.rglob("*.html")):
+        rel = path.relative_to(ROOT)
+        if any(s in rel.parts for s in SKIP_DIRS):
+            continue
+        html_text = path.read_text(encoding="utf-8", errors="replace")
+        if "data-sparkle-link" not in html_text:
+            continue
+
+        for m in _block_re.finditer(html_text):
+            attrs        = m.group(1)
+            text_content = m.group(2).strip()  # strip indentation whitespace
+
+            href_m      = _href_re.search(attrs)
+            actual_href = href_m.group(1) if href_m else ""
+
+            if actual_href != expected_href:
+                mismatches.append(
+                    f"{rel}: [data-sparkle-link] href={actual_href!r} "
+                    f"but sparkle.json says {expected_href!r}"
+                )
+            if text_content != expected_text:
+                mismatches.append(
+                    f"{rel}: [data-sparkle-link] text mismatch\n"
+                    f"    expected: {expected_text!r}\n"
+                    f"    actual:   {text_content!r}"
+                )
+
+    return mismatches
 
 
 def _check_css_lines_drift(tolerance: int = 50) -> str:
