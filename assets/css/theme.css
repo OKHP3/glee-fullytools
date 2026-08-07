@@ -6387,7 +6387,7 @@ html[data-color-scheme="dark"] .glee-notice {
 .arcade-video-placeholder {
   aspect-ratio: 16 / 9;
   border-radius: 12px;
-  background: #fffaf5;
+  background: var(--color-surface-soft);
   border: 2px solid rgba(211, 91, 45, 0.2);
   display: flex;
   flex-direction: column;
@@ -6415,13 +6415,5 @@ html[data-color-scheme="dark"] .glee-notice {
   font-size: 0.95rem;
   text-align: center;
   margin: 0;
-}
-@media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .arcade-video-placeholder {
-    background: #2a1f1d;
-  }
-}
-html[data-color-scheme="dark"] .arcade-video-placeholder {
-  background: #2a1f1d;
 }
 /* --- End Arcade page --- */
