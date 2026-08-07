@@ -6295,7 +6295,7 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
 /* --- Arcade page (/arcade/) -------------------------------------------- */
 .arcade-phone-frame {
   width: min(400px, 92vw);
-  aspect-ratio: 390 / 780;
+  aspect-ratio: 390 / 844;  /* matches iPhone 14 viewport; 390×780 undershot the game height */
   margin: 0 auto;
   border-radius: 28px;
   padding: 10px;
