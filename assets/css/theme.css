@@ -6309,6 +6309,7 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   border: 0;
   border-radius: 20px;
   background: #1a1f3c;
+  overflow: hidden;
 }
 .arcade-embed-note {
   text-align: center;
