@@ -42,9 +42,9 @@ jobs:
         run: playwright install --with-deps chromium
 
       - name: Start local HTTP server
-        # Use serve.py (no-cache headers) so Playwright always fetches fresh assets.
+        # Use the no-cache local server so Playwright always fetches fresh assets.
         # Redirect output so the background process doesn't spam the log.
-        run: python3 serve.py > /tmp/serve.log 2>&1 &
+        run: python3 scripts/serve-site.py > /tmp/serve.log 2>&1 &
 
       - name: Wait for server to be ready on port 5000
         # Poll until the server responds or 15 s elapse.

@@ -6347,4 +6347,81 @@ html[data-color-scheme="dark"] .glee-notice {
   background: #2a1f1d;
   color: #f0e8e0;
 }
+/* ── Arcade Designathon additions ───────────────────────────────────────── */
+
+/* Eyebrow label above h1 ("The Arcade") */
+.arcade-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d94f63;
+  margin: 0 0 0.35rem;
+}
+
+/* Top-align card and phone column (phone frame is taller than the card) */
+.arcade-hero.glee-hero .hero-grid {
+  align-items: start;
+}
+
+/* Embed note left-aligned when sitting inside the hero card */
+.glee-hero-card .arcade-embed-note {
+  text-align: left;
+  margin: 1rem 0 0;
+  max-width: none;
+}
+
+/* Phone frame column in the hero */
+.arcade-hero-phone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Slightly narrower in the hero context for better grid balance */
+.arcade-hero-phone .arcade-phone-frame {
+  width: min(340px, 90vw);
+}
+
+/* Video placeholder (non-interactive future slot) */
+.arcade-video-placeholder {
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #fffaf5;
+  border: 2px solid rgba(211, 91, 45, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.arcade-video-play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid rgba(211, 91, 45, 0.35);
+  font-size: 1.25rem;
+  color: #d94f63;
+  flex-shrink: 0;
+}
+.arcade-video-caption {
+  opacity: 0.65;
+  font-size: 0.95rem;
+  text-align: center;
+  margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .arcade-video-placeholder {
+    background: #2a1f1d;
+  }
+}
+html[data-color-scheme="dark"] .arcade-video-placeholder {
+  background: #2a1f1d;
+}
 /* --- End Arcade page --- */

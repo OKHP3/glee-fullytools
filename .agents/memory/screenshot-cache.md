@@ -11,6 +11,6 @@ The Replit screenshot tool uses a headless browser with a persistent cache. The 
 
 **Workaround:** Screenshot a path the browser hasn't cached yet — any inner page like `/about/`, `/contact/`, `/legal/`. These load fresh HTML → fresh assets → new JS/CSS runs correctly.
 
-**Server-side:** Switch from `python3 -m http.server` to a custom `serve.py` that adds `Cache-Control: no-store, no-cache` headers. This ensures future sessions always get fresh assets. The workflow command is `python3 serve.py`.
+**Server-side:** Switch from `python3 -m http.server` to the custom `scripts/serve-site.py` server that adds `Cache-Control: no-store, no-cache` headers. This ensures future sessions always get fresh assets. The workflow command is `python3 scripts/serve-site.py`.
 
 **Why:** The default Python http.server sends no Cache-Control header; browsers apply heuristic caching (often 10% of Last-Modified age), which can be hours for rarely-changed files.

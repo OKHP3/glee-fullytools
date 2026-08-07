@@ -28,7 +28,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 
 ## Workflows
 
-- **Start application:** `python3 -m http.server 5000 --bind 0.0.0.0` (port 5000, webview)
+- **Start application:** `python3 scripts/serve-site.py` (port 5000, no-cache webview)
 
 ## CI Gate (GitHub Actions)
 
@@ -42,7 +42,7 @@ This gate prevents regressions (deprecated meta tags, broken hrefs, missing meta
 
 ## Agent Governance
 
-The file `agent-skills.md` at the repo root is the operating constitution for any AI agent working on this codebase. **Read it before making any changes.**
+The file `.agents/agent-skills.md` is the site-specific operating constitution for any AI agent working on this codebase. **Read it before making any changes.**
 
 It contains:
 - **6 Core Constraints** (never violate): static-only architecture, no build steps without approval, brand voice, trunk→branch→tool-ette taxonomy, no fabricated content, idempotent scripts only

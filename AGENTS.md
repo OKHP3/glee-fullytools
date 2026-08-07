@@ -5,7 +5,7 @@ Read it before touching any file. It applies equally to Replit Agent, Copilot,
 Claude, and any other AI assistant.
 
 Cross-reference `replit.md` for site-specific architecture, script inventory,
-and current audit state. Cross-reference `agent-skills.md` for site-specific
+and current audit state. Cross-reference `.agents/agent-skills.md` for site-specific
 governance (CSS scope map, script run-order, taxonomy rules, Mermaid referral
 invariant).
 
@@ -49,7 +49,7 @@ dates and counts.
 - The target is one Git repository at `/Volumes/OKH-Local/04_GitHub_Mirrors/Glee-fullyTools`.
 - No nested Git repositories or separate application roots were found.
 - This guide is canonical for agent behavior. `CLAUDE.md` points here. `replit.md`
-  and `agent-skills.md` provide site-specific implementation notes and skills.
+  and `.agents/agent-skills.md` provide site-specific implementation notes and skills.
 
 ### Understanding
 
@@ -78,7 +78,7 @@ dates and counts.
   reports. Site content has no framework or application build step.
 - `package.json` and `package-lock.json` exist for optional local Lighthouse and
   Puppeteer tooling. They do not define the website runtime or a bundling step.
-- Local development uses `python3 serve.py`, which serves port 5000 with
+- Local development uses `python3 scripts/serve-site.py`, which serves port 5000 with
   no-cache headers. `.replit` uses the same port and deploys the repository root
   as a static site. `CNAME` identifies `glee-fully.tools` as the site origin.
 - GitHub Actions runs the Python validation workflow on pushes and pull requests
@@ -293,6 +293,7 @@ site-specific content genuinely requires a different layout.
 ```
 <repo-root>/
 |-- .agents/               Replit Agent working memory (committed; canonical)
+|   |-- agent-skills.md    site-specific agent governance and QA rules
 |   +-- skills/            agent skills consumed by this app
 |-- .github/               GitHub Actions, issue templates
 |-- .gitignore
@@ -305,7 +306,6 @@ site-specific content genuinely requires a different layout.
 |-- CONTRIBUTING.md
 |-- LICENSE
 |-- README.md
-|-- ROADMAP.md
 |-- SECURITY.md
 |-- about/                 /about/ page directory
 |-- assets/
@@ -321,6 +321,8 @@ site-specific content genuinely requires a different layout.
 |   |-- js/                JavaScript (app.js, mermaid-init.js, etc.)
 |   +-- templates/         reusable HTML page-shell fragments (template-- prefix)
 |-- docs/                  top-level GitHub-rendered project documentation
+|   |-- roadmap.md         project roadmap and planning direction
+|   |-- threat-model.md    repository security model
 |   +-- archive/           archived and superseded documentation
 |-- contact/               /contact/ page directory
 |-- favicon.ico
@@ -330,7 +332,7 @@ site-specific content genuinely requires a different layout.
 |-- llms.txt               LLM crawler guidance
 |-- replit.md              Replit-specific project notes (not for GitHub display)
 |-- robots.txt
-|-- scripts/               Python build, audit, and maintenance scripts
+|-- scripts/               Python build, audit, maintenance, and local-server scripts
 |-- search/                /search/ page directory
 |-- site.webmanifest
 |-- sitemap.xml
@@ -587,7 +589,7 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories (last updated 2026-08-04 — all 60 scripts classified):
+Script categories (last updated 2026-08-06 — all 62 scripts classified):
 
 - **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
@@ -620,6 +622,8 @@ Script categories (last updated 2026-08-04 — all 60 scripts classified):
   `png-to-webp.py`, `convert-hero-webp.py`, `convert-gpt-icons-webp.py`
 - **Governance and generation**:
   `push-to-github.py`, `cross-site-sync.py`, `release-mtb.py`
+- **Local development**:
+  `serve-site.py` — no-cache local static-site server for Replit and browser QA
 - **⛔ Retired — exit 1; do not re-run** (one-shot mutators whose
   preconditions no longer hold; re-running would corrupt or double-inject):
   `inject-sparkle-loader.py` (sparkle-loader.js merged into app.js — 2026-05-28)
@@ -646,16 +650,16 @@ baseline -- update it here when the inventory changes materially.
 | `assets/css/` | `theme.css` (142 KB) | Largest of the three; includes GLEE scope |
 | `assets/data/` | `search-index.json`, `sparkle.json`, `icon-map.json` | All three data files present |
 | `assets/downloads/` | `.gitkeep` only | Add user-facing downloads when available |
-| `assets/docs/` | 13 Markdown docs | Includes `gleefully-replit-theme-guide.md`, `FOLDER-STRUCTURE-PROMPT.md`, multiple audit and evaluation reports |
+| `assets/docs/` | 12 Markdown docs | Includes `gleefully-replit-theme-guide.md`, multiple audit and evaluation reports |
 | `assets/img/` | 198+ brand and GPT-icon PNG files + 5 subdirs | Largest image set; includes all tool-ette GPT icon variants |
 | `assets/img/favicons/` | 8 files | Full PNG set plus the SVG master |
 | `assets/img/library/` | `.gitkeep` only | Populate with reusable brand variants |
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
 | `assets/js/` | `app.js` (40 KB), `mermaid-init.js` | `sparkle-loader.js` removed 2026-05-28; logic merged into `app.js` |
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
-| `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`; `.gitkeep` | ADRs added 2026-08-03; update count here when ADRs are added |
+| `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->59<!-- /STAT:SCRIPTS-PY --> Python scripts (57 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-04; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->60<!-- /STAT:SCRIPTS-PY --> Python scripts (59 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-06; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
