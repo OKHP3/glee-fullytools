@@ -42,7 +42,7 @@
     <meta name="theme-color" content="#d35b2d" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
     <link rel="canonical" href="https://glee-fully.tools/search/" />
-<link rel="stylesheet" href="/assets/css/theme.css?v=d319a9f7" />
+<link rel="stylesheet" href="/assets/css/theme.css?v=5683c6e4" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
@@ -173,6 +173,7 @@
           Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.
         </p>
 
+        <noscript><p class="glee-search-page__lede">JavaScript is required for live search. <a href="/toolbox/">Browse the Toolbox</a> or explore a branch to find your tools.</p></noscript>
         <form class="glee-search-page__form" role="search" onsubmit="event.preventDefault();">
           <label for="glee-search-page-input" class="sr-only">Search this site</label>
           <svg class="glee-search-page__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -182,6 +183,7 @@
           <input
             id="glee-search-page-input"
             type="search"
+            name="q"
             placeholder="Try “resume”, “recipe”, “budget”, or “journal”…"
             autocomplete="off"
             spellcheck="false"

@@ -47,6 +47,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const expanded = navToggle.getAttribute("aria-expanded") === "true";
       navToggle.setAttribute("aria-expanded", String(!expanded));
     });
+
+    // Close nav on Escape and return focus to trigger (WCAG 2.1.1)
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && header.classList.contains("nav-open")) {
+        header.classList.remove("nav-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.focus();
+      }
+    });
   }
 
   // Header shadow
@@ -101,7 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
       dark:   "Switch to system mode",
     };
 
-    const savedTheme = localStorage.getItem("okh-theme");
+    let savedTheme = null;
+    try { savedTheme = localStorage.getItem("okh-theme"); } catch (_) {}
     let currentState = STATES.includes(savedTheme) ? savedTheme : "system";
 
     function applyThemeState(state) {
@@ -165,7 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Restore saved state (the early-init <head> script already applied it before
     // first paint for pages that include it; this just syncs the button).
-    const savedScheme = localStorage.getItem(LS_KEY);
+    let savedScheme = null;
+    try { savedScheme = localStorage.getItem(LS_KEY); } catch (_) {}
     let schemeState   = SCH_STATES.includes(savedScheme) ? savedScheme : "auto";
 
     function applySchemeState(state) {
@@ -259,9 +270,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const storageKey = `glee-wip-dismissed:${wipKey}`;
 
     // If user already dismissed this specific WIP page, hide overlay
-    if (localStorage.getItem(storageKey) === "true") {
+    let wipDismissed = false;
+    try { wipDismissed = localStorage.getItem(storageKey) === "true"; } catch (_) {}
+    if (wipDismissed) {
       body.classList.add("construction-dismissed");
-      constructionOverlay.setAttribute("hidden", "true");
+      constructionOverlay.setAttribute("hidden", "");
     } else {
       // Wire up dismiss buttons
       const dismissButtons = constructionOverlay.querySelectorAll(
@@ -272,7 +285,11 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener("click", () => {
           body.classList.add("construction-dismissed");
           constructionOverlay.setAttribute("aria-hidden", "true");
-          localStorage.setItem(storageKey, "true");
+          constructionOverlay.setAttribute("hidden", "");
+          try { localStorage.setItem(storageKey, "true"); } catch (_) {}
+          // Return focus to main content heading after overlay dismissal (WCAG 2.4.3)
+          const mainTarget = document.querySelector("#main h1, #main");
+          if (mainTarget) mainTarget.focus({ preventScroll: true });
         });
       });
 
@@ -283,6 +300,29 @@ document.addEventListener("DOMContentLoaded", () => {
             "[data-wip-dismiss]"
           );
           if (primaryDismiss) primaryDismiss.click();
+        }
+      });
+
+      // Move focus into the overlay's dismiss button so keyboard users are
+      // not left stranded on skip-link or outside the modal (WCAG 2.4.3)
+      const overlayFocusable = Array.from(
+        constructionOverlay.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (overlayFocusable.length) {
+        requestAnimationFrame(() => overlayFocusable[0].focus());
+      }
+
+      // Focus trap — keep Tab/Shift+Tab inside the overlay while it is visible (WCAG 2.1.1)
+      constructionOverlay.addEventListener("keydown", (e) => {
+        if (e.key !== "Tab" || !overlayFocusable.length) return;
+        const first = overlayFocusable[0];
+        const last  = overlayFocusable[overlayFocusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
         }
       });
     }
@@ -373,8 +413,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(setActive, 100);
 }());
 
-// ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
-// Consolidated from search.js (2026-05-03). All 26 production pages load this.
+// ── 5. Glee-fully Search — overlay + dedicated /search/ page ────────────────
+// Consolidated from search.js (2026-05-03). All production pages load this.
 // Index: /assets/data/search-index.json  Styles: inlined into theme.css (2026-05-04)
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
@@ -391,7 +431,12 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!r.ok) throw new Error("Index fetch failed: " + r.status);
           return r.json();
         })
-        .then((d) => Array.isArray(d.entries) ? d.entries : [])
+        .then((d) => {
+          // The current generator writes `pages`; accept the older `entries`
+          // key too so a cached or older index cannot silently empty search.
+          if (Array.isArray(d.pages)) return d.pages;
+          return Array.isArray(d.entries) ? d.entries : [];
+        })
         .catch((err) => {
           console.warn("[okh-search] index load failed:", err);
           return [];
@@ -403,6 +448,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ----- scoring -----
   function tokenize(q) {
     return q.toLowerCase().split(/[^a-z0-9'-]+/i).filter((t) => t.length >= 2);
+  }
+  function entrySection(entry) {
+    return entry.section || entry.category || "Page";
   }
   function scoreEntry(entry, tokens) {
     if (!tokens.length) return 0;
@@ -432,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (body.includes(phrase))  score += 4;
     }
     // Slight penalty for article-section duplicates so the parent ranks above
-    if (entry.category === "Article Section") score -= 0.5;
+    if (entrySection(entry) === "Article Section") score -= 0.5;
     return allHit ? score : score * 0.4;
   }
   function search(entries, q, limit) {
@@ -485,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const snip = snippetFor(e, tokens, 220);
     return (
       '<div class="okh-search-result-meta">' +
-        '<span class="okh-search-result-cat">'  + escapeHtml(e.category || "Page") + "</span>" +
+        '<span class="okh-search-result-cat">'  + escapeHtml(entrySection(e)) + "</span>" +
         '<span class="okh-search-result-url">'  + escapeHtml(e.url) + "</span>" +
       "</div>" +
       '<h3 class="okh-search-result-title">' + highlight(e.title || e.url, tokens) + "</h3>" +
@@ -500,7 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.className = "okh-search-overlay";
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
-    wrap.setAttribute("aria-label", "Search OverKill Hill");
+    wrap.setAttribute("aria-label", "Search Glee-fully");
     wrap.innerHTML = (
       '<div class="okh-search-panel" role="document">' +
         '<div class="okh-search-input-row">' +
@@ -508,10 +556,11 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="Search the Forge — articles, projects, ideas…" aria-label="Search" />' +
+            'placeholder="Search the Glee-fully Toolbox — tools, branches, guides…" aria-label="Search" />' +
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
+        '<div class="okh-search-status" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden;white-space:nowrap"></div>' +
         '<div class="okh-search-footer">' +
           '<div class="okh-search-keys">' +
             "<span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>" +
@@ -529,14 +578,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function emptyStateHtml() {
     return (
       '<div class="okh-search-empty">' +
-        "<p>Search across writings, projects, manifesto, and the Council archives.</p>" +
+        "<p>Search across the Glee-fully Toolbox, branches, Tool-ettes, and guides.</p>" +
         '<ul class="okh-search-hint-list">' +
-          '<li><button type="button" data-q="mermaid">Mermaid</button></li>' +
-          '<li><button type="button" data-q="ROY">ROY</button></li>' +
-          '<li><button type="button" data-q="council">Council</button></li>' +
-          '<li><button type="button" data-q="manifesto">Manifesto</button></li>' +
-          '<li><button type="button" data-q="diagram">diagram</button></li>' +
-          '<li><button type="button" data-q="visual edition">v0.3 Visual Edition</button></li>' +
+          '<li><button type="button" data-q="resume">Resume</button></li>' +
+          '<li><button type="button" data-q="recipe">Recipe</button></li>' +
+          '<li><button type="button" data-q="budget">Budget</button></li>' +
+          '<li><button type="button" data-q="journal">Journal</button></li>' +
+          '<li><button type="button" data-q="Arcade">Arcade</button></li>' +
+          '<li><button type="button" data-q="wellness">Wellness</button></li>' +
         "</ul>" +
       "</div>"
     );
@@ -547,6 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!overlay) return;
     const input    = overlay.querySelector(".okh-search-input");
     const list     = overlay.querySelector(".okh-search-results");
+    const statusEl = overlay.querySelector(".okh-search-status");
     const closeBtn = overlay.querySelector(".okh-search-close");
 
     let entries        = [];
@@ -601,14 +651,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     function render() {
       const q = input.value.trim();
-      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
+      if (!q) { renderEmpty(); currentResults = []; lastTokens = []; if (statusEl) statusEl.textContent = ""; return; }
       lastTokens     = tokenize(q);
       currentResults = search(entries, q, 12);
       if (!currentResults.length) {
         list.innerHTML =
           '<div class="okh-search-noresults"><p>No matches for <strong>' +
-          escapeHtml(q) + "</strong>.</p><p>Try <em>mermaid</em>, <em>ROY</em>, " +
-          "<em>council</em>, or <em>manifesto</em>.</p></div>";
+          escapeHtml(q) + "</strong>.</p><p>Try <em>resume</em>, <em>recipe</em>, " +
+          "<em>budget</em>, or <em>journal</em>.</p></div>";
+        if (statusEl) statusEl.textContent = "No matches for " + q;
         return;
       }
       list.innerHTML = currentResults.map((r) => (
@@ -616,6 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
           renderResultHtml(r, lastTokens) +
         "</a>"
       )).join("");
+      if (statusEl) statusEl.textContent = currentResults.length + (currentResults.length === 1 ? " result" : " results") + " for " + q;
       setActive(0);
     }
     input.addEventListener("input", render);
@@ -695,12 +747,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ── Dedicated /search/ page ─────────────────────────────────────────────
-  function initSearchPage() {
-    const input = document.getElementById("search-page-input");
-    const list  = document.getElementById("search-results");
-    const stats = document.getElementById("search-stats");
-    const cats  = document.getElementById("search-categories");
-    if (!input || !list) return;
+  function initInlineSearch() {
+    const root  = document.querySelector("[data-glee-search-inline]");
+    const input = root && root.querySelector("[data-glee-search-inline-input]");
+    const list  = root && root.querySelector("[data-glee-search-inline-results]");
+    const stats = root && root.querySelector("[data-glee-search-inline-status]");
+    const cats  = root && root.querySelector("[data-glee-search-inline-categories]");
+    if (!root || !input || !list) return;
 
     let entries        = [];
     let activeCategory = "all";
@@ -728,7 +781,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let results  = search(entries, q, 60);
       if (activeCategory !== "all") {
         results = results.filter((r) =>
-          (r.entry.category || "").toLowerCase() === activeCategory.toLowerCase()
+          entrySection(r.entry).toLowerCase() === activeCategory.toLowerCase()
         );
       }
       if (!results.length) {
@@ -744,9 +797,9 @@ document.addEventListener("DOMContentLoaded", () => {
         results.length + " result" + (results.length === 1 ? "" : "s") +
         " for \u201c" + q + "\u201d";
       list.innerHTML = results.map((r) => (
-        '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
+        '<li><a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, tokens) +
-        "</a>"
+        "</a></li>"
       )).join("");
     }
 
@@ -754,7 +807,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!cats) return;
       const counts = {};
       for (const e of entries) {
-        const c = e.category || "Page";
+        const c = entrySection(e);
         counts[c] = (counts[c] || 0) + 1;
       }
       const ordered = ["all"].concat(Object.keys(counts).sort());
@@ -780,7 +833,6 @@ document.addEventListener("DOMContentLoaded", () => {
       buildCategoryChips();
       const initialQ = readQueryFromURL();
       if (initialQ) input.value = initialQ;
-      input.focus();
       render();
     });
 
@@ -789,12 +841,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
   function start() {
-    if (document.body.classList.contains("search-page")) {
-      initSearchPage();
-      initOverlay(); // search button still works on the search page itself
-    } else {
-      initOverlay();
-    }
+    if (document.querySelector("[data-glee-search-inline]")) initInlineSearch();
+    initOverlay();
   }
 
   if (document.readyState === "loading") {

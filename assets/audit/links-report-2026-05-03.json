@@ -1,7 +1,7 @@
 {
   "generated": "2026-05-03",
   "pages_scanned": 62,
-  "internal_links": 2681,
+  "internal_links": 2684,
   "external_links": 1252,
   "broken_links": [],
   "style_issues": [],
@@ -13,8 +13,8 @@
   "by_page": [
     {
       "path": "404.html",
-      "internal_links": 29,
-      "external_links": 17
+      "internal_links": 31,
+      "external_links": 16
     },
     {
       "path": "about/index.html",
@@ -24,7 +24,7 @@
     {
       "path": "arcade/index.html",
       "internal_links": 31,
-      "external_links": 24
+      "external_links": 25
     },
     {
       "path": "contact/index.html",
@@ -53,7 +53,7 @@
     },
     {
       "path": "search/index.html",
-      "internal_links": 45,
+      "internal_links": 46,
       "external_links": 15
     },
     {

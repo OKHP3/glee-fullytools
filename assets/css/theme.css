@@ -44,7 +44,7 @@
   --color-surface: #111827;
   --color-surface-soft: #181f26;
   --color-fg: #e5e7eb;
-  --color-muted: var(--okh-gray);
+  --color-muted: #9ca3af; /* WCAG 1.4.3: #6b7280 only ≈3.4:1 on dark bg #2a2320; #9ca3af gives ≈6.4:1 (AA pass) */
   --color-accent: var(--okh-orange);
   --color-border-subtle: rgba(249, 250, 251, 0.08);
   /* Mermaid theming – OverKill Hill (default) */
@@ -778,6 +778,13 @@ button {
   color: #6b6b6b;
 }
 
+/* Keep top-level navigation targets usable on touch screens. */
+.glee-main .site-header .primary-nav > ul > li > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
 /* Glee/AskJamie mobile toggle styling */
 .askjamie-main .nav-toggle,
 .glee-main .nav-toggle {
@@ -887,7 +894,7 @@ button {
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
   border-color: var(--okh-orange, #c46a2c);
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule supplies the 2px accessible outline */
 }
 .theme-toggle .tt-icon {
   width: 1rem;
@@ -1660,7 +1667,7 @@ body.construction-dismissed .construction-overlay,
 .okh-search-trigger:focus-visible {
   border-color: var(--okh-orange, var(--okh-orange));
   color: var(--okh-orange, var(--okh-orange));
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule supplies the 2px accessible outline */
 }
 .okh-search-trigger .okh-search-icon {
   width: 1em;
@@ -1959,7 +1966,102 @@ body.construction-dismissed .construction-overlay,
   background: rgba(196, 106, 44, 0.18);
   color: var(--okh-amber, #d99257);
   border-color: rgba(196, 106, 44, 0.45);
-}/* Draft notice — unpublished writing pages */
+}
+
+/* Glee-fully dedicated search page */
+.glee-search-page {
+  padding: 2rem 0 4rem;
+}
+.glee-search-page__hero {
+  margin-bottom: 2rem;
+}
+.glee-search-page__lede {
+  max-width: 720px;
+}
+.glee-search-page__form {
+  max-width: 640px;
+  margin: 1.5rem auto 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1rem;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border-subtle, #2a2f37);
+  border-radius: var(--radius-md, 12px);
+}
+.glee-search-page__form:focus-within {
+  border-color: var(--okh-orange, #c46a2c);
+}
+.glee-search-page__icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: var(--color-muted, #9ca3af);
+  flex: 0 0 auto;
+}
+.glee-search-page__form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-fg, #1a1a1a);
+  font-size: 1.05rem;
+  outline: none;
+}
+.glee-search-page__status {
+  text-align: center;
+  color: var(--color-muted, #9ca3af);
+  font-size: 0.85rem;
+  margin: 0.25rem 0 1.5rem;
+}
+.glee-search-page__categories {
+  max-width: 720px;
+  margin: 0 auto 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+.glee-search-page__categories button {
+  background: transparent;
+  color: var(--color-muted, #9ca3af);
+  border: 1px solid var(--color-border-subtle, #2a2f37);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.glee-search-page__categories button[aria-pressed="true"] {
+  background: rgba(196, 106, 44, 0.18);
+  color: var(--okh-amber, #d99257);
+  border-color: rgba(196, 106, 44, 0.45);
+}
+.glee-search-page__results {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.glee-search-page__results > li {
+  border: 1px solid var(--color-border-subtle, #2a2f37);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #fff);
+  overflow: hidden;
+}
+.glee-search-page__results .okh-search-result {
+  border-top: none;
+}
+.glee-search-page__results .okh-search-result:hover {
+  background: rgba(196, 106, 44, 0.08);
+}
+.glee-search-page__results-wrap:empty,
+.glee-search-page__results:empty {
+  min-height: 1px;
+}
+
+/* Draft notice — unpublished writing pages */
 .draft-notice {
   background-color: color-mix(in srgb, var(--okh-amber) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--okh-amber) 40%, transparent);
@@ -4405,7 +4507,7 @@ html[data-theme="light"] .glee-main {
   text-decoration: none;
 }
 .glee-breadcrumb-item a:hover {
-  color: #d94f63;             /* Glee coral on hover */
+  color: #b8354a;             /* WCAG 1.4.3 fix: darkened from #d94f63 (3.59:1) → #b8354a (5.16:1 on cream #f6f2ee, AA ✓) */
   text-decoration: underline;
 }
 .glee-breadcrumb-current {
@@ -4508,7 +4610,7 @@ html[data-color-scheme="dark"] .glee-main .brand-stripes--glee {
 .glee-main .glee-color-toggle:hover,
 .glee-main .glee-color-toggle:focus-visible {
   border-color: #d94f63;
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule supplies the 2px accessible outline */
 }
 
 /* ── Glee color-scheme toggle – auto-state "following device" dashed-border cue ──
@@ -5682,7 +5784,7 @@ html[data-color-scheme="dark"] .askjamie-main .brand-stripes--jamie {
 .askjamie-main .glee-color-toggle:hover,
 .askjamie-main .glee-color-toggle:focus-visible {
   border-color: #2d6f7e;
-  outline: none;
+  /* outline:none removed — global button:focus-visible rule supplies the 2px accessible outline */
 }
 
 /* ── AskJamie color-scheme toggle – auto-state "following device" dashed-border cue ──
