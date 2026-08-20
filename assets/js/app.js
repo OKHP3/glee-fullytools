@@ -262,6 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const constructionOverlay = document.querySelector(".construction-overlay");
 
   if (constructionOverlay) {
+    constructionOverlay.setAttribute("role", "dialog");
+    constructionOverlay.setAttribute("aria-modal", "true");
+    constructionOverlay.setAttribute("aria-label", "Work-in-progress page notice");
     const body = document.body;
     const wipKey =
       constructionOverlay.getAttribute("data-wip-key") ||
@@ -289,7 +292,10 @@ document.addEventListener("DOMContentLoaded", () => {
           try { localStorage.setItem(storageKey, "true"); } catch (_) {}
           // Return focus to main content heading after overlay dismissal (WCAG 2.4.3)
           const mainTarget = document.querySelector("#main h1, #main");
-          if (mainTarget) mainTarget.focus({ preventScroll: true });
+          if (mainTarget) {
+            if (!mainTarget.hasAttribute("tabindex")) mainTarget.setAttribute("tabindex", "-1");
+            mainTarget.focus({ preventScroll: true });
+          }
         });
       });
 

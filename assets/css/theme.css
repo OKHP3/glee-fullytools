@@ -4527,7 +4527,7 @@ html[data-theme="light"] .glee-main {
 
 .glee-main .latest-pill {
   background: #ffe7e0;
-  color: #d94f63;
+  color: #b8354a; /* WCAG 1.4.3: 4.87:1 on #ffe7e0 */
 }
 
 /* Glee-fully – canonical 6-stripe retro palette (amber-teal spectrum).
@@ -6436,7 +6436,7 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   font-family: 'Fredoka', 'Poppins', sans-serif;
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 600;
-  color: #d94f63;
+  color: #b8354a; /* WCAG 1.4.3: 5.17:1 on #f6f2ee */
   text-align: center;
   margin: 0;
 }
@@ -6458,8 +6458,20 @@ html[data-color-scheme="dark"] .glee-notice {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #d94f63;
+  color: #b8354a; /* WCAG 1.4.3: 5.17:1 on #f6f2ee */
   margin: 0 0 0.35rem;
+}
+
+/* Keep the arcade labels readable against the dark Glee surface. */
+html[data-color-scheme="dark"] .arcade-closing,
+html[data-color-scheme="dark"] .arcade-eyebrow {
+  color: #f07585;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .arcade-closing,
+  html:not([data-color-scheme="light"]) .arcade-eyebrow {
+    color: #f07585;
+  }
 }
 
 /* Top-align card and phone column (phone frame is taller than the card) */
