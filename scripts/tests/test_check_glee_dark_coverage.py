@@ -41,6 +41,9 @@ _GLEE_BANNER = "/* SECTION \xb7 GLEE */\n"
 _ASKJAMIE_BANNER = "/* SECTION \xb7 ASKJAMIE */\n"
 
 
+_THIRD_SECTION_BANNER = "/* SECTION \xb7 COMPONENTS */\n"
+
+
 def _make_css(*glee_body_parts: str) -> str:
     """Wrap body CSS lines in the GLEE + ASKJAMIE section banners."""
     return _GLEE_BANNER + "\n".join(glee_body_parts) + "\n" + _ASKJAMIE_BANNER
@@ -57,6 +60,22 @@ def _run_check(css: str) -> int:
     try:
         mod.THEME_CSS = tmp
         return mod.check(verbose=False)
+    finally:
+        mod.THEME_CSS = orig
+        tmp.unlink(missing_ok=True)
+
+
+def _run_check_section(css: str, section: str) -> int:
+    """Like _run_check but checks the named section (glee, askjamie, or all)."""
+    with tempfile.NamedTemporaryFile(
+        suffix=".css", mode="w", encoding="utf-8", delete=False
+    ) as fh:
+        fh.write(css)
+        tmp = Path(fh.name)
+    orig = mod.THEME_CSS
+    try:
+        mod.THEME_CSS = tmp
+        return mod.check(verbose=False, section=section)
     finally:
         mod.THEME_CSS = orig
         tmp.unlink(missing_ok=True)
@@ -168,6 +187,97 @@ def test_no_false_positive_from_selector_prefix_collision():
 
 
 # ---------------------------------------------------------------------------
+# AskJamie surface coverage
+# ---------------------------------------------------------------------------
+
+def test_askjamie_uncovered_surface_fails():
+    """An AskJamie light background with no dark override should fail (exit 1)."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+    )
+    assert _run_check_section(css, section="askjamie") == 1, (
+        "Expected exit 1: AskJamie light bg with no dark override must be flagged"
+    )
+
+
+def test_askjamie_covered_surface_passes():
+    """An AskJamie light background with a dark override should pass (exit 0)."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+    )
+    assert _run_check_section(css, section="askjamie") == 0, (
+        "Expected exit 0: AskJamie light bg with dark override must pass"
+    )
+
+
+# ---------------------------------------------------------------------------
+# --section all path
+# ---------------------------------------------------------------------------
+
+def test_section_all_passes_when_both_covered():
+    """--section all should pass (exit 0) when both GLEE and AskJamie are covered."""
+    css = (
+        _GLEE_BANNER
+        + ".glee-main .widget { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .glee-main .widget { background: #2a2724; }\n'
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+    )
+    assert _run_check_section(css, section="all") == 0, (
+        "Expected exit 0: both GLEE and AskJamie covered → all must pass"
+    )
+
+
+def test_section_all_fails_when_askjamie_uncovered():
+    """--section all should fail (exit 1) when AskJamie has an uncovered rule."""
+    css = (
+        _GLEE_BANNER
+        + ".glee-main .widget { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .glee-main .widget { background: #2a2724; }\n'
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+    )
+    assert _run_check_section(css, section="all") == 1, (
+        "Expected exit 1: uncovered AskJamie rule must propagate through --section all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Section-boundary detection when a later CSS section is present
+# ---------------------------------------------------------------------------
+
+def test_askjamie_boundary_stops_at_later_section():
+    """
+    When a third section banner follows ASKJAMIE, the ASKJAMIE check must not
+    pick up rules from beyond that boundary.
+
+    Regression guard: _section_line_range must treat the next SECTION banner
+    as the end marker regardless of its name, so a rule placed after a
+    COMPONENTS (or any third) banner is not counted as AskJamie.
+    """
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        # Covered AskJamie rule — inside the ASKJAMIE section.
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+        + _THIRD_SECTION_BANNER
+        # Uncovered rule — outside the ASKJAMIE section; must not bleed in.
+        + ".components-widget { background: #fff7f1; }\n"
+    )
+    assert _run_check_section(css, section="askjamie") == 0, (
+        "Expected exit 0: rule after the COMPONENTS banner must not be "
+        "counted as AskJamie; section boundary detection failed"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Standalone runner
 # ---------------------------------------------------------------------------
 
@@ -185,6 +295,14 @@ if __name__ == "__main__":
         test_grouped_selector_all_must_be_covered,
         test_grouped_selector_all_covered_passes,
         test_no_false_positive_from_selector_prefix_collision,
+        # AskJamie surface coverage
+        test_askjamie_uncovered_surface_fails,
+        test_askjamie_covered_surface_passes,
+        # --section all path
+        test_section_all_passes_when_both_covered,
+        test_section_all_fails_when_askjamie_uncovered,
+        # Section-boundary detection
+        test_askjamie_boundary_stops_at_later_section,
     ]
 
     failures = 0
