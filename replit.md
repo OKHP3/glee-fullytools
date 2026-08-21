@@ -83,8 +83,9 @@ If a check reports stale generated output, run the named synchronizer, review
 the generated diff, and rerun the check-only sequence. The Pages workflow also
 requires `CNAME` to contain exactly `glee-fully.tools` and verifies that the
 artifact contains the homepage, 404 page, robots policy, sitemap, and manifest.
-Browser viewport QA remains a separate required check when responsive files
-change; it is not inferred from these static commands.
+The Pages workflow also runs the supported browser viewport/asset QA before
+deployment. The standalone viewport workflow remains useful for fast feedback
+on responsive changes.
 
 The three companion repositories use the same release stages but retain
 site-specific adapters for domains, page inventories, generated files, browser
