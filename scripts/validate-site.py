@@ -425,7 +425,10 @@ def main() -> int:
     for msg in css_token_issues:
         print(f"\nCSS token drift: {msg}")
     if css_token_issues:
-        print("  Fix: python3 scripts/sync-css-version.py")
+        print(
+            "  Fix: run python3 scripts/sync-css-version.py, then commit the "
+            "generated HTML token refresh before release."
+        )
         total_issues += len(css_token_issues)
 
     # ── Global invariant: template image metadata pairs ─────────────────────

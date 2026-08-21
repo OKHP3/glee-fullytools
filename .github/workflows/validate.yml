@@ -29,6 +29,11 @@ jobs:
       - name: Sync portfolio stats
         run: python3 scripts/sync-portfolio-stats.py
 
+      - name: Sync CSS cache-buster tokens
+        # Keep generated pages aligned with theme.css before the validator runs.
+        # The validator still reports the exact repair command for local releases.
+        run: python3 scripts/sync-css-version.py
+
       - name: Run site validator
         run: python3 scripts/validate-site.py
 

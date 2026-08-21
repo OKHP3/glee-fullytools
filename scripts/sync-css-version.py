@@ -9,14 +9,16 @@ Re-running is safe: if the hash hasn't changed no files are touched.
 
 Usage:
     python3 scripts/sync-css-version.py
+    python3 scripts/sync-css-version.py --check
 
 Exit codes:
     0  — all files are up to date (or were just updated)
-    1  — error (CSS file missing, no HTML files found, etc.)
+    1  — error, or stale references when using --check
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import re
 import sys
@@ -42,6 +44,14 @@ def css_hash(path: Path) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="report stale references without changing files; exits 1 when found",
+    )
+    args = parser.parse_args()
+
     if not THEME_CSS.exists():
         print(f"ERROR: {THEME_CSS.relative_to(REPO)} not found", file=sys.stderr)
         return 1
@@ -67,9 +77,18 @@ def main() -> int:
         if patched == src:
             unchanged += 1
         else:
-            path.write_text(patched, encoding="utf-8")
+            if args.check:
+                print(f"  STALE: {path.relative_to(REPO)}")
+            else:
+                path.write_text(patched, encoding="utf-8")
             updated += 1
 
+    if args.check and updated:
+        print(
+            f"ERROR: {updated} HTML file(s) have stale theme.css cache tokens. "
+            "Run python3 scripts/sync-css-version.py before release."
+        )
+        return 1
     if updated:
         print(f"  CSS token → {token}  ({updated} file(s) updated, {unchanged} already current)")
     else:
