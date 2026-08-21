@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta property="og:image" content="https://example.test/share.png">
+  <meta property="og:image:alt" content="Example share image">
+  <meta name="twitter:image" content="https://example.test/share.png">
+  <meta name="twitter:image:alt" content="Example share image">
+</head>
+</html>
