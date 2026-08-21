@@ -145,10 +145,10 @@ analytics, copy, palettes, typography, body scopes, dark-mode behavior, and
 visual screenshots. A shared script is acceptable only when its inputs make
 those differences explicit.
 
-Use `scripts/cross-site-sync.py --audit` only as a comparison aid when that
-script exists and its remote results are needed. It is not authorization to
-overwrite a sibling repository. Record remote fetch failures as `BLOCKED` or
-`NOT RUN`, not as agreement.
+Use the repository's documented cross-site comparison utility only as a
+comparison aid when it exists and remote results are needed. It is not
+authorization to overwrite a sibling repository. Record remote fetch failures
+as `BLOCKED` or `NOT RUN`, not as agreement.
 
 ## Output contract
 
