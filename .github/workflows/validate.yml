@@ -42,6 +42,9 @@ jobs:
       - name: Run template metadata regressions
         run: python3 -m unittest scripts/tests/test_validate_template_metadata.py
 
+      - name: Run accent contrast fixture regressions
+        run: python3 -m unittest scripts/tests/test_check_accent_contrast.py
+
       - name: Run site validator
         run: python3 scripts/validate-site.py
 

@@ -1,0 +1,3 @@
+.fixture-cta:hover {
+  background: #ffac3d;
+}
