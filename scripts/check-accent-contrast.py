@@ -302,8 +302,10 @@ CSS_FILES = [Path("assets/css/theme.css")]
 
 # These are the static hover states whose backgrounds are known from the
 # page skins.  They are intentionally explicit rather than attempting to
-# emulate the browser cascade: this is a small regression gate for the
-# user-visible states that have previously failed WCAG contrast.
+# emulate the browser cascade: this is a small regression gate for
+# user-visible states that have previously failed WCAG contrast.  Checks may
+# provide a foreground when it is declared on the component's base rule and
+# remains unchanged by the hover rule.
 HOVER_CONTRAST_CHECKS = (
     {
         "name": "Glee breadcrumb hover (light)",
@@ -347,6 +349,22 @@ HOVER_CONTRAST_CHECKS = (
         "background": "#1e1b18",
         "required": True,
     },
+    {
+        "name": "GPT hero CTA hover",
+        "selector": ".gpt-hero__badge-cta:hover",
+        "mode": "light",
+        "foreground": "#111111",
+        "background": "#ffac3d",
+        "required": True,
+    },
+    {
+        "name": "BFS hero CTA hover",
+        "selector": ".bfs-hero-badge-cta:hover",
+        "mode": "light",
+        "foreground": "#111111",
+        "background": "#ffac3d",
+        "required": True,
+    },
 )
 
 _HOVER_HEX_COLOR_RE = re.compile(
@@ -359,7 +377,7 @@ _HOVER_VAR_COLOR_RE = re.compile(
 
 
 def scan_hover_contrast(path: Path) -> list[dict]:
-    """Check the known Glee and AskJamie hover states against their surfaces.
+    """Check known branded hover states against their static surfaces.
 
     A missing rule is also a finding.  That prevents a future cleanup from
     silently removing a state-specific color and letting an unrelated,
@@ -405,12 +423,17 @@ def scan_hover_contrast(path: Path) -> list[dict]:
         for selector, declarations, lineno in matches:
             color_match = _HOVER_HEX_COLOR_RE.search(declarations)
             uses_accent_var = bool(_HOVER_VAR_COLOR_RE.search(declarations))
-            if color_match:
+            if "foreground" in check:
+                # The component's base rule keeps this text color while the
+                # hover rule changes only its background.  The pair is still
+                # statically verifiable, without trying to emulate CSS
+                # inheritance or the full browser cascade.
+                foreground = check["foreground"]
+            elif color_match:
                 foreground = color_match.group(1)
             elif uses_accent_var:
-                # The explicit AskJamie light rule is the only configured
-                # variable-backed hover state.  Keep this fallback visible in
-                # the report rather than treating an unresolved var as safe.
+                # Keep variable-backed hover states visible in the report
+                # rather than treating an unresolved var as safe.
                 foreground = "#2d6f7e" if check["mode"] == "light" else "#f07585"
             else:
                 findings.append({
@@ -1188,8 +1211,7 @@ def main() -> int:
     ]
     all_findings.extend(scan_dark_mode_hex_colors([Path(p) for p in all_css_paths]))
 
-    # Pass 4: focused checks for the known hover states that have fixed
-    # backgrounds in the Glee and AskJamie page skins.
+    # Pass 4: focused checks for branded hover states with fixed backgrounds.
     hover_findings = scan_hover_contrast(theme_css)
     all_findings.extend(hover_findings)
 
@@ -1235,14 +1257,14 @@ def main() -> int:
             "Pass 1 — HTML inline style= attributes and utility class names",
             "Pass 2 — CSS rule blocks in project stylesheet(s)",
             "Pass 3 — Hardcoded hex text colors inside dark-mode CSS blocks",
-            "Pass 4 — Known Glee/AskJamie hover-state colors against their surfaces",
+            "Pass 4 — Known branded hover-state colors against their surfaces",
         ],
     }
     out_path = out_dir / "accent-contrast-report.json"
     out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     # Human-readable output
-    print("Accent contrast advisory scan (light + dark mode + known hover states)")
+    print("Accent contrast advisory scan (light + dark mode + branded hover states)")
     print(f"  HTML files scanned : {html_scanned}")
     print(f"  CSS files scanned  : {css_scanned}")
     print(f"  Advisories         : {len(advisories)}")
