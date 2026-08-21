@@ -215,6 +215,41 @@ def test_askjamie_covered_surface_passes():
     )
 
 
+def test_askjamie_nested_responsive_media_rule_is_caught():
+    """
+    A light background inside a non-dark responsive @media block in the
+    ASKJAMIE section must be flagged when it has no dark override.
+
+    This guards against the parser's recursive line numbers escaping the
+    AskJamie section filter, the same regression previously covered for GLEE.
+    """
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + "@media (min-width: 768px) {\n"
+        + "  .askjamie-main .responsive-card { background: #ffe8a8; }\n"
+        + "}\n"
+    )
+    assert _run_check_section(css, section="askjamie") == 1, (
+        "Expected exit 1: AskJamie light bg inside responsive @media must be detected"
+    )
+
+
+def test_askjamie_nested_responsive_media_rule_with_dark_override_passes():
+    """An AskJamie responsive light bg with a dark override should pass."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + "@media (min-width: 768px) {\n"
+        + "  .askjamie-main .responsive-card { background: #ffe8a8; }\n"
+        + "}\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .responsive-card { background: #3a2f2a; }\n'
+    )
+    assert _run_check_section(css, section="askjamie") == 0, (
+        "Expected exit 0 when AskJamie responsive rule has a dark override"
+    )
+
+
 # ---------------------------------------------------------------------------
 # --section all path
 # ---------------------------------------------------------------------------
@@ -298,6 +333,8 @@ if __name__ == "__main__":
         # AskJamie surface coverage
         test_askjamie_uncovered_surface_fails,
         test_askjamie_covered_surface_passes,
+        test_askjamie_nested_responsive_media_rule_is_caught,
+        test_askjamie_nested_responsive_media_rule_with_dark_override_passes,
         # --section all path
         test_section_all_passes_when_both_covered,
         test_section_all_fails_when_askjamie_uncovered,
