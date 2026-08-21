@@ -428,7 +428,49 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-css-version.py")
         total_issues += len(css_token_issues)
 
+    # ── Global invariant: template image metadata pairs ─────────────────────
+    # Templates live under assets/ and are intentionally excluded from the
+    # published-page scan above. Keep their social image metadata complete so
+    # generated pages do not inherit a missing alt tag.
+    template_metadata_issues = _check_template_metadata()
+    for msg in template_metadata_issues:
+        print(f"\nTemplate metadata: {msg}")
+    if template_metadata_issues:
+        total_issues += len(template_metadata_issues)
+
     return 1 if total_issues else 0
+
+
+def _check_template_metadata() -> list:
+    """Return metadata-pair violations found in assets/templates/*.html."""
+    templates_dir = ROOT / "assets" / "templates"
+    if not templates_dir.exists():
+        return []
+
+    meta_tags = re.compile(r"<meta\b[^>]*>", re.IGNORECASE)
+    pairs = (
+        ("name", "twitter:image", "name", "twitter:image:alt"),
+        ("property", "og:image", "property", "og:image:alt"),
+    )
+    issues = []
+
+    def has_attribute(tag: str, name: str, value: str) -> bool:
+        pattern = rf"\b{re.escape(name)}\s*=\s*([\"']){re.escape(value)}\1"
+        return re.search(pattern, tag, re.IGNORECASE) is not None
+
+    for path in sorted(templates_dir.glob("*.html")):
+        html = path.read_text(encoding="utf-8", errors="replace")
+        tags = meta_tags.findall(html)
+        for source_attr, source_value, alt_attr, alt_value in pairs:
+            if any(has_attribute(tag, source_attr, source_value) for tag in tags):
+                if not any(has_attribute(tag, alt_attr, alt_value) for tag in tags):
+                    issues.append(
+                        f"{path.relative_to(ROOT).as_posix()} has "
+                        f'<meta {source_attr}="{source_value}"> but is missing '
+                        f'<meta {alt_attr}="{alt_value}">'
+                    )
+
+    return issues
 
 
 def _check_stat_markers_drift(tolerance: int = 2) -> list:
