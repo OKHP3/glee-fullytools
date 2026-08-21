@@ -19,6 +19,7 @@ Run order: after build-search-index.py (so the index is fresh).
 import json
 import re
 import sys
+import argparse
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -123,6 +124,14 @@ def patch_stat_markers(html: str, stats: dict) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="report stale stat markers without changing HTML; exits 1 when stale",
+    )
+    args = parser.parse_args()
+
     stats = compute_stats()
     print(f"  pages={stats['pages']}  tool-ettes={stats['tool_ettes']}  "
           f"branches={stats['branches']}  gpts={stats['gpts']}  "
@@ -135,6 +144,8 @@ def main() -> int:
     patched = patch_stat_markers(patched, stats)
     if patched == src:
         print(f"  {ABOUT.relative_to(REPO)} — already up to date")
+    elif args.check:
+        print(f"  STALE: {ABOUT.relative_to(REPO)}")
     else:
         ABOUT.write_text(patched, encoding="utf-8")
         print(f"  + {ABOUT.relative_to(REPO)} — updated")
@@ -144,11 +155,13 @@ def main() -> int:
     patched2 = patch_stat_markers(src2, stats)
     if patched2 == src2:
         print(f"  {SHOWCASE.relative_to(REPO)} — already up to date")
+    elif args.check:
+        print(f"  STALE: {SHOWCASE.relative_to(REPO)}")
     else:
         SHOWCASE.write_text(patched2, encoding="utf-8")
         print(f"  + {SHOWCASE.relative_to(REPO)} — updated")
 
-    return 0
+    return 1 if args.check and (patched != src or patched2 != src2) else 0
 
 
 if __name__ == "__main__":

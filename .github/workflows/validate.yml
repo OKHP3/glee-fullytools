@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: site-validation-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,26 +20,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: pip install beautifulsoup4
 
-      - name: Rebuild search index
-        run: python3 scripts/build-search-index.py
+      - name: Check committed search index is current
+        run: python3 scripts/build-search-index.py --check
 
-      - name: Sync portfolio stats
-        run: python3 scripts/sync-portfolio-stats.py
+      - name: Check committed portfolio stats are current
+        run: python3 scripts/sync-portfolio-stats.py --check
 
-      - name: Sync CSS cache-buster tokens
-        # Keep generated pages aligned with theme.css before the validator runs.
-        # The validator still reports the exact repair command for local releases.
-        run: python3 scripts/sync-css-version.py
+      - name: Check CSS cache-buster tokens are current
+        run: python3 scripts/sync-css-version.py --check
 
       - name: Run site validator
         run: python3 scripts/validate-site.py
@@ -53,3 +58,6 @@ jobs:
         # Baseline is clean (0 advisories). A future PR introducing a low-contrast
         # color: rule in a dark-mode block will fail here before it can merge.
         run: python3 scripts/check-accent-contrast.py --strict
+
+      - name: Check branded dark-mode coverage
+        run: python3 scripts/check-glee-dark-coverage.py --section all --require-both
