@@ -5590,7 +5590,7 @@ html[data-theme="light"] .glee-main .footer-column a {
   color: #5a4a44;
 }
 html[data-theme="light"] .glee-main .footer-column a:hover {
-  color: #d94f63;
+  color: #b8354a; /* WCAG AA: 5.21:1 on footer cream #fff7f1 */
 }
 html[data-theme="light"] .glee-main .footer-bottom {
   color: #6b5e57;
@@ -6111,6 +6111,9 @@ html[data-color-scheme="dark"] .askjamie-main .brand-stripes--jamie {
 .askjamie-main .site-footer a {
   color: var(--color-accent);
 }
+.askjamie-main .site-footer a:hover {
+  color: #2d6f7e; /* teal — 5.16:1 on paper #f7f3ee */
+}
 
 .askjamie-main .footer-bottom {
   background: #f7f3ee;
@@ -6285,6 +6288,9 @@ html[data-color-scheme="dark"] .askjamie-main .footer-bottom {
   background: #1e1b18;
   color: #9ca3af;
 }
+html[data-color-scheme="dark"] .askjamie-main .site-footer a:hover {
+  color: #76b2ba; /* lifted teal — 7.22:1 on dark footer #1e1b18 */
+}
 html[data-color-scheme="dark"] .askjamie-main .mermaid .cluster rect {
   fill: #1e2e2a;
   stroke: rgba(213, 186, 154, 0.35);
@@ -6343,6 +6349,9 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   html:not([data-color-scheme="light"]) .askjamie-main .footer-bottom {
     background: #1e1b18;
     color: #9ca3af;
+  }
+  html:not([data-color-scheme="light"]) .askjamie-main .site-footer a:hover {
+    color: #76b2ba;
   }
   html:not([data-color-scheme="light"]) .askjamie-main .mermaid .cluster rect {
     fill: #1e2e2a;
