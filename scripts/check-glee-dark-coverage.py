@@ -2,7 +2,7 @@
 """
 check-glee-dark-coverage.py
 ===========================
-Scans the GLEE section of assets/css/theme.css for CSS rules that use a
+Scans a selected section of assets/css/theme.css for CSS rules that use a
 hardcoded light-hex value in any of the following surface-forming properties
 and verifies that each such selector has a matching dark-mode override:
 
@@ -65,8 +65,10 @@ Exit codes
 
 Usage
 -----
-  python3 scripts/check-glee-dark-coverage.py [--verbose] [--require-both]
+  python3 scripts/check-glee-dark-coverage.py [--section glee|askjamie|all]
+      [--verbose] [--require-both]
 
+  --section        Section to scan (default: glee), or ``all`` for both.
   --verbose        Print each selector checked (pass or fail).
   --require-both   Also fail on partial coverage (only one of the two forms).
 
@@ -130,9 +132,8 @@ PROP_CHECKS: list[tuple[str, re.Pattern, bool]] = [
     ("shadow",     BOX_SHADOW_PROP_RE, False),
 ]
 
-# Markers that delimit the GLEE section in the CSS comment banner
-GLEE_START_RE = re.compile(r"SECTION\s*[·•]\s*GLEE", re.IGNORECASE)
-GLEE_END_RE   = re.compile(r"SECTION\s*[·•]\s*ASKJAMIE", re.IGNORECASE)
+# Marker that identifies branded sections in the CSS comment banners.
+SECTION_BANNER_RE = re.compile(r"SECTION\s*[·•]\s*([A-Z][A-Z0-9_-]*)", re.IGNORECASE)
 
 # Dark-mode selector patterns (the outer wrapper selector / at-rule)
 DARK_SELECTOR_RE = re.compile(r'data-color-scheme\s*=\s*"dark"')
@@ -314,21 +315,34 @@ def _parse_rules(css_text: str, _line_offset: int = 0) -> list[CSSRule]:
 # Section-range detection
 # ---------------------------------------------------------------------------
 
-def _glee_line_range(css_text: str) -> tuple[int, int]:
-    """Return (start_line, end_line) for the GLEE section (1-based, inclusive)."""
+def _section_line_range(css_text: str, section: str) -> tuple[int, int]:
+    """Return a branded section's (start_line, end_line), inclusive."""
     lines = css_text.splitlines()
     start = end = None
+    section_upper = section.upper()
     for idx, line in enumerate(lines, start=1):
-        if start is None and GLEE_START_RE.search(line):
-            start = idx
-        elif start is not None and GLEE_END_RE.search(line):
-            end = idx - 1
-            break
+        match = SECTION_BANNER_RE.search(line)
+        if not match:
+            continue
+        if start is None:
+            if match.group(1).upper() == section_upper:
+                start = idx
+            continue
+        # The next SECTION banner ends the selected section.  This handles
+        # both the GLEE → ASKJAMIE boundary and any future section after
+        # ASKJAMIE without hardcoding the latter's name.
+        end = idx - 1
+        break
     if start is None:
-        raise ValueError("Could not locate the GLEE section in theme.css")
+        raise ValueError(f"Could not locate the {section_upper} section in theme.css")
     if end is None:
         end = len(lines)
     return start, end
+
+
+def _glee_line_range(css_text: str) -> tuple[int, int]:
+    """Backward-compatible wrapper returning the GLEE section range."""
+    return _section_line_range(css_text, "glee")
 
 
 # ---------------------------------------------------------------------------
@@ -408,7 +422,9 @@ _STATUS_SYMBOL = {
 # Main check
 # ---------------------------------------------------------------------------
 
-def check(verbose: bool = False, require_both: bool = False) -> int:
+def _check_section(
+    section: str, verbose: bool = False, require_both: bool = False
+) -> int:
     """Run the check.  Returns 0 (pass) or 1 (fail).
 
     Parameters
@@ -426,23 +442,23 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
     css_text = THEME_CSS.read_text(encoding="utf-8", errors="replace")
 
     try:
-        glee_start, glee_end = _glee_line_range(css_text)
+        section_start, section_end = _section_line_range(css_text, section)
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
     if verbose:
-        print(f"GLEE section: lines {glee_start}–{glee_end}")
+        print(f"{section.upper()} section: lines {section_start}–{section_end}")
 
     all_rules = _parse_rules(css_text)
 
     # Build per-form coverage sets
     dark_attr_by_type, dark_media_by_type = _build_dark_sets(all_rules)
 
-    # Collect all GLEE rules with light-hex hits
-    glee_light_rules: list[tuple[CSSRule, list[tuple[str, str]]]] = []
+    # Collect all selected-section rules with light-hex hits
+    section_light_rules: list[tuple[CSSRule, list[tuple[str, str]]]] = []
     for rule in all_rules:
-        if not (glee_start <= rule.start_line <= glee_end):
+        if not (section_start <= rule.start_line <= section_end):
             continue
         if DARK_SELECTOR_RE.search(rule.selector) or rule.in_dark_media:
             continue  # skip the dark rules themselves
@@ -459,13 +475,13 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
                 if LIGHT_HEX_RE.search(value):
                     hits.append((prop_type, m.group(0).strip()))
         if hits:
-            glee_light_rules.append((rule, hits))
+            section_light_rules.append((rule, hits))
 
     # Classify each (rule, hit) pair
     #   classified: list of (rule, [(prop_type, decl, status), …])
     classified: list[tuple[CSSRule, list[tuple[str, str, str]]]] = []
 
-    for rule, hits in glee_light_rules:
+    for rule, hits in section_light_rules:
         base_norm  = _ws_norm(rule.selector)
         components = [_ws_norm(c) for c in base_norm.split(",") if c.strip()]
 
@@ -519,7 +535,7 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
     # ── Report uncovered (always blocking) ───────────────────────────────────
     if uncovered_rules:
         print(
-            f"\ncheck-glee-dark-coverage: {len(uncovered_rules)} GLEE selector(s) have "
+            f"\ncheck-glee-dark-coverage: {len(uncovered_rules)} {section.upper()} selector(s) have "
             f"hardcoded light surface value(s) with no dark-mode override:\n"
         )
         for rule, per_hit in uncovered_rules:
@@ -531,7 +547,7 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
         print(
             f"\n  Add a dark-mode override for each selector above inside a\n"
             f'  html[data-color-scheme="dark"] block AND a\n'
-            f"  @media (prefers-color-scheme: dark) block in the GLEE section.\n"
+            f"  @media (prefers-color-scheme: dark) block in the {section.upper()} section.\n"
         )
         return 1
 
@@ -539,7 +555,7 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
     if partial_rules:
         label = "ERROR" if require_both else "WARNING"
         print(
-            f"\ncheck-glee-dark-coverage: {len(partial_rules)} GLEE selector(s) have "
+            f"\ncheck-glee-dark-coverage: {len(partial_rules)} {section.upper()} selector(s) have "
             f"dark-mode coverage in only ONE of the two required forms:\n"
         )
         for rule, per_hit in partial_rules:
@@ -565,9 +581,9 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
             return 1
 
     # ── Summary ──────────────────────────────────────────────────────────────
-    total_rules = len(glee_light_rules)
+    total_rules = len(section_light_rules)
     type_counts: dict[str, int] = {}
-    for _, hits in glee_light_rules:
+    for _, hits in section_light_rules:
         for prop_type, _ in hits:
             type_counts[prop_type] = type_counts.get(prop_type, 0) + 1
     breakdown = ", ".join(
@@ -579,19 +595,46 @@ def check(verbose: bool = False, require_both: bool = False) -> int:
 
     if require_both:
         print(
-            f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have "
+            f"check-glee-dark-coverage: OK — {summary} in the {section.upper()} section all have "
             f"dark-mode overrides in both forms."
         )
     else:
         extra = f"; {len(partial_rules)} partial" if partial_rules else ""
         print(
-            f"check-glee-dark-coverage: OK — {summary} in the GLEE section all have "
+            f"check-glee-dark-coverage: OK — {summary} in the {section.upper()} section all have "
             f"dark-mode overrides ({len(full_rules)} both-forms{extra})."
         )
     return 0
 
 
+def check(
+    verbose: bool = False, require_both: bool = False, section: str = "glee"
+) -> int:
+    """Run the requested section check, returning 0 (pass) or 1 (fail)."""
+    section = section.lower()
+    if section == "all":
+        statuses = [
+            _check_section(name, verbose=verbose, require_both=require_both)
+            for name in ("glee", "askjamie")
+        ]
+        return 1 if any(statuses) else 0
+    if section not in {"glee", "askjamie"}:
+        print(
+            f"ERROR: invalid section {section!r}; expected glee, askjamie, or all",
+            file=sys.stderr,
+        )
+        return 1
+    return _check_section(section, verbose=verbose, require_both=require_both)
+
+
 if __name__ == "__main__":
     verbose      = "--verbose"      in sys.argv
     require_both = "--require-both" in sys.argv
-    sys.exit(check(verbose=verbose, require_both=require_both))
+    section = "glee"
+    if "--section" in sys.argv:
+        try:
+            section = sys.argv[sys.argv.index("--section") + 1]
+        except IndexError:
+            print("ERROR: --section requires glee, askjamie, or all", file=sys.stderr)
+            sys.exit(1)
+    sys.exit(check(verbose=verbose, require_both=require_both, section=section))
