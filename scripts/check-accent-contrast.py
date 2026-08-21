@@ -29,7 +29,7 @@ Usage
 -----
   python3 scripts/check-accent-contrast.py [--strict]
 
-  --strict  Exit 1 if any advisory findings are found (for manual gate use).
+  --strict  Exit 1 if any advisory findings or hover-state failures are found.
 
 Output
 ------
@@ -299,6 +299,157 @@ SKIP_DIRS = {
 
 # CSS files to scan (relative to repo root)
 CSS_FILES = [Path("assets/css/theme.css")]
+
+# These are the static hover states whose backgrounds are known from the
+# page skins.  They are intentionally explicit rather than attempting to
+# emulate the browser cascade: this is a small regression gate for the
+# user-visible states that have previously failed WCAG contrast.
+HOVER_CONTRAST_CHECKS = (
+    {
+        "name": "Glee breadcrumb hover (light)",
+        "selector": ".glee-breadcrumb-item a:hover",
+        "mode": "light",
+        "background": "#f6f2ee",
+        "required": True,
+    },
+    {
+        "name": "Glee footer link hover (light)",
+        "selector": "html[data-theme=\"light\"] .glee-main .footer-column a:hover",
+        "mode": "light",
+        "background": "#fff7f1",
+        "required": True,
+    },
+    {
+        "name": "Glee breadcrumb hover (dark)",
+        "selector": "html[data-color-scheme=\"dark\"] .glee-breadcrumb-item a:hover",
+        "mode": "dark",
+        "background": "#241c1a",
+        "required": True,
+    },
+    {
+        "name": "Glee footer link hover (dark)",
+        "selector": "html[data-color-scheme=\"dark\"] .glee-main .footer-column a:hover",
+        "mode": "dark",
+        "background": "#1a1816",
+        "required": True,
+    },
+    {
+        "name": "AskJamie footer link hover (light)",
+        "selector": ".askjamie-main .site-footer a:hover",
+        "mode": "light",
+        "background": "#f7f3ee",
+        "required": True,
+    },
+    {
+        "name": "AskJamie footer link hover (dark)",
+        "selector": "html[data-color-scheme=\"dark\"] .askjamie-main .site-footer a:hover",
+        "mode": "dark",
+        "background": "#1e1b18",
+        "required": True,
+    },
+)
+
+_HOVER_HEX_COLOR_RE = re.compile(
+    r"(?<![a-z-])color\s*:\s*(#[0-9a-fA-F]{3,6})\b", re.IGNORECASE
+)
+_HOVER_VAR_COLOR_RE = re.compile(
+    r"(?<![a-z-])color\s*:\s*var\(\s*--color-accent\b[^)]*\)",
+    re.IGNORECASE,
+)
+
+
+def scan_hover_contrast(path: Path) -> list[dict]:
+    """Check the known Glee and AskJamie hover states against their surfaces.
+
+    A missing rule is also a finding.  That prevents a future cleanup from
+    silently removing a state-specific color and letting an unrelated,
+    low-contrast inherited value win in the cascade.
+    """
+    try:
+        css_text = path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return []
+
+    rules = list(extract_css_rules(css_text))
+    findings = []
+    for check in HOVER_CONTRAST_CHECKS:
+        def is_dark_selector(selector: str) -> bool:
+            return (
+                'data-color-scheme="dark"' in selector
+                or "data-color-scheme='dark'" in selector
+                or ':not([data-color-scheme="light"])' in selector
+                or ":not([data-color-scheme='light'])" in selector
+            )
+
+        matches = [
+            (selector, declarations, lineno)
+            for selector, declarations, lineno in rules
+            if check["selector"] in selector
+            and (is_dark_selector(selector) == (check["mode"] == "dark"))
+        ]
+        if not matches:
+            findings.append({
+                "file": str(path),
+                "line": None,
+                "severity": "ADVISORY",
+                "rule": "known-hover-state-missing",
+                "selector": check["selector"],
+                "hover_state": check["name"],
+                "detail": f"Required hover rule is missing: {check['selector']}.",
+                "snippet": "",
+            })
+            continue
+
+        # A selector can occur in more than one comma-separated rule.  Check
+        # each declaration so a duplicate override cannot hide a bad value.
+        for selector, declarations, lineno in matches:
+            color_match = _HOVER_HEX_COLOR_RE.search(declarations)
+            uses_accent_var = bool(_HOVER_VAR_COLOR_RE.search(declarations))
+            if color_match:
+                foreground = color_match.group(1)
+            elif uses_accent_var:
+                # The explicit AskJamie light rule is the only configured
+                # variable-backed hover state.  Keep this fallback visible in
+                # the report rather than treating an unresolved var as safe.
+                foreground = "#2d6f7e" if check["mode"] == "light" else "#f07585"
+            else:
+                findings.append({
+                    "file": str(path),
+                    "line": lineno,
+                    "severity": "ADVISORY",
+                    "rule": "known-hover-state-unresolved",
+                    "selector": selector,
+                    "hover_state": check["name"],
+                    "detail": (
+                        f"Hover rule '{selector}' has no statically resolvable "
+                        "text color declaration."
+                    ),
+                    "snippet": declarations.strip()[:120],
+                })
+                continue
+
+            ratio = contrast_ratio(foreground, check["background"])
+            if ratio >= 4.5:
+                continue
+            findings.append({
+                "file": str(path),
+                "line": lineno,
+                "severity": "ADVISORY",
+                "rule": "known-hover-state-contrast",
+                "selector": selector,
+                "hover_state": check["name"],
+                "foreground": foreground,
+                "background": check["background"],
+                "contrast": round(ratio, 2),
+                "passes_aa_normal": False,
+                "detail": (
+                    f"{check['name']} uses {foreground} on {check['background']} "
+                    f"at {ratio:.2f}:1 — below WCAG AA normal-text minimum "
+                    "(4.5:1)."
+                ),
+                "snippet": declarations.strip()[:120],
+            })
+    return findings
 
 
 # ---------------------------------------------------------------------------
@@ -1037,6 +1188,11 @@ def main() -> int:
     ]
     all_findings.extend(scan_dark_mode_hex_colors([Path(p) for p in all_css_paths]))
 
+    # Pass 4: focused checks for the known hover states that have fixed
+    # backgrounds in the Glee and AskJamie page skins.
+    hover_findings = scan_hover_contrast(theme_css)
+    all_findings.extend(hover_findings)
+
     # Separate by severity
     advisories = [f for f in all_findings if f["severity"] == "ADVISORY"]
     infos      = [f for f in all_findings if f["severity"] == "INFO"]
@@ -1050,6 +1206,8 @@ def main() -> int:
         "css_files_scanned": css_scanned,
         "advisory_count": len(advisories),
         "info_count": len(infos),
+        "hover_check_count": len(HOVER_CONTRAST_CHECKS),
+        "hover_failure_count": len(hover_findings),
         "findings": all_findings,
         "light_mode": {
             "bg": LIGHT_MODE["bg"],
@@ -1077,17 +1235,20 @@ def main() -> int:
             "Pass 1 — HTML inline style= attributes and utility class names",
             "Pass 2 — CSS rule blocks in project stylesheet(s)",
             "Pass 3 — Hardcoded hex text colors inside dark-mode CSS blocks",
+            "Pass 4 — Known Glee/AskJamie hover-state colors against their surfaces",
         ],
     }
     out_path = out_dir / "accent-contrast-report.json"
     out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     # Human-readable output
-    print("Accent contrast advisory scan (light + dark mode)")
+    print("Accent contrast advisory scan (light + dark mode + known hover states)")
     print(f"  HTML files scanned : {html_scanned}")
     print(f"  CSS files scanned  : {css_scanned}")
     print(f"  Advisories         : {len(advisories)}")
     print(f"  Info notes         : {len(infos)}")
+    print(f"  Hover checks       : {len(HOVER_CONTRAST_CHECKS)} "
+          f"({len(hover_findings)} failures)")
     print(f"  Report             : {out_path}")
 
     # Print mode palette summary
@@ -1124,8 +1285,17 @@ def main() -> int:
                   f"(light {lc}:1 / dark {dc}:1)")
 
     print()
-    print("This script is advisory only. Exit 0 regardless of findings.")
-    print("Use --strict to exit 1 on any advisory (for manual gate use).")
+    if hover_findings:
+        print("Hover-state contrast failures:")
+        for f in hover_findings:
+            print(f"  [ADVISORY] {f['file']}:{f.get('line') or '?'} — "
+                  f"{f.get('hover_state', f.get('selector', 'unknown'))}")
+            print(f"    Detail   : {f['detail']}")
+            print(f"    Snippet  : {f['snippet']}")
+        print()
+
+    print("Advisories are reported without --strict.")
+    print("Use --strict to exit 1 on any advisory or hover-state failure.")
 
     if strict and advisories:
         return 1
