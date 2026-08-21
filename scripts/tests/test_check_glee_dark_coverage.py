@@ -65,8 +65,10 @@ def _run_check(css: str) -> int:
         tmp.unlink(missing_ok=True)
 
 
-def _run_check_section(css: str, section: str) -> int:
-    """Like _run_check but checks the named section (glee, askjamie, or all)."""
+def _run_check_section(
+    css: str, section: str, require_both: bool = False
+) -> int:
+    """Run a named section fixture with optional strict two-form coverage."""
     with tempfile.NamedTemporaryFile(
         suffix=".css", mode="w", encoding="utf-8", delete=False
     ) as fh:
@@ -75,7 +77,9 @@ def _run_check_section(css: str, section: str) -> int:
     orig = mod.THEME_CSS
     try:
         mod.THEME_CSS = tmp
-        return mod.check(verbose=False, section=section)
+        return mod.check(
+            verbose=False, require_both=require_both, section=section
+        )
     finally:
         mod.THEME_CSS = orig
         tmp.unlink(missing_ok=True)
@@ -250,6 +254,64 @@ def test_askjamie_nested_responsive_media_rule_with_dark_override_passes():
     )
 
 
+def test_askjamie_attr_only_fails_when_both_forms_required():
+    """AskJamie attr-only coverage must fail with require_both enabled."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+    )
+    assert _run_check_section(css, section="askjamie") == 0
+    assert _run_check_section(css, section="askjamie", require_both=True) == 1
+
+
+def test_askjamie_media_only_fails_when_both_forms_required():
+    """AskJamie media-only coverage must fail with require_both enabled."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + "@media (prefers-color-scheme: dark) {\n"
+        + '  html:not([data-color-scheme="light"]) .askjamie-main .card { background: #1e1c1a; }\n'
+        + "}\n"
+    )
+    assert _run_check_section(css, section="askjamie", require_both=True) == 1
+
+
+def test_askjamie_both_forms_pass_when_both_forms_required():
+    """AskJamie coverage in both forms must pass with require_both enabled."""
+    css = (
+        _GLEE_BANNER
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+        + "@media (prefers-color-scheme: dark) {\n"
+        + '  html:not([data-color-scheme="light"]) .askjamie-main .card { background: #1e1c1a; }\n'
+        + "}\n"
+    )
+    assert _run_check_section(css, section="askjamie", require_both=True) == 0
+
+
+def test_section_all_require_both_checks_askjamie():
+    """The strict all-sections path must include AskJamie coverage."""
+    css = (
+        _GLEE_BANNER
+        + ".glee-main .widget { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .glee-main .widget { background: #2a2724; }\n'
+        + "@media (prefers-color-scheme: dark) {\n"
+        + '  html:not([data-color-scheme="light"]) .glee-main .widget { background: #2a2724; }\n'
+        + "}\n"
+        + _ASKJAMIE_BANNER
+        + ".askjamie-main .card { background: #fff7f1; }\n"
+        + 'html[data-color-scheme="dark"] .askjamie-main .card { background: #1e1c1a; }\n'
+        + "@media (prefers-color-scheme: dark) {\n"
+        + '  html:not([data-color-scheme="light"]) .askjamie-main .card { background: #1e1c1a; }\n'
+        + "}\n"
+    )
+    assert _run_check_section(css, section="all", require_both=True) == 0
+
+
 # ---------------------------------------------------------------------------
 # --section all path
 # ---------------------------------------------------------------------------
@@ -335,6 +397,10 @@ if __name__ == "__main__":
         test_askjamie_covered_surface_passes,
         test_askjamie_nested_responsive_media_rule_is_caught,
         test_askjamie_nested_responsive_media_rule_with_dark_override_passes,
+        test_askjamie_attr_only_fails_when_both_forms_required,
+        test_askjamie_media_only_fails_when_both_forms_required,
+        test_askjamie_both_forms_pass_when_both_forms_required,
+        test_section_all_require_both_checks_askjamie,
         # --section all path
         test_section_all_passes_when_both_covered,
         test_section_all_fails_when_askjamie_uncovered,
