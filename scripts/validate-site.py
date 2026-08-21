@@ -155,7 +155,7 @@ def check_page(rel: Path, html: str) -> dict:
     # who have pinned dark mode don't see a flash of the wrong theme on load.
     # Run scripts/inject-color-scheme-init.py to add it to new pages.
     if COLOR_SCHEME_INIT_MARKER not in html and rel.name not in COLOR_SCHEME_INIT_EXEMPT:
-        warnings.append(
+        issues.append(
             "missing AUTOGEN:COLOR-SCHEME-INIT marker "
             "(run scripts/inject-color-scheme-init.py)"
         )
