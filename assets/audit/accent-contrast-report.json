@@ -4,7 +4,7 @@
   "css_files_scanned": 1,
   "advisory_count": 0,
   "info_count": 0,
-  "hover_check_count": 6,
+  "hover_check_count": 8,
   "hover_failure_count": 0,
   "findings": [],
   "light_mode": {
@@ -30,6 +30,6 @@
     "Pass 1 \u2014 HTML inline style= attributes and utility class names",
     "Pass 2 \u2014 CSS rule blocks in project stylesheet(s)",
     "Pass 3 \u2014 Hardcoded hex text colors inside dark-mode CSS blocks",
-    "Pass 4 \u2014 Known Glee/AskJamie hover-state colors against their surfaces"
+    "Pass 4 \u2014 Known branded hover-state colors against their surfaces"
   ]
 }
