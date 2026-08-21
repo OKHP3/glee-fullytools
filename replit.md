@@ -57,6 +57,38 @@ Before any session: run `python3 scripts/validate-site.py` and `python3 scripts/
 ## Deployment
 
 Configured as a **static** deployment with `publicDir: "."` — no build step needed.
+GitHub Pages publishing is defined in `.github/workflows/pages.yml`. The workflow
+checks the exact `main` commit, verifies generated outputs are current, runs the
+static release gates, preserves `CNAME` in a clean Pages artifact, and deploys
+only that artifact after the validation job succeeds. A green local audit or
+Actions validation job alone is not proof that the public Pages URL is healthy;
+owner-side live smoke testing remains a separate confirmation.
+
+### Release sequence
+
+Run this from a clean checkout before opening or merging a release change:
+
+```bash
+python3 scripts/build-search-index.py --check
+python3 scripts/sync-portfolio-stats.py --check
+python3 scripts/sync-css-version.py --check
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/audit-site.py --quiet  # advisory report; inspect findings
+python3 scripts/check-accent-contrast.py --strict
+python3 scripts/check-glee-dark-coverage.py --section all --require-both
+```
+
+If a check reports stale generated output, run the named synchronizer, review
+the generated diff, and rerun the check-only sequence. The Pages workflow also
+requires `CNAME` to contain exactly `glee-fully.tools` and verifies that the
+artifact contains the homepage, 404 page, robots policy, sitemap, and manifest.
+Browser viewport QA remains a separate required check when responsive files
+change; it is not inferred from these static commands.
+
+The three companion repositories use the same release stages but retain
+site-specific adapters for domains, page inventories, generated files, browser
+paths, and brand checks. See `docs/companion-publishing-contract.md`.
 
 ## CSS Scope Map (post 2026-05-02 reorganization)
 

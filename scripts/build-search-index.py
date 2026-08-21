@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import argparse
 from html.parser import HTMLParser
 from datetime import datetime, timezone
 from pathlib import Path
@@ -280,6 +281,14 @@ def build_entry(path: Path) -> dict | None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="compare the committed index without writing it; exits 1 when stale",
+    )
+    args = parser.parse_args()
+
     out_path = REPO_ROOT / "assets" / "data" / "search-index.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -324,7 +333,31 @@ def main() -> int:
         "pages": entries,
     }
 
-    out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    rendered = json.dumps(payload, ensure_ascii=False, indent=2)
+    if args.check:
+        if not out_path.exists():
+            print(f"ERROR: {out_path.relative_to(REPO_ROOT)} not found", file=sys.stderr)
+            return 1
+        try:
+            committed = json.loads(out_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            print(f"ERROR: committed search index is invalid JSON: {exc}", file=sys.stderr)
+            return 1
+        comparable_payload = dict(payload)
+        comparable_payload.pop("generated_at", None)
+        committed_comparable = dict(committed)
+        committed_comparable.pop("generated_at", None)
+        if committed_comparable != comparable_payload:
+            print(
+                "ERROR: search-index.json is stale. "
+                "Run python3 scripts/build-search-index.py and review the diff.",
+                file=sys.stderr,
+            )
+            return 1
+        print(f"Committed {out_path.relative_to(REPO_ROOT)} is current — {len(entries)} pages")
+        return 0
+
+    out_path.write_text(rendered, encoding="utf-8")
     size_kb = out_path.stat().st_size / 1024
     print(f"\nWrote {out_path.relative_to(REPO_ROOT)} — {len(entries)} pages, {size_kb:.1f} KB")
     return 0 if not (duplicates or bad_home) else 2
