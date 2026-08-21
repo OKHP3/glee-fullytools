@@ -400,10 +400,10 @@ def main() -> int:
         print("  Fix: python3 scripts/sync-sparkle-fallback.py")
         total_issues += len(sparkle_mismatches)
 
-    # ── Global invariant: Glee dark-mode coverage ─────────────────────────────
-    # Every hardcoded light-hex background in the GLEE section of theme.css must
-    # have a matching dark-mode override.  New rules added without a dark pair
-    # silently break dark mode.
+    # ── Global invariant: branded dark-mode coverage ──────────────────────────
+    # Every hardcoded light-hex surface in the GLEE and ASKJAMIE sections of
+    # theme.css must have a matching dark-mode override.  New rules added
+    # without a dark pair silently break dark mode.
     # To fix: add a dark-mode override in a html[data-color-scheme="dark"] or
     #         @media (prefers-color-scheme: dark) block in the GLEE section.
     glee_dark_issues = _check_glee_dark_coverage()
@@ -412,7 +412,7 @@ def main() -> int:
     if glee_dark_issues:
         print(
             '  Fix: add html[data-color-scheme="dark"] or '
-            "@media (prefers-color-scheme: dark) override in the GLEE section"
+            "@media (prefers-color-scheme: dark) override in the branded section"
         )
         total_issues += len(glee_dark_issues)
 
@@ -793,7 +793,7 @@ def _check_glee_dark_coverage() -> list:
     if not script.exists():
         return []
     result = subprocess.run(
-        [sys.executable, str(script), "--require-both"],
+        [sys.executable, str(script), "--require-both", "--section", "all"],
         capture_output=True,
         text=True,
     )
