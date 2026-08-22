@@ -24,3 +24,10 @@ id = "3ps1yWilmISPSio0DlT3D"
 uri = "file://assets/docs/FOLDER-STRUCTURE-PROMPT-2026-05-04.md"
 type = "text"
 title = "Cross-Project Folder Structure Prompt — 2026-05-04"
+
+[[outputs]]
+id = "sm7QHT-6C99-21B1outY4"
+uri = "file://assets/img/glee-fully-tools-social-card-1200x630.png"
+type = "image"
+title = "Glee-fully social sharing card"
+description = "Landscape 1200×630 PNG used as the shared Open Graph and Twitter image across the suite."
