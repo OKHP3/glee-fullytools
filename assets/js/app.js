@@ -266,6 +266,12 @@ document.addEventListener("DOMContentLoaded", () => {
     constructionOverlay.setAttribute("aria-modal", "true");
     constructionOverlay.setAttribute("aria-label", "Work-in-progress page notice");
     const body = document.body;
+    const activeElement = document.activeElement;
+    const opener = activeElement instanceof HTMLElement &&
+      activeElement !== document.body &&
+      activeElement !== document.documentElement
+      ? activeElement
+      : null;
     const wipKey =
       constructionOverlay.getAttribute("data-wip-key") ||
       window.location.pathname;
@@ -280,23 +286,31 @@ document.addEventListener("DOMContentLoaded", () => {
       constructionOverlay.setAttribute("hidden", "");
     } else {
       // Wire up dismiss buttons
+      const dismissOverlay = () => {
+        body.classList.add("construction-dismissed");
+        constructionOverlay.setAttribute("aria-hidden", "true");
+        constructionOverlay.setAttribute("hidden", "");
+        try { localStorage.setItem(storageKey, "true"); } catch (_) {}
+
+        // Return focus to the element that opened the gate when it still exists;
+        // otherwise use the page heading as a stable, meaningful fallback.
+        if (opener && opener.isConnected && !constructionOverlay.contains(opener)) {
+          opener.focus();
+          return;
+        }
+        const mainTarget = document.querySelector("#main h1, #main");
+        if (mainTarget) {
+          if (!mainTarget.hasAttribute("tabindex")) mainTarget.setAttribute("tabindex", "-1");
+          mainTarget.focus({ preventScroll: true });
+        }
+      };
+
       const dismissButtons = constructionOverlay.querySelectorAll(
         "[data-wip-dismiss]"
       );
 
       dismissButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          body.classList.add("construction-dismissed");
-          constructionOverlay.setAttribute("aria-hidden", "true");
-          constructionOverlay.setAttribute("hidden", "");
-          try { localStorage.setItem(storageKey, "true"); } catch (_) {}
-          // Return focus to main content heading after overlay dismissal (WCAG 2.4.3)
-          const mainTarget = document.querySelector("#main h1, #main");
-          if (mainTarget) {
-            if (!mainTarget.hasAttribute("tabindex")) mainTarget.setAttribute("tabindex", "-1");
-            mainTarget.focus({ preventScroll: true });
-          }
-        });
+        btn.addEventListener("click", dismissOverlay);
       });
 
       // Optional: clicking the dark scrim (outside the card) also dismisses
@@ -322,6 +336,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Focus trap — keep Tab/Shift+Tab inside the overlay while it is visible (WCAG 2.1.1)
       constructionOverlay.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          dismissOverlay();
+          return;
+        }
         if (e.key !== "Tab" || !overlayFocusable.length) return;
         const first = overlayFocusable[0];
         const last  = overlayFocusable[overlayFocusable.length - 1];
@@ -705,6 +724,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("keydown", (ev) => {
       if (overlay.dataset.open === "true" && ev.key === "Escape") { ev.preventDefault(); close(); return; }
+      const constructionGate = document.querySelector(".construction-overlay");
+      const constructionVisible = constructionGate &&
+        !constructionGate.hasAttribute("hidden") &&
+        !document.body.classList.contains("construction-dismissed");
+      if (constructionVisible) return;
       const isMac    = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
       const trigger  = (isMac && ev.metaKey && ev.key.toLowerCase() === "k") ||
                        (!isMac && ev.ctrlKey && ev.key.toLowerCase() === "k");
