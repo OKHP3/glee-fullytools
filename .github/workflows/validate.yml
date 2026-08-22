@@ -22,6 +22,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check GitHub Actions versions
+        run: python3 scripts/check-workflow-actions.py
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
