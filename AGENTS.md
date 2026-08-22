@@ -589,7 +589,7 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories (last updated 2026-08-06 — all 62 scripts classified):
+Script categories (last updated 2026-08-21 — all 63 scripts classified):
 
 - **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
@@ -611,6 +611,7 @@ Script categories (last updated 2026-08-06 — all 62 scripts classified):
   `remove-deprecated-meta.py`, `enhance-pages.py`, `modernize-pages.py`,
   `apply-modern-baseline.py`, `reclassify-construction-banners.py`,
   `activate-icons.py`, `add-toolbox-to-footer.py`, `fix-image-performance.py`,
+   `add-noreferrer.py`,
   `fix-audit-2026-05-12.py`, `fix-footer-nav-2026-07-20.py`,
   `fix-placeholder-gpt-links.py`, `reorg-theme-css.py`,
   `wire-illustrations.py`, `update-card-srcsets.py`,
@@ -659,7 +660,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->60<!-- /STAT:SCRIPTS-PY --> Python scripts (59 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-06; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->61<!-- /STAT:SCRIPTS-PY --> Python scripts (60 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-21; see Script categories above for full classification |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
