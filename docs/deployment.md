@@ -14,7 +14,7 @@ GitHub Pages is the sole public publishing target. Replit’s local preview work
 
 ## Artifact and paths
 
-The published artifact is the repository root. It contains the root `index.html`, `assets/`, each public route directory, generated data files, and the committed `CNAME`. There is no bundler, framework build, or alternate output directory.
+The published artifact is the repository root. It contains the root `index.html`, `offline.html`, `sw.js`, `assets/`, each public route directory, generated data files, and the committed `CNAME`. There is no bundler, framework build, or alternate output directory.
 
 The site is served at the domain root. Existing root-relative links, asset references, and direct route directories (`/about/`, `/legal/`, and toolbox routes) are preserved exactly as authored. No base-path prefix or HTML rewrite is applied.
 

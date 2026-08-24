@@ -1,5 +1,5 @@
 {
-  "scanned": 62,
+  "scanned": 63,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -37,6 +37,11 @@
       "issues": [],
       "warnings": [],
       "path": "legal/index.html"
+    },
+    {
+      "issues": [],
+      "warnings": [],
+      "path": "offline.html"
     },
     {
       "issues": [],

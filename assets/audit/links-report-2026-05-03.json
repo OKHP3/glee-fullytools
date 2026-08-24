@@ -1,8 +1,8 @@
 {
   "generated": "2026-05-03",
-  "pages_scanned": 62,
-  "internal_links": 2684,
-  "external_links": 1252,
+  "pages_scanned": 63,
+  "internal_links": 2689,
+  "external_links": 1254,
   "broken_links": [],
   "style_issues": [],
   "sitemap": {
@@ -45,6 +45,11 @@
       "path": "legal/index.html",
       "internal_links": 31,
       "external_links": 18
+    },
+    {
+      "path": "offline.html",
+      "internal_links": 5,
+      "external_links": 2
     },
     {
       "path": "persona/index.html",

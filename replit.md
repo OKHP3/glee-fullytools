@@ -21,6 +21,7 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 - `assets/js/app.js` — Shared JS (907 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
+- `sw.js` — Root-scoped service worker with a versioned, same-origin offline shell and `/offline.html` fallback
 - `toolbox/` — Central hub with 7 thematic branches and 42 tool-ette pages
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
@@ -169,7 +170,20 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Triggers:** Click magnifier in nav · press `/` outside an input · press ⌘K / Ctrl+K · arrive at any page with `?s=query` (matches the JSON-LD `SearchAction` declared on the homepage)
 
-**Rebuilding the index:** Run `python3 scripts/build-search-index.py` after content changes. The generator excludes `404.html` and `under-construction.html`.
+**Rebuilding the index:** Run `python3 scripts/build-search-index.py` after content changes. The generator excludes `404.html`, `under-construction.html`, and `offline.html`.
+
+## Offline shell
+
+The site registers `sw.js` from the shared `app.js` entry point. The worker
+pre-caches a small, versioned same-origin shell (home, search, toolbox, about,
+local CSS/JavaScript/data, manifest, and favicon), caches successful same-origin
+HTML navigations for repeat visits, and serves `offline.html` when a navigation
+cannot reach the network. It never intercepts or caches third-party requests,
+including fonts, analytics, Ko-fi, ChatGPT, Mermaid, and the arcade iframe.
+
+When changing a pre-cached asset, increment `CACHE_NAME` in `sw.js` and update
+the CSS cache token with `python3 scripts/sync-css-version.py`. The offline page
+is deliberately excluded from the search index and sitemap.
 
 **Why no Lunr.js or Algolia:** The site has 60 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
@@ -177,7 +191,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 ## Today's Sparkle management
 
-The sparkle banner (`<section class="site-specials">`) appears in the `<header>` of all 62 HTML pages. It highlights the current featured GPT Tool.
+The sparkle banner (`<section class="site-specials">`) appears in the `<header>` of all 63 HTML pages. It highlights the current featured GPT Tool.
 
 | Component | Path | Purpose |
 |---|---|---|
@@ -188,7 +202,7 @@ The sparkle banner (`<section class="site-specials">`) appears in the `<header>`
 **When you update the sparkle (change `assets/data/sparkle.json`):**
 
 1. Edit `assets/data/sparkle.json` with the new `emoji`, `label`, `description`, `suffix`, and `url`.
-2. Run `python3 scripts/sync-sparkle-fallback.py` to patch the static fallback in all 62 HTML files.
+2. Run `python3 scripts/sync-sparkle-fallback.py` to patch the static fallback in all 63 HTML files.
 3. The runtime loader in `app.js` §6 handles live browser updates automatically — no JS changes needed.
 
 The sync script is idempotent: safe to re-run; it skips files already up to date.

@@ -24,6 +24,8 @@ Global invariant checks (outside per-page loop):
   * CSS-lines drift: <!-- STAT:CSS-LINES --> in showcase/index.html must be
     within ±50 lines of the actual assets/css/theme.css line count.
     Run scripts/sync-portfolio-stats.py to fix a drift failure.
+  * Offline shell: sw.js must register a versioned same-origin cache containing
+    offline.html, and app.js must register the root-scoped worker.
 
 Writes:
   assets/audit/validation-report-2026-05-03.json   (machine-readable detail)
@@ -441,7 +443,56 @@ def main() -> int:
     if template_metadata_issues:
         total_issues += len(template_metadata_issues)
 
+    # ── Global invariant: offline shell integrity ────────────────────────────
+    # Keep the installable shell intentional and same-origin. Third-party
+    # resources must never become part of the service-worker cache boundary.
+    pwa_issues = _check_offline_shell()
+    for msg in pwa_issues:
+        print(f"\nOffline shell: {msg}")
+    if pwa_issues:
+        total_issues += len(pwa_issues)
+
     return 1 if total_issues else 0
+
+
+def _check_offline_shell() -> list:
+    """Return service-worker/offline-shell integrity violations."""
+    worker = ROOT / "sw.js"
+    offline = ROOT / "offline.html"
+    app = ROOT / "assets" / "js" / "app.js"
+    issues = []
+
+    if not worker.is_file():
+        # Isolated validator fixtures may contain only the asset under test.
+        # A real site checkout always has index.html and must provide the worker.
+        return ["sw.js is missing"] if (ROOT / "index.html").exists() else []
+    if not offline.is_file():
+        issues.append("offline.html is missing")
+    app_text = app.read_text(encoding="utf-8", errors="replace") if app.is_file() else ""
+    if 'serviceWorker.register("/sw.js"' not in app_text:
+        issues.append("app.js does not register /sw.js")
+
+    sw = worker.read_text(encoding="utf-8", errors="replace")
+    if not re.search(r'CACHE_NAME\s*=\s*["\']glee-fully-shell-v\d+["\']', sw):
+        issues.append("sw.js cache name is not versioned")
+    if 'caches.match("/offline.html")' not in sw:
+        issues.append("sw.js has no /offline.html navigation fallback")
+    if not re.search(r'register\("/sw\.js",\s*\{\s*scope:\s*"/"\s*\}\)', app_text):
+        issues.append("app.js registration is not root-scoped")
+
+    precache = re.search(
+        r"const\s+PRECACHE_URLS\s*=\s*\[(.*?)\];", sw, re.DOTALL
+    )
+    if not precache:
+        issues.append("sw.js has no PRECACHE_URLS list")
+    else:
+        entries = re.findall(r'["\']([^"\']+)["\']', precache.group(1))
+        if "/offline.html" not in entries:
+            issues.append("PRECACHE_URLS does not include /offline.html")
+        if any(url.startswith(("http://", "https://", "//")) for url in entries):
+            issues.append("PRECACHE_URLS contains a third-party URL")
+
+    return issues
 
 
 def _check_template_metadata() -> list:

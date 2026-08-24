@@ -25,7 +25,7 @@ are added as the GPT suite expands, and the toolbox structure is stable.
 
 ### Evidence
 
-- 62 production HTML pages across seven branch directories (60 indexable pages, 42 tool-ettes)
+- 63 production HTML pages across seven branch directories (60 indexable pages, 42 tool-ettes)
 - GitHub Actions CI validates HTML, links, and sitemap on every push
 - `scripts/validate-site.py` and `scripts/check-links.py` pass with 0 issues
 - `assets/data/search-index.json` indexes all 60 indexable pages

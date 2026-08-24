@@ -21,8 +21,6 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 
 ## Later
 - Expand toolette showcase with additional case entries
-- Add progressive web app install flow (service worker and offline behavior;
-  the manifest already exists)
 - GA disclosure in `legal/index.html` (GDPR/CCPA best practice)
 - Cross-link more explicitly between Glee-fully Tools, OverKill Hill, and AskJamie™
 
@@ -31,3 +29,6 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
   distributed across all three OKHP3 repos. AGENTS.md unified v2.0.
   Governance files (CHANGELOG, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY,
   llms.txt) created.
+- **Offline shell** — Versioned same-origin service-worker cache with an
+  explicit offline fallback page; third-party resources remain outside the
+  cache boundary.

@@ -90,7 +90,7 @@ Each skill uses the same schema: **Purpose · Checks · Off-limits**.
 **Off-limits:** Do not remove `aria-label` from nav toggle, search button, or breadcrumb. Do not remove `role` from search modal without equivalent semantics.
 
 ### skill.seo-schema-curator
-**Purpose:** Maintain structured data and metadata quality across all 62 production HTML pages (60 indexable pages plus the public error and holding pages).
+**Purpose:** Maintain structured data and metadata quality across all 63 production HTML pages (60 indexable pages plus the public error, holding, and offline fallback pages).
 **Checks:** `<title>` matches the canonical format; `<meta name="description">` is non-empty; `<link rel="canonical">` points to the page's own URL; `og:url` matches canonical; `og:image` resolves to a real file; JSON-LD parses as valid JSON; `BreadcrumbList` JSON-LD matches the visible breadcrumb nav; sitemap includes every indexable page with accurate `lastmod`.
 **Off-limits:** No fabricated FAQ entries. Do not change canonical URLs without also updating sitemap, breadcrumb, and `og:url`.
 

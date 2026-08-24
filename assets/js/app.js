@@ -9,6 +9,7 @@
 //   4. GLOBAL   · Sticky TOC scroll-follow (article pages, ≥1024px)
 //   5. OKH      · Site search — overlay + dedicated /search/ page
 //                 (search.js consolidated here 2026-05-03)
+//   7. GLOBAL   · Service-worker registration for the offline shell
 // ════════════════════════════════════════════════════════════════════════════
 
 // ── 1. Reading progress bar ─────────────────────────────────────────────────
@@ -880,6 +881,17 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     start();
   }
+}());
+
+// ── 7. Offline shell registration ───────────────────────────────────────────
+// The worker handles only same-origin public shell resources and navigations.
+(function () {
+  if (!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {
+      // Offline support is progressive enhancement; normal browsing is unaffected.
+    });
+  });
 }());
 
 // ── 6. Sparkle banner loader ─────────────────────────────────────────────────

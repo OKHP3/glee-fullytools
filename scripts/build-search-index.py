@@ -2,7 +2,7 @@
 """
 Build a static client-side search index from every published HTML page.
 
-Walks every *.html in the repo (excluding 404 / under-construction / partials),
+Walks every *.html in the repo (excluding utility fallbacks / partials),
 extracts title / description / canonical URL / h1-h3 headings / visible body
 text, and writes assets/data/search-index.json.
 
@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-EXCLUDE_FILES = {"404.html", "under-construction.html"}
+EXCLUDE_FILES = {"404.html", "under-construction.html", "offline.html"}
 EXCLUDE_DIRS = {
     ".git",
     ".local",
