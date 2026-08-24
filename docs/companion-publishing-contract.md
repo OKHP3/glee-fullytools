@@ -24,6 +24,11 @@ Each repository should implement these stages in order:
    Actions run proves the workflow and artifact path, not DNS, Pages settings, or
    public asset delivery.
 
+For GitHub Pages sites, repository `_headers` files are not treated as delivered
+response headers. Each site's threat model must distinguish portable policy
+configuration from observed production headers, and the live smoke result must
+be retained or reviewed by the owner.
+
 ## Site adapters
 
 | Repository | Domain | Required domain file | Site-specific checks |

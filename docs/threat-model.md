@@ -12,7 +12,7 @@ Per deployment assumptions, scans should focus on production-reachable browser c
 - **Outbound navigation targets** — the site’s value comes from sending users to intended ChatGPT tools, contact pages, and related properties. Tampering with links or embedded content would directly affect users.
 - **Analytics and publisher integrations** — Google Analytics and Ko-fi are third-party integrations that run in the browser. Their configuration is not highly secret, but compromise of those script supply chains would execute in a trusted page context.
 - **Published content inventory** — `assets/data/search-index.json`, metadata, sitemap, and visible page copy represent the site’s public content corpus. They are not confidential, but integrity matters because they are consumed by runtime search and crawlers.
-- **Security policy configuration** — `_headers` governs framing and browser security behavior when honored by the deployment platform.
+- **Security policy configuration** — `_headers` is a portable edge-host policy; it is not evidence of headers delivered by GitHub Pages.
 
 ## Trust Boundaries
 
@@ -24,11 +24,26 @@ Per deployment assumptions, scans should focus on production-reachable browser c
 ## Scan Anchors
 
 - **Production entry points** — root HTML pages (`index.html`, `404.html`, `under-construction.html`) and directory pages such as `about/`, `contact/`, `legal/`, `persona/`, `search/`, `showcase/`, `ecosystem/`, `universe/`, `arcade/`, and `toolbox/**/index.html`.
-- **Highest-risk production code** — `assets/js/app.js` for query handling and DOM sinks; `assets/js/mermaid-init.js` for third-party rendering configuration; `_headers` for framing/CSP behavior; `arcade/index.html` for the external iframe.
+- **Highest-risk production code** — `assets/js/app.js` for query handling and DOM sinks; `assets/js/mermaid-init.js` for third-party rendering configuration; `_headers` for a portable framing/CSP policy; `arcade/index.html` for the external iframe.
 - **Public vs authenticated vs admin surfaces** — all production surfaces in this repo are public; there are no authenticated or admin-only routes in scope.
 - **Usually dev-only areas to ignore** — `scripts/`, `.agents/`, `.local/`, `node_modules/`, `.pythonlibs/`, and `assets/templates/`.
 
 ## Threat Categories
+
+## Deployed versus intended controls
+
+The current public host is GitHub Pages. GitHub Pages serves the site over
+HTTPS and currently supplies HSTS, but it does not consume the repository's
+`_headers` file. As a result, CSP, X-Frame-Options, X-Content-Type-Options,
+Permissions-Policy, COOP, CORP, and related policy lines in `_headers` are
+**intended/configured controls**, not **observed/deployed controls**, until a
+compatible edge layer is authorized and verified.
+
+The Pages workflow runs `scripts/check-public-headers.py` after deployment.
+That smoke test is deliberately non-blocking because the known host limitation
+would otherwise turn a documented finding into a false release failure. A
+missing-header result remains a release finding for the owner to review; the
+workflow never converts it into a claim that the header is active.
 
 ### Tampering
 

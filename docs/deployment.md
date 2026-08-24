@@ -48,3 +48,19 @@ building the artifact. The previous reference to an external
 checkout and has been removed from the release contract. The repository
 validation workflows continue to protect HTML, links, responsive layout, and
 sparkle behavior.
+
+## Release identity and header delivery
+
+Before any Pages validation gate runs, the workflow compares `git rev-parse
+HEAD` with `${{ github.sha }}` and fails on any mismatch. The deployed artifact
+also contains `release-provenance.json`, whose commit field is the same event
+SHA; the artifact name and validation-report artifact use that SHA as well.
+
+`_headers` is a portable policy file and is not consumed by GitHub Pages. The
+live Pages response currently supplies HSTS, but does not supply the repository
+policy's CSP, framing, or MIME-protection headers. The post-deploy workflow
+step runs `scripts/check-public-headers.py` against `https://glee-fully.tools/`.
+It is non-blocking because these missing headers are a known host limitation;
+an owner reviewing a release must treat any missing-header output as a finding,
+not as a passing security control. A future hosting change must re-run the
+smoke test before claiming those headers are deployed.

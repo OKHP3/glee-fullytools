@@ -1,6 +1,8 @@
-# Glee-fully Tools — edge headers
-# Format compatible with Cloudflare Pages / Netlify _headers files.
-# If served by Cloudflare directly, mirror these via Transform Rules.
+# Glee-fully Tools — portable edge-header policy
+# GitHub Pages does not consume `_headers`; this file is not evidence that any
+# of these headers are delivered at glee-fully.tools. It remains ready for a
+# compatible edge host (Cloudflare Pages / Netlify) or explicit Cloudflare
+# Transform Rules. The live Pages smoke test is the source of delivery truth.
 
 /*
   X-Content-Type-Options: nosniff
