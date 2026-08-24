@@ -67,7 +67,8 @@ Our suite shows that structure can be playful, creativity can be systematic, and
 * **Template library:** `assets/templates/` mirrors the full site hierarchy
   with structural-only clones of every page. Every template preserves nav,
   footer, scripts, CSS, JSON-LD scaffold; every page-specific value is a
-  `{{PLACEHOLDER}}` token. Documented in `assets/templates/TEMPLATE_INDEX.md`.
-  Regenerate with `python3 scripts/generate-templates.py` (idempotent; pass
-  `--force` to overwrite). Templates are dev artifacts and are excluded from
-  the sitemap, search index, feed, and every validator.
+  `{{PLACEHOLDER}}` token. Documented in `assets/templates/INDEX.md`. The
+  current templates are maintained directly as nine structural files; the
+  superseded `scripts/generate-templates.py` generator should not be rerun.
+  Templates are dev artifacts and are excluded from the sitemap, search index,
+  feed, and every validator.

@@ -39,7 +39,9 @@ EXCLUDE_DIRS = {
     "assets/templates",
 }
 
-SKIP_TAGS = {"script", "style", "noscript", "svg", "template"}
+# Embedded frames use raw-text parsing rules that vary across Python HTMLParser
+# patch releases. Their fallback markup is not page body content to index.
+SKIP_TAGS = {"script", "style", "noscript", "svg", "template", "iframe"}
 HEADING_TAGS = {"h1", "h2", "h3"}
 
 

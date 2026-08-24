@@ -1,6 +1,6 @@
 # Open TODOs — Editorial / Owner Action Required
 
-Last updated: 2026-05-27
+Last updated: 2026-08-23
 
 This file surfaces every `<!-- TODO -->` comment still embedded in the production
 HTML so the human owner can resolve them in one pass. Each item is a placeholder
@@ -30,14 +30,14 @@ Fixed by `scripts/fix-placeholder-gpt-links.py` (idempotent, 2026-05-26).
 These are **not** in the HTML as TODO comments — they live in the audit doc as
 deferred items. Re-listed here for one-stop visibility:
 
-- **B1** — Stronger branch-page visual indices (icon cards).
-- **B2** — "Suggested next" / "Keep exploring" tray on tool-ettes.
-- **B3** — Reconcile README copy onto `/about/` or homepage.
+- **B1** — Stronger branch-page visual indices (icon cards). **PENDING OWNER DECISION**.
+- **B2** — "Suggested next" / "Keep exploring" tray on tool-ettes. ✅ RESOLVED 2026-05-26 — trays are present on all 42 tool-ette pages.
+- **B3** — Reconcile README copy onto `/about/` or homepage. **PENDING OWNER DECISION** — choose the destination and approve the editorial wording.
 - **B5** — Construction overlays on complete branch pages. ✅ RESOLVED 2026-05-27 — branches 01–04, 07 converted to slim `.construction-badge--slim` strip 2026-05-26; branch 06 converted 2026-05-27 after Calm Keep (06b) and Medi Minder (06d) GPT URLs were supplied and wired. All 6 branches now show the slim badge.
-- **C2** — Visible "Last updated" `<time datetime>` blocks (placement is a brand call).
-- **C3** — Per-tool FAQ JSON-LD (one Q/A per tool — editorial work).
-- **WebP / PurgeCSS** — Requires a build step; currently violates "no-build" philosophy.
-- **22 MB orphaned butterfly art** — Owner approval required before any `git rm`.
+- **C2** — Visible "Last updated" `<time datetime>` blocks (placement is a brand call). **PENDING OWNER DECISION**.
+- **C3** — Per-tool FAQ JSON-LD (one Q/A per tool — editorial work). **PENDING OWNER DECISION**.
+- **WebP / PurgeCSS** — Requires a build step; **PENDING OWNER DECISION** on whether to make an exception to the no-build philosophy.
+- **22 MB orphaned butterfly art** — **PENDING OWNER DECISION** before any `git rm`.
 
 ---
 

@@ -34,11 +34,14 @@ jobs:
       - name: Install Chromium for browser release gate
         run: playwright install --with-deps chromium
 
-      - name: Check generated outputs and cache tokens
-        run: |
-          python3 scripts/build-search-index.py --check
-          python3 scripts/sync-portfolio-stats.py --check
-          python3 scripts/sync-css-version.py --check
+      - name: Check generated search index
+        run: python3 scripts/build-search-index.py --check
+
+      - name: Check generated portfolio statistics
+        run: python3 scripts/sync-portfolio-stats.py --check
+
+      - name: Check CSS cache tokens
+        run: python3 scripts/sync-css-version.py --check
 
       - name: Run static release gates
         run: |

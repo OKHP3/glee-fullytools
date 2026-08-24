@@ -17,14 +17,14 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 ## Project Structure
 
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
-- `assets/css/theme.css` — Central stylesheet (5,738 lines as of 2026-07-13), reorganized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
-- `assets/js/app.js` — Shared JS (743 lines as of 2026-07-13): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
+- `assets/css/theme.css` — Central stylesheet (6,552 lines), organized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
+- `assets/js/app.js` — Shared JS (907 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
-- `toolbox/` — Central hub with 7 thematic branches and 42 tool-ette pages (50 pages total including the hub and branch pages)
+- `toolbox/` — Central hub with 7 thematic branches and 42 tool-ette pages
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
-- `sitemap.xml` — 59 URLs
+- `sitemap.xml` — 60 URLs
 
 ## Workflows
 
@@ -162,7 +162,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 | Component | Path | Purpose |
 |---|---|---|
 | Index builder | `scripts/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
-| Search index | `assets/data/search-index.json` | 59 indexable pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
+| Search index | `assets/data/search-index.json` | 60 indexable pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
 | Runtime | `assets/js/app.js` (search section, line 263+) | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
 | Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
 | Wired into | All 60 HTML pages | `<script src="/assets/js/app.js" defer>` — single script, no separate search.js |
@@ -171,7 +171,7 @@ A zero-dependency, fully client-side search engine indexes every published page 
 
 **Rebuilding the index:** Run `python3 scripts/build-search-index.py` after content changes. The generator excludes `404.html` and `under-construction.html`.
 
-**Why no Lunr.js or Algolia:** The site has 57 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
+**Why no Lunr.js or Algolia:** The site has 60 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
 **Two surfaces, one engine:** The search section of `app.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. On boot it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
 

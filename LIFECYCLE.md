@@ -1,7 +1,7 @@
 # Lifecycle — Glee-fully Tools
 
 **Current state:** Active  
-**Last reviewed:** 2026-08-03
+**Last reviewed:** 2026-08-23
 
 ---
 
@@ -25,10 +25,10 @@ are added as the GPT suite expands, and the toolbox structure is stable.
 
 ### Evidence
 
-- 60 production pages across seven branch directories
+- 62 production HTML pages across seven branch directories (60 indexable pages, 42 tool-ettes)
 - GitHub Actions CI validates HTML, links, and sitemap on every push
 - `scripts/validate-site.py` and `scripts/check-links.py` pass with 0 issues
-- `assets/data/search-index.json` indexes all 60 pages
+- `assets/data/search-index.json` indexes all 60 indexable pages
 
 ---
 
@@ -51,7 +51,16 @@ remove from the OKHP3 universe page, preserve the repo read-only.
 
 ## Owner decisions pending
 
-- None currently open.
+- **B1** — Decide whether branch hubs should gain stronger icon-and-tagline visual indices.
+- **B3** — Decide whether the README's portfolio positioning copy should be reconciled onto `/about/` or the homepage.
+- **C2** — Decide where visible per-page “Last updated” timestamps belong.
+- **C3** — Decide whether to author one FAQ JSON-LD entry for each tool-ette.
+- **WebP / PurgeCSS** — Decide whether the performance benefit justifies a build-step exception to the no-build philosophy.
+- **Orphaned butterfly art** — Decide whether to retain or remove the approximately 22 MB of unused source artwork.
+
+These are documented owner decisions, not release blockers. B2 (Keep exploring
+trays) and B5 (complete-branch construction overlays) are resolved and remain
+in the historical TODO register for traceability.
 
 ---
 
@@ -62,3 +71,4 @@ remove from the OKHP3 universe page, preserve the repo read-only.
 | 2025 (launch) | Active | Site launched with initial toolbox structure |
 | 2026-07-20 | Active | Footer nav, search index, and CSP enforcement updated (site-wide audit) |
 | 2026-08-03 | Active | LIFECYCLE.md created; 14 skills compliance pass completed |
+| 2026-08-23 | Active | Operational documentation reconciled; remaining owner decisions made explicit |

@@ -12,14 +12,17 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
   current square assets.
 - **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
 - **CSP hardening** — refactor inline script handlers into external JS files
-  so `script-src 'unsafe-inline'` can be dropped from the CSP meta tag.
+  so `script-src 'unsafe-inline'` can eventually be removed from the configured
+  CSP policy. The current policy is declared in `_headers`; production header
+  delivery still requires explicit hosting verification.
 - **Self-hosted fonts** — move Google Fonts to `assets/fonts/` to eliminate
   the third-party privacy boundary and reduce DNS lookups.
 - **Organization JSON-LD `sameAs`** — add social profile URLs.
 
 ## Later
 - Expand toolette showcase with additional case entries
-- Add progressive web app install flow (PWA manifest + service worker)
+- Add progressive web app install flow (service worker and offline behavior;
+  the manifest already exists)
 - GA disclosure in `legal/index.html` (GDPR/CCPA best practice)
 - Cross-link more explicitly between Glee-fully Tools, OverKill Hill, and AskJamie™
 
