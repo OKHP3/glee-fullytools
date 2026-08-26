@@ -7,13 +7,13 @@ third-party action behavior.
 
 | Action | Approved major |
 | --- | ---: |
-| `actions/checkout` | `v4` |
-| `actions/setup-python` | `v5` |
-| `actions/upload-artifact` | `v4` |
-| `actions/download-artifact` | `v4` |
-| `actions/configure-pages` | `v5` |
-| `actions/upload-pages-artifact` | `v3` |
-| `actions/deploy-pages` | `v4` |
+| `actions/checkout` | `v7` |
+| `actions/setup-python` | `v7` |
+| `actions/upload-artifact` | `v7` |
+| `actions/download-artifact` | `v8` |
+| `actions/configure-pages` | `v6` |
+| `actions/upload-pages-artifact` | `v5` |
+| `actions/deploy-pages` | `v5` |
 
 Run the check locally with:
 

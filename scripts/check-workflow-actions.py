@@ -27,13 +27,13 @@ GITHUB_API_TIMEOUT_SECONDS = 20
 # Approved major versions for the actions currently used by this repository.
 # A missing action is reported as unsupported rather than silently accepted.
 ACTION_MAJOR_VERSIONS = {
-    "actions/checkout": 4,
-    "actions/setup-python": 5,
-    "actions/upload-artifact": 4,
-    "actions/download-artifact": 4,
-    "actions/configure-pages": 5,
-    "actions/upload-pages-artifact": 3,
-    "actions/deploy-pages": 4,
+    "actions/checkout": 7,
+    "actions/setup-python": 7,
+    "actions/upload-artifact": 7,
+    "actions/download-artifact": 8,
+    "actions/configure-pages": 6,
+    "actions/upload-pages-artifact": 5,
+    "actions/deploy-pages": 5,
 }
 
 USES_PATTERN = re.compile(

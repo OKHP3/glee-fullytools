@@ -67,7 +67,7 @@ dates and counts.
 
 ### Architecture and entry points
 
-- Production content is 62 HTML pages: the homepage, supporting pages, the
+- Production content is 63 HTML pages: the homepage, supporting pages, the
   Toolbox hub, seven branch pages, 42 tool-ette pages, and the site's utility
   pages. HTML under `assets/`
   and `.agents/` is development or agent content and is excluded by site tools.
@@ -88,12 +88,12 @@ dates and counts.
 ### Verified validation baseline
 
 The repository's latest recorded validation passed on 2026-07-13. The current
-tree contains 62 production HTML pages and 60 sitemap URLs. Re-run these
+tree contains 63 production HTML pages and 60 sitemap URLs. Re-run these
 commands after any content or tooling change to establish a current baseline:
 
 ```bash
 python3 scripts/validate-site.py
-# Expected: 62 pages; 0 issues; 0 warnings
+# Expected: 63 pages; 0 issues; 0 warnings
 
 python3 scripts/check-links.py
 # Expected: 0 broken links and 0 sitemap mismatches; link totals vary by content
@@ -340,6 +340,7 @@ site-specific content genuinely requires a different layout.
 |-- sitemap.xml
 |-- skills-lock.json
 |-- under-construction.html
+|-- offline.html           offline fallback page
 +-- universe/              /universe/ page directory
 ```
 Each site also has its own unique content directories (e.g. `toolbox/`,

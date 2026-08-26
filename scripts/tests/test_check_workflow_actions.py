@@ -30,10 +30,11 @@ class WorkflowActionVersionTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
     def test_wrong_major_is_reported_with_location(self) -> None:
-        errors = self.check("      uses: actions/checkout@v3\n")
+        approved_major = check_workflow_actions.ACTION_MAJOR_VERSIONS["actions/checkout"]
+        errors = self.check(f"      uses: actions/checkout@v{approved_major - 1}\n")
         self.assertEqual(len(errors), 1)
         self.assertIn("test.yml:1", errors[0])
-        self.assertIn("use v4", errors[0])
+        self.assertIn(f"use v{approved_major}", errors[0])
 
     def test_commit_refs_and_unknown_actions_are_rejected(self) -> None:
         errors = self.check(
@@ -56,7 +57,8 @@ class WorkflowActionVersionTests(unittest.TestCase):
     def test_update_review_reports_newer_stable_major(self) -> None:
         def fetcher(action: str) -> dict[str, object]:
             if action == "actions/checkout":
-                return {"tag_name": "v5.0.0"}
+                approved = check_workflow_actions.ACTION_MAJOR_VERSIONS[action]
+                return {"tag_name": f"v{approved + 1}.0.0"}
             approved = check_workflow_actions.ACTION_MAJOR_VERSIONS[action]
             return {"tag_name": f"v{approved}.0.0"}
 
@@ -64,7 +66,8 @@ class WorkflowActionVersionTests(unittest.TestCase):
 
         self.assertEqual(len(findings), 1)
         self.assertIn("actions/checkout", findings[0])
-        self.assertIn("newer stable major v5", findings[0])
+        approved_major = check_workflow_actions.ACTION_MAJOR_VERSIONS["actions/checkout"]
+        self.assertIn(f"newer stable major v{approved_major + 1}", findings[0])
 
     def test_update_review_reports_fetch_failures(self) -> None:
         def fetcher(action: str) -> dict[str, object]:
