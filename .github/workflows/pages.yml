@@ -39,6 +39,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Check GitHub Actions versions
+        run: python3 scripts/check-workflow-actions.py
+
       - name: Install validator dependency
         run: python3 -m pip install beautifulsoup4 playwright
 

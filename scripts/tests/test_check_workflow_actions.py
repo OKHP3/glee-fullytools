@@ -53,6 +53,28 @@ class WorkflowActionVersionTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_update_review_reports_newer_stable_major(self) -> None:
+        def fetcher(action: str) -> dict[str, object]:
+            if action == "actions/checkout":
+                return {"tag_name": "v5.0.0"}
+            approved = check_workflow_actions.ACTION_MAJOR_VERSIONS[action]
+            return {"tag_name": f"v{approved}.0.0"}
+
+        findings = check_workflow_actions.check_for_updates(fetcher)
+
+        self.assertEqual(len(findings), 1)
+        self.assertIn("actions/checkout", findings[0])
+        self.assertIn("newer stable major v5", findings[0])
+
+    def test_update_review_reports_fetch_failures(self) -> None:
+        def fetcher(action: str) -> dict[str, object]:
+            raise RuntimeError("network unavailable")
+
+        findings = check_workflow_actions.check_for_updates(fetcher)
+
+        self.assertEqual(len(findings), len(check_workflow_actions.ACTION_MAJOR_VERSIONS))
+        self.assertTrue(all("update review failed" in finding for finding in findings))
+
 
 if __name__ == "__main__":
     unittest.main()

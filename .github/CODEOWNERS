@@ -1,0 +1,15 @@
+# Governance and public-release surfaces require repository-owner review.
+# The catch-all keeps new site content covered; explicit entries make the
+# security and publishing boundary easy to audit.
+* @OKHP3
+
+/.github/ @OKHP3
+/_headers @OKHP3
+/CNAME @OKHP3
+/docs/ @OKHP3
+/SECURITY.md @OKHP3
+/CONTRIBUTING.md @OKHP3
+/sw.js @OKHP3
+/offline.html @OKHP3
+/assets/data/ @OKHP3
+/assets/js/ @OKHP3

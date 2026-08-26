@@ -24,17 +24,34 @@ materials for the Glee-fully Tools suite of personal-utility Custom GPTs.
 2. Describe the problem first, then the proposed improvement.
 3. Keep suggestions practical, respectful, and public-artifact focused.
 
+## Release and review policy
+
+Normal releases go through a pull request into `main`; direct pushes are
+reserved for an owner-approved emergency. The required checks, code-owner
+coverage, Dependabot cadence, and current GitHub branch-protection status are
+recorded in [`docs/release-governance.md`](docs/release-governance.md).
+
+Until the owner-side `main` protection rule is enabled, CODEOWNERS provides
+review routing but does not prevent direct pushes. Do not describe the Pages
+deployment as approval-protected before that setting is verified.
+
 ## Validation before you commit
 
-Run the site auditor and rebuild the search index before opening a pull request:
+Run the repository release checks before opening a pull request:
 
 ```bash
-python3 scripts/audit-site.py
-python3 scripts/build-search-index.py
+python3 scripts/build-search-index.py --check
+python3 scripts/sync-portfolio-stats.py --check
+python3 scripts/sync-css-version.py --check
+python3 scripts/validate-site.py
+python3 scripts/check-links.py
+python3 scripts/audit-site.py --quiet
+python3 scripts/check-accent-contrast.py --strict
+python3 scripts/check-glee-dark-coverage.py --section all --require-both
 ```
 
-Both scripts write output to `assets/docs/`. The auditor must report 0 issues
-before a merge is acceptable.
+The PR checks must pass before a merge is acceptable. Browser viewport and
+Sparkle QA also run in their dedicated workflows when their paths change.
 
 ## Maintainer
 Jamie Hill / Glee-fully Tools · OverKill Hill P³™

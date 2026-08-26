@@ -29,6 +29,10 @@ response headers. Each site's threat model must distinguish portable policy
 configuration from observed production headers, and the live smoke result must
 be retained or reviewed by the owner.
 
+Each repository should also keep one authoritative release-governance document
+covering CODEOWNERS, dependency-update cadence, required checks, approval rules,
+and whether direct pushes are actually blocked by branch protection.
+
 ## Site adapters
 
 | Repository | Domain | Required domain file | Site-specific checks |

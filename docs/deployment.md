@@ -12,6 +12,11 @@ This repository is the source of truth for the public site at
 
 GitHub Pages is the sole public publishing target. Replit’s local preview workflow is for development only and does not publish the site.
 
+The required review, status-check, direct-push, ownership, and dependency-update
+policy is maintained in [`docs/release-governance.md`](release-governance.md).
+That document records which GitHub settings are observed versus still requiring
+owner-side configuration.
+
 ## Artifact and paths
 
 The published artifact is the repository root. It contains the root `index.html`, `offline.html`, `sw.js`, `assets/`, each public route directory, generated data files, and the committed `CNAME`. There is no bundler, framework build, or alternate output directory.
@@ -32,6 +37,7 @@ Run the repository-owned checks from a clean checkout before merging a release
 change:
 
 ```bash
+python3 scripts/check-workflow-actions.py
 python3 scripts/build-search-index.py --check
 python3 scripts/sync-portfolio-stats.py --check
 python3 scripts/sync-css-version.py --check
