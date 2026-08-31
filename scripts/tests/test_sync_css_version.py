@@ -61,7 +61,7 @@ class SyncCssVersionTests(unittest.TestCase):
                 status, output = self.run_main()
                 self.assertEqual(status, 0)
                 current_token = _MODULE.css_hash(theme)
-                self.assertIn(f"CSS token → {current_token}", output)
+                self.assertRegex(output, rf"CSS token (?:→|->) {current_token}")
                 self.assertIn(f"theme.css?v={current_token}", page.read_text(encoding="utf-8"))
 
                 before_clean_check = page.read_bytes()

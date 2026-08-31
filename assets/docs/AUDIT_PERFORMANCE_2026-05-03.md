@@ -15,6 +15,7 @@ retro-bright look.
 | `assets/js/search.js` | 24 KB | Lazy-loads index. |
 | `assets/js/mermaid-init.js` | 0.7 KB | Pulls Mermaid v11 only on `ecosystem/` and `universe/`. |
 | `assets/data/search-index.json` | 132 KB raw / ~30 KB gzipped | Lazy-loaded only when the search modal opens. Not in the LCP path. |
+| `assets/img/glee-fully-tools-social-card-1200x630.png` | 901 KB | 1200×630 share-preview asset; metadata-only and fetched by social crawlers, not the page render path. |
 | Total per-page critical CSS+JS | ~140 KB raw / ~45 KB gzipped | Acceptable for a content-heavy retro design. |
 
 ---

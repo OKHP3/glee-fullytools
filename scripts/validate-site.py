@@ -44,8 +44,17 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from csp import all_pages, build_policies, page_class
+
 SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
 SITE = "https://glee-fully.tools"
+MERMAID_VENDOR_ROOT = ROOT / "assets/vendor/mermaid"
+MERMAID_VENDOR_ENTRY = MERMAID_VENDOR_ROOT / "mermaid.esm.min.mjs"
+MERMAID_VERSION_FILE = MERMAID_VENDOR_ROOT / "VERSION"
 
 # Pages that intentionally point canonical to the homepage / are noindex.
 HOMEPAGE_CANONICAL_OK = {"index.html", "404.html", "under-construction.html"}
@@ -452,7 +461,110 @@ def main() -> int:
     if pwa_issues:
         total_issues += len(pwa_issues)
 
+    # ── Global invariant: Mermaid VERSION pin consistency ───────────────────
+    # assets/vendor/mermaid/VERSION must exist, be a plain semver string, and
+    # match the release actually vendored into mermaid.esm.min.mjs. Does not
+    # check npm for a newer release -- that's the scheduled "Mermaid Version
+    # Watch" GitHub Action, which needs network access this local validator
+    # does not assume. This only catches a partial or forgotten re-vendor.
+    mermaid_version_issues = _check_mermaid_version_pin()
+    for msg in mermaid_version_issues:
+        print(f"\nMermaid VERSION pin: {msg}")
+    if mermaid_version_issues:
+        total_issues += len(mermaid_version_issues)
+
+    # ── Global invariant: Mermaid / CSP class alignment ──────────────────────
+    # Mermaid renders inline style="..." attributes and <style> blocks at
+    # runtime, per diagram, per page load -- a build-time hash allowlist can
+    # never cover that. scripts/csp.py's "diagram" / "embed-diagram" classes
+    # are designed to grant a scoped 'unsafe-inline' to every page that needs
+    # it; this is a consistency safety net that should always come back
+    # clean, catching a future page that picks up a live diagram without
+    # being correctly classified.
+    mermaid_csp_warnings = _check_mermaid_csp_alignment()
+    for msg in mermaid_csp_warnings:
+        print(f"\nMermaid/CSP alignment: {msg}")
+    if mermaid_csp_warnings:
+        total_warnings += len(mermaid_csp_warnings)
+
     return 1 if total_issues else 0
+
+
+def _check_mermaid_version_pin() -> list:
+    """Return Mermaid VERSION-pin / vendored-bundle drift issues."""
+    issues: list = []
+    vendor_root = ROOT / "assets/vendor/mermaid"
+    version_file = vendor_root / "VERSION"
+    vendor_entry = vendor_root / "mermaid.esm.min.mjs"
+    rel_version_file = version_file.relative_to(ROOT).as_posix()
+
+    if not version_file.is_file():
+        if _fixture_only_root():
+            return []
+        return [f"{rel_version_file} is missing; create it with the vendored release number"]
+
+    pinned = version_file.read_text(encoding="utf-8").strip()
+    if not re.fullmatch(r"\d+\.\d+\.\d+", pinned):
+        return [f"{rel_version_file} pin {pinned!r} is not a plain semver string (X.Y.Z)"]
+
+    if not vendor_entry.is_file():
+        return [f"{vendor_entry.relative_to(ROOT).as_posix()} is missing (vendored Mermaid entry module)"]
+
+    bundle_text = vendor_entry.read_text(encoding="utf-8", errors="replace")
+    if pinned not in bundle_text:
+        issues.append(
+            f"{rel_version_file} pin ({pinned}) was not found inside "
+            f"{vendor_entry.relative_to(ROOT).as_posix()}; the pin file "
+            "and the vendored runtime have drifted out of sync"
+        )
+    return issues
+
+
+def _page_renders_mermaid(raw: str) -> bool:
+    return bool(re.search(r"""class=["\'][^"\']*\bmermaid\b""", raw, re.IGNORECASE))
+
+
+def _fixture_only_root() -> bool:
+    """Return True when tests point ROOT at isolated template fixtures."""
+    html_files = [path.relative_to(ROOT) for path in ROOT.rglob("*.html")]
+    return bool(html_files) and all(
+        rel.parts[:2] == ("assets", "templates") for rel in html_files
+    )
+
+
+def _check_mermaid_csp_alignment() -> list:
+    """Return pages that render live Mermaid but whose CSP class can't style it."""
+    warnings: list = []
+    if _fixture_only_root():
+        return warnings
+
+    policies = build_policies()
+    for path in all_pages():
+        raw = path.read_text(encoding="utf-8", errors="replace")
+        if not _page_renders_mermaid(raw):
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        kind = page_class(path)
+        policy = policies.get(kind, "")
+        directives = [part.strip() for part in policy.split(";")]
+        style_directive = next(
+            (part for part in directives if part.startswith("style-src ")),
+            "",
+        )
+        style_attr_directive = next(
+            (part for part in directives if part.startswith("style-src-attr ")),
+            "",
+        )
+        if (
+            "unsafe-inline" not in style_directive
+            or "unsafe-inline" not in style_attr_directive
+        ):
+            warnings.append(
+                f"{rel} renders live Mermaid diagrams under the {kind!r} CSP "
+                "class, but style-src and style-src-attr must both allow "
+                "Mermaid's runtime-generated style blocks and inline styles"
+            )
+    return warnings
 
 
 def _check_offline_shell() -> list:
@@ -934,16 +1046,18 @@ def _check_css_lines_drift(tolerance: int = 50) -> str:
 
 def _check_css_token_drift(hashlib_mod) -> list:
     """Return a list of paths whose theme.css?v=<token> does not match the
-    current SHA-256 of assets/css/theme.css.
+    current stable SHA-256 of assets/css/theme.css.
 
-    Uses the same first-8-hex-chars hash as scripts/sync-css-version.py.
+    Uses the same normalized first-8-hex-chars hash as
+    scripts/sync-css-version.py.
     Returns an empty list when all files are in sync or theme.css is absent.
     """
     theme_css = ROOT / "assets" / "css" / "theme.css"
     if not theme_css.exists():
         return []
 
-    expected = hashlib_mod.sha256(theme_css.read_bytes()).hexdigest()[:8]
+    normalized = theme_css.read_bytes().replace(b"\r\n", b"\n")
+    expected = hashlib_mod.sha256(normalized).hexdigest()[:8]
     token_re = re.compile(r"theme\.css\?v=([^\"' >]+)")
 
     mismatches = []

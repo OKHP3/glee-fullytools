@@ -34,6 +34,7 @@ ACTION_MAJOR_VERSIONS = {
     "actions/configure-pages": 6,
     "actions/upload-pages-artifact": 5,
     "actions/deploy-pages": 5,
+    "actions/github-script": 9,
 }
 
 USES_PATTERN = re.compile(

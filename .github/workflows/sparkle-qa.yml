@@ -1,24 +1,17 @@
 name: Sparkle Banner QA
 
-# Run whenever anything that could break the sparkle loader changes:
-# HTML (new pages), JS (app.js loader), CSS, or sparkle.json itself.
-# Also available on manual trigger.
+# Run on every push and pull request because this check is required by branch
+# protection. Path filters would leave dependency-only PRs permanently blocked.
 on:
   push:
     branches: [main]
-    paths:
-      - 'assets/css/**'
-      - 'assets/js/**'
-      - 'assets/data/sparkle.json'
-      - '**/*.html'
   pull_request:
     branches: [main]
-    paths:
-      - 'assets/css/**'
-      - 'assets/js/**'
-      - 'assets/data/sparkle.json'
-      - '**/*.html'
   workflow_dispatch:
+
+concurrency:
+  group: sparkle-qa-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   sparkle-qa:

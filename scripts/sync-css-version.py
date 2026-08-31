@@ -38,8 +38,9 @@ CSS_REF_RE = re.compile(r"(theme\.css\?v=)([^\"' >]+)")
 
 
 def css_hash(path: Path) -> str:
-    """Return the first 8 hex chars of the SHA-256 of *path*."""
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    """Return a stable 8-char hash for the CSS payload."""
+    normalized = path.read_bytes().replace(b"\r\n", b"\n")
+    digest = hashlib.sha256(normalized).hexdigest()
     return digest[:8]
 
 
@@ -78,7 +79,7 @@ def main() -> int:
             unchanged += 1
         else:
             if args.check:
-                print(f"  STALE: {path.relative_to(REPO)}")
+                print(f"  STALE: {path.relative_to(REPO).as_posix()}")
             else:
                 path.write_text(patched, encoding="utf-8")
             updated += 1
@@ -90,9 +91,9 @@ def main() -> int:
         )
         return 1
     if updated:
-        print(f"  CSS token → {token}  ({updated} file(s) updated, {unchanged} already current)")
+        print(f"  CSS token -> {token}  ({updated} file(s) updated, {unchanged} already current)")
     else:
-        print(f"  CSS token → {token}  (all {unchanged} file(s) already current)")
+        print(f"  CSS token -> {token}  (all {unchanged} file(s) already current)")
 
     return 0
 

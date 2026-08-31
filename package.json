@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "puppeteer": "^24.43.1"
+    "puppeteer": "^25.9.0"
   },
   "devDependencies": {
-    "lighthouse": "^12.8.2"
+    "lighthouse": "^13.4.1"
   }
 }

@@ -14,6 +14,7 @@ third-party action behavior.
 | `actions/configure-pages` | `v6` |
 | `actions/upload-pages-artifact` | `v5` |
 | `actions/deploy-pages` | `v5` |
+| `actions/github-script` | `v9` |
 
 Run the check locally with:
 

@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+set -eu
+
+blocked=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main)
+      echo "Direct pushes to main are blocked for OKHP3/Glee-fullyTools." >&2
+      echo "Create a branch, push that branch, and open a pull request instead." >&2
+      echo "GitHub requires a PR plus the repository's required checks before main can move." >&2
+      blocked=1
+      ;;
+    *)
+      ;;
+  esac
+done
+
+if [ "$blocked" -ne 0 ]; then
+  exit 1
+fi
+
+exit 0

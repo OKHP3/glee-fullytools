@@ -43,6 +43,7 @@ Run the repository release checks before opening a pull request:
 python3 scripts/build-search-index.py --check
 python3 scripts/sync-portfolio-stats.py --check
 python3 scripts/sync-css-version.py --check
+python3 scripts/sync-social-card.py --check
 python3 scripts/validate-site.py
 python3 scripts/check-links.py
 python3 scripts/audit-site.py --quiet

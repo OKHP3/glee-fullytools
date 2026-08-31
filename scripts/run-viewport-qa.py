@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-run-viewport-qa.py — Full browser viewport QA runner
+run-viewport-qa.py - Full browser viewport QA runner
 =====================================================
 Sets up the required environment (libgbm stub + Playwright flags) and
 runs the full N-page × 8-viewport Playwright test suite.
@@ -31,7 +31,7 @@ STUB_DIR = "/tmp/stublibs"
 STUB_LIB = os.path.join(STUB_DIR, "libgbm.so.1")
 
 STUB_SRC = r"""
-/* Minimal libgbm.so.1 stub — returns null/zero for all calls.
+/* Minimal libgbm.so.1 stub - returns null/zero for all calls.
    Headless Chrome with --disable-gpu never invokes GBM functions. */
 #include <stddef.h>
 #include <stdint.h>
@@ -108,7 +108,7 @@ VIEWPORTS = [
     {"name": "1440", "width": 1440, "height": 900},
 ]
 
-# ── Core pages (stable set — not under toolbox/) ─────────────────────────────
+# Core pages (stable set, not under toolbox/)
 # These are listed explicitly because their URL paths cannot be reliably derived
 # from the filesystem structure.  Add new top-level pages here.
 CORE_PAGES = [
@@ -122,6 +122,10 @@ CORE_PAGES = [
     ("legal",     "/legal/"),
     ("persona",   "/persona/"),
     ("showcase",  "/showcase/"),
+    ("arcade",    "/arcade/"),
+    ("404",       "/404.html"),
+    ("under-construction", "/under-construction.html"),
+    ("offline",   "/offline.html"),
 ]
 
 
@@ -141,13 +145,13 @@ def _discover_toolbox_pages(root: Path) -> list:
     if not toolbox_dir.is_dir():
         return pages
 
-    # Branch hubs — depth 1 under toolbox/
+    # Branch hubs, depth 1 under toolbox/
     for idx in sorted(toolbox_dir.glob("*/index.html")):
         branch = idx.parent.name
         nn = branch.split("-")[0]          # e.g. '01'
         pages.append((f"branch-{nn}", f"/toolbox/{branch}/"))
 
-    # Tool-ettes — depth 2 under toolbox/
+    # Tool-ettes, depth 2 under toolbox/
     for idx in sorted(toolbox_dir.glob("*/*/index.html")):
         tool   = idx.parent.name           # e.g. '01a-resume-builder'
         branch = idx.parent.parent.name    # e.g. '01-discovered-careers'

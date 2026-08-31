@@ -57,6 +57,9 @@ jobs:
       - name: Check CSS cache tokens
         run: python3 scripts/sync-css-version.py --check
 
+      - name: Check landscape social-card metadata
+        run: python3 scripts/sync-social-card.py --check
+
       - name: Run static release gates
         run: |
           python3 scripts/validate-site.py

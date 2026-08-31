@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Synchronize published pages to the shared 1200×630 social-sharing card.
 
-Updates the existing Open Graph and Twitter image metadata on every production
-HTML page. The script intentionally excludes source templates: it keeps the
-published site in sync without changing template-specific metadata.
+Updates the existing Open Graph and Twitter image metadata on every published
+social-preview page. The script intentionally excludes source templates and the
+noindex offline shell: it keeps the published site in sync without changing
+template-specific or fallback metadata.
 
 Run normally to write updates, or use ``--check`` to verify that every page
 already references the shared landscape card.
@@ -13,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import struct
 import sys
 from pathlib import Path
 
@@ -28,6 +30,7 @@ EXCLUDE_DIRS = {
     "attached_assets",
     "node_modules",
 }
+SKIP_FILES = {"offline.html"}
 CARD_PATH = "/assets/img/glee-fully-tools-social-card-1200x630.png"
 CARD_URL = f"https://glee-fully.tools{CARD_PATH}"
 CARD_ALT = "Glee-fully Personalizable Tools — joyful tools for life, work, and wonder"
@@ -47,7 +50,9 @@ REQUIRED = {
     ("property", "og:image"),
     ("property", "og:image:width"),
     ("property", "og:image:height"),
+    ("property", "og:image:alt"),
     ("name", "twitter:image"),
+    ("name", "twitter:image:alt"),
 }
 
 
@@ -56,8 +61,22 @@ def iter_html_files() -> list[Path]:
     return sorted(
         path
         for path in ROOT.rglob("*.html")
-        if not any(part in EXCLUDE_DIRS for part in path.relative_to(ROOT).parts)
+        if path.name not in SKIP_FILES
+        and not any(part in EXCLUDE_DIRS for part in path.relative_to(ROOT).parts)
     )
+
+
+def card_dimensions() -> tuple[int, int]:
+    """Read and validate the approved card's PNG dimensions."""
+    card = ROOT / CARD_PATH.lstrip("/")
+    try:
+        with card.open("rb") as handle:
+            header = handle.read(24)
+    except OSError as error:
+        raise ValueError(f"approved card is not readable: {card}") from error
+    if len(header) < 24 or header[:8] != b"\x89PNG\r\n\x1a\n" or header[12:16] != b"IHDR":
+        raise ValueError(f"approved card is not a valid PNG: {card}")
+    return struct.unpack(">II", header[16:24])
 
 
 def attributes(tag: str) -> dict[str, str]:
@@ -107,6 +126,19 @@ def main() -> int:
         help="exit 1 if any published page is missing or has stale card metadata",
     )
     args = parser.parse_args()
+
+    try:
+        dimensions = card_dimensions()
+    except ValueError as error:
+        print(f"Social-card asset: {error}", file=sys.stderr)
+        return 1
+    if dimensions != (1200, 630):
+        print(
+            "Social-card asset: expected 1200×630 PNG, "
+            f"found {dimensions[0]}×{dimensions[1]}",
+            file=sys.stderr,
+        )
+        return 1
 
     stale_pages: list[str] = []
     total_changes = 0

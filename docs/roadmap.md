@@ -8,8 +8,6 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 - Portfolio stats sync: `python3 scripts/sync-portfolio-stats.py` — run after content updates
 
 ## Next
-- **OG images** — commission 1200×630 landscape social-card images to replace
-  current square assets.
 - **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
 - **CSP hardening** — refactor inline script handlers into external JS files
   so `script-src 'unsafe-inline'` can eventually be removed from the configured
@@ -32,3 +30,6 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 - **Offline shell** — Versioned same-origin service-worker cache with an
   explicit offline fallback page; third-party resources remain outside the
   cache boundary.
+- **Landscape social card (2026-08-22)** — Approved 1200×630 branded card is
+  referenced by Open Graph and Twitter metadata across all published page
+  families; source templates remain parameterized.

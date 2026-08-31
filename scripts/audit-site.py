@@ -64,6 +64,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 import urllib.parse
 from html.parser import HTMLParser
@@ -74,7 +75,11 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache",
                 ".pythonlibs", ".git", "templates"}
-EXCLUDE_FROM_SITEMAP = {"404.html", "under-construction.html"}
+# These utility fallbacks are intentionally public files but are not discoverable
+# content: they belong neither in the sitemap nor in the client-side search index.
+EXCLUDE_FROM_DISCOVERY = {"404.html", "under-construction.html", "offline.html"}
+EXCLUDE_FROM_SITEMAP = EXCLUDE_FROM_DISCOVERY
+EXCLUDE_FROM_SEARCH_INDEX = EXCLUDE_FROM_DISCOVERY
 
 # Title / description recommended length budgets
 TITLE_MAX = 70
@@ -344,9 +349,12 @@ def audit_page(path: Path) -> List[str]:
     if not p.canonical:
         issues.append("Missing canonical link")
 
-    for required in ("og:title", "og:description", "og:image", "og:url"):
-        if required not in p.metas:
-            issues.append(f"Missing {required}")
+    # The offline fallback is intentionally noindex and is excluded from the
+    # social-card family; it does not need social-preview metadata.
+    if rel != "offline.html":
+        for required in ("og:title", "og:description", "og:image", "og:url"):
+            if required not in p.metas:
+                issues.append(f"Missing {required}")
 
     # image hygiene
     for img in p.images:
@@ -423,22 +431,35 @@ def scan_repo_cruft() -> List[str]:
 
 
 def check_search_index_freshness(html_files: List[Path]) -> List[str]:
-    """Report any HTML file modified after search-index.json was built."""
+    """Use the canonical generator to detect content drift in the index.
+
+    Filesystem mtimes are not reliable provenance: a checkout, copy, or archive
+    extraction can make pages newer than a generated JSON file without changing
+    their content. The builder's check mode compares the actual generated
+    payload and ignores its volatile generated_at field.
+    """
     idx = ROOT / "assets/data/search-index.json"
     if not idx.exists():
         return []  # missing-index is already caught by reconcile_search_index
-    idx_mtime = idx.stat().st_mtime
-    stale: List[str] = []
-    for p in html_files:
-        if p.stat().st_mtime > idx_mtime:
-            stale.append(p.relative_to(ROOT).as_posix())
-    if not stale:
+    builder = ROOT / "scripts" / "build-search-index.py"
+    if not builder.is_file():
+        return ["search-index freshness could not be checked: build-search-index.py is missing"]
+    result = subprocess.run(
+        [sys.executable, str(builder), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    if result.returncode == 0:
         return []
-    head = stale[:5]
-    suffix = "" if len(stale) <= 5 else f" (and {len(stale)-5} more)"
+    detail = (result.stderr or result.stdout).strip().splitlines()
+    detail_text = detail[-1] if detail else "generator check failed without details"
     return [
-        "search-index.json is stale — rebuild with `python3 scripts/build-search-index.py`. "
-        f"Pages newer than the index: {', '.join(head)}{suffix}"
+        "search-index.json content is stale — rebuild with python3 scripts/build-search-index.py. "
+        f"Generator check: {detail_text}"
     ]
 
 
@@ -447,7 +468,7 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
     if not idx.exists():
         return ["search-index.json missing"]
     try:
-        data = json.loads(idx.read_text())
+        data = json.loads(idx.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         return [f"search-index.json is unreadable: {exc}"]
     try:
@@ -476,7 +497,7 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
         }
         indexed_rels = {r.lstrip("/") or "index.html" for r in indexed_rels}
         rels_on_disk = {p.relative_to(ROOT).as_posix() for p in html_files}
-        rels_on_disk -= EXCLUDE_FROM_SITEMAP
+        rels_on_disk -= EXCLUDE_FROM_SEARCH_INDEX
         missing = sorted(rels_on_disk - indexed_rels)
         return [f"Page on disk not in search index: {p}" for p in missing]
     except Exception as exc:  # pragma: no cover — defensive

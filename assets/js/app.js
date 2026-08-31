@@ -161,6 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const isGlee     = body.classList.contains("glee-main");
     const LS_KEY     = isGlee ? "glee-color-scheme" : "askjamie-color-scheme";
     const SCH_STATES = ["auto", "light", "dark"];
+    const THEME_COLORS = isGlee
+      ? { light: "#d35b2d", dark: "#1e1b19" }
+      : { light: "#f5efe1", dark: "#2c5e6f" };
 
     // Icons shared with the OKH toggle (same SVG paths, same .tt-icon class)
     const SCH_ICONS = {
@@ -186,6 +189,21 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         document.documentElement.setAttribute("data-color-scheme", state);
       }
+
+      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+        if (state !== "auto") {
+          meta.setAttribute("content", THEME_COLORS[state]);
+          return;
+        }
+
+        const media = meta.getAttribute("media") || "";
+        meta.setAttribute(
+          "content",
+          media.includes("prefers-color-scheme: dark")
+            ? THEME_COLORS.dark
+            : THEME_COLORS.light
+        );
+      });
     }
 
     // Apply on load (handles pages that don't have the early-init script)

@@ -1,21 +1,17 @@
 name: Viewport QA
 
-# Run whenever CSS, JS, or HTML changes — these are the only inputs that can
-# introduce responsive-layout regressions. Also available on manual trigger.
+# Run on every push and pull request because this check is required by branch
+# protection. Path filters would leave dependency-only PRs permanently blocked.
 on:
   push:
     branches: [main]
-    paths:
-      - 'assets/css/**'
-      - 'assets/js/**'
-      - '**/*.html'
   pull_request:
     branches: [main]
-    paths:
-      - 'assets/css/**'
-      - 'assets/js/**'
-      - '**/*.html'
   workflow_dispatch:
+
+concurrency:
+  group: viewport-qa-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   viewport-qa:
@@ -59,7 +55,7 @@ jobs:
       - name: Report page count
         # Echo the live page count so it is visible in the Actions log without
         # hardcoding a number.  Mirrors the glob logic in run-viewport-qa.py:
-        #   CORE_PAGES (10 stable top-level pages, not under toolbox/)
+        #   CORE_PAGES (14 stable top-level and utility pages, not under toolbox/)
         #   + toolbox/*/index.html          (branch hubs)
         #   + toolbox/*/*/index.html        (tool-ettes)
         run: |
@@ -68,9 +64,9 @@ jobs:
           root = Path('.')
           branches = len(list(root.glob('toolbox/*/index.html')))
           tools    = len(list(root.glob('toolbox/*/*/index.html')))
-          total    = 10 + branches + tools   # 10 = len(CORE_PAGES) in run-viewport-qa.py
+          total    = 14 + branches + tools   # 14 = len(CORE_PAGES) in run-viewport-qa.py
           print(f'Running viewport QA: {total} pages × 8 viewports')
-          print(f'  core={10}  branches={branches}  tool-ettes={tools}')
+          print(f'  core={14}  branches={branches}  tool-ettes={tools}')
           EOF
 
       - name: Run viewport QA

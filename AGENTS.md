@@ -87,9 +87,13 @@ dates and counts.
 
 ### Verified validation baseline
 
-The repository's latest recorded validation passed on 2026-07-13. The current
-tree contains 63 production HTML pages and 60 sitemap URLs. Re-run these
-commands after any content or tooling change to establish a current baseline:
+The repository's latest recorded validation passed on 2026-08-29, re-run after
+scoping the CSP `img-src` allowlist (see `scripts/csp.py`) and fixing the
+dark-mode `theme-color` value (see `scripts/normalize-head.py`) -- both
+confirmed clean at 63 production HTML pages, 0 issues, 0 warnings, 0 broken
+links, 60 sitemap URLs. The current tree still contains 63 production HTML
+pages and 60 sitemap URLs. Re-run these commands after any content or tooling
+change to establish a current baseline:
 
 ```bash
 python3 scripts/validate-site.py
@@ -592,7 +596,7 @@ scripts. Node.js QA runners (`.mjs`) also live here. All filenames must be
 kebab-case. Scripts are run manually from the command line or invoked from
 `post-merge.sh`; they are never served to browsers.
 
-Script categories (last updated 2026-08-23 — all 66 scripts classified):
+Script categories (last updated 2026-08-23; describes what each script does, by side-effect type). As of 2026-08-30, most of the scripts named below have moved to `scripts/archive/`; see `scripts/README.md` for which ones are still active in `scripts/` itself:
 
 - **Validators / read-only** (exit non-zero on regressions; safe for CI):
   `validate-site.py`, `check-links.py`, `audit-assets.py`,
@@ -600,7 +604,7 @@ Script categories (last updated 2026-08-23 — all 66 scripts classified):
   `check-glee-dark-coverage.py`, `check-mtb-version.py`,
   `responsive-audit.py`, `run-viewport-qa.py`,
   `viewport-qa.py`, `site-audit.py`, `sparkle-qa.py`,
-  `check-public-headers.py`, `check-workflow-actions.py`;
+  `check-public-headers.py`, `check-workflow-actions.py`, `check-csp.py`;
   `responsive-qa.mjs` (Node/Playwright read-only QA runner);
   `post-merge.sh` (read-only integrity check after merges)
 - **Index / feed / report builders** (regenerate data or output files):
@@ -627,12 +631,13 @@ Script categories (last updated 2026-08-23 — all 66 scripts classified):
 - **Image pipeline** (WebP conversion; skips existing output files):
   `png-to-webp.py`, `convert-hero-webp.py`, `convert-gpt-icons-webp.py`
 - **Governance and generation**:
-  `push-to-github.py`, `cross-site-sync.py`, `release-mtb.py`
+  `push-to-github.py`, `cross-site-sync.py`, `release-mtb.py`,
+  `csp.py`, `generate-csp.py`
 - **Local development**:
-  `serve-site.py` — no-cache local static-site server for Replit and browser QA
-- **⛔ Retired — exit 1; do not re-run** (one-shot mutators whose
+  `serve-site.py` - no-cache local static-site server for Replit and browser QA
+- **Retired - exit 1; do not re-run** (one-shot mutators whose
   preconditions no longer hold; re-running would corrupt or double-inject):
-  `inject-sparkle-loader.py` (sparkle-loader.js merged into app.js — 2026-05-28)
+  `inject-sparkle-loader.py` (sparkle-loader.js merged into app.js, 2026-05-28)
 
 When adapting a script for a sibling repo, update these per-site constants:
 `SITE` / `SITE_ORIGIN`, `GA4_ID`, `EXPECTED_THEME_COLOR`, any hardcoded
@@ -665,7 +670,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->64<!-- /STAT:SCRIPTS-PY --> Python scripts (63 active, 1 retired exit-1 stub) + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`) | Updated 2026-08-23; see Script categories above for full classification |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->22<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-08-30; see `scripts/README.md` for the current active/archive classification (supersedes the counts in Script categories below) |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
@@ -677,14 +682,35 @@ baseline -- update it here when the inventory changes materially.
 - `assets/data/icon-map.json` -- slug-to-icon-path registry for GPT tool icons
 
 **Glee-fully-specific scripts not on siblings:**
-`activate-icons.py`, `add-toolbox-to-footer.py`, `check-accent-contrast.py`,
+Active: `check-accent-contrast.py`, `check-glee-dark-coverage.py`,
+`check-public-headers.py`, `check-workflow-actions.py`, `run-viewport-qa.py`,
+`serve-site.py`, `sparkle-qa.py`, `sync-css-version.py`, `sync-image-alt.py`,
+`sync-foundation-files.py`, `sync-portfolio-stats.py`, `sync-social-card.py`,
+`sync-sparkle-fallback.py`.
+`activate-icons.py`, `add-toolbox-to-footer.py`, `add-noreferrer.py`,
 `convert-gpt-icons-webp.py`, `fix-audit-2026-05-12.py`,
-`fix-placeholder-gpt-links.py`, `generate-illustrations.py`,
-`inject-gpt-icon-picture.py`, `inject-keep-exploring.py`,
-`inject-showcase-footer.py`, `inject-showcase-subnav.py`,
-`inject-toolette-hub.py`,
-`reclassify-construction-banners.py`, `run-viewport-qa.py`,
-`sync-portfolio-stats.py`, `update-card-srcsets.py`, `wire-illustrations.py`.
+`fix-footer-nav-2026-07-20.py`, `fix-placeholder-gpt-links.py`,
+`generate-illustrations.py`, `inject-gpt-icon-picture.py`,
+`inject-keep-exploring.py`, `inject-showcase-footer.py`,
+`inject-showcase-subnav.py`, `inject-toolette-hub.py`,
+`reclassify-construction-banners.py`, `update-card-srcsets.py`, `viewport-qa.py`,
+and `wire-illustrations.py` were also Glee-fully-specific but are
+reference-only or retired as of 2026-08-30 -- see `scripts/README.md`,
+they now live in `scripts/archive/` and are no longer part of the active
+toolchain.
+
+**Using `scripts/`:** `scripts/README.md` classifies every script as active,
+reference-only, or retired -- only active scripts remain at the top level of
+`scripts/`; everything else lives in `scripts/archive/` with the
+classification and rationale recorded there. Use `scripts/audit-site.py`
+for the canonical site audit, `scripts/validate-site.py` for structural
+validation, and `scripts/check-links.py`/`scripts/responsive-qa.mjs` for
+link and responsive QA. Do not run an archived script without reading its
+header and confirming its target paths still apply -- several were written
+for an earlier repo layout or reference sibling-site constants. This
+convention was ported from `askjamie/scripts/README.md`; see
+`overkill-hill/docs/sxs-infrastructure-audit-2026-08-29.md` for the full
+classification evidence.
 
 
 ---

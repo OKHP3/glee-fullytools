@@ -53,6 +53,18 @@ Our suite shows that structure can be playful, creativity can be systematic, and
   python3 scripts/validate-site.py  &&  python3 scripts/check-links.py
   ```
   Exit 0 = safe to publish.
+* **Mermaid runtime:** the `ecosystem/` and `universe/` diagrams run on
+  Mermaid, vendored locally at `assets/vendor/mermaid/` (not loaded from a
+  CDN). `assets/vendor/mermaid/VERSION` pins the exact release; a daily
+  `mermaid-version-watch` GitHub Action compares it against the latest npm
+  release and opens/updates a tracking issue when the vendored copy falls
+  behind -- re-vendoring is a deliberate, reviewed step, never automatic.
+  `scripts/validate-site.py` checks the VERSION pin against the vendored
+  bundle and that every page with a live diagram carries a CSP class that
+  allows Mermaid's runtime-generated inline styles (see `scripts/csp.py`).
+  Every page's CSP is now enforced via a per-page <meta> tag
+  (`scripts/generate-csp.py`) -- previously only defined, unenforced, in
+  `_headers`, which GitHub Pages does not serve.
 * **Rebuild search/feed/icon map after content edits:**
   ```bash
   python3 scripts/build-search-index.py

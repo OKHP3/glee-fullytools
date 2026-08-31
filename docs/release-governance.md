@@ -57,6 +57,11 @@ The repository’s current local release commands are listed in
 `docs/deployment.md`. Generated-output checks must remain check-only in CI;
 CI must not silently repair committed files.
 
+The landscape social-card check is a release gate: it verifies the approved
+PNG is 1200×630 and that all published social-preview pages point to it with
+the declared dimensions and alt metadata. `offline.html` is intentionally
+noindex and excluded from this page-family check.
+
 ## Desired branch-protection settings
 
 The owner-side `main` rule should be configured with:
@@ -77,19 +82,31 @@ and rechecks them in GitHub.
 
 ## Current observed GitHub settings
 
-Read-only repository inspection on 2026-08-23 found:
+Repository inspection rechecked on 2026-08-31 found:
 
 - Default branch: `main`
 - Visibility: public
 - Pages source: GitHub Actions workflow, branch `main`, root path
 - Custom domain: `glee-fully.tools`
 - HTTPS enforcement: enabled
-- Branch protection for `main`: **not configured** (`Branch not protected`)
+- Branch protection for `main`: **configured and active**
+- Pull requests: required before merging
+- Required approving reviews: `1`, including a code-owner approval
+- Stale approvals: dismissed when new commits are pushed
+- Required conversations: all conversations must be resolved
+- Required status checks:
+  - `Validate site HTML, links, and structure`
+  - `Responsive viewport QA (all pages × 8 viewports)`
+  - `Sparkle banner smoke test (5 pages)`
+- Branch freshness: required; the branch must be up to date before merging
+- Force pushes: blocked
+- Branch deletion: blocked
+- Administrator enforcement: enabled
 
-Therefore the current release path has repository-owned workflow guardrails and
-CODEOWNERS coverage, but it still permits direct pushes until the owner enables
-the desired `main` branch rule. Pages deployment must not be described as
-requiring PR approval until that owner-side setting is verified.
+The verified branch rule now blocks routine direct pushes and makes the
+documented pull-request release path enforceable. Emergency bypasses remain an
+owner decision and must be recorded and followed by the same validation and
+release review.
 
 ## Dependency update cadence
 
