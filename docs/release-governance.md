@@ -47,6 +47,14 @@ names:
 | Viewport QA | `Responsive viewport QA (all pages × 8 viewports)` |
 | Sparkle Banner QA | `Sparkle banner smoke test (5 pages)` |
 
+The Viewport QA and Sparkle Banner QA workflows intentionally have no
+`paths` or `paths-ignore` filters. They run for every pull request targeting
+`main`, so documentation- and governance-only pull requests still receive
+completed successful statuses for the required browser checks. A pull request
+that changes HTML, CSS, JavaScript, or `assets/data/sparkle.json` runs the same
+full browser jobs; do not restore path filtering to optimize these required
+checks.
+
 The Pages workflow intentionally triggers on `push` to `main` and
 `workflow_dispatch`, not on pull requests. Its
 `Validate release commit and build Pages artifact` job is therefore a
@@ -56,6 +64,13 @@ must prevent deployment because the deploy job depends on it.
 The repository’s current local release commands are listed in
 `docs/deployment.md`. Generated-output checks must remain check-only in CI;
 CI must not silently repair committed files.
+
+GitHub verification on 2026-08-31 confirmed the workflow-only pull request
+that introduced this policy completed all three required checks successfully.
+The subsequent protected release pull request also completed the three checks
+successfully, while the earlier governance-only pull request (before this
+policy) had no browser-check statuses. This confirms both the repair and the
+failure mode it prevents.
 
 The landscape social-card check is a release gate: it verifies the approved
 PNG is 1200×630 and that all published social-preview pages point to it with
