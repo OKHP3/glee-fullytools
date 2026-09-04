@@ -41,6 +41,10 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 - **Offline shell** — Versioned same-origin service-worker cache with an
   explicit offline fallback page; third-party resources remain outside the
   cache boundary.
+- **Resilient web behavior (2026-09-04)** — `scripts/resilience-qa.py` records
+  static crawler/installability checks, Chromium/Firefox/WebKit journeys,
+  offline/reconnect lifecycle evidence, and blocked-third-party fallback
+  behavior. See [`docs/resilience.md`](resilience.md).
 - **Landscape social card (2026-08-22)** — Approved 1200×630 branded card is
   referenced by Open Graph and Twitter metadata across all published page
   families; source templates remain parameterized.

@@ -15,3 +15,15 @@ even though the shared setup succeeds.
 **How to apply:** Reuse the viewport runner’s setup in browser QA scripts, and
 keep the real screen-reader limitation separate from accessibility-tree
 observations.
+
+The Chromium helper only supplies the local `libgbm.so.1` workaround. Firefox
+and WebKit also require their Playwright system dependencies; the full matrix
+is expected to run in CI after `playwright install --with-deps chromium firefox
+webkit`. In this Nix workspace those engines may be present but not launchable.
+
+**Why:** A local full-matrix failure can be a missing host-library condition,
+not a browser assertion or site regression.
+
+**How to apply:** Keep the runner’s missing-engine error explicit, use
+`--static-only` only for fast local checks, and rely on the CI job for the
+three-engine release evidence.

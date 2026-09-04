@@ -26,6 +26,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
+| `resilience-qa.py` | active | Installability, offline lifecycle, cross-browser, crawler, and third-party failure acceptance checks |
 | `serve-site.py` | active | Local preview server |
 | `sparkle-qa.py` | active | Sparkle-loader QA (`.github/workflows/sparkle-qa.yml`) |
 | `sync-foundation-files.py` | active | 3-way sync of theme.css/app.js/mermaid-init.js across the three sibling repos |

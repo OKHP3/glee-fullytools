@@ -16,7 +16,7 @@ jobs:
   validate:
     name: Validate release commit and build Pages artifact
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - name: Checkout exact release commit
         uses: actions/checkout@v7
@@ -45,8 +45,8 @@ jobs:
       - name: Install validator dependency
         run: python3 -m pip install beautifulsoup4 playwright
 
-      - name: Install Chromium for browser release gate
-        run: playwright install --with-deps chromium
+      - name: Install browsers for browser release gate
+        run: playwright install --with-deps chromium firefox webkit
 
       - name: Check generated search index
         run: python3 scripts/build-search-index.py --check
@@ -88,6 +88,9 @@ jobs:
 
       - name: Run browser responsive and asset QA
         run: python3 scripts/run-viewport-qa.py
+
+      - name: Run resilient web behavior QA
+        run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
 
       - name: Verify custom domain and required public files
         run: |

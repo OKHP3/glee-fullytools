@@ -1,0 +1,57 @@
+name: Resilience QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: resilience-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  resilience-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Resilient web behavior (Chromium, Firefox, WebKit)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright
+        run: pip install playwright
+
+      - name: Install browser engines and system dependencies
+        run: playwright install --with-deps chromium firefox webkit
+
+      - name: Start local HTTP server
+        run: python3 scripts/serve-site.py > /tmp/resilience-server.log 2>&1 &
+
+      - name: Wait for server to be ready
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:5000/ > /dev/null && echo "Server ready." && break
+            sleep 0.5
+          done
+          curl -sf http://localhost:5000/ > /dev/null \
+            || { echo "ERROR: server did not start in time"; cat /tmp/resilience-server.log; exit 1; }
+
+      - name: Run resilient web behavior acceptance checks
+        run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
+
+      - name: Upload resilience report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: resilience-qa-report
+          path: assets/audit/resilience-qa-*.json
+          if-no-files-found: error
+          retention-days: 30

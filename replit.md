@@ -48,6 +48,14 @@ available. The authoritative promise and inventory contract is
 
 This gate prevents regressions (deprecated meta tags, broken hrefs, missing metadata, stale search index) from reaching the live GitHub Pages deployment.
 
+The standalone `.github/workflows/resilience-qa.yml` gate runs
+`scripts/resilience-qa.py` with Chromium, Firefox, and WebKit. It proves the
+installability contract, crawler-visible metadata, representative
+online-to-offline navigation, service-worker cache lifecycle, and graceful
+behavior when Google, Ko-fi, Analytics, Arcade, or other external requests
+fail. Read [`docs/resilience.md`](docs/resilience.md) for the exact boundary;
+third-party GPTs and embeds remain online-only.
+
 ## Agent Governance
 
 The file `.agents/agent-skills.md` is the site-specific operating constitution for any AI agent working on this codebase. **Read it before making any changes.**
@@ -85,6 +93,7 @@ python3 scripts/check-links.py
 python3 scripts/audit-site.py --quiet  # advisory report; inspect findings
 python3 scripts/check-accent-contrast.py --strict
 python3 scripts/check-glee-dark-coverage.py --section all --require-both
+python3 scripts/resilience-qa.py --static-only
 ```
 
 If a check reports stale generated output, run the named synchronizer, review

@@ -46,8 +46,9 @@ names:
 | Site Validation | `Validate site HTML, links, and structure` |
 | Viewport QA | `Responsive viewport QA (all pages × 8 viewports)` |
 | Sparkle Banner QA | `Sparkle banner smoke test (5 pages)` |
+| Resilience QA | `Resilient web behavior (Chromium, Firefox, WebKit)` |
 
-The Viewport QA and Sparkle Banner QA workflows intentionally have no
+The Viewport QA, Sparkle Banner QA, and Resilience QA workflows intentionally have no
 `paths` or `paths-ignore` filters. They run for every pull request targeting
 `main`, so documentation- and governance-only pull requests still receive
 completed successful statuses for the required browser checks. A pull request
@@ -117,6 +118,11 @@ Repository inspection rechecked on 2026-08-31 found:
 - Force pushes: blocked
 - Branch deletion: blocked
 - Administrator enforcement: enabled
+
+The resilience workflow is now present and runs on pull requests and releases,
+but its job is not included in this previously observed branch rule yet. The
+owner should add `Resilient web behavior (Chromium, Firefox, WebKit)` to the
+required checks after the workflow has completed once on GitHub.
 
 The verified branch rule now blocks routine direct pushes and makes the
 documented pull-request release path enforceable. Emergency bypasses remain an

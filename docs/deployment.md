@@ -47,6 +47,7 @@ python3 scripts/check-links.py
 python3 scripts/audit-site.py --quiet
 python3 scripts/check-accent-contrast.py --strict
 python3 scripts/check-glee-dark-coverage.py --section all --require-both
+python3 scripts/resilience-qa.py --static-only
 ```
 
 The Pages workflow repeats the required checks and performs browser QA before
@@ -54,7 +55,10 @@ building the artifact. The previous reference to an external
 `publishing-trigger-check` command is not an executable prerequisite in this
 checkout and has been removed from the release contract. The repository
 validation workflows continue to protect HTML, links, responsive layout, and
-sparkle behavior.
+sparkle behavior. The resilience runner is the release proof for installability,
+offline lifecycle, cross-browser behavior, crawler-visible metadata, and
+third-party failure fallback; CI runs its full browser mode after installing
+Chromium, Firefox, and WebKit.
 
 ## Release identity and header delivery
 
