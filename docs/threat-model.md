@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project is a static marketing and navigation website for Glee‑fully Personalizable Tools™, a catalog of custom GPT links arranged in a trunk → branch → tool hierarchy. Production consists of browser-rendered HTML, CSS, and vanilla JavaScript with no application server, database, authentication system, or user account layer in this repo. Public pages load local runtime code from `assets/js/app.js`, optionally load `assets/js/mermaid-init.js` on diagram pages, and trust several external services including Google Analytics, Google Fonts, Ko-fi, Mermaid CDN assets, and one externally hosted game iframe on `/arcade/`.
+This project is a static marketing and navigation website for Glee‑fully Personalizable Tools™, a catalog of custom GPT links arranged in a trunk → branch → tool hierarchy. Production consists of browser-rendered HTML, CSS, and vanilla JavaScript with no application server, database, authentication system, or user account layer in this repo. Public pages load local runtime code from `assets/js/app.js`, optionally load the vendored Mermaid bundle on diagram pages, retain Google Fonts for brand typography, and offer opt-in Google Analytics plus one externally hosted game iframe on `/arcade/`.
 
 Per deployment assumptions, scans should focus on production-reachable browser code and ignore development-only tooling unless production reachability is demonstrated. Because this is a static site, the main security questions are client-side code injection, trust in third-party resources, framing/embed behavior, and accidental exposure of sensitive content in published assets.
 
@@ -10,14 +10,14 @@ Per deployment assumptions, scans should focus on production-reachable browser c
 
 - **Site integrity and visitor trust** — the most important asset is the correctness of published pages and client-side behavior. If an attacker can inject script into the site, they can redirect visitors, alter outbound GPT links, or abuse the brand.
 - **Outbound navigation targets** — the site’s value comes from sending users to intended ChatGPT tools, contact pages, and related properties. Tampering with links or embedded content would directly affect users.
-- **Analytics and publisher integrations** — Google Analytics and Ko-fi are third-party integrations that run in the browser. Their configuration is not highly secret, but compromise of those script supply chains would execute in a trusted page context.
+- **Analytics and publisher integrations** — opt-in Google Analytics runs in the browser, while Ko-fi is outbound navigation only. Analytics configuration is not highly secret, but compromise of its script supply chain would execute in a trusted page context after consent.
 - **Published content inventory** — `assets/data/search-index.json`, metadata, sitemap, and visible page copy represent the site’s public content corpus. They are not confidential, but integrity matters because they are consumed by runtime search and crawlers.
 - **Security policy configuration** — `_headers` is a portable edge-host policy; it is not evidence of headers delivered by GitHub Pages.
 
 ## Trust Boundaries
 
 - **Browser to static origin** — all visitors load untrusted content from the public internet into their browser. Every query parameter, URL fragment, and localStorage value must be treated as attacker-controlled input.
-- **Local site code to third-party origins** — the site loads scripts, fonts, and widgets from Google, Ko-fi, and jsDelivr, and embeds a game from `okhp3.github.io`. These resources are outside the repo’s direct control.
+- **Local site code to third-party origins** — the site retains Google Fonts, can load Google Analytics only after opt-in, and embeds a game from `okhp3.github.io`. Ko-fi and external GPT links are navigations, not widgets. These resources are outside the repo’s direct control.
 - **Published content to runtime search rendering** — `scripts/build-search-index.py` converts repo HTML into `assets/data/search-index.json`, and `assets/js/app.js` renders search results into the DOM. Any unsafe treatment of query strings or indexed text would create a client-side injection path.
 - **Production vs development tooling** — `scripts/`, `.agents/`, `.local/`, `node_modules/`, `.pythonlibs/`, and `assets/templates/` are development artifacts and should normally be excluded from vulnerability reporting unless a production page or deployment process exposes them.
 
@@ -29,6 +29,20 @@ Per deployment assumptions, scans should focus on production-reachable browser c
 - **Usually dev-only areas to ignore** — `scripts/`, `.agents/`, `.local/`, `node_modules/`, `.pythonlibs/`, and `assets/templates/`.
 
 ## Threat Categories
+
+## Privacy and storage boundaries
+
+Analytics is off by default and is dynamically loaded only after a visitor
+chooses the opt-in control on the legal page. The tag is configured without
+Google signals, ad-personalisation signals, or GA4 client-side storage. The
+owner policy is to keep the analytics property retention at 14 months or less;
+static code cannot verify that Google-side setting.
+
+The site’s local storage contains interface preferences, per-page
+work-in-progress dismissals, and the analytics choice. The service worker
+caches only same-origin GET shell resources and navigations. It does not cache
+third-party responses. The Arcade child retains any game state in its own
+origin and is sandboxed from the parent DOM.
 
 ## Deployed versus intended controls
 

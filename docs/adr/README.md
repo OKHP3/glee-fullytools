@@ -13,9 +13,10 @@ close to when a decision is made and updated only to change status — never to 
 |---|---|---|---|
 | [0001](0001-static-html-no-framework.md) | Static HTML over a Frontend Framework | Accepted | 2025-01-01 |
 | [0002](0002-client-side-search-json-index.md) | Client-Side Search with Pre-Built JSON Index | Accepted | 2025-01-01 |
-| [0003](0003-cdn-third-party-resources.md) | CDN-Loaded Third-Party Resources | Accepted | 2025-01-01 |
+| [0003](0003-cdn-third-party-resources.md) | CDN-Loaded Third-Party Resources | Superseded by 0006 | 2025-01-01 |
 | [0004](0004-enforced-csp-headers.md) | Enforced CSP via _headers File | Accepted | 2026-07-20 |
 | [0005](0005-python-build-tooling.md) | Python-Based Build and Maintenance Tooling | Accepted | 2025-01-01 |
+| [0006](0006-privacy-first-third-party-boundaries.md) | Privacy-first Third-party Boundaries | Accepted | 2026-09-04 |
 
 ---
 

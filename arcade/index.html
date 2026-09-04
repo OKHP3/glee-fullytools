@@ -6,7 +6,7 @@
        METADATA: Core Document & Character Set
        ======================================== -->
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://storage.ko-fi.com 'sha256-Gzsw38UFjK1AdJpu0OZACD/U1uqrtr8iNjIZmc9I8gE=' 'sha256-HG7vWo1+9EGJlwPEbMHD1PyidOk0HYEr5NB3mjwOrt0=' 'sha256-PKAw4R0c/+yvUO+RFeF25OmZE2VR3pYEUJAv7ycLN3E='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com ; style-src-attr 'unsafe-hashes' ; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://okhp3.github.io; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'sha256-Gzsw38UFjK1AdJpu0OZACD/U1uqrtr8iNjIZmc9I8gE=' 'sha256-PKAw4R0c/+yvUO+RFeF25OmZE2VR3pYEUJAv7ycLN3E='; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com ; style-src-attr 'unsafe-hashes' ; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://okhp3.github.io; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests" />
     <!-- AUTOGEN:COLOR-SCHEME-INIT -->
     <script>(function(){try{var s=localStorage.getItem('glee-color-scheme');if(s==='dark'||s==='light')document.documentElement.setAttribute('data-color-scheme',s);}catch(e){}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -78,24 +78,8 @@
        ======================================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="/assets/css/theme.css?v=5f18238a" />
-
-    <!-- ========================================
-       Google Analytics (G-89W66VMGPB)
-       ======================================== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      if (document.prerendering) {
-        document.addEventListener('prerenderingchange', function () { gtag('config', 'G-89W66VMGPB'); }, { once: true });
-      } else {
-        gtag('config', 'G-89W66VMGPB');
-      }
-    </script>
+    <link rel="stylesheet" href="/assets/css/theme.css?v=f4debe79" />
 
     <!-- AUTOGEN:JSONLD -->
     <script type="application/ld+json">
@@ -252,12 +236,19 @@
             <aside class="arcade-hero-phone" aria-label="Playable preview of Glee&#8209;fully Chai Chasers">
               <div class="arcade-phone-frame">
                 <iframe src="https://okhp3.github.io/glee-fully-chai-chasers/"
+                        data-external-frame
+                        data-fallback="#arcade-preview-fallback"
+                        data-timeout="8000"
                         title="Glee-fully Chai Chasers playable preview"
                         loading="eager"
                         scrolling="no"
                         allow="autoplay"
                         sandbox="allow-scripts allow-same-origin allow-pointer-lock"
                         referrerpolicy="strict-origin-when-cross-origin"><a href="https://okhp3.github.io/glee-fully-chai-chasers/" target="_blank" rel="noopener noreferrer">Play Glee-fully Chai Chasers in a new tab ↗</a></iframe>
+                <p class="arcade-embed-fallback" id="arcade-preview-fallback" hidden role="status">
+                  The preview is taking a break.
+                  <a href="https://okhp3.github.io/glee-fully-chai-chasers/" target="_blank" rel="noopener noreferrer">Open Chai Chasers in a new tab ↗</a>
+                </p>
               </div>
             </aside>
 
@@ -327,7 +318,7 @@
           <h2 id="fine-print-heading">The important fine print</h2>
         </header>
         <blockquote class="glee-notice">
-          <p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Google Analytics collects limited aggregate data to measure reach only. It does not track gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>
+          <p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Optional site analytics is off by default and, if enabled, measures aggregate reach only — not gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>
         </blockquote>
       </section>
 

@@ -31,6 +31,9 @@ X-Content-Type-Options.
 Retain an enforcing `Content-Security-Policy` in `_headers` as a portable policy
 for a compatible edge host. Do not describe it as active on GitHub Pages.
 Add `frame-src 'self' https://okhp3.github.io` to allow the arcade game iframe.
+The optional analytics path remains allow-listed because it is dynamically
+loaded only after visitor opt-in; Ko-fi is an outbound link and receives no
+script or image permission.
 Run `scripts/check-public-headers.py` after a Pages deployment and treat its
 output as the delivery evidence for the public domain.
 
@@ -41,7 +44,7 @@ script-src 'self' 'unsafe-inline' https://www.googletagmanager.com
            https://www.google-analytics.com https://cdn.jsdelivr.net;
 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 font-src 'self' https://fonts.gstatic.com;
-img-src 'self' data: https://www.google-analytics.com https://storage.ko-fi.com;
+img-src 'self' data:;
 connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com
             https://cdn.jsdelivr.net;
 frame-src 'self' https://okhp3.github.io;

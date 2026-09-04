@@ -20,7 +20,10 @@ as practical.
 ## Notes
 
 This repo is primarily for reference and public brand artifact access.
-No authentication or user data is handled by this static site.
+There is no authentication, first-party database, or contact form. Optional
+Google Analytics is off by default and can be enabled from the legal page;
+email correspondence and third-party GPT/game interactions are handled by
+their respective providers rather than by this static site.
 
 ## Release security ownership
 

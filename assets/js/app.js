@@ -2,6 +2,7 @@
 //  app.js — Shared client-side script (OverKill Hill P³)
 //
 //  Sections (in load order):
+//   0. GLEE     · Optional, opt-in analytics
 //   1. GLOBAL   · Reading-progress bar (article pages)
 //   2. GLOBAL   · DOMContentLoaded: nav, year stamps, theme toggle (OKH only),
 //                 scroll reveal, smooth anchors
@@ -11,6 +12,94 @@
 //                 (search.js consolidated here 2026-05-03)
 //   7. GLOBAL   · Service-worker registration for the offline shell
 // ════════════════════════════════════════════════════════════════════════════
+
+// ── 0. Optional, opt-in analytics ───────────────────────────────────────────
+// Analytics is deliberately absent from page markup. It is loaded only after a
+// visitor opts in from the legal page, and client storage is disabled in GA4.
+(function () {
+  const MEASUREMENT_ID = "G-89W66VMGPB";
+  const CONSENT_KEY = "glee-analytics-consent";
+  const SCRIPT_SRC =
+    "https://www.googletagmanager.com/gtag/js?id=" + MEASUREMENT_ID;
+
+  function readConsent() {
+    try {
+      return localStorage.getItem(CONSENT_KEY);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeConsent(value) {
+    try {
+      localStorage.setItem(CONSENT_KEY, value);
+    } catch (_) {}
+  }
+
+  function loadAnalytics() {
+    if (document.querySelector('script[data-glee-analytics]')) return;
+    window["ga-disable-" + MEASUREMENT_ID] = false;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag("js", new Date());
+    window.gtag("config", MEASUREMENT_ID, {
+      client_storage: "none",
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = SCRIPT_SRC;
+    script.dataset.gleeAnalytics = "true";
+    document.head.appendChild(script);
+  }
+
+  function setAnalyticsConsent(value) {
+    writeConsent(value);
+    if (value === "granted") {
+      loadAnalytics();
+    } else {
+      window["ga-disable-" + MEASUREMENT_ID] = true;
+    }
+    document.querySelectorAll("[data-analytics-status]").forEach((status) => {
+      status.textContent =
+        value === "granted"
+          ? "Optional analytics is on for this browser."
+          : "Optional analytics is off for this browser.";
+    });
+  }
+
+  window.gleeAnalytics = {
+    enable: () => setAnalyticsConsent("granted"),
+    disable: () => setAnalyticsConsent("denied"),
+    status: readConsent,
+  };
+
+  if (readConsent() === "granted") loadAnalytics();
+
+  function initAnalyticsControls() {
+    document.querySelectorAll("[data-analytics-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setAnalyticsConsent(button.dataset.analyticsAction);
+      });
+    });
+    const consent = readConsent();
+    document.querySelectorAll("[data-analytics-status]").forEach((status) => {
+      status.textContent =
+        consent === "granted"
+          ? "Optional analytics is on for this browser."
+          : "Optional analytics is off for this browser.";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAnalyticsControls);
+  } else {
+    initAnalyticsControls();
+  }
+}());
 
 // ── 1. Reading progress bar ─────────────────────────────────────────────────
 (function () {
@@ -935,6 +1024,36 @@ document.addEventListener("DOMContentLoaded", () => {
       // Offline support is progressive enhancement; normal browsing is unaffected.
     });
   });
+}());
+
+// ── 8. External frame fallback ──────────────────────────────────────────────
+// Cross-origin iframe errors are not consistently surfaced by browsers, so a
+// short timeout gives visitors a useful direct-link fallback as well.
+(function () {
+  function initExternalFrameFallbacks() {
+    document.querySelectorAll("[data-external-frame]").forEach((frame) => {
+      const fallbackSelector = frame.getAttribute("data-fallback");
+      if (!fallbackSelector) return;
+      const fallback = document.querySelector(fallbackSelector);
+      if (!fallback) return;
+      const showFallback = () => {
+        fallback.hidden = false;
+        fallback.classList.add("visible");
+      };
+      frame.addEventListener("load", () => {
+        fallback.hidden = true;
+        fallback.classList.remove("visible");
+      }, { once: true });
+      frame.addEventListener("error", showFallback, { once: true });
+      window.setTimeout(showFallback, Number(frame.dataset.timeout || 8000));
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initExternalFrameFallbacks);
+  } else {
+    initExternalFrameFallbacks();
+  }
 }());
 
 // ── 6. Sparkle banner loader ─────────────────────────────────────────────────

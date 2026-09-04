@@ -71,3 +71,10 @@ It is non-blocking because these missing headers are a known host limitation;
 an owner reviewing a release must treat any missing-header output as a finding,
 not as a passing security control. A future hosting change must re-run the
 smoke test before claiming those headers are deployed.
+
+Each published HTML page also carries a generated page-level CSP `<meta>` tag.
+That tag is enforced by the browser for the page itself and is separate from
+HTTP response headers. It allows Google Fonts and the optional, visitor-enabled
+Google Analytics path, while only Arcade page classes receive the
+`okhp3.github.io` frame permission. The page-level policy does not turn
+`_headers` into a GitHub Pages response-header configuration.

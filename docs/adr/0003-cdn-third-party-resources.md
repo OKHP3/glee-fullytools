@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-0006](0006-privacy-first-third-party-boundaries.md)
 
 ## Date
 

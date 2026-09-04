@@ -22,15 +22,15 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 - **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
 - **CSP hardening** — refactor inline script handlers into external JS files
   so `script-src 'unsafe-inline'` can eventually be removed from the configured
-  CSP policy. The current policy is declared in `_headers`; production header
-  delivery still requires explicit hosting verification.
-- **Self-hosted fonts** — move Google Fonts to `assets/fonts/` to eliminate
-  the third-party privacy boundary and reduce DNS lookups.
+  CSP policy. Per-page CSP meta policies are enforced by browsers; the portable
+  policy in `_headers` still requires a compatible host for HTTP response
+  delivery.
 - **Organization JSON-LD `sameAs`** — add social profile URLs.
 
 ## Later
 - Expand toolette showcase with additional case entries
-- GA disclosure in `legal/index.html` (GDPR/CCPA best practice)
+- Review the optional analytics property retention setting (the owner policy is
+  14 months or less) and keep the public data-flow inventory current.
 - Cross-link more explicitly between Glee-fully Tools, OverKill Hill, and AskJamie™
 
 ## Shipped

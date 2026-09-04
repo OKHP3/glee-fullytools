@@ -115,14 +115,9 @@ def build_policies() -> dict[str, str]:
     # `grep -rhoE 'src="https://[^"/]+' --include=*.html .` and the CSS
     # equivalent for url(https://...)); og:image/twitter:image are
     # same-origin (glee-fully.tools) and already covered by 'self'.
-    # storage.ko-fi.com is allowed in script-src for a future Ko-fi
-    # widget, but no page currently loads that widget script or an
-    # image from it, so it is intentionally left out of img-src too --
-    # add it here (and to the loop below) if/when a live Ko-fi badge or
-    # widget image actually ships.
     common = (
         "default-src 'self'; "
-        "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://storage.ko-fi.com "
+        "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com "
         + " ".join(sorted(hashes["standard"]))
         + "; script-src-attr 'none'; "
         "style-src 'self' https://fonts.googleapis.com "
@@ -169,7 +164,7 @@ def build_policies() -> dict[str, str]:
         # img-src rationale: see comment above `common`, near the top of this function.
         policy = (
             "default-src 'self'; "
-            "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://storage.ko-fi.com "
+            "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com "
             + " ".join(sorted(hashes[kind]))
             + "; script-src-attr 'none'; "
             + style_directives
@@ -205,7 +200,7 @@ def build_edge_policy() -> str:
         scripts.update(page_scripts)
     return (
         "default-src 'self'; "
-        "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://storage.ko-fi.com "
+        "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com "
         + " ".join(sorted(scripts))
         + "; script-src-attr 'none'; "
         "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; "
