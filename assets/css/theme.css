@@ -243,6 +243,10 @@ body {
   overflow-x: hidden;
 }
 
+html.okh-search-open {
+  overflow: hidden;
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -763,7 +767,6 @@ button {
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
   border-color: var(--okh-orange, #c46a2c);
-  outline: none;
 }
 .theme-toggle .tt-icon {
   width: 1rem;
@@ -6333,6 +6336,27 @@ html[data-theme="light"] .glee-main .footer-bottom {
   background: #1a1f3c;
   overflow: hidden;
 }
+
+/* Arcade page callout and closing actions. Keep these in the shared stylesheet
+   so the enforced page CSP does not discard the page's inline presentation. */
+.arcade-callout {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg, 1.25rem);
+  padding: 1.75rem 2rem;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.arcade-callout .feature-list {
+  margin: 0;
+}
+
+.arcade-closing-cta {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
 .arcade-embed-note {
   text-align: center;
   font-size: .9rem;

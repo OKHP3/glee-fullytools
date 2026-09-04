@@ -75,6 +75,9 @@ jobs:
         # libgbm.so.1 stub (harmless on Ubuntu where --disable-gpu is used).
         run: python3 scripts/run-viewport-qa.py
 
+      - name: Run inclusive accessibility QA
+        run: python3 scripts/inclusive-accessibility-qa.py
+
       - name: Upload QA report and failure screenshots
         uses: actions/upload-artifact@v7
         if: always()
@@ -82,5 +85,6 @@ jobs:
           name: viewport-qa-report
           path: |
             assets/audit/viewport-qa-full-*.json
+            assets/audit/inclusive-accessibility-qa-*.json
             assets/audit/screenshots/
           retention-days: 30

@@ -22,6 +22,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `check-workflow-actions.py` | active | GitHub Actions pin/version check (has its own test coverage) |
 | `csp.py` | active | Canonical CSP policy generation module |
 | `generate-csp.py` | active | Apply CSP policies to every page |
+| `inclusive-accessibility-qa.py` | active | Browser evidence for inclusive keyboard, search, fallback, and constrained-environment journeys |
 | `post-merge.sh` | active | Post-merge rebuild and validation hook |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |

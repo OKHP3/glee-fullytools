@@ -1,0 +1,778 @@
+{
+  "date": "2026-09-04",
+  "base_url": "http://localhost:5000",
+  "purpose": "Current browser evidence for inclusive public-hub journeys",
+  "automated_check_count": 16,
+  "passed": 16,
+  "failed": 0,
+  "browser": "Chromium via Playwright",
+  "assistive_technology_note": "Chrome accessibility-tree roles and names were captured. Real VoiceOver/NVDA speech output was not available in this Linux runner and is reported as a manual limitation.",
+  "page_evidence": {
+    "home": {
+      "path": "/",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "Figcaption",
+          "InlineTextBox",
+          "LineBreak",
+          "RootWebArea",
+          "StaticText",
+          "article",
+          "banner",
+          "button",
+          "contentinfo",
+          "emphasis",
+          "figure",
+          "generic",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "sectionheader"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": false
+        },
+        "named_examples": [
+          "Primary navigation"
+        ]
+      }
+    },
+    "toolbox": {
+      "path": "/toolbox/",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "InlineTextBox",
+          "LineBreak",
+          "RootWebArea",
+          "StaticText",
+          "article",
+          "banner",
+          "button",
+          "contentinfo",
+          "emphasis",
+          "generic",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "sectionheader"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": false
+        },
+        "named_examples": [
+          "Breadcrumb",
+          "Primary navigation"
+        ]
+      }
+    },
+    "search": {
+      "path": "/search/",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "InlineTextBox",
+          "LabelText",
+          "LineBreak",
+          "ListMarker",
+          "RootWebArea",
+          "StaticText",
+          "banner",
+          "button",
+          "contentinfo",
+          "emphasis",
+          "generic",
+          "group",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "search",
+          "searchbox",
+          "status"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": true
+        },
+        "named_examples": [
+          "Breadcrumb",
+          "Primary navigation",
+          "Search results",
+          "Tips"
+        ]
+      }
+    },
+    "arcade": {
+      "path": "/arcade/",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "Iframe",
+          "InlineTextBox",
+          "LineBreak",
+          "RootWebArea",
+          "StaticText",
+          "article",
+          "banner",
+          "blockquote",
+          "button",
+          "complementary",
+          "contentinfo",
+          "emphasis",
+          "generic",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "sectionheader"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": false
+        },
+        "named_examples": [
+          "Breadcrumb",
+          "Primary navigation"
+        ]
+      }
+    },
+    "404": {
+      "path": "/404.html",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "InlineTextBox",
+          "LineBreak",
+          "RootWebArea",
+          "StaticText",
+          "article",
+          "banner",
+          "button",
+          "contentinfo",
+          "emphasis",
+          "generic",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "sectionheader"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": false
+        },
+        "named_examples": [
+          "Primary navigation"
+        ]
+      }
+    },
+    "construction": {
+      "path": "/toolbox/07-identity-known/07g-self-fixer/",
+      "http_status": 200,
+      "horizontal_overflow_px": 0,
+      "page_errors": [],
+      "console_errors": [],
+      "expected_third_party_console_blocks": [],
+      "accessibility_tree": {
+        "roles": [
+          "InlineTextBox",
+          "LineBreak",
+          "ListMarker",
+          "RootWebArea",
+          "StaticText",
+          "article",
+          "banner",
+          "button",
+          "contentinfo",
+          "dialog",
+          "emphasis",
+          "generic",
+          "heading",
+          "image",
+          "link",
+          "list",
+          "listitem",
+          "main",
+          "navigation",
+          "none",
+          "paragraph",
+          "region",
+          "sectionheader",
+          "status",
+          "strong"
+        ],
+        "landmarks_present": {
+          "main": true,
+          "navigation": true,
+          "contentinfo": true,
+          "search": false
+        },
+        "named_examples": [
+          "Breadcrumb",
+          "Primary navigation"
+        ]
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "home: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "Figcaption",
+            "InlineTextBox",
+            "LineBreak",
+            "RootWebArea",
+            "StaticText",
+            "article",
+            "banner",
+            "button",
+            "contentinfo",
+            "emphasis",
+            "figure",
+            "generic",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "sectionheader"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": false
+          },
+          "named_examples": [
+            "Primary navigation"
+          ]
+        }
+      }
+    },
+    {
+      "name": "toolbox: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/toolbox/",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "InlineTextBox",
+            "LineBreak",
+            "RootWebArea",
+            "StaticText",
+            "article",
+            "banner",
+            "button",
+            "contentinfo",
+            "emphasis",
+            "generic",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "sectionheader"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": false
+          },
+          "named_examples": [
+            "Breadcrumb",
+            "Primary navigation"
+          ]
+        }
+      }
+    },
+    {
+      "name": "search: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/search/",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "InlineTextBox",
+            "LabelText",
+            "LineBreak",
+            "ListMarker",
+            "RootWebArea",
+            "StaticText",
+            "banner",
+            "button",
+            "contentinfo",
+            "emphasis",
+            "generic",
+            "group",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "search",
+            "searchbox",
+            "status"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": true
+          },
+          "named_examples": [
+            "Breadcrumb",
+            "Primary navigation",
+            "Search results",
+            "Tips"
+          ]
+        }
+      }
+    },
+    {
+      "name": "arcade: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/arcade/",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "Iframe",
+            "InlineTextBox",
+            "LineBreak",
+            "RootWebArea",
+            "StaticText",
+            "article",
+            "banner",
+            "blockquote",
+            "button",
+            "complementary",
+            "contentinfo",
+            "emphasis",
+            "generic",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "sectionheader"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": false
+          },
+          "named_examples": [
+            "Breadcrumb",
+            "Primary navigation"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Arcade: outbound links preserve safe new-tab handling",
+      "status": "pass",
+      "details": {
+        "checked": 14,
+        "links": [
+          {
+            "href": "https://okhp3.github.io/glee-fully-chai-chasers/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://github.com/OKHP3/glee-fully-chai-chasers",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://okhp3.github.io/glee-fully-chai-chasers/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://github.com/OKHP3/glee-fully-chai-chasers",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://overkillhill.com/projects/glee-fully-chai-chasers/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-slides/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-video/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://okhp3.github.io/glee-fully-chai-chasers/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://ko-fi.com/gleefullypersonalizabletools",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://www.linkedin.com/company/overkillhillp3",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://facebook.com/OverKillHillP3/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://x.com/OverKillHillP3",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://www.youtube.com/@Glee-fullyTools",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          },
+          {
+            "href": "https://replit.com/refer/overkillhillp3/",
+            "rel": [
+              "noopener",
+              "noreferrer"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "404: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/404.html",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "InlineTextBox",
+            "LineBreak",
+            "RootWebArea",
+            "StaticText",
+            "article",
+            "banner",
+            "button",
+            "contentinfo",
+            "emphasis",
+            "generic",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "sectionheader"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": false
+          },
+          "named_examples": [
+            "Primary navigation"
+          ]
+        }
+      }
+    },
+    {
+      "name": "404: not-found message and recovery links are exposed",
+      "status": "pass",
+      "details": {
+        "heading": "This page isn’t in the toolbox (yet).",
+        "hasRecoveryLinks": true
+      }
+    },
+    {
+      "name": "construction: baseline loads without browser errors",
+      "status": "pass",
+      "details": {
+        "path": "/toolbox/07-identity-known/07g-self-fixer/",
+        "http_status": 200,
+        "horizontal_overflow_px": 0,
+        "page_errors": [],
+        "console_errors": [],
+        "expected_third_party_console_blocks": [],
+        "accessibility_tree": {
+          "roles": [
+            "InlineTextBox",
+            "LineBreak",
+            "ListMarker",
+            "RootWebArea",
+            "StaticText",
+            "article",
+            "banner",
+            "button",
+            "contentinfo",
+            "dialog",
+            "emphasis",
+            "generic",
+            "heading",
+            "image",
+            "link",
+            "list",
+            "listitem",
+            "main",
+            "navigation",
+            "none",
+            "paragraph",
+            "region",
+            "sectionheader",
+            "status",
+            "strong"
+          ],
+          "landmarks_present": {
+            "main": true,
+            "navigation": true,
+            "contentinfo": true,
+            "search": false
+          },
+          "named_examples": [
+            "Breadcrumb",
+            "Primary navigation"
+          ]
+        }
+      }
+    },
+    {
+      "name": "mobile nav: Enter opens and Escape returns focus",
+      "status": "pass",
+      "details": {
+        "opened": true,
+        "closed_and_focus_returned": true
+      }
+    },
+    {
+      "name": "search trigger: visible keyboard focus ring",
+      "status": "pass",
+      "details": {
+        "outlineStyle": "solid",
+        "outlineWidth": "2px"
+      }
+    },
+    {
+      "name": "global search: accented input and announcement",
+      "status": "pass",
+      "details": {
+        "open": "true",
+        "status": "8 results for résumé",
+        "resultCount": 8,
+        "firstHref": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "statusRole": "status",
+        "statusLive": "polite",
+        "listItems": 8,
+        "focusReturned": true
+      }
+    },
+    {
+      "name": "construction gate: focus trap and dismissal recovery",
+      "status": "pass",
+      "details": {
+        "initial_focus": true,
+        "forward_focus": true,
+        "reverse_focus": true,
+        "hidden_and_main_focused": true
+      }
+    },
+    {
+      "name": "200% layout zoom: representative routes stay within viewport",
+      "status": "pass",
+      "details": {
+        "method": "640px layout viewport equivalent to 200% zoom from 1280px CSS width",
+        "overflow_px": {
+          "home": 0,
+          "toolbox": 0,
+          "search": 0,
+          "arcade": 0,
+          "404": 0
+        }
+      }
+    },
+    {
+      "name": "reduced motion: content is visible without reveal delay",
+      "status": "pass",
+      "details": {
+        "revealCount": 3,
+        "visibleRevealCount": 3,
+        "reducedTransitionCount": 243
+      }
+    },
+    {
+      "name": "storage denied: hub initializes and toggle remains usable",
+      "status": "pass",
+      "details": {
+        "controls_present": true,
+        "page_errors": []
+      }
+    },
+    {
+      "name": "JavaScript disabled: search fallback and Enter recovery",
+      "status": "pass",
+      "details": {
+        "query": "résumé",
+        "directoryVisible": true,
+        "directoryLinks": 14,
+        "formAction": "/search/",
+        "formMethod": "get",
+        "overflow": 0
+      }
+    }
+  ]
+}

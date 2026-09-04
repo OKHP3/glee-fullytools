@@ -80,41 +80,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="/assets/css/theme.css?v=4356abd1" />
-
-    <!-- ========================================
-       ARCADE PAGE SCOPED FIXES (2026-08-09)
-       theme.css in this repo is a synced mirror of OKHP3/OverKill-Hill's
-       canonical stylesheet. Selectors added there get overwritten on the
-       next sync, so page-specific fixes live here inline until the durable
-       version lands upstream.
-
-       Bug: --color-fg auto-switches to a near-white value on
-       prefers-color-scheme: dark (see .glee-main dark-mode token block in
-       theme.css), independent of <html data-theme>, which drives the
-       body's actual background gradient and defaults to light. A visitor
-       with an OS dark preference and no manual toggle gets near-white
-       text on this section's light background. .arcade-callout pairs
-       --color-fg with --color-surface explicitly so they always move
-       together, regardless of which theme mechanism last touched them.
-       ======================================== -->
-    <style>
-      .arcade-callout {
-        background: var(--color-surface);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-lg, 1.25rem);
-        padding: 1.75rem 2rem;
-        max-width: 40rem;
-        margin: 0 auto;
-      }
-      .arcade-callout .feature-list {
-        margin: 0;
-      }
-      .arcade-closing-cta {
-        margin-top: 1.5rem;
-        text-align: center;
-      }
-    </style>
+    <link rel="stylesheet" href="/assets/css/theme.css?v=5f18238a" />
 
     <!-- ========================================
        Google Analytics (G-89W66VMGPB)

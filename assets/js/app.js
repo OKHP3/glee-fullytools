@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
       themeToggle.setAttribute("aria-label", STATE_ARIA[currentState]);
       themeToggle.innerHTML = STATE_ICONS[currentState];
       applyThemeState(currentState);
-      localStorage.setItem("okh-theme", currentState);
+      try { localStorage.setItem("okh-theme", currentState); } catch (_) {}
     });
 
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
@@ -229,11 +229,13 @@ document.addEventListener("DOMContentLoaded", () => {
       schemeToggle.setAttribute("aria-label", SCH_ARIA[schemeState]);
       schemeToggle.innerHTML = SCH_ICONS[schemeState];
       applySchemeState(schemeState);
-      if (schemeState === "auto") {
-        localStorage.removeItem(LS_KEY);
-      } else {
-        localStorage.setItem(LS_KEY, schemeState);
-      }
+      try {
+        if (schemeState === "auto") {
+          localStorage.removeItem(LS_KEY);
+        } else {
+          localStorage.setItem(LS_KEY, schemeState);
+        }
+      } catch (_) {}
     });
   }
 
@@ -490,19 +492,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ----- scoring -----
+  function normalizeSearchText(value) {
+    return String(value || "")
+      .normalize("NFKD")
+      .replace(/\p{M}/gu, "")
+      .toLowerCase();
+  }
   function tokenize(q) {
-    return q.toLowerCase().split(/[^a-z0-9'-]+/i).filter((t) => t.length >= 2);
+    return normalizeSearchText(q)
+      .split(/[^\p{L}\p{N}'-]+/gu)
+      .filter((t) => t.length >= 2);
   }
   function entrySection(entry) {
     return entry.section || entry.category || "Page";
   }
   function scoreEntry(entry, tokens) {
     if (!tokens.length) return 0;
-    const title    = (entry.title       || "").toLowerCase();
-    const desc     = (entry.description || "").toLowerCase();
-    const headings = (entry.headings    || []).join(" ").toLowerCase();
-    const body     = (entry.body        || "").toLowerCase();
-    const url      = (entry.url         || "").toLowerCase();
+    const title    = normalizeSearchText(entry.title);
+    const desc     = normalizeSearchText(entry.description);
+    const headings = normalizeSearchText((entry.headings || []).join(" "));
+    const body     = normalizeSearchText(entry.body);
+    const url      = normalizeSearchText(entry.url);
 
     let score = 0;
     let allHit = true;
@@ -548,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function snippetFor(entry, tokens, length) {
     const body = entry.body || entry.description || "";
     if (!body) return "";
-    const lower = body.toLowerCase();
+    const lower = normalizeSearchText(body);
     let bestIdx = -1;
     for (const t of tokens) {
       const i = lower.indexOf(t);
@@ -604,7 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
           '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
         "</div>" +
         '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
-        '<div class="okh-search-status" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden;white-space:nowrap"></div>' +
+        '<div class="okh-search-status sr-only" role="status" aria-live="polite" aria-atomic="true"></div>' +
         '<div class="okh-search-footer">' +
           '<div class="okh-search-keys">' +
             "<span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>" +
@@ -658,14 +668,21 @@ document.addEventListener("DOMContentLoaded", () => {
     function open() {
       if (overlay.dataset.open === "true") return;
       lastFocus = document.activeElement;
+      if (!lastFocus || lastFocus === document.body || lastFocus === document.documentElement) {
+        lastFocus = document.querySelector(".okh-search-trigger");
+      }
       overlay.dataset.open = "true";
-      document.documentElement.style.overflow = "hidden";
-      loadIndex().then((d) => { entries = d; renderEmpty(); });
+      document.documentElement.classList.add("okh-search-open");
+      loadIndex().then((d) => {
+        entries = d;
+        if (input.value.trim()) render();
+        else renderEmpty();
+      });
       setTimeout(() => input.focus(), 30);
     }
     function close() {
       overlay.dataset.open = "false";
-      document.documentElement.style.overflow = "";
+      document.documentElement.classList.remove("okh-search-open");
       if (lastFocus && typeof lastFocus.focus === "function") {
         try { lastFocus.focus(); } catch (e) { /* ignore */ }
       }
@@ -707,9 +724,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       list.innerHTML = currentResults.map((r) => (
-        '<a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
+        '<div role="listitem"><a class="okh-search-result" href="' + escapeHtml(r.entry.url) + '">' +
           renderResultHtml(r, lastTokens) +
-        "</a>"
+        "</a></div>"
       )).join("");
       if (statusEl) statusEl.textContent = currentResults.length + (currentResults.length === 1 ? " result" : " results") + " for " + q;
       setActive(0);
@@ -886,6 +903,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     input.addEventListener("input", render);
+    const form = root.querySelector("form");
+    if (form) {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        render();
+        input.focus();
+      });
+    }
   }
 
   // ── Bootstrap ────────────────────────────────────────────────────────────
