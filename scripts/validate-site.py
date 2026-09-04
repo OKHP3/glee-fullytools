@@ -676,10 +676,14 @@ def _check_stat_markers_drift(tolerance: int = 2) -> list:
     tool_ettes = [p for p in real if tool_ette_pat.match(p["url"])]
     branches   = [p for p in real if branch_pat.match(p["url"])]
 
+    destination_pattern = re.compile(
+        r"https?://(?:chatgpt\.com|chat\.openai\.com)/g/g-[a-z0-9]+",
+        re.IGNORECASE,
+    )
     gpt_count = 0
     for f in sorted(ROOT.glob("toolbox/*/*/index.html")):
         html_text = f.read_text(encoding="utf-8", errors="replace")
-        if re.search(r"chatgpt\.com|chat\.openai\.com", html_text):
+        if destination_pattern.search(html_text):
             gpt_count += 1
 
     live = {

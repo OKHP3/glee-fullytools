@@ -5,7 +5,7 @@ Reads assets/data/search-index.json and live tool-ette HTML to compute:
   PAGES       — real indexable pages (excludes /assets/ templates, 404, under-construction)
   TOOL_ETTES  — /toolbox/NX-branch/NXx-tool/ URLs
   BRANCHES    — /toolbox/NX-branch/ URLs
-  GPTS        — tool-ette pages that contain a chatgpt.com link
+  GPTS        — tool-ette pages with a non-placeholder ChatGPT destination
 
 Patches about/index.html in two ways:
   1. AUTOGEN block  <!-- AUTOGEN:PORTFOLIO-STATS --> … <!-- /AUTOGEN:PORTFOLIO-STATS -->
@@ -48,10 +48,14 @@ def compute_stats() -> dict:
     tool_ettes = [p for p in real if tool_ette_pat.match(p["url"])]
     branches   = [p for p in real if branch_pat.match(p["url"])]
 
+    destination_pattern = re.compile(
+        r"https?://(?:chatgpt\.com|chat\.openai\.com)/g/g-[a-z0-9]+",
+        re.IGNORECASE,
+    )
     gpt_count = 0
     for f in sorted(REPO.glob("toolbox/*/*/index.html")):
         html = f.read_text(encoding="utf-8")
-        if re.search(r"chatgpt\.com|chat\.openai\.com", html):
+        if destination_pattern.search(html):
             gpt_count += 1
 
     css_lines = sum(1 for _ in THEME_CSS.open(encoding="utf-8"))
@@ -74,8 +78,9 @@ def build_autogen_block(stats: dict) -> str:
         AUTOGEN_START,
         f"          <p>",
         f"            Glee&#8209;fully isn't just a collection of tools — it's a fully",
-        f"            designed system. {p} pages, {t} Tool&#8209;ettes across {b} branches,",
-        f"            {g} Custom GPTs, a shared design language, and a governance model",
+        f"            designed system. {p} indexable pages, {t} catalog Tool&#8209;ettes",
+        f"            across {b} branches, {g} non&#8209;placeholder external destinations,",
+        f"            a shared design language, and a governance model",
         f"            that keeps it all coherent as it grows. Here's the craft underneath",
         f"            the warmth.",
         f"          </p>",

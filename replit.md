@@ -1,6 +1,11 @@
 # Glee-fully Personalizable Tools™
 
-A joyful static website serving as a hub for custom GPTs organized in a "trunk-branch-twig" hierarchy. Part of the OKHP³™ (OverKill Hill P³) universe.
+A joyful static website serving as a public catalog and routing hub for custom
+GPTs organized in a "trunk-branch-twig" hierarchy. It is part of the OKHP³™
+(OverKill Hill P³) universe. The current phase is **active growth and
+refinement**; the hub does not certify every external GPT as finished or
+available. The authoritative promise and inventory contract is
+`docs/suite-promise.md`.
 
 ## Tech Stack
 
@@ -22,10 +27,12 @@ A joyful static website serving as a hub for custom GPTs organized in a "trunk-b
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `sw.js` — Root-scoped service worker with a versioned, same-origin offline shell and `/offline.html` fallback
-- `toolbox/` — Central hub with 7 thematic branches and 42 tool-ette pages
+- `toolbox/` — Central hub with 1 Toolbox page, 7 thematic branches, and 42
+  Tool-ette pages
 - `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
-- `sitemap.xml` — 60 URLs
+- `sitemap.xml` — 60 indexable public URLs
+- `feed.xml` — 49 branch and Tool-ette update entries (not a full-site mirror)
 
 ## Workflows
 
@@ -221,11 +228,12 @@ python3 scripts/activate-icons.py     # hero <img> + og:image swap to per-tool i
 python3 scripts/inject-jsonld.py      # JSON-LD @graph + BreadcrumbList
 python3 scripts/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
 
-# 2. Index / asset / feed regenerators
+# 2. Index and asset maintenance
 python3 scripts/build-search-index.py    # rebuilds assets/data/search-index.json
 python3 scripts/sync-portfolio-stats.py  # patches About page stat counts from search-index.json
 python3 scripts/audit-assets.py          # rebuilds assets/data/icon-map.json + assets/audit/asset-inventory-*.json
-python3 scripts/generate-feed.py         # rebuilds /feed.xml
+# feed.xml is checked in; its historical generator is retired under
+# scripts/archive/ and is not part of the active pipeline.
 
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
 python3 scripts/validate-site.py      # every-page metadata + structure checks
@@ -259,7 +267,7 @@ live in `assets/templates/INDEX.md`.
 | `template--homepage.html` | homepage | 1 |
 | `template--hub-toolbox.html` | hub-toolbox | 1 |
 | `template--hub-branch.html` | hub-branch | 7 |
-| `template--tool-detail.html` | tool-detail | 49 |
+| `template--tool-detail.html` | tool-detail | 42 |
 | `template--interior-single.html` | interior-single | 4 |
 | `template--utility.html` | utility | 1 |
 | `template--mermaid-diagram.html` | mermaid-diagram | 2 |

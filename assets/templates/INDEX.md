@@ -8,7 +8,8 @@
 
 ## Overview
 
-Nine structural HTML templates covering all 62 pages of the site.
+Nine structural HTML templates covering the recurring page families. Templates
+are development artifacts and do not define the public page inventory.
 Templates live flat in `assets/templates/` as `template--[slug].html`.
 
 All validators, the search indexer, the feed generator, and the link checker
@@ -30,14 +31,17 @@ Replace every `[[TOKEN]]` with the page-specific value before publishing.
 | `template--homepage.html` | homepage | `index.html` | 1 |
 | `template--hub-toolbox.html` | hub-toolbox | `toolbox/index.html` | 1 |
 | `template--hub-branch.html` | hub-branch | `toolbox/01-discovered-careers/index.html` | 7 |
-| `template--tool-detail.html` | tool-detail | `toolbox/01-discovered-careers/01a-resume-builder/index.html` | 49 |
+| `template--tool-detail.html` | tool-detail | `toolbox/01-discovered-careers/01a-resume-builder/index.html` | 42 |
 | `template--interior-single.html` | interior-single | `about/index.html` | 4 (about, contact, legal, persona) |
 | `template--utility.html` | utility | `search/index.html` | 1 |
 | `template--mermaid-diagram.html` | mermaid-diagram | `ecosystem/index.html` | 2 (ecosystem, universe) |
 | `template--error.html` | error | `404.html` | 1 |
 | `template--holding.html` | holding | `under-construction.html` | 1 |
 
-**Total:** 9 templates → 67 pages
+**Template-family mapping:** 9 files → 60 source-page slots. This mapping
+excludes bespoke `/arcade/`, `/showcase/`, and `/offline.html` pages; it is not
+a count of published URLs. The public inventory is maintained in
+`docs/suite-promise.md`.
 
 ---
 
@@ -89,7 +93,7 @@ Key tokens: `[[BRANCH-NAME]]`, `[[BRANCH-GPT-URL]]`, `[[TOOLETTE-CARDS-HTML]]`,
 
 ### tool-detail
 
-One per tool-ette (49 pages). Has construction overlay. Five content sections.
+One per Tool-ette (42 pages). Has construction overlay. Five content sections.
 Key tokens: `[[TOOL-NAME]]`, `[[TOOL-ID]]`, `[[TOOL-GPT-URL]]`, `[[BRANCH-NAME]]`,
 `[[BRANCH-ID]]`, `[[BRANCH-URL]]`, `[[FUNCTIONS-LIST-HTML]]`, `[[SIBLING-CARDS-HTML]]`.
 

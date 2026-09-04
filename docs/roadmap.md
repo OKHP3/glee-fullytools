@@ -1,8 +1,19 @@
 # Roadmap
 
-This roadmap outlines the near-term public direction for the **Glee-fully Tools** repository.
+This roadmap outlines the near-term public direction for the **Glee-fully Tools**
+repository. The authoritative current promise, inventory, publication states,
+and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 
-## Current
+## Current phase — Active growth and refinement
+
+- Maintain the public catalog and routing hub while new Tool-ettes move through
+  live, beta, construction, unavailable, or retired states.
+- Keep the 63-file / 60-indexable-page / 7-branch / 42-Tool-ette / 49-feed-entry
+  vocabulary synchronized with the contract.
+- Treat passing static validation as proof of site structure, not proof of
+  external GPT availability or behavior.
+
+## Maintainer operations
 - Quality gates: `scripts/audit-site.py` — run on every meaningful HTML change
 - Responsive QA: `node scripts/responsive-qa.mjs --static` — run after major edit rounds
 - Portfolio stats sync: `python3 scripts/sync-portfolio-stats.py` — run after content updates

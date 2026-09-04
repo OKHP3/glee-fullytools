@@ -7,7 +7,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-- No unreleased changes at this time.
+- Added `docs/suite-promise.md` as the authoritative contract for the current
+  vision, public-vs-external boundary, inventory vocabulary, Tool-ette
+  publication states, owner decisions, and phase completion criteria.
+- Reconciled public and maintainer language around active growth and refinement:
+  63 production HTML files, 60 indexable pages, 7 branches, 42 Tool-ettes, and
+  49 branch/Tool-ette feed entries are now distinct terms.
 
 ---
 

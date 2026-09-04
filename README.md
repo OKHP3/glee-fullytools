@@ -5,7 +5,8 @@ We believe creativity thrives when structure and delight work together, so we bu
 
 ### 🌟 Overview
 
-At **Glee-fully™**, every Tool, Tool-ette, and Function adapts to *you*.  
+At **Glee-fully™**, every Tool, Tool-ette, and Function is designed to adapt to
+*you*.
 Whether you’re exploring new career paths, planning meals, organizing projects, or simply rediscovering balance, our systems learn your rhythm — adding polish without pressure.  
 
 We treat technology like a friend with good taste: it remembers what you love, keeps you organized, and always makes things feel a little more *you*.
@@ -19,15 +20,35 @@ Our growing ecosystem includes:
 - **Healthy Bee-ing** – track habits, moods, and motivation with kindness.  
 - **Traveler’s Guide** – plan journeys with purpose and ease.  
 - **Treasured Finds** – curate collections and memories worth keeping.  
-- …and dozens more under our seven Tool branches and forty plus Tool-ettes.
+- …and more under our seven Tool branches and 42 catalog Tool-ettes.
 
 Every element is crafted to be modular, charming, and useful — a mix of retro aesthetics and modern AI intelligence wrapped in authentic warmth.
+
+### 🌱 Current phase
+
+Glee-fully Tools is in **active growth and refinement**. The public site is a
+catalog and routing hub, not a claim that every externally hosted GPT is
+finished: 1 Tool-ette is live, 31 are beta, and 10 are unavailable while their
+launch destinations are completed. The authoritative inventory, state
+definitions, and completion contract live in
+[`docs/suite-promise.md`](docs/suite-promise.md).
 
 ### 💡 Why We Exist
 
 Because AI should *feel good to use*.  
 We believe productivity tools shouldn’t drain your energy or hide behind jargon. **Glee-fully™** reimagines personalization as joy — not data extraction.  
 Our suite shows that structure can be playful, creativity can be systematic, and technology can be *deeply human*.
+
+### 📚 Public inventory
+
+- **63** production HTML files, including utility and fallback pages
+- **60** indexable public pages in the sitemap and search index
+- **1** Toolbox hub, **7** branch hubs, and **42** Tool-ette pages
+- **49** Atom feed entries for the branch and Tool-ette catalog
+
+The feed is an update stream rather than a mirror of every public page, and the
+9 structural templates under `assets/templates/` are development artifacts,
+not additional public pages.
 
 ### 💬 Connect
 
@@ -65,16 +86,17 @@ Our suite shows that structure can be playful, creativity can be systematic, and
   Every page's CSP is now enforced via a per-page <meta> tag
   (`scripts/generate-csp.py`) -- previously only defined, unenforced, in
   `_headers`, which GitHub Pages does not serve.
-* **Rebuild search/feed/icon map after content edits:**
+* **Rebuild the search index and asset map after content edits:**
   ```bash
   python3 scripts/build-search-index.py
   python3 scripts/audit-assets.py
-  python3 scripts/generate-feed.py
+  # feed.xml is a checked-in artifact; its historical generator is retired
+  # under scripts/archive/ and is not part of the active pipeline.
   ```
 * **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
   into `assets/img/`, add its URL to `sitemap.xml`, then run the four
   mutator scripts in order (`normalize-head` → `activate-icons` → `inject-jsonld`
-  → `inject-breadcrumb`) and the three regenerators above. See `replit.md` for
+  → `inject-breadcrumb`) and the active regenerators above. See `replit.md` for
   the detailed run order.
 * **Template library:** `assets/templates/` mirrors the full site hierarchy
   with structural-only clones of every page. Every template preserves nav,

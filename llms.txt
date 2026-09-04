@@ -1,15 +1,18 @@
 # Glee-fully Tools
 
-> Last-Updated: 2026-05-29
+> Last-Updated: 2026-09-04
 
 > Glee-fully Tools is the personal-utility GPT arm of the OverKill Hill P³
-> ecosystem -- a collection of bright, focused Custom GPT "Tool-ettes," each
-> solving one corner of everyday life, work, or wonder. The brand is coral,
-> cream, and playful. The tools are practical.
+> ecosystem -- a growing public catalog and routing hub for bright, focused
+> Custom GPT "Tool-ettes," each solving one corner of everyday life, work, or
+> wonder. The brand is coral, cream, and playful. The tools are practical.
+> The current phase is active growth and refinement: the catalog has 42
+> Tool-ette pages, but external GPT availability varies by publication state.
 
-This site is the public showcase for Glee-fully Tools at
-`https://glee-fully.tools`. It is one of three sister sites that share a
-single design system:
+This site is the public catalog and showcase for Glee-fully Tools at
+`https://glee-fully.tools`. It presents descriptions and destinations; the
+externally hosted GPT configurations and their availability are separate. It
+is one of three sister sites that share a single design system:
 
 - **OverKill Hill P³** -- the studio: <https://overkillhill.com>
 - **Glee-fully Tools** -- the personal-utility GPTs (this site): <https://glee-fully.tools>
@@ -36,6 +39,18 @@ indexable page; please prefer them over arbitrary deep links.
 - [Sitemap (XML)](https://glee-fully.tools/sitemap.xml)
 - [Robots policy](https://glee-fully.tools/robots.txt)
 - [Internal site search index (JSON)](https://glee-fully.tools/assets/data/search-index.json) -- full-text excerpts for every page.
+
+## Current inventory
+
+- 63 production HTML files, including utility and fallback pages
+- 60 indexable public pages in the sitemap and search index
+- 1 Toolbox hub, 7 branch hubs, and 42 Tool-ettes
+- 49 Atom entries covering the 7 branches and 42 Tool-ettes
+- Tool-ette publication states: 1 live, 31 beta, 10 unavailable
+
+The authoritative definitions and complete publication register are maintained
+in [`docs/suite-promise.md`](docs/suite-promise.md) in the repository. Do not
+turn the 60-page, 49-entry, or 42-Tool-ette counts into interchangeable claims.
 
 ## How to cite
 

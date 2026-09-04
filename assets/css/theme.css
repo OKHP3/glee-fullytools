@@ -5303,6 +5303,14 @@ html[data-theme="light"] .glee-main {
   --color-surface-soft: #fff7f1;   /* soft warm inset */
 }
 
+/* Paper-surface text roles used by the Glee header and special banner. These
+   remain stable when dark-scheme tokens are applied to the rest of the page. */
+.glee-main {
+  --glee-paper-fg: #2e2b29;
+  --glee-paper-muted: #5a4a44;
+  --glee-paper-amber: #5a3a00;
+}
+
 .site-specials--glee { /* bright & playful */
   background: #ffe8a8;
 }
@@ -5364,7 +5372,37 @@ html[data-theme="light"] .glee-main {
 
 .glee-main .primary-nav a[aria-current="page"],
 .glee-main .primary-nav a.is-current {
-  color: #d35b2d; /* Glee rust */
+  color: var(--color-link-hover); /* AA-safe rust on the paper header */
+}
+
+html[data-theme="light"] .glee-main .site-header .primary-nav a[aria-current="page"],
+html[data-theme="light"] .glee-main .site-header .primary-nav a.is-current {
+  color: var(--color-link-hover);
+}
+
+/* The Glee header stays paper-toned in dark scheme mode. Keep controls and
+   banner copy dark on that surface instead of inheriting the dark-surface
+   near-white token from the scoped color-scheme variables. */
+html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger {
+  color: var(--glee-paper-fg);
+  border-color: rgba(46, 43, 41, 0.25);
+}
+html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger kbd {
+  color: var(--glee-paper-muted);
+  border-color: rgba(46, 43, 41, 0.2);
+  background: rgba(46, 43, 41, 0.05);
+}
+html[data-color-scheme="dark"] .glee-main .site-specials--glee {
+  color: var(--glee-paper-amber);
+}
+
+/* Search-trigger hover/focus and the active nav item use the same AA-safe
+   accent on the Glee paper header in every color-scheme state. */
+.glee-main .site-header .okh-search-trigger:hover,
+.glee-main .site-header .okh-search-trigger:focus-visible,
+.glee-main .site-header .primary-nav a[aria-current="page"]:hover,
+.glee-main .site-header .primary-nav a.is-current:hover {
+  color: var(--color-link-hover);
 }
 
 /* ===================================================================== */
@@ -6708,6 +6746,15 @@ html[data-color-scheme="dark"] .arcade-eyebrow {
   }
 }
 @media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger {
+    color: var(--glee-paper-fg);
+    border-color: rgba(46, 43, 41, 0.25);
+  }
+  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger kbd {
+    color: var(--glee-paper-muted);
+    border-color: rgba(46, 43, 41, 0.2);
+    background: rgba(46, 43, 41, 0.05);
+  }
   html:not([data-color-scheme="light"]) .site-specials--glee {
     background: rgba(200, 146, 26, 0.18);
     color: var(--color-fg);
