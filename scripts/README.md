@@ -11,6 +11,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | Script | Classification | Use |
 | --- | --- | --- |
 | `audit-site.py` | active | Site audit |
+| `audit-tool-ette-promises.py` | active | Check all 42 Tool-ette pages for a description, unique identity, publication signal, and primary CTA state |
 | `build-search-index.py` | active | Rebuild the generated search index |
 | `check-accent-contrast.py` | active | Accent contrast check (has its own test coverage) |
 | `check-csp.py` | active | CI guard against CSP drift |

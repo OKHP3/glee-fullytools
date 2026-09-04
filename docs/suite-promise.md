@@ -101,7 +101,7 @@ meaningful with its inclusion rule and owning source.
 | Catalog pages | 50 | Toolbox hub + seven branch hubs + 42 Tool-ettes. This is a subset of the 60 indexable public pages. | Toolbox filesystem and sitemap |
 | Structural templates | 9 files | Non-crawlable development files in `assets/templates/`; they are not extra pages, tools, or URLs. | `assets/templates/INDEX.md` |
 | Atom feed entries | 49 | The seven branch hubs plus the 42 Tool-ettes. The feed is an updates stream, not a complete mirror of the 60-page search index. | Checked-in `feed.xml`; historical generator is archived under `scripts/archive/` |
-| Tool-ettes with non-placeholder ChatGPT destinations | 32 | A Tool-ette page contains a ChatGPT URL that is not a known placeholder. This does not prove external reachability. | Tool-ette HTML reviewed by this contract |
+| Tool-ettes with non-placeholder ChatGPT destinations | 25 | A Tool-ette page contains a reviewed, non-placeholder primary ChatGPT CTA after unavailable or misrouted destinations have been withdrawn. This does not prove external behavior. | Tool-ette HTML and `docs/audit/tool-ette-verification-2026-09-04.md` |
 
 Do not call the 60 indexable pages “60 Tool-ettes,” the 49 feed entries “the
 whole site,” or the nine templates “published pages.” The 42 Tool-ette count is
@@ -114,10 +114,10 @@ its launch destination. It does not certify the third-party GPT itself.
 
 | State | Meaning | Current count |
 |---|---|---:|
-| **Live** | Public Tool-ette page has no construction overlay and carries a non-placeholder ChatGPT destination. | 1 |
-| **Beta** | Public Tool-ette page carries a construction overlay but also has a non-placeholder ChatGPT destination. Visitors may read the page and try the destination, but the page is not presented as finished. | 31 |
+| **Live** | Public Tool-ette page has no construction overlay and carries a reviewed, non-placeholder ChatGPT destination. This is a publication label, not a behavior certification. | 1 |
+| **Beta** | Public Tool-ette page carries a construction overlay and a reviewed, non-placeholder ChatGPT destination. Visitors may read the page and try the destination, but the page is not presented as finished or behavior-verified. | 24 |
 | **Construction** | Reserved for a page that is not ready for a public catalog claim. A future construction page should be excluded from the index and sitemap or clearly marked as non-public. | 0 |
-| **Unavailable** | Public page exists for discovery, but its ChatGPT launch destination is missing or still a known placeholder. It must not be described as a live GPT. | 10 |
+| **Unavailable** | Public page exists for discovery, but its ChatGPT launch destination is missing, placeholder, or observed unavailable. It must not be described as a live GPT and has no launch CTA. | 17 |
 | **Retired** | No longer an active catalog offering; remove it from the public inventory and preserve a deliberate redirect or archival record. | 0 |
 
 State precedence is **retired → unavailable → beta → live**. A construction
@@ -141,7 +141,7 @@ editor can verify the state without guessing from a marketing count.
 | Treasured Finds | Personal Librarian | Beta |
 | Treasured Finds | Decor Detective | Beta |
 | Treasured Finds | Present Hoarder | Beta |
-| Treasured Finds | Scentinal Journal | Beta |
+| Treasured Finds | Scentinal Journal | Unavailable |
 | Treasured Finds | Spirited Journal | Unavailable |
 | Treasured Finds | Supply Haus | Beta |
 | Treasured Finds | Bag Nabbit | Beta |
@@ -161,19 +161,19 @@ editor can verify the state without guessing from a marketing count.
 | Organized Life | Scheduling Wizard | Unavailable |
 | Organized Life | Lifestyle Wallboard | Beta |
 | Organized Life | Neighborly Bazaar | Live |
-| Healthy Bee-ing | Care Check | Beta |
-| Healthy Bee-ing | Calm Keep | Beta |
-| Healthy Bee-ing | Snappy Count | Beta |
-| Healthy Bee-ing | Medi Minder | Beta |
+| Healthy Bee-ing | Care Check | Unavailable |
+| Healthy Bee-ing | Calm Keep | Unavailable |
+| Healthy Bee-ing | Snappy Count | Unavailable |
+| Healthy Bee-ing | Medi Minder | Unavailable |
 | Healthy Bee-ing | Moody Log | Beta |
 | Healthy Bee-ing | Maven Wise | Beta |
 | Identity Known | Critter Spotter | Beta |
 | Identity Known | Roost Wrangler | Beta |
 | Identity Known | Sight Seeker | Unavailable |
-| Identity Known | Snap Decoder | Beta |
+| Identity Known | Snap Decoder | Unavailable |
 | Identity Known | Motif Muse | Unavailable |
 | Identity Known | Maker Matcher | Unavailable |
-| Identity Known | Self Fixer | Beta |
+| Identity Known | Self Fixer | Unavailable |
 
 Branch hubs follow the same public distinction: Organized Life is currently
 live as a branch hub; the other six hubs are public beta routing

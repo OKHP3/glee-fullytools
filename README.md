@@ -28,9 +28,9 @@ Every element is crafted to be modular, charming, and useful — a mix of retro 
 
 Glee-fully Tools is in **active growth and refinement**. The public site is a
 catalog and routing hub, not a claim that every externally hosted GPT is
-finished: 1 Tool-ette is live, 31 are beta, and 10 are unavailable while their
-launch destinations are completed. The authoritative inventory, state
-definitions, and completion contract live in
+finished: 1 Tool-ette is live, 24 are beta, and 17 are unavailable while their
+launch destinations are completed or owner-confirmed. The authoritative
+inventory, state definitions, and completion contract live in
 [`docs/suite-promise.md`](docs/suite-promise.md).
 
 ### 💡 Why We Exist

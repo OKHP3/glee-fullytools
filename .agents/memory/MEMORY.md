@@ -8,3 +8,4 @@
 - [Local dependency install cleanup](local-dependency-install-cleanup.md) — failed uv installs can scaffold untracked helper files; inspect status and remove only generated files before handoff.
 - [GitHub PAT credential helper](github-pat-credential-helper.md) — a valid GITHUB_PAT with workflow scope may need a local helper when the default OAuth Git helper is stale.
 - [Portfolio destination counts](portfolio-destination-counts.md) — distinguish non-placeholder launch destinations from any ChatGPT href when reporting catalog readiness.
+- [Tool-ette evidence contract](tool-ette-evidence-contract.md) — an HTTP-successful external GPT URL is not behavior, identity, ownership, or safety evidence.

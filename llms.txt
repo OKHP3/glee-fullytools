@@ -46,7 +46,9 @@ indexable page; please prefer them over arbitrary deep links.
 - 60 indexable public pages in the sitemap and search index
 - 1 Toolbox hub, 7 branch hubs, and 42 Tool-ettes
 - 49 Atom entries covering the 7 branches and 42 Tool-ettes
-- Tool-ette publication states: 1 live, 31 beta, 10 unavailable
+- Tool-ette publication states: 1 live, 24 beta, 17 unavailable
+- Tool-ette behavior verification: 25 partial, 2 blocked by missing owner
+  evidence, 0 verified
 
 The authoritative definitions and complete publication register are maintained
 in [`docs/suite-promise.md`](docs/suite-promise.md) in the repository. Do not
