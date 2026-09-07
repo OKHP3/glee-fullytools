@@ -1,0 +1,43 @@
+{
+  "removed_ignored_files": [
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-de-de/.DS_Store",
+      "bytes": 6148,
+      "sha256": "a1e23a7377c4db236a4836a84679f5e8709c6ae170010767e7a12c1b6c516999"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-en-uk/.DS_Store",
+      "bytes": 6148,
+      "sha256": "e35bf018f82d4ab85818155f91a70932810bad3f8a44348dc4d9534abc68ddac"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-es-es/.DS_Store",
+      "bytes": 6148,
+      "sha256": "faa1be1562dcdbe305b4da5e89ee33f943dbda959b9e798ffa37a7c0e5d6e971"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-es-mx/.DS_Store",
+      "bytes": 6148,
+      "sha256": "435bb4a4ae257a1651be23c835494f8baf6b21adf8cc897a5c22c435dd39e6f9"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-fr-fr/.DS_Store",
+      "bytes": 6148,
+      "sha256": "2b7ab86fa2fb47c3f9502a856fe11fb7562383d747f879a4c7ba8c88df8d769e"
+    },
+    {
+      "path": ".agents/skills/okhp3-translation-en-us-fr-fr/scripts/__pycache__/validate_en_us_to_fr_fr.cpython-314.pyc",
+      "bytes": 24003,
+      "sha256": "1ac720803521f8fe2bd93b012c226b6cf49053458f4316548c9e59178571935a"
+    }
+  ],
+  "removed_empty_roots": 5,
+  "tracked_files_removed": 0,
+  "active_skill_roots_preserved": [
+    ".agents/skills/language-mediation/okhp3-translation-en-us-de-de",
+    ".agents/skills/language-mediation/okhp3-translation-en-us-en-uk",
+    ".agents/skills/language-mediation/okhp3-translation-en-us-es-es",
+    ".agents/skills/language-mediation/okhp3-translation-en-us-es-mx",
+    ".agents/skills/language-mediation/okhp3-translation-en-us-fr-fr"
+  ]
+}

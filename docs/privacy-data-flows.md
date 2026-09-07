@@ -17,7 +17,7 @@ The owner has chosen the following operating posture:
    Analytics 4 is off by default and is loaded only after a visitor selects
    “Turn analytics on” on the legal page. The choice can be withdrawn there.
 2. **Measurement is limited.** The tag is configured without Google signals,
-   ad-personalisation signals, or GA4 client-side storage. The site does not
+   ad-personalization signals, or GA4 client-side storage. The site does not
    send tool prompts, game state, account data, or form contents to analytics.
 3. **Retention is bounded.** The owner’s policy is to keep any opted-in
    analytics property retention at 14 months or less and review that property

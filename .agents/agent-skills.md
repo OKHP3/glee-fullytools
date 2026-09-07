@@ -47,10 +47,14 @@ Never add `<style>` blocks to HTML. Never use hardcoded hex — use `var(--color
 | File | Regenerate with |
 |---|---|
 | `assets/data/search-index.json` | `python3 scripts/build-search-index.py` |
-| `assets/data/icon-map.json` | `python3 scripts/audit-assets.py` |
-| `feed.xml` | `python3 scripts/generate-feed.py` |
+| `assets/data/icon-map.json` | Historical generator: `scripts/archive/audit-assets.py`; not an active release command |
+| `feed.xml` | Historical generator is retired; maintenance requires separate owner authorization |
 
-Rebuild the search index after any HTML content change. `scripts/post-merge.sh` does this automatically on task merges.
+Rebuild the search index after HTML content changes. Then synchronize portfolio
+stats, rebuild search again if stats changed indexed content, and run
+`scripts/sync-css-version.py` last. Review generated diffs.
+`bash scripts/post-merge.sh` is check-only: it stops on stale output and never
+rebuilds the index or stats. Do not invoke a shell script with Python.
 
 ---
 
@@ -101,7 +105,7 @@ Each skill uses the same schema: **Purpose · Checks · Off-limits**.
 
 ### skill.artifact-proof-checker
 **Purpose:** Ensure portfolio claims are backed by visible evidence.
-**Checks:** Audit reports exist and are dated correctly (`assets/docs/`); validation JSON outputs exist and are recent (`assets/audit/`); search index was rebuilt after the most recent content change; `sitemap.xml` and `feed.xml` are up to date; page/tool counts in docs match actual filesystem counts.
+**Checks:** Audit reports exist and are dated correctly (`assets/docs/`); validation JSON outputs exist and are recent (`assets/audit/`); search index matches current content; sitemap routes match intended public pages; page/tool counts match actual files. Feed/date maintenance remains an explicit owner deferral under `docs/suite-promise.md`.
 **Off-limits:** Do not delete audit reports without owner approval. Do not update "Recent Changes" in `replit.md` with unverified claims.
 
 ### skill.staleness-drift-detector
@@ -126,16 +130,20 @@ python3 scripts/check-links.py
 # After any HTML content change:
 python3 scripts/build-search-index.py
 
-# Mutators (idempotent, safe to re-run):
-python3 scripts/normalize-head.py
-python3 scripts/activate-icons.py
-python3 scripts/inject-jsonld.py
-python3 scripts/inject-breadcrumb.py
+# After search generation, in order:
+python3 scripts/sync-portfolio-stats.py
+python3 scripts/build-search-index.py
+python3 scripts/sync-css-version.py
 
-# Regenerators:
-python3 scripts/audit-assets.py
-python3 scripts/generate-feed.py
+# Check-only hook, from a Bash-capable environment:
+bash scripts/post-merge.sh
 ```
+
+On Windows, use an existing working Python 3 interpreter and set
+`$env:PYTHONUTF8='1'` in PowerShell so child processes also use UTF-8. `py -3`
+is suitable only if its registered interpreter exists. Do not install or upgrade
+dependencies as part of routine validation. See `scripts/README.md` for archived
+and retired tools; old one-shot mutators are not current quick-reference commands.
 
 *Maintained by OverKill Hill P³™ · Last updated 2026-05-27*
 

@@ -1,0 +1,275 @@
+{
+  "generatedAt": "2026-09-05T23:02:59.185Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "node": "v24.11.1",
+  "playwright": "1.62.1",
+  "fixture": "Local HTTP; only upgrade-insecure-requests removed; service workers and third parties blocked; actual committed search JSON served.",
+  "checks": [
+    {
+      "engine": "chromium",
+      "name": "navigation /",
+      "status": "PASS",
+      "evidence": {
+        "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "navigation /toolbox/01-discovered-careers/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "navigation /toolbox/01-discovered-careers/01a-resume-builder/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "navigation /search/?q=resume",
+      "status": "PASS",
+      "evidence": {
+        "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "search query, keyboard, history and modal focus",
+      "status": "PASS",
+      "evidence": {
+        "firstResumeResult": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "keyboardDestination": "/toolbox/01-discovered-careers/01b-resume-customizer/"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "modal focus return pointer",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "modal focus return keyboard",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "modal focus return shortcut",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "modal focus return immediate-close",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "skip link moves focus and records native Tab behavior",
+      "status": "PASS",
+      "evidence": {
+        "focusedMain": true,
+        "nextInMain": true,
+        "nativeTabDestination": "link",
+        "nextLinkCoverage": "PASS"
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "consent choice hydrates after reload",
+      "status": "PASS",
+      "evidence": {
+        "optionalExternalRequestsBlocked": 15
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "ordinary fragment focus, history and reduced motion",
+      "status": "PASS",
+      "evidence": {
+        "fragment": "#why",
+        "scrollBehavior": "auto",
+        "historyRestored": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "name": "Neighborly Bazaar image decodes",
+      "status": "PASS",
+      "evidence": {
+        "width": 800,
+        "height": 534
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /",
+      "status": "PASS",
+      "evidence": {
+        "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/01a-resume-builder/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /search/?q=resume",
+      "status": "PASS",
+      "evidence": {
+        "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "search query, keyboard, history and modal focus",
+      "status": "PASS",
+      "evidence": {
+        "firstResumeResult": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "keyboardDestination": "/toolbox/01-discovered-careers/01b-resume-customizer/"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return pointer",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return keyboard",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return shortcut",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return immediate-close",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "skip link moves focus and records native Tab behavior",
+      "status": "PASS",
+      "evidence": {
+        "focusedMain": true,
+        "nextInMain": false,
+        "nativeTabDestination": "inside",
+        "nextLinkCoverage": "NOT RUN: native browser Tab excludes links"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "consent choice hydrates after reload",
+      "status": "PASS",
+      "evidence": {
+        "optionalExternalRequestsBlocked": 15
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "ordinary fragment focus, history and reduced motion",
+      "status": "PASS",
+      "evidence": {
+        "fragment": "#why",
+        "scrollBehavior": "auto",
+        "historyRestored": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "Neighborly Bazaar image decodes",
+      "status": "PASS",
+      "evidence": {
+        "width": 800,
+        "height": 534
+      }
+    }
+  ],
+  "limitations": [
+    {
+      "engine": "webkit",
+      "coverage": "Next-link Tab navigation NOT RUN: native browser Tab excludes anchors even in an isolated HTML fixture."
+    }
+  ],
+  "servedSha256": {
+    "index.html": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+    "assets/css/theme.css": "85d9e1cccdcf74f9a009f2ad94b5825669536ba1799bc83bc21437eee02b02f4",
+    "assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp": "7ae51fe024c6d628fdeaae10b3d1fabeb0c02e3fdf12b21b858bbff95a1f989c",
+    "assets/js/app.js": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+    "assets/js/glee-site-enhancements.js": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8",
+    "assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp": "65c9ce0cdca8fa3c1869aa682f7732e76c7c5d01da901f3d11c8c31a20a3b742",
+    "assets/img/arcade/chai-chasers-social-1280.jpg": "df56795c26f741b27bf596fb94239bf3c745e09a7e00879a12d0d1faad990613",
+    "assets/data/sparkle.json": "063967cc60da77dea2c379605445532916ba10c085a9f3cf6784c1219c48a3f6",
+    "toolbox/01-discovered-careers/index.html": "6cd3e70ce61ce644544e9ba6225461cc7e544db7c40e03531f8f9d8795a4754f",
+    "assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-300.webp": "501cae6e4d06e81ca8ce2f6ef9e2c32cb0fab759ea524c20fc977a61268bf6e6",
+    "assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-300.webp": "5eb0875c7cc3339e47bbdd1053ac898619e94da3f7a4feec952c80ac263ea26b",
+    "assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-300.webp": "dd350cff4b7bd99f3a4b5b1d1ee7f75cd0921365a2e728e783a4481b5ee5ad51",
+    "toolbox/01-discovered-careers/01a-resume-builder/index.html": "d6ae0d453d1d0e9743f7182af697831b94b4584ca0189683e2f238b9d0656298",
+    "assets/img/tool-ettes/01a-resume-builder-illustration.svg": "a85a18d52829e7f82998e039e7d320ef29891f9af151d3912524cfdb2301ef9b",
+    "assets/img/webp/glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-768.webp": "113ef361fd0462762965d34531aa83b908337a00b6cec2052a90830432330633",
+    "search/index.html": "e09e62ceb26f895a1ed1435ad77dbed288f8ff1b9a434e1be85258979bd08f92",
+    "assets/data/search-index.json": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62",
+    "toolbox/01-discovered-careers/01b-resume-customizer/index.html": "91b1dcca532a4aa47f0f7002f34ff884581a17bf8490cac1664708d8edb84509",
+    "assets/img/tool-ettes/01b-resume-customizer-illustration.svg": "d82c41d0b85342534f67ec2d5a888ae9a839e46589466b34e51f2838a8a6aa12",
+    "legal/index.html": "50bbc4487fd8385a2ce8d6da6bfa35b6dad09d2719e24619acab374f95cc2508",
+    "toolbox/05-organized-life/05f-neighborly-bazaar/index.html": "3c7bd20959e1deb174d1e875bd2bed09a7bd9d997ef9ea697d96aaa492656077",
+    "assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg": "2be12b2de5185a5fbc1ee63d5c0762e3c1567c16e33961211d06cd71b561f8bd",
+    "site.webmanifest": "4601a6e62e268fb000d94cc558e940d96898a4da5cad7ae7538ee859ae3ce464"
+  },
+  "summary": {
+    "PASS": 26,
+    "FAIL": 0,
+    "NOT RUN": 0
+  }
+}

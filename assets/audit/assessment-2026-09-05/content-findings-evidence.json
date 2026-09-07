@@ -1,0 +1,160 @@
+{
+  "commit": "5da805785d47f9bc29058b07d2a5467da32a1573",
+  "scope": "source-only 63 production HTML pages",
+  "counts": {
+    "pages": 63,
+    "indexable": 60,
+    "tool_ettes": 42,
+    "publication_states": {
+      "beta": 24,
+      "unavailable": 17,
+      "live": 1
+    }
+  },
+  "robot_googlebot_examples": {
+    "/": true,
+    "/assets/css/theme.css": false,
+    "/assets/js/app.js": false,
+    "/assets/img/glee-fully-tools-social-card-1200x630.png": false
+  },
+  "checks": {
+    "unique_titles": 63,
+    "unique_descriptions": 63,
+    "jsonld_parse_errors": 0,
+    "source_issue_candidates": [
+      {
+        "file": "under-construction.html",
+        "type": "missing-fragment",
+        "line": 233,
+        "href": "#why",
+        "target": "under-construction.html"
+      }
+    ]
+  },
+  "unavailable_launch_helper": [
+    {
+      "file": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "lines": [
+        302
+      ]
+    },
+    {
+      "file": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "lines": [
+        303
+      ]
+    },
+    {
+      "file": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "lines": [
+        299
+      ]
+    },
+    {
+      "file": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "lines": [
+        306
+      ]
+    },
+    {
+      "file": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "lines": [
+        300
+      ]
+    },
+    {
+      "file": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
+      "lines": [
+        301
+      ]
+    },
+    {
+      "file": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "lines": [
+        300
+      ]
+    },
+    {
+      "file": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "lines": [
+        300
+      ]
+    },
+    {
+      "file": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "lines": [
+        298
+      ]
+    },
+    {
+      "file": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "lines": [
+        308
+      ]
+    },
+    {
+      "file": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "lines": [
+        299
+      ]
+    },
+    {
+      "file": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "lines": [
+        301
+      ]
+    },
+    {
+      "file": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "lines": [
+        299
+      ]
+    },
+    {
+      "file": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "lines": [
+        303
+      ]
+    },
+    {
+      "file": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "lines": [
+        311
+      ]
+    }
+  ],
+  "structured_data": {
+    "software_application_count": 42,
+    "free_offer_count": 42,
+    "rating_or_review_count": 0,
+    "unavailable_pages_with_free_offer": 17
+  },
+  "feed": {
+    "entries": 49,
+    "updated": "2026-05-03T00:00:00Z",
+    "entry_update_distribution": {
+      "2026-05-03T00:00:00Z": 49
+    }
+  },
+  "sitemap": {
+    "urls": 60,
+    "lastmod_distribution": {
+      "2026-05-12": 58,
+      "2026-05-27": 1,
+      "2026-07-15": 1
+    }
+  },
+  "local_checks": [
+    {
+      "command": "python3 scripts/audit-tool-ette-promises.py",
+      "exit": 0,
+      "result": "42 pages; 1 live, 24 beta, 17 unavailable"
+    },
+    {
+      "command": "python3 scripts/build-search-index.py --check",
+      "exit": 0,
+      "result": "60 pages; committed output current"
+    }
+  ],
+  "correction_note": "Initial fragment scan incorrectly used canonical URL as resolution base. Repeated full 63-page fragment scan using requested page URL; confirmed under-construction.html:233 missing #why."
+}

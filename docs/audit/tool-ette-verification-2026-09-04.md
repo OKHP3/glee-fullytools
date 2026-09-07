@@ -63,7 +63,7 @@ the linked page remains the source for the full authored copy and function
 lists. “Core-function surface” means the page includes an authored
 `Core functions`/`Leaves` section or equivalent detailed use-case content.
 
-### 01 — Discovered Careers
+### 01  -  Discovered Careers
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|
@@ -74,7 +74,7 @@ lists. “Core-function surface” means the page includes an authored
 | bLinkIn Tuner | Capture daily interest/dread signals and turn them into career patterns. | `.../01e-blinkin-tuner/`; detailed leaves + beta overlay; placeholder launch removed. | No usable destination recorded. | Unavailable |
 | Career Seeker | Define targets, track roles, manage applications, and follow up. | `.../01f-career-seeker/`; detailed leaves + beta overlay; placeholder launch removed. | No usable destination recorded. | Unavailable |
 
-### 02 — Treasured Finds
+### 02  -  Treasured Finds
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|
@@ -86,7 +86,7 @@ lists. “Core-function surface” means the page includes an authored
 | Supply Haus | Inventory craft and creative supplies and identify restock needs. | `.../02f-supply-haus/`; description + inputs/outputs + core functions; beta overlay. | 200; named non-placeholder URL. | Partially verified |
 | Bag Nabbit | Track, tag, wishlist, and loan bags in a collection. | `.../02g-bag-nabbit/`; description + core functions; beta overlay. | 200; named non-placeholder URL. | Partially verified |
 
-### 03 — Tasty Tracker
+### 03  -  Tasty Tracker
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|
@@ -96,7 +96,7 @@ lists. “Core-function surface” means the page includes an authored
 | Pantry Shopper | Turn pantry, recipes, and meal plans into shopping runs. | `.../03d-pantry-shopper/`; description + core functions + beta overlay; generic launch removed. | No named destination recorded. | Unavailable |
 | Palatably Profiled | Build a living household flavor profile from food ratings. | `.../03e-palatably-profiled/`; description + inputs/outputs + core functions; beta overlay. | 200; named non-placeholder URL. | Partially verified |
 
-### 04 — Traveler’s Guide
+### 04  -  Traveler’s Guide
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|
@@ -106,7 +106,7 @@ lists. “Core-function surface” means the page includes an authored
 | Dreamland Journeys | Capture dream destinations and turn inspiration into plans. | `.../04d-dreamland-journeys/`; detailed leaves + beta overlay. | 200; named non-placeholder URL. | Partially verified |
 | Memento Log | Turn travel notes, souvenirs, and snapshots into searchable memories. | `.../04e-memento-log/`; description + core functions; beta overlay. | 200; named non-placeholder URL. | Partially verified |
 
-### 05 — Organized Life
+### 05  -  Organized Life
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|
@@ -117,7 +117,7 @@ lists. “Core-function surface” means the page includes an authored
 | Lifestyle Wallboard | Bring bills, goals, habits, and tasks into one dashboard. | `.../05e-lifestyle-wallboard/`; description + core functions; beta overlay. | 200; named non-placeholder URL. | Partially verified |
 | Neighborly Bazaar | Evaluate, price, and list household items for resale or donation. | `.../05f-neighborly-bazaar/`; description + inputs/outputs + core functions; no overlay. | 200; named non-placeholder URL. | Partially verified |
 
-### 06 — Healthy Bee-ing
+### 06  -  Healthy Bee-ing
 
 Healthy Bee-ing retains an intentional **public beta** treatment for its
 authored pages and an **unavailable** treatment for destinations that do not
@@ -134,7 +134,7 @@ present; no clinical behavior is verified by this review.
 | Moody Log | Combine self-photos, hydration, and mood check-ins into a wellness timeline. | `.../06e-moody-log/`; description + core functions + beta overlay. | 200; named non-placeholder URL. | Partially verified |
 | Maven Wise | Track midlife/hormonal-change symptoms and prepare care-team conversations. | `.../06f-maven-wise/`; description + core functions + beta overlay. | 200; named non-placeholder URL. | Partially verified |
 
-### 07 — Identity Known
+### 07  -  Identity Known
 
 | Tool-ette | Catalog claim | Public evidence | Destination probe | Classification |
 |---|---|---|---|---|

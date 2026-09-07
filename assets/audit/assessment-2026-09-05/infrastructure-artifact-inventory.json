@@ -1,0 +1,103 @@
+{
+  "method": "Apply pages.yml copytree ignore_patterns independently to every path component of tracked files",
+  "tracked_files": 1504,
+  "artifact_files": 750,
+  "artifact_bytes": 208573647,
+  "suspect_public_files": [
+    ".githooks/README.md",
+    "CHANGELOG.md",
+    "CLAUDE.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LIFECYCLE.md",
+    "README.md",
+    "SECURITY.md",
+    "assets/data/icon-map.json",
+    "assets/data/search-index.json",
+    "assets/data/sparkle.json",
+    "assets/templates/INDEX.md",
+    "assets/templates/template--error.html",
+    "assets/templates/template--holding.html",
+    "assets/templates/template--homepage.html",
+    "assets/templates/template--hub-branch.html",
+    "assets/templates/template--hub-toolbox.html",
+    "assets/templates/template--interior-single.html",
+    "assets/templates/template--mermaid-diagram.html",
+    "assets/templates/template--tool-detail.html",
+    "assets/templates/template--utility.html",
+    "brand-styles/profiles/glee-fully.yaml",
+    "brand-styles/registry.yaml",
+    "config/csp-policies.json",
+    "gleefully-replit-theme.json",
+    "skills-lock.json",
+    "skills/okhp3-skill-promotion/SKILL.md",
+    "skills/okhp3-skill-promotion/assets/promotion-manifest-template.json",
+    "skills/okhp3-skill-promotion/benchmarks/equilibrium-review-2026-08-02.json",
+    "skills/okhp3-skill-promotion/benchmarks/structural-integrity-2026-08-02.json",
+    "skills/okhp3-skill-promotion/benchmarks/sync-verification-2026-08-02.json",
+    "skills/okhp3-skill-promotion/evals/evals.json",
+    "skills/okhp3-skill-promotion/references/promotion-manifest.md"
+  ],
+  "largest_files": [
+    {
+      "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-left-big-toolbox-right-wide-1536.png",
+      "bytes": 3080876
+    },
+    {
+      "path": "assets/img/glee-fully-neon-butterflies.png",
+      "bytes": 3054914
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-rot-low-mid-butterfly-left-toolbox-right-wide-1536.png",
+      "bytes": 3005166
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-left-toolbox-right-wide-1536.png",
+      "bytes": 2944129
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-high-mid-butterfly-left-toolbox-right-wide-1536.png",
+      "bytes": 2925080
+    },
+    {
+      "path": "assets/img/glee-fully-tools-butterfly-path-left-wide-1536.png",
+      "bytes": 2340554
+    },
+    {
+      "path": "assets/img/glee-fully-tools-butterfly-loop-right-wide-1536.png",
+      "bytes": 2330132
+    },
+    {
+      "path": "assets/img/glee-fully-retro-butterfly-design.png",
+      "bytes": 2317445
+    },
+    {
+      "path": "assets/img/glee-fully-tools-butterfly-path-right-wide-1536.png",
+      "bytes": 2275513
+    },
+    {
+      "path": "assets/img/glee-fully-tools-title-low-center-butterfly-left-toolbox-square-1024.png",
+      "bytes": 2253898
+    },
+    {
+      "path": "assets/img/glee-fully-tools-butterfly-loop-left-wide-1536.png",
+      "bytes": 2248563
+    },
+    {
+      "path": "assets/img/glee-full-tools-title-low-mid-butterfly-perch-toolbox-square-1024.png",
+      "bytes": 2134641
+    },
+    {
+      "path": "assets/img/favicons/favicon.svg",
+      "bytes": 2101324
+    },
+    {
+      "path": "assets/img/glee-fully-tools-background-wide-1536.png",
+      "bytes": 2072093
+    },
+    {
+      "path": "assets/img/glee-full-tools-title-low-mid-butterfly-perch-comp-square-1024.png",
+      "bytes": 2009505
+    }
+  ]
+}

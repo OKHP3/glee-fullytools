@@ -1,0 +1,376 @@
+{
+  "startedAt": "2026-09-05T22:52:22.826Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 2,
+  "experimentalCssResponseAppend": null,
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 239934,
+      "gzipBytes": 47114,
+      "sha256": "5f9be24576b2dccbd9e66d156257db018ef20f5810fa1899c4c014bd13ceffcf"
+    },
+    "assets/js/app.js": {
+      "bytes": 50236,
+      "gzipBytes": 12846,
+      "sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 436530,
+      "gzipBytes": 120673,
+      "sha256": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c"
+    }
+  },
+  "performance": [],
+  "accessibility": [],
+  "failures": [],
+  "base": "http://127.0.0.1:59841",
+  "layouts": [
+    {
+      "kind": "homepage-images",
+      "width": 320,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 1029.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "",
+          "width": 236.40625,
+          "top": 1733.875,
+          "viewportHeight": 900,
+          "naturalWidth": 0,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 390,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 941.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1620.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 820,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 262.390625,
+          "top": 741.421875,
+          "viewportHeight": 900,
+          "naturalWidth": 262,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1268.859375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 980,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 313.59375,
+          "top": 742.703125,
+          "viewportHeight": 900,
+          "naturalWidth": 313,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1312.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1024,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 520,
+          "top": 745.5,
+          "viewportHeight": 900,
+          "naturalWidth": 520,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1452.671875,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1440,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 450,
+          "top": 321.9375,
+          "viewportHeight": 900,
+          "naturalWidth": 518,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1140.34375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 320,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 1029.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 236.40625,
+          "top": 1733.875,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 390,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 941.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1620.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 820,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 262.390625,
+          "top": 741.421875,
+          "viewportHeight": 900,
+          "naturalWidth": 262,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1268.859375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 980,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 313.59375,
+          "top": 742.703125,
+          "viewportHeight": 900,
+          "naturalWidth": 313,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1312.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1024,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-1536.webp",
+          "width": 520,
+          "top": 745.5,
+          "viewportHeight": 900,
+          "naturalWidth": 520,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1452.671875,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1440,
+      "scale": 2,
+      "images": [
+        {
+          "src": "http://127.0.0.1:59841/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-1536.webp",
+          "width": 450,
+          "top": 321.9375,
+          "viewportHeight": 900,
+          "naturalWidth": 518,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:59841/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1140.34375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-09-05T22:52:40.300Z"
+}

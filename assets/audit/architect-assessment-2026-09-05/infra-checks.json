@@ -1,0 +1,135 @@
+{
+  "date": "2026-09-05",
+  "results": [
+    {
+      "check": "validation",
+      "command": [
+        "scripts/validate-site.py"
+      ],
+      "exit_code": 0,
+      "stdout": "\nScanned 63 pages\n  issues:   0\n  warnings: 0\n  detail:   assets\\audit\\validation-report-2026-05-03.json\n",
+      "stderr": ""
+    },
+    {
+      "check": "links",
+      "command": [
+        "scripts/check-links.py",
+        "--no-report"
+      ],
+      "exit_code": 0,
+      "stdout": "Pages scanned:    63\nInternal links:   2690\nExternal links:   1098\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n",
+      "stderr": ""
+    },
+    {
+      "check": "contrast",
+      "command": [
+        "scripts/check-accent-contrast.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "stdout": "Accent contrast advisory scan (light + dark mode + branded hover states)\n  HTML files scanned : 72\n  CSS files scanned  : 1\n  Advisories         : 0\n  Info notes         : 0\n  Hover checks       : 8 (0 failures)\n  Report             : assets\\audit\\accent-contrast-report.json\n\n  Light-mode palette : accent #d35b2d / bg #f6f2ee \u2192 3.55:1\n  Dark-mode palette  : accent #f07585 / surface #241c1a \u2192 6.04:1\n\n  No body-text accent color violations found.\n\nAdvisories are reported without --strict.\nUse --strict to exit 1 on any advisory or hover-state failure.\n",
+      "stderr": ""
+    },
+    {
+      "check": "dark-coverage",
+      "command": [
+        "scripts/check-glee-dark-coverage.py",
+        "--section",
+        "all",
+        "--require-both"
+      ],
+      "exit_code": 0,
+      "stdout": "check-glee-dark-coverage: OK \u2014 16 light-surface rule(s) (13 background, 6 border) in the GLEE section all have dark-mode overrides in both forms.\ncheck-glee-dark-coverage: OK \u2014 10 light-surface rule(s) (10 background, 1 border) in the ASKJAMIE section all have dark-mode overrides in both forms.\n",
+      "stderr": ""
+    },
+    {
+      "check": "csp",
+      "command": [
+        "scripts/check-csp.py"
+      ],
+      "exit_code": 0,
+      "stdout": "CSP policies verified for 63 pages.\n",
+      "stderr": ""
+    },
+    {
+      "check": "search-index",
+      "command": [
+        "scripts/build-search-index.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "Indexing 60 HTML pages\u2026\nCommitted assets\\data\\search-index.json is current \u2014 60 pages\n",
+      "stderr": ""
+    },
+    {
+      "check": "css-cache",
+      "command": [
+        "scripts/sync-css-version.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "  CSS token -> b60e5d83  (all 63 file(s) already current)\n",
+      "stderr": ""
+    },
+    {
+      "check": "portfolio-stats",
+      "command": [
+        "scripts/sync-portfolio-stats.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7703\n  about\\index.html \u2014 already up to date\n  showcase\\index.html \u2014 already up to date\n",
+      "stderr": ""
+    },
+    {
+      "check": "social-card",
+      "command": [
+        "scripts/sync-social-card.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "\nSocial-card metadata is current across 62 published pages.\n",
+      "stderr": ""
+    },
+    {
+      "check": "actions-policy",
+      "command": [
+        "scripts/check-workflow-actions.py"
+      ],
+      "exit_code": 0,
+      "stdout": "GitHub Actions version policy check passed (7 workflow files).\n",
+      "stderr": ""
+    },
+    {
+      "check": "tool-promises",
+      "command": [
+        "scripts/audit-tool-ette-promises.py"
+      ],
+      "exit_code": 0,
+      "stdout": "Tool-ette promise surface: 42 pages; 1 live, 24 beta, 17 unavailable\nPASS: every Tool-ette has a unique name, description, and explicit state signal\n",
+      "stderr": ""
+    },
+    {
+      "check": "audit-site",
+      "command": [
+        "scripts/audit-site.py",
+        "--quiet",
+        "--report",
+        "C:\\Users\\jamie\\OKH-Local\\04_GitHub_Mirrors\\glee-fullytools\\assets\\audit\\architect-assessment-2026-09-05\\infra-site-audit.md"
+      ],
+      "exit_code": 0,
+      "stdout": "\nReport written to assets/audit/architect-assessment-2026-09-05/infra-site-audit.md\nTotal issues found: 38\n",
+      "stderr": ""
+    },
+    {
+      "check": "resilience-static",
+      "command": [
+        "scripts/resilience-qa.py",
+        "--static-only"
+      ],
+      "exit_code": 0,
+      "stdout": "Static resilience checks: PASS\nReport: assets\\audit\\resilience-qa-2026-09-05.json\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "scanned": 43,
+  "failures": [
+    {
+      "path": "assets\\img\\tool-ettes\\05f-neighborly-bazaar-illustration.svg",
+      "error": "not well-formed (invalid token): line 67, column 123"
+    }
+  ]
+}

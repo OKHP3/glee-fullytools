@@ -1,0 +1,1340 @@
+[
+  {
+    "os": "light",
+    "preference": "auto",
+    "attrs": "<html lang=\"en\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character Set\n       ==============",
+    "stored": {
+      "glee-color-scheme": "auto"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(107, 94, 87)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgb(255, 232, 168)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgb(255, 232, 168)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "os": "light",
+    "preference": "light",
+    "attrs": "<html lang=\"en\" data-color-scheme=\"light\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character",
+    "stored": {
+      "glee-color-scheme": "light"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(107, 94, 87)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgb(255, 232, 168)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgb(255, 232, 168)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "os": "light",
+    "preference": "dark",
+    "attrs": "<html lang=\"en\" data-color-scheme=\"dark\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character ",
+    "stored": {
+      "glee-color-scheme": "dark"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(181, 169, 161)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(90, 58, 0)",
+        "background": "rgba(200, 146, 26, 0.18)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(90, 58, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgba(200, 146, 26, 0.18)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(242, 237, 232)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "os": "dark",
+    "preference": "auto",
+    "attrs": "<html lang=\"en\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character Set\n       ==============",
+    "stored": {
+      "glee-color-scheme": "auto"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(181, 169, 161)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(242, 237, 232)",
+        "background": "rgba(200, 146, 26, 0.18)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(242, 237, 232)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgba(200, 146, 26, 0.18)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(242, 237, 232)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "os": "dark",
+    "preference": "light",
+    "attrs": "<html lang=\"en\" data-color-scheme=\"light\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character",
+    "stored": {
+      "glee-color-scheme": "light"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(107, 94, 87)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(255, 247, 241)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgb(255, 232, 168)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgb(255, 232, 168)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "os": "dark",
+    "preference": "dark",
+    "attrs": "<html lang=\"en\" data-color-scheme=\"dark\" data-theme=\"light\"><head>\n    <!-- ========================================\n       METADATA: Core Document & Character ",
+    "stored": {
+      "glee-color-scheme": "dark"
+    },
+    "elements": [
+      {
+        "selector": ".hero-eyebrow",
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "12.8px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero h1",
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "51.2px",
+        "fontWeight": "700",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-tagline",
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(181, 169, 161)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-primary",
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".hero-actions .btn-secondary",
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "15.2px",
+        "fontWeight": "600",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "DIV",
+            "cls": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "DIV",
+            "cls": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgb(42, 39, 36)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials",
+        "text": "TODAY’S SPARKLE\n🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(90, 58, 0)",
+        "background": "rgba(200, 146, 26, 0.18)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "BODY",
+            "cls": "glee-main",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".site-specials a",
+        "text": "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "color": "rgb(90, 58, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "none",
+        "fontSize": "14.4px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "SECTION",
+            "cls": "site-specials site-specials--glee",
+            "bg": "rgba(200, 146, 26, 0.18)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "tag": "HEADER",
+            "cls": "site-header",
+            "bg": "rgb(246, 242, 238)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      },
+      {
+        "selector": ".section-lead",
+        "missing": true
+      },
+      {
+        "selector": ".section-intro",
+        "missing": true
+      },
+      {
+        "selector": ".cta p",
+        "missing": true
+      },
+      {
+        "selector": "body",
+        "text": "Skip to main content\nGlee‑fully\nWHY GLEE‑FULLY\nOPENING THE TOOLBOX\nTHE ARCADE\nOUR ECOSYSTEM\nTHE VOICE & MUSE\nABOUT\nSearch\n⌘K\nTODAY’S SPARKLE\n🎰 The Arcade is op",
+        "color": "rgb(242, 237, 232)",
+        "background": "rgba(0, 0, 0, 0)",
+        "image": "radial-gradient(circle at 50% 0%, rgb(229, 232, 237), rgb(239, 242, 245))",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "pseudo": "rgba(0, 0, 0, 0)",
+        "ancestors": [
+          {
+            "tag": "HTML",
+            "cls": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "pseudo": "rgba(0, 0, 0, 0)"
+          }
+        ]
+      }
+    ]
+  }
+]

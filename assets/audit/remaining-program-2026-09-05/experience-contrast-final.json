@@ -1,0 +1,676 @@
+{
+  "startedAt": "2026-09-05T23:00:06.813Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 2,
+  "experimentalCssResponseAppend": null,
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 240252,
+      "gzipBytes": 47167,
+      "sha256": "85d9e1cccdcf74f9a009f2ad94b5825669536ba1799bc83bc21437eee02b02f4"
+    },
+    "assets/js/app.js": {
+      "bytes": 50236,
+      "gzipBytes": 12846,
+      "sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 437527,
+      "gzipBytes": 113726,
+      "sha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62"
+    }
+  },
+  "performance": [],
+  "accessibility": [],
+  "failures": [],
+  "base": "http://127.0.0.1:52993",
+  "contrast": [
+    {
+      "system": "light",
+      "pinned": "auto",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "light",
+      "pinned": "auto",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 12.622042103916842,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(45, 111, 126)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 5.11417004502005,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "light",
+      "pinned": "light",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "light",
+      "pinned": "light",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 12.622042103916842,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(45, 111, 126)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 5.11417004502005,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "light",
+      "pinned": "dark",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "light",
+      "pinned": "dark",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "auto",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "auto",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "light",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "light",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 12.622042103916842,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(45, 111, 126)",
+          "backgrounds": [
+            "rgb(246, 242, 238)"
+          ],
+          "contrast": 5.11417004502005,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(46, 43, 41)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 13.273061633291086,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(90, 74, 68)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 7.937848546569077,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(107, 94, 87)",
+          "backgrounds": [
+            "rgb(255, 247, 241)"
+          ],
+          "contrast": 5.893957783010411,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "dark",
+      "route": "/",
+      "measurements": [
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "system": "dark",
+      "pinned": "dark",
+      "route": "/search/?q=zzzzunmatchablequeryzzzz",
+      "measurements": [
+        {
+          "selector": ".glee-search-page__lede",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".glee-search-page__title",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(30, 27, 25)"
+          ],
+          "contrast": 14.72606010310498,
+          "pass": true
+        },
+        {
+          "selector": ".site-footer",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column h3",
+          "color": "rgb(242, 237, 232)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 15.22083060237111,
+          "pass": true
+        },
+        {
+          "selector": ".footer-column a",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        },
+        {
+          "selector": ".footer-bottom",
+          "color": "rgb(156, 163, 175)",
+          "backgrounds": [
+            "rgb(26, 24, 22)"
+          ],
+          "contrast": 6.973325571026515,
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-09-05T23:00:22.205Z"
+}

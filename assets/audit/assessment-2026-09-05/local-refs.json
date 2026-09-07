@@ -1,0 +1,77 @@
+[
+  {
+    "ref": "backup/main-before-reconcile-2026-08-31",
+    "main_only": 56,
+    "ref_only": 1
+  },
+  {
+    "ref": "backup/main-before-reconcile-2026-09-04",
+    "main_only": 40,
+    "ref_only": 0
+  },
+  {
+    "ref": "codex/replit-skills-2026-09-04",
+    "main_only": 40,
+    "ref_only": 0
+  },
+  {
+    "ref": "codex/site-contrast-fix-2026-08-31",
+    "main_only": 46,
+    "ref_only": 0
+  },
+  {
+    "ref": "main",
+    "main_only": 0,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin",
+    "main_only": 0,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin/codex/language-i18n-skills-a1ca317",
+    "main_only": 50,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin/codex/replit-skills-2026-09-04",
+    "main_only": 40,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin/codex/site-contrast-fix-2026-08-31",
+    "main_only": 46,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin/dependabot/npm_and_yarn/lighthouse-13.4.1",
+    "main_only": 69,
+    "ref_only": 1
+  },
+  {
+    "ref": "origin/dependabot/npm_and_yarn/puppeteer-25.8.0",
+    "main_only": 68,
+    "ref_only": 2
+  },
+  {
+    "ref": "origin/governance/record-main-protection",
+    "main_only": 68,
+    "ref_only": 2
+  },
+  {
+    "ref": "origin/main",
+    "main_only": 0,
+    "ref_only": 0
+  },
+  {
+    "ref": "origin/reconcile/local-main-with-protected-main",
+    "main_only": 56,
+    "ref_only": 2
+  },
+  {
+    "ref": "origin/reconcile/task-164-main-sync",
+    "main_only": 54,
+    "ref_only": 0
+  }
+]

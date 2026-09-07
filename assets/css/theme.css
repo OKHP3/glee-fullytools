@@ -243,10 +243,6 @@ body {
   overflow-x: hidden;
 }
 
-html.okh-search-open {
-  overflow: hidden;
-}
-
 img {
   max-width: 100%;
   height: auto;
@@ -607,28 +603,125 @@ button {
   display: block;
 }
 
-/* ========== Primary nav: French pilot language switcher ========== */
-/* Only rendered on the four pilot routes (home, about, projects, contact)
-   and their /fr/ equivalents. */
-.primary-nav .lang-switch {
+/* ========== Header: pilot-language dropdown switcher ========== */
+/* Rendered only on the four pilot routes (home, about, projects, contact)
+   and their /fr/, /de/, /es/ equivalents. English/USA is the default
+   shown on every EN page; a page's own locale flag shows once someone is
+   on a translated page. Click reveals the other options -- same
+   disclosure shape as the light/dark/system theme toggle, adapted for
+   real navigation since each option is a link to a different page
+   rather than a client-side state change.
+   Lives as its own header section: a flex sibling of nav.primary-nav
+   and .header-controls (search + display-mode switcher), never inside
+   the collapsible nav link list and never folded into the
+   search/theme-toggle cluster. The right-hand rule below is the visual
+   boundary that keeps it a distinct section from .header-controls. */
+.site-header .lang-switch {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-right: 0.85rem;
+  padding-right: 0.85rem;
+  border-right: 1px solid rgba(148, 163, 184, 0.25);
 }
 
-.primary-nav .lang-switch-link {
-  color: var(--color-muted);
+.site-header .lang-switch-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  color: #f9fafb;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.primary-nav .lang-switch-link.is-active {
-  color: var(--color-accent);
-  font-weight: 600;
+.site-header .lang-switch-toggle:hover,
+.site-header .lang-switch-toggle:focus-visible {
+  border-color: var(--okh-orange, #c46a2c);
+  outline: none;
 }
 
-.primary-nav .lang-switch-sep {
-  color: var(--color-muted);
-  opacity: 0.6;
+.site-header .lang-switch-toggle[aria-expanded="true"] {
+  border-color: var(--okh-orange, #c46a2c);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.site-header .lang-flag-current {
+  display: block;
+  pointer-events: none;
+}
+
+.site-header .lang-switch-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  box-sizing: border-box;
+  width: min(15rem, calc(100vw - 1rem));
+  min-width: 0;
+  max-height: min(28rem, calc(100vh - 5rem));
+  max-height: min(28rem, calc(100dvh - 5rem));
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.96);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.site-header .lang-switch-menu[hidden] {
+  display: none;
+}
+
+.site-header .lang-switch-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  color: #f9fafb;
+  opacity: 0.8;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  min-width: 0;
+}
+
+.site-header .lang-switch-option:hover,
+.site-header .lang-switch-option:focus-visible {
+  opacity: 1;
+  background: rgba(148, 163, 184, 0.18);
+  outline: none;
+}
+
+.site-header .lang-switch-option.is-current {
+  opacity: 1;
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.site-header .lang-flag {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.site-header .lang-switch-option-label {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 /* ===== PRE‑OPENING / ACTIVE BUILD NOTE =============================== */
@@ -767,6 +860,7 @@ button {
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
   border-color: var(--okh-orange, #c46a2c);
+  outline: none;
 }
 .theme-toggle .tt-icon {
   width: 1rem;
@@ -815,6 +909,30 @@ button {
   letter-spacing: 0.18em;
   color: #9ca3af;
   margin-bottom: 1.5rem;
+}
+
+html[data-theme="dark"] body:not(.glee-main):not(.askjamie-main) .hero-subline {
+  display: inline-flex;
+  align-items: center;
+  max-width: fit-content;
+  padding: 0.22rem 0.7rem 0.26rem;
+  border-radius: 999px;
+  color: #f9fafb;
+  background: rgba(23, 17, 13, 0.94);
+  border: 1px solid rgba(249, 250, 251, 0.28);
+  font-weight: 600;
+}
+
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-subline {
+  display: inline-flex;
+  align-items: center;
+  max-width: fit-content;
+  padding: 0.22rem 0.7rem 0.26rem;
+  border-radius: 999px;
+  color: #3f2c20;
+  background: linear-gradient(180deg, rgba(255, 248, 240, 0.96), rgba(247, 239, 229, 0.9));
+  border: 1px solid rgba(196, 106, 44, 0.28);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .hero-tagline {
@@ -1152,38 +1270,6 @@ OverKill Hill industrial stripes.
   height: 100%;
   border: 0;
   border-radius: 20px;
-}
-
-.arcade-embed-fallback {
-  position: absolute;
-  inset: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  background: #1a1f3c;
-  color: #f6f2ee;
-  text-align: center;
-}
-
-.arcade-embed-fallback a {
-  color: #f5d576;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.privacy-controls {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.75rem 0 0;
-}
-
-.privacy-controls .btn {
-  font-size: 0.85rem;
 }
 
 /* ===================================================================== */
@@ -1569,7 +1655,8 @@ body.construction-dismissed .construction-overlay,
   border-top: 1px solid var(--color-border-subtle, #2a2f37);
   transition: background 0.12s ease;
 }
-.okh-search-result:first-child { border-top: none; }
+.okh-search-results > .okh-search-result:first-child,
+.okh-search-results > [role="listitem"]:first-child .okh-search-result { border-top: none; }
 .okh-search-result:hover,
 .okh-search-result[data-active="true"] {
   background: rgba(196, 106, 44, 0.08);
@@ -1901,6 +1988,7 @@ body.construction-dismissed .construction-overlay,
   font-size: 0.82rem;
   line-height: 1.75;
   overflow-x: auto;
+  contain: paint;
   white-space: pre;
   color: var(--color-fg);
   margin-top: 1.25rem;
@@ -3167,6 +3255,12 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
    page layout at narrow viewports. Safe globally — these are reset-level rules.
    Tables and code inside .data-table-wrap are exempt (handled by the wrapper). */
 @media (max-width: 768px) {
+  /* Keep decorative paint within the document on narrow screens. Components
+     that intentionally scroll horizontally retain their own overflow rules. */
+  main {
+    overflow-x: clip;
+  }
+
   img,
   video,
   iframe,
@@ -3178,6 +3272,11 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
   /* Exception: let the data-table-wrap handle overflow for its table */
   .data-table-wrap table {
     max-width: none;
+  }
+
+  .pf-skeleton {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
   }
 }
 
@@ -3222,6 +3321,9 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
 @media (max-width: 768px) {
   .primary-nav .has-submenu {
     position: static;
+    align-self: stretch;
+    min-width: 0;
+    width: 100%;
   }
 
   .primary-nav .submenu {
@@ -3230,17 +3332,45 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
     box-shadow: none;
     background: transparent;
     padding: 0.25rem 0 0.5rem 0;
+    max-width: 100%;
+    width: 100%;
   }
 
   .primary-nav .submenu a {
     padding-left: 1.5rem;     /* simple visual indent under "About" */
     font-size: 0.95em;        /* optional: slightly smaller to read as secondary */
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 }
 
+/* Header now stays in flow (not the off-canvas nav panel) on narrow
+   viewports, so the language switcher stays visible next to the
+   hamburger -- same as the search trigger and theme toggle -- instead
+   of being buried at the bottom of the mobile nav link list. Tighten
+   its own spacing so it doesn't crowd the header-controls cluster. */
 @media (max-width: 768px) {
-  .primary-nav .lang-switch {
-    padding: 0.35rem 0;
+  .site-header .lang-switch {
+    margin-right: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Anchor the disclosure to the viewport on compact headers. The language
+     control sits between several fixed-width header controls, so positioning
+     a 15rem menu against that narrow flex item can push the menu off-screen. */
+  .site-header .lang-switch-menu {
+    position: fixed;
+    top: calc(3.75rem + 0.5rem);
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header .lang-switch {
+    margin-right: 0.35rem;
+    padding-right: 0.35rem;
   }
 }
 
@@ -3416,7 +3546,7 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
   .okh-search-trigger .okh-search-label { display: none; }
 }
 @media (max-width: 768px) { .murderbird-grid { grid-template-columns: 1fr; } }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .manifesto-layout { grid-template-columns: 1fr; }
   .manifesto-sidebar { display: none; }
 }
@@ -3459,10 +3589,16 @@ html[data-theme="light"] .pf-boundary-label--private    { color: #475569; }
 @media (max-width: 600px) { .decision-item { grid-template-columns: 1fr; gap: 0.25rem; } .decision-item > code { display: block; } }
 @media (max-width: 1023px) { .pf-body-with-sidebar { grid-template-columns: 1fr; } .pf-toc-sidebar { display: none; } }
 
-/* ── TOC widget: GPU-layer hint for smooth animation */
+/* A single moving menu per sidebar; metadata remains in document flow. */
 @media (min-width: 1024px) {
-  #toc-widget {
-    will-change: transform;
+  .sidebar-rail.toc-follow-rail,
+  .manifesto-sidebar.toc-follow-rail {
+    position: static;
+  }
+  #toc-widget.toc-follow-active {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -3611,6 +3747,20 @@ body:not(.askjamie-main):not(.glee-main) .mermaidTooltip {
    keep text white in light mode so it stays readable against the dark card */
 html[data-theme="light"] .hero-forge-card {
   color: #f9fafb;
+}
+
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-actions .btn-quiet {
+  color: #1f2937;
+  background: linear-gradient(180deg, rgba(255, 250, 244, 0.96), rgba(247, 240, 231, 0.9));
+  border-color: rgba(196, 106, 44, 0.34);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-actions .btn-quiet:hover,
+html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-actions .btn-quiet:focus-visible {
+  color: #111827;
+  background: linear-gradient(180deg, rgba(255, 245, 234, 0.98), rgba(247, 238, 225, 0.96));
+  border-color: rgba(196, 106, 44, 0.48);
 }
 
 /* ===== "LATEST MILESTONE" HIGHLIGHT SECTION ========================= */
@@ -5338,14 +5488,6 @@ html[data-theme="light"] .glee-main {
   --color-surface-soft: #fff7f1;   /* soft warm inset */
 }
 
-/* Paper-surface text roles used by the Glee header and special banner. These
-   remain stable when dark-scheme tokens are applied to the rest of the page. */
-.glee-main {
-  --glee-paper-fg: #2e2b29;
-  --glee-paper-muted: #5a4a44;
-  --glee-paper-amber: #5a3a00;
-}
-
 .site-specials--glee { /* bright & playful */
   background: #ffe8a8;
 }
@@ -5407,37 +5549,7 @@ html[data-theme="light"] .glee-main {
 
 .glee-main .primary-nav a[aria-current="page"],
 .glee-main .primary-nav a.is-current {
-  color: var(--color-link-hover); /* AA-safe rust on the paper header */
-}
-
-html[data-theme="light"] .glee-main .site-header .primary-nav a[aria-current="page"],
-html[data-theme="light"] .glee-main .site-header .primary-nav a.is-current {
-  color: var(--color-link-hover);
-}
-
-/* The Glee header stays paper-toned in dark scheme mode. Keep controls and
-   banner copy dark on that surface instead of inheriting the dark-surface
-   near-white token from the scoped color-scheme variables. */
-html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger {
-  color: var(--glee-paper-fg);
-  border-color: rgba(46, 43, 41, 0.25);
-}
-html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger kbd {
-  color: var(--glee-paper-muted);
-  border-color: rgba(46, 43, 41, 0.2);
-  background: rgba(46, 43, 41, 0.05);
-}
-html[data-color-scheme="dark"] .glee-main .site-specials--glee {
-  color: var(--glee-paper-amber);
-}
-
-/* Search-trigger hover/focus and the active nav item use the same AA-safe
-   accent on the Glee paper header in every color-scheme state. */
-.glee-main .site-header .okh-search-trigger:hover,
-.glee-main .site-header .okh-search-trigger:focus-visible,
-.glee-main .site-header .primary-nav a[aria-current="page"]:hover,
-.glee-main .site-header .primary-nav a.is-current:hover {
-  color: var(--color-link-hover);
+  color: #d35b2d; /* Glee rust */
 }
 
 /* ===================================================================== */
@@ -5499,6 +5611,45 @@ html[data-color-scheme="dark"] .glee-main .site-specials--glee {
   width: 100%;
   height: auto;
 } 
+/* Generated maps retain legible node text and a keyboard-scrollable viewport. */
+.glee-main .universe-map details {
+  margin-block: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--color-muted);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+.glee-main .universe-map summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+}
+.glee-main .universe-map .mermaid-scroll-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.glee-main .universe-map .mermaid {
+  min-width: 620px;
+}
+.glee-main .universe-map li {
+  margin-block: 0.75rem;
+}
+.glee-main #universe-generated-map .mermaid svg .node rect,
+.glee-main #universe-generated-map .mermaid svg .node polygon {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+}
+.glee-main #universe-generated-map .mermaid svg .nodeLabel,
+.glee-main #universe-generated-map .mermaid svg .nodeLabel p {
+  color: var(--color-fg);
+}
+.glee-main #universe-generated-map .mermaid svg .flowchart-link {
+  stroke: var(--color-fg);
+}
+.glee-main #universe-generated-map .mermaid svg marker path {
+  fill: var(--color-fg);
+  stroke: var(--color-fg);
+}
 /* Nodes – rounded joyful shapes with coral borders */
 .glee-main .mermaid .node rect,
 .glee-main .mermaid .node circle {
@@ -5859,12 +6010,18 @@ html:has(
 }
 
 /* ===== Glee-fully general styles =================================== */
+/* The hero sits on paper in this brand, including when the shared theme
+   attribute selects light mode. Use the local effective text token. */
+html .glee-main .hero-eyebrow {
+  color: var(--color-muted);
+}
+
 /* Headers */
 .glee-main h1,
 .glee-main h2,
 .glee-main h3 {
   font-family: "Fredoka", "Poppins", sans-serif;
-  color: var(--color-accent-2);
+  color: var(--color-heading, var(--color-accent-2));
 }
 
 /* Buttons */
@@ -6045,6 +6202,22 @@ html:has(
   min-height: 1px;
 }
 
+/* Reserve the loading space so fetched filters and results do not move the page. */
+body.glee-main .glee-search-page__categories {
+  min-height: 4rem;
+}
+body.glee-main .glee-search-page__results-wrap {
+  min-height: 22rem;
+}
+html body.glee-main:has(> main.glee-search-page) {
+  background: var(--color-bg);
+}
+@media (max-width: 600px) {
+  body.glee-main .glee-search-page__categories {
+    min-height: 8rem;
+  }
+}
+
 /* ── Glee breadcrumb nav ─────────────────────────────────────────────────
    Rendered by scripts/inject-breadcrumb.py as:
      <nav class="glee-breadcrumb">
@@ -6158,16 +6331,7 @@ html[data-color-scheme="dark"] .glee-main {
   --color-fg:           #f2ede8;   /* warm near-white ink */
   --color-muted:        #b5a9a1;   /* muted warm grey */
   --color-inline-link:  #f07585;   /* AA normal text on dark surfaces */
-}
-
-html[data-color-scheme="dark"] .glee-search-page__form {
-  background: var(--color-surface);
-  border-color: rgba(255, 216, 210, 0.12);
-}
-
-html[data-color-scheme="dark"] .glee-search-page__results > li {
-  background: var(--color-surface);
-  border-color: rgba(255, 216, 210, 0.12);
+  --color-heading:      var(--color-fg);
 }
 
 /* ── Glee dark mode: component-level overrides ──────────────────────────────
@@ -6332,20 +6496,20 @@ html[data-color-scheme="dark"]:has(
    near-white text (for the OKH dark footer) and wins on specificity (0,0,2,1)
    over .glee-main .site-footer (0,0,2,0). These Glee-scoped overrides have
    specificity (0,0,3,1) so they always win and keep the cream footer readable. */
-html[data-theme="light"] .glee-main .site-footer {
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .site-footer {
   color: #2e2b29;
 }
-html[data-theme="light"] .glee-main .footer-column h3,
-html[data-theme="light"] .glee-main .footer-column h4 {
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .footer-column h3,
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .footer-column h4 {
   color: #2e2b29;
 }
-html[data-theme="light"] .glee-main .footer-column a {
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .footer-column a {
   color: #5a4a44;
 }
-html[data-theme="light"] .glee-main .footer-column a:hover {
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .footer-column a:hover {
   color: #b8354a; /* WCAG AA: 5.21:1 on footer cream #fff7f1 */
 }
-html[data-theme="light"] .glee-main .footer-bottom {
+html[data-theme="light"]:where(:not([data-color-scheme="dark"])) .glee-main .footer-bottom {
   color: #6b5e57;
 }
 
@@ -6368,27 +6532,6 @@ html[data-theme="light"] .glee-main .footer-bottom {
   background: #1a1f3c;
   overflow: hidden;
 }
-
-/* Arcade page callout and closing actions. Keep these in the shared stylesheet
-   so the enforced page CSP does not discard the page's inline presentation. */
-.arcade-callout {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg, 1.25rem);
-  padding: 1.75rem 2rem;
-  max-width: 40rem;
-  margin: 0 auto;
-}
-
-.arcade-callout .feature-list {
-  margin: 0;
-}
-
-.arcade-closing-cta {
-  margin-top: 1.5rem;
-  text-align: center;
-}
-
 .arcade-embed-note {
   text-align: center;
   font-size: .9rem;
@@ -6712,16 +6855,7 @@ html[data-color-scheme="dark"] .arcade-eyebrow {
     --color-fg:           #f2ede8;
     --color-muted:        #b5a9a1;
     --color-inline-link:  #f07585;
-  }
-
-  html:not([data-color-scheme="light"]) .glee-search-page__form {
-    background: var(--color-surface);
-    border-color: rgba(255, 216, 210, 0.12);
-  }
-
-  html:not([data-color-scheme="light"]) .glee-search-page__results > li {
-    background: var(--color-surface);
-    border-color: rgba(255, 216, 210, 0.12);
+    --color-heading:      var(--color-fg);
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -6802,15 +6936,6 @@ html[data-color-scheme="dark"] .arcade-eyebrow {
   }
 }
 @media (prefers-color-scheme: dark) {
-  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger {
-    color: var(--glee-paper-fg);
-    border-color: rgba(46, 43, 41, 0.25);
-  }
-  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger kbd {
-    color: var(--glee-paper-muted);
-    border-color: rgba(46, 43, 41, 0.2);
-    background: rgba(46, 43, 41, 0.05);
-  }
   html:not([data-color-scheme="light"]) .site-specials--glee {
     background: rgba(200, 146, 26, 0.18);
     color: var(--color-fg);
@@ -7525,11 +7650,10 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   transform: none;
 }
 
-/* Mermaid's generated SVG is about twice as tall as this column is wide.
-   Reserve that space before the async module renders so replacing the source
-   text does not push the hero and everything below it down the page. */
+/* Reserve a minimum diagram height while Mermaid loads. The rendered SVG
+   determines the final height without imposing a fixed aspect ratio. */
 .askjamie-hero--universe .mermaid-scroll-wrap {
-  aspect-ratio: 1 / 2.1;
+  min-height: 14rem;
 }
 
 @media (min-width: 900px) {
@@ -7639,4 +7763,63 @@ html[data-color-scheme="dark"] .askjamie-main .mermaid .edgePath path {
   .askjamie-mermaid-shell .mermaid {
     padding: 1rem;
   }
+}
+
+/* Cross-site runtime additions retained from the Glee and AskJamie variants. */
+.glee-main .arcade-embed-fallback { position: absolute; inset: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 1rem; border-radius: 1rem; background: var(--color-surface); color: var(--color-fg); text-align: center; }
+.glee-main .arcade-embed-fallback a { color: var(--color-inline-link); text-decoration: underline; text-underline-offset: 3px; }
+.glee-main .privacy-controls { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0 0; }
+.glee-main .privacy-controls .btn { font-size: 0.85rem; }
+.glee-main .arcade-embed-fallback[hidden] { display: none; }
+.glee-main { --glee-paper-fg: #2e2b29; --glee-paper-muted: #5a4a44; --glee-paper-amber: #5a3a00; }
+html[data-theme="light"] .glee-main .site-header .primary-nav a[aria-current="page"], html[data-theme="light"] .glee-main .site-header .primary-nav a.is-current { color: var(--color-link-hover); }
+html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger { color: var(--glee-paper-fg); border-color: rgba(46, 43, 41, 0.25); }
+html[data-color-scheme="dark"] .glee-main .site-header .okh-search-trigger kbd { color: var(--glee-paper-muted); border-color: rgba(46, 43, 41, 0.2); background: rgba(46, 43, 41, 0.05); }
+html[data-color-scheme="dark"] .glee-main .site-specials--glee { color: var(--glee-paper-amber); }
+.glee-main .site-header .okh-search-trigger:hover, .glee-main .site-header .okh-search-trigger:focus-visible, .glee-main .site-header .primary-nav a[aria-current="page"]:hover, .glee-main .site-header .primary-nav a.is-current:hover { color: var(--color-link-hover); }
+html[data-color-scheme="dark"] .glee-search-page__form, html[data-color-scheme="dark"] .glee-search-page__results > li { background: var(--color-surface); border-color: rgba(255, 216, 210, 0.12); }
+@media (prefers-color-scheme: dark) {
+  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger { color: var(--glee-paper-fg); border-color: rgba(46, 43, 41, 0.25); }
+  html:not([data-color-scheme="light"]) .glee-main .site-header .okh-search-trigger kbd { color: var(--glee-paper-muted); border-color: rgba(46, 43, 41, 0.2); background: rgba(46, 43, 41, 0.05); }
+  html:not([data-color-scheme="light"]) .glee-search-page__form, html:not([data-color-scheme="light"]) .glee-search-page__results > li { background: var(--color-surface); border-color: rgba(255, 216, 210, 0.12); }
+}
+.arcade-callout { background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg, 1.25rem); padding: 1.75rem 2rem; max-width: 40rem; margin: 0 auto; }
+.arcade-callout .feature-list { margin: 0; }
+.arcade-closing-cta { margin-top: 1.5rem; text-align: center; }
+.askjamie-brandguard-page > main > section.content-section, .askjamie-brandguard-page > main > section.stripe-bg { content-visibility: auto; contain-intrinsic-size: auto 680px; }
+
+/* Generated AskJamie navigation uses the existing paper and teal palette. */
+.askjamie-main .universe-map-group { margin-block: 1rem; }
+.askjamie-main .universe-map-group > summary { cursor: pointer; font-weight: 700; }
+.askjamie-main .universe-map-group .mermaid { min-height: 0; }
+.askjamie-main .universe-map-group li { margin-block: 0.65rem; overflow-wrap: anywhere; }
+.askjamie-main .universe-map-generated figure { margin-inline: 0; }
+
+.askjamie-main .universe-map-group .mermaid svg { min-width: 40rem; }
+.askjamie-main .universe-map-generated .mermaid .node rect,
+.askjamie-main .askjamie-hero--universe .mermaid .node rect {
+  fill: var(--color-surface) !important;
+  stroke: var(--color-accent) !important;
+}
+.askjamie-main .universe-map-generated .mermaid .nodeLabel *,
+.askjamie-main .askjamie-hero--universe .mermaid .nodeLabel *,
+.askjamie-main .universe-map-generated .mermaid .nodeLabel,
+.askjamie-main .askjamie-hero--universe .mermaid .nodeLabel {
+  color: var(--color-fg) !important;
+}
+.askjamie-main .universe-map-generated .mermaid .flowchart-link,
+.askjamie-main .askjamie-hero--universe .mermaid .flowchart-link {
+  stroke: var(--color-fg) !important;
+}
+.askjamie-main .universe-map-generated .mermaid marker path,
+.askjamie-main .askjamie-hero--universe .mermaid marker path {
+  fill: var(--color-fg) !important;
+  stroke: var(--color-fg) !important;
+}
+
+/* Keep source syntax out of the visitor view before rendering or without JS. */
+.askjamie-main .askjamie-mermaid-shell .mermaid:not([data-universe-ready="1"]) {
+  visibility: hidden;
+  font-size: 0;
+  min-height: 2rem;
 }

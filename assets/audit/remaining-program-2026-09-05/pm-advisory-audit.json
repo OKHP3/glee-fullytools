@@ -1,0 +1,4 @@
+{
+  "source": "scripts/audit-site.py --quiet",
+  "raw_markdown": "# Glee-fully.tools \u2014 Automated Site Audit\n\n**Pages scanned:** 63  \n**Total issues:** 0\n\n## Sitemap reconciliation\n\n- OK \u2014 sitemap and on-disk pages are in sync.\n\n## Search-index reconciliation\n\n- OK \u2014 every public page is covered by the search index.\n\n## Per-page issues\n\n_No per-page issues found._\n"
+}

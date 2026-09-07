@@ -1,0 +1,192 @@
+[
+  {
+    "id": 1,
+    "path": "about/index.html",
+    "finding": "Description is 191 chars (>165)"
+  },
+  {
+    "id": 2,
+    "path": "arcade/index.html",
+    "finding": "Title is 74 chars (>70)"
+  },
+  {
+    "id": 3,
+    "path": "arcade/index.html",
+    "finding": "Description is 178 chars (>165)"
+  },
+  {
+    "id": 4,
+    "path": "legal/index.html",
+    "finding": "Description is 177 chars (>165)"
+  },
+  {
+    "id": 5,
+    "path": "persona/index.html",
+    "finding": "Description is 189 chars (>165)"
+  },
+  {
+    "id": 6,
+    "path": "search/index.html",
+    "finding": "Description is 174 chars (>165)"
+  },
+  {
+    "id": 7,
+    "path": "showcase/index.html",
+    "finding": "Title is 88 chars (>70)"
+  },
+  {
+    "id": 8,
+    "path": "showcase/index.html",
+    "finding": "Description is 184 chars (>165)"
+  },
+  {
+    "id": 9,
+    "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+    "finding": "Description is 211 chars (>165)"
+  },
+  {
+    "id": 10,
+    "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+    "finding": "Description is 204 chars (>165)"
+  },
+  {
+    "id": 11,
+    "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+    "finding": "Description is 220 chars (>165)"
+  },
+  {
+    "id": 12,
+    "path": "toolbox/01-discovered-careers/index.html",
+    "finding": "Description is 200 chars (>165)"
+  },
+  {
+    "id": 13,
+    "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+    "finding": "Description is 229 chars (>165)"
+  },
+  {
+    "id": 14,
+    "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+    "finding": "Description is 220 chars (>165)"
+  },
+  {
+    "id": 15,
+    "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+    "finding": "Description is 189 chars (>165)"
+  },
+  {
+    "id": 16,
+    "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+    "finding": "Description is 186 chars (>165)"
+  },
+  {
+    "id": 17,
+    "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+    "finding": "Description is 202 chars (>165)"
+  },
+  {
+    "id": 18,
+    "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+    "finding": "Description is 198 chars (>165)"
+  },
+  {
+    "id": 19,
+    "path": "toolbox/02-treasured-finds/index.html",
+    "finding": "Description is 202 chars (>165)"
+  },
+  {
+    "id": 20,
+    "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+    "finding": "Description is 203 chars (>165)"
+  },
+  {
+    "id": 21,
+    "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+    "finding": "Description is 178 chars (>165)"
+  },
+  {
+    "id": 22,
+    "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+    "finding": "Description is 223 chars (>165)"
+  },
+  {
+    "id": 23,
+    "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+    "finding": "Description is 209 chars (>165)"
+  },
+  {
+    "id": 24,
+    "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+    "finding": "Description is 175 chars (>165)"
+  },
+  {
+    "id": 25,
+    "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+    "finding": "Description is 182 chars (>165)"
+  },
+  {
+    "id": 26,
+    "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+    "finding": "Description is 186 chars (>165)"
+  },
+  {
+    "id": 27,
+    "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+    "finding": "Description is 208 chars (>165)"
+  },
+  {
+    "id": 28,
+    "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+    "finding": "Description is 190 chars (>165)"
+  },
+  {
+    "id": 29,
+    "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+    "finding": "Description is 173 chars (>165)"
+  },
+  {
+    "id": 30,
+    "path": "toolbox/06-healthy-bee-ing/index.html",
+    "finding": "Description is 174 chars (>165)"
+  },
+  {
+    "id": 31,
+    "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+    "finding": "Description is 166 chars (>165)"
+  },
+  {
+    "id": 32,
+    "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+    "finding": "Description is 209 chars (>165)"
+  },
+  {
+    "id": 33,
+    "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+    "finding": "Description is 175 chars (>165)"
+  },
+  {
+    "id": 34,
+    "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+    "finding": "Description is 168 chars (>165)"
+  },
+  {
+    "id": 35,
+    "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
+    "finding": "Description is 168 chars (>165)"
+  },
+  {
+    "id": 36,
+    "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+    "finding": "Description is 178 chars (>165)"
+  },
+  {
+    "id": 37,
+    "path": "toolbox/07-identity-known/index.html",
+    "finding": "Description is 189 chars (>165)"
+  },
+  {
+    "id": 38,
+    "path": "under-construction.html",
+    "finding": "In-page anchor href=\"#why\" has no matching id"
+  }
+]

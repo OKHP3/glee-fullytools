@@ -1,0 +1,105 @@
+{
+  "recordedAt": "2026-09-06T02:43:02.364Z",
+  "sourceCommit": "547d1c122b774f1aef55b92ee28739aa5d5def9a",
+  "evidenceCopy": "C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/release-preflight-1788662563565",
+  "checks": [
+    {
+      "args": [
+        "scripts/validate-site.py"
+      ],
+      "exitCode": 1,
+      "stdout": "\r\nScanned 63 pages\r\n  issues:   0\r\n  warnings: 0\r\n  detail:   assets\\audit\\validation-report-2026-05-03.json\r\n",
+      "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\validate-site.py\", line 1093, in <module>\r\n    sys.exit(main())\r\n             ^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\validate-site.py\", line 484, in main\r\n    mermaid_csp_warnings = _check_mermaid_csp_alignment()\r\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\validate-site.py\", line 541, in _check_mermaid_csp_alignment\r\n    policies = build_policies()\r\n               ^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\csp.py\", line 106, in build_policies\r\n    for page in all_pages():\r\n                ^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\csp.py\", line 88, in all_pages\r\n    tracked = subprocess.run(\r\n              ^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\subprocess.py\", line 571, in run\r\n    raise CalledProcessError(retcode, process.args,\r\nsubprocess.CalledProcessError: Command '['git', 'ls-files', '*.html']' returned non-zero exit status 128.\r\n"
+    },
+    {
+      "args": [
+        "scripts/check-links.py",
+        "--no-report"
+      ],
+      "exitCode": 0,
+      "stdout": "Pages scanned:    63\r\nInternal links:   2719\r\nExternal links:   1087\r\nBroken links:     0\r\nStyle issues:     0\r\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\r\nNoindex exclusions: 0\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/build-search-index.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "Indexing 60 HTML pages…\r\nCommitted assets\\data\\search-index.json is current — 60 pages\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/sync-portfolio-stats.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7745\r\n  about\\index.html — already up to date\r\n  showcase\\index.html — already up to date\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/sync-css-version.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "  CSS token -> 10030d12  (all 63 file(s) already current)\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/sync-social-card.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": "\r\nSocial-card metadata is current across 62 published pages.\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/check-csp.py"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\check-csp.py\", line 9, in <module>\r\n    runpy.run_path(\"scripts/generate-csp.py\", run_name=\"__main__\")\r\n  File \"<frozen runpy>\", line 287, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"scripts/generate-csp.py\", line 111, in <module>\r\n    raise SystemExit(main())\r\n                     ^^^^^^\r\n  File \"scripts/generate-csp.py\", line 43, in main\r\n    policies = build_policies()\r\n               ^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\csp.py\", line 106, in build_policies\r\n    for page in all_pages():\r\n                ^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\release-preflight-1788662563565\\scripts\\csp.py\", line 88, in all_pages\r\n    tracked = subprocess.run(\r\n              ^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\jamie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\subprocess.py\", line 571, in run\r\n    raise CalledProcessError(retcode, process.args,\r\nsubprocess.CalledProcessError: Command '['git', 'ls-files', '*.html']' returned non-zero exit status 128.\r\n"
+    },
+    {
+      "args": [
+        "scripts/check-catalog-claims.py"
+      ],
+      "exitCode": 0,
+      "stdout": "{\r\n  \"pages\": 42,\r\n  \"errors\": 0,\r\n  \"results\": [\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01a-resume-builder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01b-resume-customizer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01c-career-fitness/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01d-letter-composer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01e-blinkin-tuner/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01f-career-seeker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02a-personal-librarian/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02b-decor-detective/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02c-present-hoarder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02d-scentinal-journal/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02e-spirited-journal/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02f-supply-haus/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02g-bag-nabbit/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03a-flavor-meister/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03b-menu-conductor/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03c-wishful-tastes/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03d-pantry-shopper/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03e-palatably-profiled/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04a-journey-diary/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04b-itinerary-hacker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04c-detour-discoverer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04d-dreamland-journeys/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04e-memento-log/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05a-task-maestro/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05b-thrifty-spender/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05c-giftlist-helper/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05d-scheduling-wizard/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05e-lifestyle-wallboard/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05f-neighborly-bazaar/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06a-care-check/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06b-calm-keep/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06c-snappy-count/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06d-medi-minder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06e-moody-log/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06f-maven-wise/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07a-critter-spotter/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07b-roost-wrangler/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07c-sight-seeker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07d-snap-decoder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07e-motif-muse/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07f-maker-matcher/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07g-self-fixer/index.html\",\r\n      \"errors\": []\r\n    }\r\n  ]\r\n}\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/check-accent-contrast.py",
+        "--strict"
+      ],
+      "exitCode": 0,
+      "stdout": "Accent contrast advisory scan (light + dark mode + branded hover states)\r\n  HTML files scanned : 72\r\n  CSS files scanned  : 1\r\n  Advisories         : 0\r\n  Info notes         : 0\r\n  Hover checks       : 8 (0 failures)\r\n  Report             : assets\\audit\\accent-contrast-report.json\r\n\r\n  Light-mode palette : accent #d35b2d / bg #f6f2ee → 3.55:1\r\n  Dark-mode palette  : accent #f07585 / surface #241c1a → 6.04:1\r\n\r\n  No body-text accent color violations found.\r\n\r\nAdvisories are reported without --strict.\r\nUse --strict to exit 1 on any advisory or hover-state failure.\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/check-glee-dark-coverage.py",
+        "--section",
+        "all",
+        "--require-both"
+      ],
+      "exitCode": 0,
+      "stdout": "check-glee-dark-coverage: OK — 16 light-surface rule(s) (13 background, 6 border) in the GLEE section all have dark-mode overrides in both forms.\r\ncheck-glee-dark-coverage: OK — 10 light-surface rule(s) (10 background, 1 border) in the ASKJAMIE section all have dark-mode overrides in both forms.\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/resilience-qa.py",
+        "--static-only"
+      ],
+      "exitCode": 0,
+      "stdout": "Static resilience checks: PASS\r\nReport: assets\\audit\\resilience-qa-2026-09-05.json\r\n",
+      "stderr": ""
+    }
+  ]
+}

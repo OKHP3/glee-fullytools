@@ -122,6 +122,7 @@ CORE_PAGES = [
     ("legal",     "/legal/"),
     ("persona",   "/persona/"),
     ("showcase",  "/showcase/"),
+    ("foundry",   "/foundry/"),
     ("arcade",    "/arcade/"),
     ("404",       "/404.html"),
     ("under-construction", "/under-construction.html"),

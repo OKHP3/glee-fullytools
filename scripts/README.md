@@ -12,30 +12,44 @@ follows the same convention as `askjamie/scripts/README.md`.
 | --- | --- | --- |
 | `audit-site.py` | active | Site audit |
 | `audit-tool-ette-promises.py` | active | Check all 42 Tool-ette pages for a description, unique identity, publication signal, and primary CTA state |
-| `build-search-index.py` | active | Rebuild the generated search index |
+| `build-search-index.py` | active | Rebuild the generated search index, then refresh the universe map |
+| `sync-universe-map.py` | active | Generate the owned universe page block and public coverage/provenance JSON using the installed skill; `--check` is read-only |
 | `check-accent-contrast.py` | active | Accent contrast check (has its own test coverage) |
+| `check-catalog-claims.py` | active | Check all 42 Tool-ette pages for unsupported capability, availability, and platform-boundary claims; covered by `tests/test_content_claims.py` in CI |
 | `check-csp.py` | active | CI guard against CSP drift |
 | `check-glee-dark-coverage.py` | active | Dark-mode coverage check (invoked by `validate-site.py`) |
-| `check-links.py` | active | Internal/external link check |
+| `check-links.py` | active | Internal target and sitemap check; external links are counted, not fetched |
 | `check-mtb-version.py` | active | MTB version consistency |
 | `check-public-headers.py` | active | Public `_headers`/CSP header check |
-| `check-workflow-actions.py` | active | GitHub Actions pin/version check (has its own test coverage) |
+| `check-workflow-actions.py` | active | Approved action-major-tag policy check; does not enforce immutable SHA pins |
 | `csp.py` | active | Canonical CSP policy generation module |
 | `generate-csp.py` | active | Apply CSP policies to every page |
 | `inclusive-accessibility-qa.py` | active | Browser evidence for inclusive keyboard, search, fallback, and constrained-environment journeys |
-| `post-merge.sh` | active | Post-merge rebuild and validation hook |
+| `post-merge.sh` | active | Check-only post-merge integrity hook; run with Bash, never Python |
+| `public-artifact.py` | active | Stage and verify the reviewed public inventory, transferred bytes, and final Pages archive |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
 | `resilience-qa.py` | active | Installability, offline lifecycle, cross-browser, crawler, and third-party failure acceptance checks |
 | `serve-site.py` | active | Local preview server |
 | `sparkle-qa.py` | active | Sparkle-loader QA (`.github/workflows/sparkle-qa.yml`) |
-| `sync-foundation-files.py` | active | 3-way sync of theme.css/app.js/mermaid-init.js across the three sibling repos |
-| `sync-css-version.py` | active | CSS cache-version sync (has its own test coverage) |
+| `sync-foundation-files.py` | active, review required | Dry-run foundation inventory; legacy write modes choose by Git touch time and require explicit per-file source/target review before use |
+| `sync-css-version.py` | active | CSS and JavaScript cache-version sync, including the dynamic adapter import and offline shell; run after content generators (has its own test coverage) |
 | `sync-image-alt.py` | active | Image alt-text sync (invoked by `validate-site.py`) |
-| `sync-portfolio-stats.py` | active | Portfolio stats sync (invoked by `post-merge.sh`) |
+| `sync-portfolio-stats.py` | active | Portfolio stats sync; the post-merge hook uses `--check` only |
 | `sync-social-card.py` | active | Social-card sync (has its own test coverage) |
 | `sync-sparkle-fallback.py` | active | Sparkle fallback sync (invoked by `validate-site.py`) |
 | `validate-site.py` | active | Structural site validation |
+
+Cross-site write authorization is separate from a dry-run suggestion. Follow
+`docs/companion-publishing-contract.md`: record exact source and target commits,
+review semantic compatibility, and preserve site adapters. Newest Git touch time
+does not establish ownership or compatibility. This checkout has no replacement
+manifest-driven promotion executor; do not describe the proposed model as implemented.
+
+`tests/test-release-readiness.cjs` supplies focused Node Playwright cross-engine
+journeys when that runtime and browsers already exist. Missing engines return
+non-success and remain `NOT RUN`; a successful Node journey is not a successful
+run of `tests/test_browser_acceptance.py` or `resilience-qa.py`.
 
 The following scripts are **reference-only**. They may still be useful for a
 deliberately scoped maintenance or migration task, but they are not part of

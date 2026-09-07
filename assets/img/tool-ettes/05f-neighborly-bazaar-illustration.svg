@@ -64,7 +64,7 @@
   <text x="530" y="196" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Items sold: 23</text>
   <text x="530" y="212" font-family="Georgia, serif" font-size="9" fill="#3a3530" text-anchor="start">Member since: Jan 2024</text>
   <text x="530" y="228" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Response rate: 98%</text>
-  <text x="530" y="244" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Usually replies in: <30 min</text>
+  <text x="530" y="244" font-family="Georgia, serif" font-size="9" fill="#6b7c3f" text-anchor="start">Usually replies in: &lt;30 min</text>
   <text x="530" y="264" font-family="Georgia, serif" font-size="8" fill="#c9bfb2" text-anchor="start">📍 Hackney · 0.8 mi away</text>
   <rect x="510" y="344" width="254" height="140" rx="10" fill="#fff" stroke="#c9bfb2" stroke-width="1"/>
   <text x="530" y="368" font-family="Georgia, serif" font-size="10" fill="#9e3b2e" text-anchor="start" font-weight="bold">Local bazaar stats:</text>

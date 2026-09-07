@@ -1,0 +1,322 @@
+[
+  {
+    "test": "hero colors",
+    "scheme": "light",
+    "data": [
+      {
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "font": "12.8px",
+        "weight": "400",
+        "backgrounds": [
+          {
+            "class": "hero-eyebrow",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "font": "51.2px",
+        "weight": "700",
+        "backgrounds": [
+          {
+            "class": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(107, 94, 87)",
+        "font": "16px",
+        "weight": "400",
+        "backgrounds": [
+          {
+            "class": "hero-tagline",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "font": "15.2px",
+        "weight": "600",
+        "backgrounds": [
+          {
+            "class": "btn btn-primary",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "font": "15.2px",
+        "weight": "600",
+        "backgrounds": [
+          {
+            "class": "btn btn-secondary",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "test": "search labels",
+    "scheme": "light",
+    "data": "Esc\n↑↓ navigate\n↵ open\nEsc close\nOpen full search →",
+    "aria": "Search OverKill Hill"
+  },
+  {
+    "test": "hero colors",
+    "scheme": "dark",
+    "data": [
+      {
+        "text": "WHY GLEE-FULLY",
+        "color": "rgba(229, 231, 235, 0.6)",
+        "font": "12.8px",
+        "weight": "400",
+        "backgrounds": [
+          {
+            "class": "hero-eyebrow",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Welcome to Glee‑fully",
+        "color": "rgb(45, 111, 126)",
+        "font": "51.2px",
+        "weight": "700",
+        "backgrounds": [
+          {
+            "class": "",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "A retro-bright toolbox of Custom GPTs for life, work and wonder — each one built with care, charm and your story in mind.",
+        "color": "rgb(181, 169, 161)",
+        "font": "16px",
+        "weight": "400",
+        "backgrounds": [
+          {
+            "class": "hero-tagline",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-grid",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Explore the full toolbox",
+        "color": "rgb(46, 43, 41)",
+        "font": "15.2px",
+        "weight": "600",
+        "backgrounds": [
+          {
+            "class": "btn btn-primary",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "linear-gradient(135deg, rgb(217, 79, 99), rgb(211, 91, 45))",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      },
+      {
+        "text": "Meet Glee & Jamie",
+        "color": "rgb(217, 79, 99)",
+        "font": "15.2px",
+        "weight": "600",
+        "backgrounds": [
+          {
+            "class": "btn btn-secondary",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "hero-actions",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          },
+          {
+            "class": "glee-hero-card",
+            "bg": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "opacity": "1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "test": "search labels",
+    "scheme": "dark",
+    "data": "Esc\n↑↓ navigate\n↵ open\nEsc close\nOpen full search →",
+    "aria": "Search OverKill Hill"
+  },
+  {
+    "test": "320 dark reduced motion",
+    "route": "/",
+    "data": {
+      "width": 320,
+      "scrollWidth": 320,
+      "hiddenSections": 0
+    }
+  },
+  {
+    "test": "320 dark reduced motion",
+    "route": "/toolbox/",
+    "data": {
+      "width": 320,
+      "scrollWidth": 320,
+      "hiddenSections": 0
+    }
+  },
+  {
+    "test": "320 dark reduced motion",
+    "route": "/search/?q=resume",
+    "data": {
+      "width": 320,
+      "scrollWidth": 320,
+      "hiddenSections": 0
+    }
+  },
+  {
+    "test": "320 dark reduced motion",
+    "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+    "data": {
+      "width": 320,
+      "scrollWidth": 320,
+      "hiddenSections": 0
+    }
+  }
+]

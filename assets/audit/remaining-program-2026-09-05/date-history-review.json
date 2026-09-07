@@ -1,0 +1,137 @@
+{
+  "scope": "Latest 60 path commits each; compare substantive main HTML, normalize asset version tokens and generated STAT-only values; manually assess candidate diffs.",
+  "entries": [
+    {
+      "path": "search/index.html",
+      "candidates": [
+        {
+          "sha": "8dea009c7b1887b129a1c5540ec1a39f6c028841",
+          "date": "2026-09-05T16:06:12-05:00",
+          "subject": "Correct catalog discovery, privacy state, and release resilience",
+          "main_diff": "--- \n\n+++ \n\n@@ -10,6 +10,6 @@\n\n <p class=\"glee-search-page__lede\">\n One box. Every Tool, branch, and guide across the site. Try a word like\n-<em>resume</em>, <em>recipe</em>, <em>budget</em>, or <em>journal</em> — results appear instantly.\n-Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.\n+<em>resume</em>, <em>recipe</em>, <em>budget</em>, or <em>journal</em> to find matching pages.\n+Use <kbd>↑</kbd> and <kbd>↓</kbd> while typing to select a result, then <kbd>Enter</kbd> to open it.\n </p>\n <noscript><p class=\"glee-search-page__lede\">JavaScript is required for live search. <a href=\"/toolbox/\">Browse the Toolbox</a> or explore a branch to find your tools.</p></noscript>\n@@ -64,5 +64,6 @@\n\n <li><kbd>⌘ K</kbd> / <kbd>Ctrl K</kbd> — open search anywhere on the site</li>\n <li><kbd>/</kbd> — open search (when not typing)</li>\n-<li><kbd>Enter</kbd> — open the highlighted result</li>\n+<li><kbd>↑</kbd> / <kbd>↓</kbd> select a result while typing</li>\n+<li><kbd>Enter</kbd> opens the highlighted result</li>\n <li><kbd>Esc</kbd> — close the search overlay</li>\n </ul>"
+        },
+        {
+          "sha": "41de445bb5016435bc6f4b57b4643afdb4b5df2b",
+          "date": "2026-09-04T01:01:40Z",
+          "subject": "Prove inclusive hub experience with browser evidence, resilient search, constrained-environment checks, and CI coverage",
+          "main_diff": "--- \n\n+++ \n\n@@ -14,5 +14,5 @@\n\n </p>\n <noscript><p class=\"glee-search-page__lede\">JavaScript is required for live search. <a href=\"/toolbox/\">Browse the Toolbox</a> or explore a branch to find your tools.</p></noscript>\n-<form class=\"glee-search-page__form\" role=\"search\" onsubmit=\"event.preventDefault();\">\n+<form class=\"glee-search-page__form\" role=\"search\" action=\"/search/\" method=\"get\">\n <label for=\"glee-search-page-input\" class=\"sr-only\">Search this site</label>\n <svg class=\"glee-search-page__icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\">"
+        },
+        {
+          "sha": "c6810e79f6b00831258c3c4e186f8108e0662b06",
+          "date": "2026-08-16T18:47:42Z",
+          "subject": "fix(a11y): construction overlay focus trap + inbound focus, search noscript fallback",
+          "main_diff": "--- \n\n+++ \n\n@@ -13,4 +13,5 @@\n\n Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.\n </p>\n+<noscript><p class=\"glee-search-page__lede\">JavaScript is required for live search. <a href=\"/toolbox/\">Browse the Toolbox</a> or explore a branch to find your tools.</p></noscript>\n <form class=\"glee-search-page__form\" role=\"search\" onsubmit=\"event.preventDefault();\">\n <label for=\"glee-search-page-input\" class=\"sr-only\">Search this site</label>"
+        }
+      ],
+      "decision": {
+        "action": "use source date",
+        "selected_commit": "8dea009c7b1887b129a1c5540ec1a39f6c028841",
+        "date": "2026-09-05",
+        "reason": "Corrected visible search keyboard instructions and removed instant-results assertion; substantive visitor instructions in accepted implementation."
+      }
+    },
+    {
+      "path": "ecosystem/index.html",
+      "candidates": [
+        {
+          "sha": "4727c13a99d6b37a5609f1dbf56c6d4ef94277bb",
+          "date": "2026-08-22T01:18:30Z",
+          "subject": "Update site content and agent documentation",
+          "main_diff": "--- \n\n+++ \n\n@@ -72,9 +72,9 @@\n\n class=\"mermaid-referral-link\"\n target=\"_blank\"\n-rel=\"noopener sponsored\">Mermaid.AI</a>.\n+rel=\"noopener sponsored noreferrer\">Mermaid.AI</a>.\n Try <a href=\"https://mermaidchart.cello.so/UhVlNtC2MlS\"\n class=\"mermaid-referral-link\"\n target=\"_blank\"\n-rel=\"noopener sponsored\">Mermaid.AI&nbsp;&rarr;</a>\n+rel=\"noopener sponsored noreferrer\">Mermaid.AI&nbsp;&rarr;</a>\n if you want to explore the syntax yourself.\n </p>"
+        }
+      ],
+      "decision": {
+        "action": "omit optional lastmod",
+        "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date."
+      }
+    },
+    {
+      "path": "about/index.html",
+      "candidates": [
+        {
+          "sha": "c479fc3197027d83efd6e27443c3a4e7c433bfbc",
+          "date": "2026-09-04T19:44:29-05:00",
+          "subject": "Fix reconciliation review findings and recurring release drift",
+          "main_diff": "--- \n\n+++ \n\n@@ -257,5 +257,5 @@\n\n Glee&#8209;fully isn't just a collection of tools — it's a fully\n designed system. 60 indexable pages, 42 catalog Tool&#8209;ettes\n-across 7 branches, 26 non&#8209;placeholder external destinations,\n+across 7 branches, 25 non&#8209;placeholder external destinations,\n a shared design language, and a governance model\n that keeps it all coherent as it grows. Here's the craft underneath"
+        },
+        {
+          "sha": "9d42ba40252c5eda695af317513c8994c0858785",
+          "date": "2026-09-04T00:50:42Z",
+          "subject": "Verify all Tool-ette promises and reconcile catalog states",
+          "main_diff": "--- \n\n+++ \n\n@@ -257,5 +257,5 @@\n\n Glee&#8209;fully isn't just a collection of tools — it's a fully\n designed system. 60 indexable pages, 42 catalog Tool&#8209;ettes\n-across 7 branches, 32 non&#8209;placeholder external destinations,\n+across 7 branches, 26 non&#8209;placeholder external destinations,\n a shared design language, and a governance model\n that keeps it all coherent as it grows. Here's the craft underneath"
+        },
+        {
+          "sha": "b2cae9d3e81523a761c8c285683fc0d49c0b4ee9",
+          "date": "2026-09-04T00:41:37Z",
+          "subject": "Define and reconcile the authoritative Glee-fully suite promise, inventory vocabulary, Tool-ette publication states, lifecycle decisions, and active-growth documentation.",
+          "main_diff": "--- \n\n+++ \n\n@@ -256,6 +256,7 @@\n\n <p>\n Glee&#8209;fully isn't just a collection of tools — it's a fully\n-designed system. 60 pages, 42 Tool&#8209;ettes across 7 branches,\n-42 Custom GPTs, a shared design language, and a governance model\n+designed system. 60 indexable pages, 42 catalog Tool&#8209;ettes\n+across 7 branches, 32 non&#8209;placeholder external destinations,\n+a shared design language, and a governance model\n that keeps it all coherent as it grows. Here's the craft underneath\n the warmth.\n@@ -269,5 +270,5 @@\n\n <p>\n Every tool has a home: a trunk, a branch, a leaf. The\n-trunk&#8209;branch&#8209;tool&#8209;ette hierarchy makes [stat] pages\n+trunk&#8209;branch&#8209;tool&#8209;ette hierarchy makes [stat] indexable pages\n feel navigable instead of overwhelming — because every visitor\n always knows where they are and what's nearby. The breadcrumb,\n@@ -303,10 +304,10 @@\n\n <h3>Prompt Engineering</h3>\n <p>\n-Each of the [stat] Custom GPTs has a personality, a scope, and a\n+Each catalog Tool&#8209;ette has an intended personality, scope, and\n voice that fits the Glee&#8209;fully universe — without turning\n-into a different tool in the middle of a conversation. That\n-consistency comes from a shared canon, named characters, and\n-prompt patterns refined over hundreds of real&#8209;world\n-sessions. Smart design made human, one conversation at a time.\n+into a different tool in the middle of a conversation. The\n+external GPT behavior behind those authored pages remains outside\n+this repository's audit boundary. Smart design made human, one\n+conversation at a time.\n </p>\n </article>"
+        }
+      ],
+      "decision": {
+        "action": "use source date",
+        "selected_commit": "c479fc3197027d83efd6e27443c3a4e7c433bfbc",
+        "date": "2026-09-04",
+        "reason": "Corrected the public count of non-placeholder external destinations; earlier September 4 b2cae9d3 also substantively clarified catalog intent and unverified external behavior."
+      }
+    },
+    {
+      "path": "universe/index.html",
+      "candidates": [
+        {
+          "sha": "4727c13a99d6b37a5609f1dbf56c6d4ef94277bb",
+          "date": "2026-08-22T01:18:30Z",
+          "subject": "Update site content and agent documentation",
+          "main_diff": "--- \n\n+++ \n\n@@ -168,9 +168,9 @@\n\n class=\"mermaid-referral-link\"\n target=\"_blank\"\n-rel=\"noopener sponsored\">Mermaid.AI</a>.\n+rel=\"noopener sponsored noreferrer\">Mermaid.AI</a>.\n Try <a href=\"https://mermaidchart.cello.so/UhVlNtC2MlS\"\n class=\"mermaid-referral-link\"\n target=\"_blank\"\n-rel=\"noopener sponsored\">Mermaid.AI&nbsp;&rarr;</a>\n+rel=\"noopener sponsored noreferrer\">Mermaid.AI&nbsp;&rarr;</a>\n if you want to explore the syntax yourself.\n </p>\n@@ -244,5 +244,5 @@\n\n <strong>Cross over to AskJamie™:</strong>\n for enterprise, career, and BrandGuard‑style work, visit\n-<a href=\"https://askjamie.bot/\" target=\"_blank\" rel=\"noopener\"\n+<a href=\"https://askjamie.bot/\" target=\"_blank\" rel=\"noopener noreferrer\"\n >askjamie.bot</a\n >."
+        }
+      ],
+      "decision": {
+        "action": "omit optional lastmod",
+        "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date."
+      }
+    },
+    {
+      "path": "contact/index.html",
+      "candidates": [
+        {
+          "sha": "4727c13a99d6b37a5609f1dbf56c6d4ef94277bb",
+          "date": "2026-08-22T01:18:30Z",
+          "subject": "Update site content and agent documentation",
+          "main_diff": "--- \n\n+++ \n\n@@ -83,5 +83,5 @@\n\n <a class=\"btn-primary\"\n href=\"https://ko-fi.com/gleefullypersonalizabletools\"\n-target=\"_blank\" rel=\"noopener\">\n+target=\"_blank\" rel=\"noopener noreferrer\">\n Fuel us with Ko‑fi\n </a>"
+        }
+      ],
+      "decision": {
+        "action": "omit optional lastmod",
+        "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date."
+      }
+    },
+    {
+      "path": "arcade/index.html",
+      "candidates": [
+        {
+          "sha": "c479fc3197027d83efd6e27443c3a4e7c433bfbc",
+          "date": "2026-09-04T19:44:29-05:00",
+          "subject": "Fix reconciliation review findings and recurring release drift",
+          "main_diff": "--- \n\n+++ \n\n@@ -119,5 +119,5 @@\n\n </header>\n <blockquote class=\"glee-notice\">\n-<p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Optional site analytics is off by default and, if enabled, measures aggregate reach only — not gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>\n+<p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Optional site analytics is off by default and, if enabled, measures aggregate reach only  -  not gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>\n </blockquote>\n </section>"
+        },
+        {
+          "sha": "184c8ab9fa785a2911d2183a9f2f0aba2bfd4e85",
+          "date": "2026-09-04T01:13:44Z",
+          "subject": "Align privacy disclosures, consent controls, third-party boundaries, and CSP policy",
+          "main_diff": "--- \n\n+++ \n\n@@ -41,4 +41,7 @@\n\n <div class=\"arcade-phone-frame\">\n <iframe src=\"https://okhp3.github.io/glee-fully-chai-chasers/\"\n+data-external-frame\n+data-fallback=\"#arcade-preview-fallback\"\n+data-timeout=\"8000\"\n title=\"Glee-fully Chai Chasers playable preview\"\n loading=\"eager\"\n@@ -47,4 +50,8 @@\n\n sandbox=\"allow-scripts allow-same-origin allow-pointer-lock\"\n referrerpolicy=\"strict-origin-when-cross-origin\"><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\" target=\"_blank\" rel=\"noopener noreferrer\">Play Glee-fully Chai Chasers in a new tab ↗</a></iframe>\n+<p class=\"arcade-embed-fallback\" id=\"arcade-preview-fallback\" hidden role=\"status\">\n+The preview is taking a break.\n+<a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\" target=\"_blank\" rel=\"noopener noreferrer\">Open Chai Chasers in a new tab ↗</a>\n+</p>\n </div>\n </aside>\n@@ -112,5 +119,5 @@\n\n </header>\n <blockquote class=\"glee-notice\">\n-<p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Google Analytics collects limited aggregate data to measure reach only. It does not track gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>\n+<p>Chai Chasers uses fictional Glee-coins only. There is no real money anywhere in it: no purchases, no wagering, no ads, no accounts, and no cash-out. All shipped art, sound, names, and game presentation are original. The balance politely refills itself if it ever runs low. Optional site analytics is off by default and, if enabled, measures aggregate reach only — not gameplay, accounts, advertising, or personalization. Not affiliated with any casino, game studio, or brand.</p>\n </blockquote>\n </section>"
+        },
+        {
+          "sha": "4727c13a99d6b37a5609f1dbf56c6d4ef94277bb",
+          "date": "2026-08-22T01:18:30Z",
+          "subject": "Update site content and agent documentation",
+          "main_diff": "--- \n\n+++ \n\n@@ -26,8 +26,8 @@\n\n <div class=\"portfolio-statement-cta\">\n <a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\"\n-target=\"_blank\" rel=\"noopener\"\n+target=\"_blank\" rel=\"noopener noreferrer\"\n class=\"btn btn-primary\">&#9654; Play Chai Chasers</a>\n <a href=\"https://github.com/OKHP3/glee-fully-chai-chasers\"\n-target=\"_blank\" rel=\"noopener\"\n+target=\"_blank\" rel=\"noopener noreferrer\"\n class=\"btn btn-quiet\">Peek behind the curtain on GitHub &#8594;</a>\n </div>\n@@ -35,5 +35,5 @@\n\n Preview plays to the right. Progress saves on your device.\n <a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\"\n-target=\"_blank\" rel=\"noopener\">Open full screen &#8594;</a>\n+target=\"_blank\" rel=\"noopener noreferrer\">Open full screen &#8594;</a>\n </p>\n </article>\n@@ -46,5 +46,5 @@\n\n allow=\"autoplay\"\n sandbox=\"allow-scripts allow-same-origin allow-pointer-lock\"\n-referrerpolicy=\"strict-origin-when-cross-origin\"><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\" target=\"_blank\" rel=\"noopener\">Play Glee-fully Chai Chasers in a new tab ↗</a></iframe>\n+referrerpolicy=\"strict-origin-when-cross-origin\"><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\" target=\"_blank\" rel=\"noopener noreferrer\">Play Glee-fully Chai Chasers in a new tab ↗</a></iframe>\n </div>\n </aside>\n@@ -129,8 +129,8 @@\n\n shared canon, and tests. The full build story, decision log, and engineering trail are public in the\n <a href=\"https://github.com/OKHP3/glee-fully-chai-chasers\"\n-target=\"_blank\" rel=\"noopener\">GitHub repo</a>.\n+target=\"_blank\" rel=\"noopener noreferrer\">GitHub repo</a>.\n The engineering deep-dive lives on our sibling site:\n <a href=\"https://overkillhill.com/projects/glee-fully-chai-chasers/\"\n-target=\"_blank\" rel=\"noopener\">the OverKill Hill P³ project page</a>.\n+target=\"_blank\" rel=\"noopener noreferrer\">the OverKill Hill P³ project page</a>.\n </p>\n </div>\n@@ -143,6 +143,6 @@\n\n <p>The game was built as a Designathon entry. The artifacts are live and public:</p>\n <ul class=\"feature-list\">\n-<li><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-slides/\" target=\"_blank\" rel=\"noopener\">Pitch deck</a></li>\n-<li><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-video/\" target=\"_blank\" rel=\"noopener\">Build story</a></li>\n+<li><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-slides/\" target=\"_blank\" rel=\"noopener noreferrer\">Pitch deck</a></li>\n+<li><a href=\"https://okhp3.github.io/glee-fully-chai-chasers/chai-chasers-video/\" target=\"_blank\" rel=\"noopener noreferrer\">Build story</a></li>\n </ul>\n </section>\n@@ -183,5 +183,5 @@\n\n <div class=\"arcade-closing-cta\">\n <a href=\"https://okhp3.github.io/glee-fully-chai-chasers/\"\n-target=\"_blank\" rel=\"noopener\"\n+target=\"_blank\" rel=\"noopener noreferrer\"\n class=\"btn btn-primary\">&#9654; Play Chai Chasers</a>\n </div>"
+        }
+      ],
+      "decision": {
+        "action": "use source date",
+        "selected_commit": "184c8ab9fa785a2911d2183a9f2f0aba2bfd4e85",
+        "date": "2026-09-04",
+        "reason": "Added the explicit playable-preview failure path and corrected optional-analytics disclosure. Later c479fc31 punctuation alone is not treated as a significant update."
+      }
+    }
+  ]
+}

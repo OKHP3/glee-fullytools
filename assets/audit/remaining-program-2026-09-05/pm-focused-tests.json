@@ -1,0 +1,96 @@
+{
+  "baseline": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "scope": "PM independent focused tests against frozen content and app.js; CSS/generators not yet final",
+  "runtime": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "17f2f7",
+        "wall_time_seconds": 1.6579544,
+        "exit_code": 0,
+        "original_token_count": 194,
+        "output": "✔ online navigation survives writeFailure (64.3645ms)\n✔ online navigation survives openFailure (2.4395ms)\n✔ online navigation survives readFailure (2.2353ms)\n✔ query variants share one cached shell and work offline with a new query (26.8323ms)\n✔ runtime cache growth is bounded while the offline shell survives (211.7205ms)\n✔ non-public paths are not retained and third-party requests are not intercepted (5.3409ms)\n✔ missing precached assets still use successful network when storage fails (4.5314ms)\n✔ cold offline shell includes the dynamically loaded Glee adapter (1.9275ms)\n✔ activation deletes only stale Glee cache namespaces (3.2417ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 580.3871\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "80f04f",
+        "wall_time_seconds": 0.9754183,
+        "exit_code": 0,
+        "original_token_count": 32,
+        "output": "PASS service-worker bootstrap at loading\nPASS service-worker bootstrap at interactive\nPASS service-worker bootstrap at complete\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "092a74",
+        "wall_time_seconds": 0.8126701,
+        "exit_code": 0,
+        "original_token_count": 18,
+        "output": "Analytics toggling and iframe load/error/timeout regressions passed.\n"
+      }
+    }
+  ],
+  "python": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "bba721",
+        "wall_time_seconds": 10.0004173,
+        "session_id": 57373,
+        "original_token_count": 11,
+        "output": "........................................s."
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "5ac844",
+        "wall_time_seconds": 5.2322923,
+        "exit_code": 0,
+        "original_token_count": 28,
+        "output": ".........\r\n----------------------------------------------------------------------\r\nRan 9 tests in 3.121s\r\n\r\nOK\r\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "1ad586",
+        "wall_time_seconds": 4.4864297,
+        "exit_code": 0,
+        "original_token_count": 27,
+        "output": "...\r\n----------------------------------------------------------------------\r\nRan 3 tests in 1.337s\r\n\r\nOK\r\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "47f73a",
+        "wall_time_seconds": 4.9570007,
+        "exit_code": 0,
+        "original_token_count": 27,
+        "output": ".....\r\n----------------------------------------------------------------------\r\nRan 5 tests in 2.903s\r\n\r\nOK\r\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "06c937",
+        "wall_time_seconds": 4.3491101,
+        "exit_code": 0,
+        "original_token_count": 209,
+        "output": "C:\\Users\\jamie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\unittest\\case.py:589: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='utf-8'>\r\n  if method() is not None:\r\nResourceWarning: Enable tracemalloc to get the object allocation traceback\r\n...\r\n----------------------------------------------------------------------\r\nRan 3 tests in 1.334s\r\n\r\nOK\r\n  CSS token -> a06fd750  (1 file(s) updated, 0 already current)\r\n  Offline shell version and precache URLs synchronized\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\nERROR: offline shell is stale. Run scripts/sync-css-version.py after all content generators.\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\n  Offline shell version and precache URLs synchronized\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\n"
+      }
+    }
+  ],
+  "discoveryCompletion": {
+    "exit_code": 0,
+    "output": "Ran 51 tests in 7.961s; OK (skipped=1); Windows symlink privilege skip."
+  },
+  "notes": [
+    "Reconciliation fixture emits expected stale-output failures while asserting rejection behavior; test process exits0.",
+    "Existing reconciliation ResourceWarning retained."
+  ]
+}

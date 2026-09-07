@@ -1,0 +1,57 @@
+{
+  "base": "http://127.0.0.1:49672",
+  "stripLocalCsp": false,
+  "error": null,
+  "analytics": "undefined",
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: SSL connect error",
+    "Failed to load resource: SSL connect error",
+    "Failed to load resource: SSL connect error",
+    "Failed to load resource: Could not connect to server",
+    "Failed to load resource: SSL connect error",
+    "Failed to load resource: SSL connect error"
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:49672/",
+      "failure": null
+    },
+    {
+      "url": "https://127.0.0.1:49672/assets/css/theme.css?v=10030d12",
+      "failure": {
+        "errorText": "SSL connect error"
+      }
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+      "failure": {
+        "errorText": "Could not connect to server"
+      }
+    },
+    {
+      "url": "https://127.0.0.1:49672/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+      "failure": {
+        "errorText": "SSL connect error"
+      }
+    },
+    {
+      "url": "https://127.0.0.1:49672/assets/js/app.js?v=ea91ea25",
+      "failure": {
+        "errorText": "SSL connect error"
+      }
+    },
+    {
+      "url": "https://127.0.0.1:49672/site.webmanifest",
+      "failure": {
+        "errorText": "SSL connect error"
+      }
+    },
+    {
+      "url": "https://127.0.0.1:49672/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+      "failure": {
+        "errorText": "SSL connect error"
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 repository. The authoritative current promise, inventory, publication states,
 and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 
-## Current phase — Active growth and refinement
+## Current phase  -  Active growth and refinement
 
 - Maintain the public catalog and routing hub while new Tool-ettes move through
   live, beta, construction, unavailable, or retired states.
@@ -14,17 +14,25 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
   external GPT availability or behavior.
 
 ## Maintainer operations
-- Quality gates: `scripts/audit-site.py` — run on every meaningful HTML change
-- Responsive QA: `node scripts/responsive-qa.mjs --static` — run after major edit rounds
-- Portfolio stats sync: `python3 scripts/sync-portfolio-stats.py` — run after content updates
+- Follow the active release sequence in `replit.md`: regenerate search, stats,
+  search again if stats changed content, then CSS/offline versions. Review diffs.
+- Run structural and link gates after meaningful changes; inspect the advisory
+  audit separately. `bash scripts/post-merge.sh` checks committed outputs only.
+- Run real browser QA after rendered changes. `node scripts/responsive-qa.mjs
+  --static` is structural lint and does not establish browser behavior.
 
 ## Next
+- **Reviewed release readiness (2026-09-05)**: finish the exact-commit browser,
+  CI, artifact-transfer, and live gates in
+  [`platform-release.md`](remaining-program-2026-09-05/platform-release.md).
+  Dependency/action pins, host-header delivery, and explicit-source sibling
+  promotion are concrete owner choices in that packet; none is applied by a
+  successful local check.
 - **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
-- **CSP hardening** — refactor inline script handlers into external JS files
-  so `script-src 'unsafe-inline'` can eventually be removed from the configured
-  CSP policy. Per-page CSP meta policies are enforced by browsers; the portable
-  policy in `_headers` still requires a compatible host for HTTP response
-  delivery.
+- **HTTP security policy delivery**: review the residual GitHub Pages header
+  limitations. Hash-based page CSP is already implemented in `scripts/csp.py`
+  and checked by `scripts/check-csp.py`; script `unsafe-inline` is absent.
+  `_headers` still requires a compatible host for HTTP response delivery.
 - **Organization JSON-LD `sameAs`** — add social profile URLs.
 
 ## Later
@@ -41,7 +49,7 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 - **Offline shell** — Versioned same-origin service-worker cache with an
   explicit offline fallback page; third-party resources remain outside the
   cache boundary.
-- **Resilient web behavior (2026-09-04)** — `scripts/resilience-qa.py` records
+- **Resilient web behavior (2026-09-04)**  -  `scripts/resilience-qa.py` records
   static crawler/installability checks, Chromium/Firefox/WebKit journeys,
   offline/reconnect lifecycle evidence, and blocked-third-party fallback
   behavior. See [`docs/resilience.md`](resilience.md).

@@ -1,0 +1,2187 @@
+{
+  "startedAt": "2026-09-05T23:26:35.136Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 3,
+  "experimentalCssResponseAppend": null,
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 240252,
+      "gzipBytes": 47167,
+      "sha256": "85d9e1cccdcf74f9a009f2ad94b5825669536ba1799bc83bc21437eee02b02f4"
+    },
+    "assets/js/app.js": {
+      "bytes": 50236,
+      "gzipBytes": 12846,
+      "sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 437527,
+      "gzipBytes": 113726,
+      "sha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62"
+    }
+  },
+  "performance": [
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 1,
+      "cache": "cold",
+      "startedAt": "2026-09-05T23:26:36.001Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 3792,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          100
+        ],
+        "navigation": {
+          "domContentLoaded": 3825.199999988079,
+          "load": 3882,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 3792
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 3792
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 1,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T23:26:41.019Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 408,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          99
+        ],
+        "navigation": {
+          "domContentLoaded": 321.1000000089407,
+          "load": 376.6000000089407,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 408
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 408
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 2,
+      "cache": "cold",
+      "startedAt": "2026-09-05T23:26:42.629Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 1608,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          92
+        ],
+        "navigation": {
+          "domContentLoaded": 1658.4000000059605,
+          "load": 1721.2000000029802,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 1608
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 1608
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 2,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T23:26:45.535Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 368,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          52
+        ],
+        "navigation": {
+          "domContentLoaded": 361.79999999701977,
+          "load": 387.29999999701977,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 260
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 368
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 3,
+      "cache": "cold",
+      "startedAt": "2026-09-05T23:26:47.210Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 1540,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          88
+        ],
+        "navigation": {
+          "domContentLoaded": 1578.7000000029802,
+          "load": 1628.3999999910593,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 1540
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 1540
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47400
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 52119
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 141057
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "home",
+      "route": "/",
+      "repetition": 3,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T23:26:50.008Z",
+      "documentSha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51581/",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 348,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          66
+        ],
+        "navigation": {
+          "domContentLoaded": 365,
+          "load": 425.70000000298023,
+          "transferSize": 8291,
+          "encodedBodySize": 7991
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 348
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 348
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "height": 160,
+          "renderedWidth": 240,
+          "renderedHeight": 160,
+          "top": 941.234375,
+          "loading": "eager",
+          "fetchPriority": "high"
+        },
+        {
+          "src": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 1280,
+          "height": 640,
+          "renderedWidth": 300,
+          "renderedHeight": 150,
+          "top": 1620.28125,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51581/",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 8213
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/css/theme.css?v=10030d12",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "application/octet-stream",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51581/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    }
+  ],
+  "accessibility": [],
+  "failures": [],
+  "base": "http://127.0.0.1:51581",
+  "finishedAt": "2026-09-05T23:26:51.541Z"
+}

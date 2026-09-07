@@ -48,6 +48,19 @@ jobs:
       - name: Install browsers for browser release gate
         run: playwright install --with-deps chromium firefox webkit
 
+      - name: Generate current search and universe maps
+        run: |
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-portfolio-stats.py
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-css-version.py
+
+      - name: Check universe integration and freshness
+        run: |
+          python3 scripts/tests/test-universe-integration.py
+          python3 .agents/skills/okhp3-universe-map/tests/test-universe-map.py
+          python3 scripts/sync-universe-map.py --check
+
       - name: Check generated search index
         run: python3 scripts/build-search-index.py --check
 
@@ -62,6 +75,15 @@ jobs:
 
       - name: Run static release gates
         run: |
+          python3 scripts/check-csp.py
+          python3 scripts/tests/test-visitor-truth.py
+          python3 scripts/tests/test_content_claims.py
+          python3 scripts/tests/test-search-index.py
+          python3 scripts/tests/test_public_artifact.py
+          python3 scripts/tests/test_svg_assets.py
+          python3 scripts/tests/test_offline_validation.py
+          node --test scripts/tests/test-sw-resilience.cjs
+          node scripts/tests/test-sw-bootstrap.cjs
           python3 scripts/validate-site.py
           python3 scripts/check-links.py
           python3 scripts/check-accent-contrast.py --strict
@@ -86,8 +108,14 @@ jobs:
           curl --silent --fail http://127.0.0.1:5000/ >/dev/null \
             || { cat /tmp/glee-pages-server.log; exit 1; }
 
+      - name: Verify generated map browser journeys
+        run: python3 scripts/tests/test-universe-browser.py
+
       - name: Run browser responsive and asset QA
         run: python3 scripts/run-viewport-qa.py
+
+      - name: Run visitor, privacy, and rendered contrast acceptance
+        run: python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output assets/audit/browser-acceptance.json
 
       - name: Run resilient web behavior QA
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
@@ -104,66 +132,18 @@ jobs:
           test -s sitemap.xml
           test -s site.webmanifest
 
-      - name: Build artifact from the validated checkout
+      - name: Stage and verify the reviewed public inventory
         run: |
-          rm -rf dist-pages
-          mkdir -p dist-pages
-          python3 - <<'PY'
-          from pathlib import Path
-          from shutil import copytree, ignore_patterns
-
-          source = Path(".")
-          destination = Path("dist-pages")
-          ignored = ignore_patterns(
-              ".git", ".github", ".agents", ".local", ".cache", ".pythonlibs",
-              "attached_assets", "node_modules", "scripts", "dist-pages",
-              "AGENTS.md", "replit.md", ".replit", "package.json",
-              "package-lock.json", "docs", "audit",
-          )
-          copytree(
-              source,
-              destination,
-              ignore=ignored,
-              dirs_exist_ok=True,
-              ignore_dangling_symlinks=True,
-          )
-          PY
-          test -s dist-pages/CNAME
-          test -s dist-pages/index.html
-          test -s dist-pages/offline.html
-          test -s dist-pages/sw.js
-          test "$(cat dist-pages/CNAME)" = "glee-fully.tools"
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          import os
-
-          provenance = {
-              "repository": os.environ["GITHUB_REPOSITORY"],
-              "commit": os.environ["GITHUB_SHA"],
-              "ref": os.environ["GITHUB_REF"],
-              "event": os.environ["GITHUB_EVENT_NAME"],
-              "workflow_run": os.environ["GITHUB_RUN_ID"],
-          }
-          Path("dist-pages/release-provenance.json").write_text(
-              json.dumps(provenance, indent=2) + "\n", encoding="utf-8"
-          )
-          PY
-          test -s dist-pages/release-provenance.json
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          import os
-
-          provenance = json.loads(Path("dist-pages/release-provenance.json").read_text())
-          assert provenance["commit"] == os.environ["GITHUB_SHA"]
-          PY
+          python3 scripts/public-artifact.py stage --output "$RUNNER_TEMP/glee-public-site"
+          python3 scripts/public-artifact.py verify --output "$RUNNER_TEMP/glee-public-site"
 
       - name: Upload artifact from validated commit
         uses: actions/upload-artifact@v7
         with:
           name: pages-site-${{ github.sha }}
-          path: dist-pages
+          path: ${{ runner.temp }}/glee-public-site
+          # Only the allowlisted, verified staging tree can include hidden files.
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 1
 
@@ -190,11 +170,33 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout exact release commit for artifact verification
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
       - name: Download artifact for this commit
         uses: actions/download-artifact@v8
         with:
           name: pages-site-${{ github.sha }}
-          path: dist-pages
+          path: ${{ runner.temp }}/glee-public-site
+
+      - name: Set up the matching generation runtime
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      - name: Reproduce generated release files from the exact commit
+        run: |
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-portfolio-stats.py
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-css-version.py
+          python3 scripts/sync-universe-map.py --check
+
+      - name: Verify transferred inventory, hidden public files, and release bytes
+        run: python3 scripts/public-artifact.py verify --output "$RUNNER_TEMP/glee-public-site"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -202,17 +204,18 @@ jobs:
       - name: Prepare Pages upload
         uses: actions/upload-pages-artifact@v5
         with:
-          path: dist-pages
+          path: ${{ runner.temp }}/glee-public-site
+          # v5 also filters dot paths by default; preserve the verified files.
+          include-hidden-files: true
+
+      - name: Verify the final Pages archive before deployment
+        run: |
+          python3 scripts/public-artifact.py verify-tar \
+            --output "$RUNNER_TEMP/glee-public-site" --archive "$RUNNER_TEMP/artifact.tar"
 
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
-
-      - name: Checkout validated commit for live smoke test
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 1
 
       - name: Smoke-test live security headers
         continue-on-error: true

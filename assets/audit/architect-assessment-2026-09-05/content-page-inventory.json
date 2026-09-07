@@ -1,0 +1,1452 @@
+{
+  "review_date": "2026-09-05",
+  "method": "BeautifulSoup static source inventory; excludes assets and dot directories",
+  "pages": [
+    {
+      "path": "404.html",
+      "h1": [
+        "This page isn’t in the toolbox (yet)."
+      ],
+      "main_words": 144,
+      "title": "Page not found — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "The Glee‑fully Toolbox couldn’t find this page. Use this friendly error page to get back to solid ground.",
+      "canonical": "https://glee-fully.tools/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage"
+      ],
+      "description_length": 105,
+      "title_length": 52
+    },
+    {
+      "path": "about/index.html",
+      "h1": [
+        "Meet Glee & Jamie"
+      ],
+      "main_words": 1109,
+      "title": "About Glee & Jamie — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Meet Glee and Jamie, the humans behind Glee‑fully. Discover how a late-night kitchen question became a retro-bright suite of Custom GPT Tools designed to make life admin feel like friendship.",
+      "canonical": "https://glee-fully.tools/about/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 191,
+      "title_length": 56
+    },
+    {
+      "path": "arcade/index.html",
+      "h1": [
+        "Glee‑fully Chai Chasers"
+      ],
+      "main_words": 619,
+      "title": "The Arcade — Glee-fully Chai Chasers 🎰🦋 | Glee‑fully Personalizable Tools™",
+      "description": "Glee-fully Chai Chasers is a free, original cascading-reels game starring Joey and Phoebe. Iced chai, butterflies, midnight sparkle, and zero real money. Play it in your browser.",
+      "canonical": "https://glee-fully.tools/arcade/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 178,
+      "title_length": 74
+    },
+    {
+      "path": "contact/index.html",
+      "h1": [
+        "Let’s talk about what you’re building."
+      ],
+      "main_words": 384,
+      "title": "Contact — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Get in touch with Glee‑fully and AskJamie™. Contact us for custom GPT design, tool licensing, enterprise architecture, or collaboration opportunities.",
+      "canonical": "https://glee-fully.tools/contact/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 150,
+      "title_length": 45
+    },
+    {
+      "path": "ecosystem/index.html",
+      "h1": [
+        "The Glee‑fully Toolbox, at a glance."
+      ],
+      "main_words": 1543,
+      "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Visual ecosystem map of the Glee‑fully Toolbox — from the main trunk GPT through seven Tools (branches) and their Tool‑ettes (twigs).",
+      "canonical": "https://glee-fully.tools/ecosystem/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 133,
+      "title_length": 47
+    },
+    {
+      "path": "index.html",
+      "h1": [
+        "Welcome to Glee‑fully"
+      ],
+      "main_words": 281,
+      "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Glee‑fully Personalizable Tools™ — a joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.",
+      "canonical": "https://glee-fully.tools/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebSite",
+        "Organization",
+        "WebSite"
+      ],
+      "description_length": 154,
+      "title_length": 35
+    },
+    {
+      "path": "legal/index.html",
+      "h1": [
+        "Legal notice & usage disclaimer"
+      ],
+      "main_words": 926,
+      "title": "Legal Notice & Usage Disclaimer — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Plain-language legal notice and usage disclaimer for Glee‑fully Personalizable Tools™, AskJamie™, and OverKill Hill P³™. Learn about our terms, limitations, and responsible use.",
+      "canonical": "https://glee-fully.tools/legal/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 177,
+      "title_length": 69
+    },
+    {
+      "path": "offline.html",
+      "h1": [
+        "You’re offline for a moment."
+      ],
+      "main_words": 48,
+      "title": "Offline — Glee‑fully Personalizable Tools™",
+      "description": "Glee‑fully Personalizable Tools™ is temporarily offline. Return to the home page when your connection is restored.",
+      "canonical": "https://glee-fully.tools/offline.html",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [],
+      "description_length": 114,
+      "title_length": 42
+    },
+    {
+      "path": "persona/index.html",
+      "h1": [
+        "The Voice & Muse of Glee‑fully"
+      ],
+      "main_words": 1259,
+      "title": "The Voice & Muse — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Meet the Glee‑fully persona — the tone, voice, and Glee‑isms that power every Tool, Tool‑ette, and branch in the Glee‑fully ecosystem. Warm, witty, retro‑coded, and emotionally intelligent.",
+      "canonical": "https://glee-fully.tools/persona/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 189,
+      "title_length": 54
+    },
+    {
+      "path": "search/index.html",
+      "h1": [
+        "Search the Glee‑fully Toolbox"
+      ],
+      "main_words": 143,
+      "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Search every Glee‑fully Personalizable Tool, branch, and guide. Find the right Custom GPT for resumes, recipes, wellness, finances, organization, and more — all in one place.",
+      "canonical": "https://glee-fully.tools/search/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage"
+      ],
+      "description_length": 174,
+      "title_length": 44
+    },
+    {
+      "path": "showcase/index.html",
+      "h1": [
+        "Glee‑fully as a Living AI Product System"
+      ],
+      "main_words": 1647,
+      "title": "Showcase: Glee‑fully as a Living AI Product System — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "A portfolio case study: how Glee‑fully was designed and built — from the trunk‑branch‑tool‑ette taxonomy and client‑side search engine to the Python CI gate and agent governance model.",
+      "canonical": "https://glee-fully.tools/showcase/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 184,
+      "title_length": 88
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "h1": [
+        "Glee‑fully Resume Builder"
+      ],
+      "main_words": 875,
+      "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Resume Builder is a guided, keyword‑aware GPT that helps you create or polish professional resumes, match job posts, and export clean, shareable versions.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-6855e58bf8d48191bf27795f6d5ec23c-resume-builder-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 154,
+      "title_length": 52,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-6855e58bf8d48191bf27795f6d5ec23c-resume-builder-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "h1": [
+        "Resume Customizer"
+      ],
+      "main_words": 874,
+      "title": "Resume Customizer — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Resume Customizer by Glee‑fully transforms a general-purpose resume into tailored, keyword-aware versions for specific job descriptions. Analyze job postings, match them to your resume, and rewrite key sections.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685a97b415848191a6ad3aaa42a630f7-resume-customizer-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 211,
+      "title_length": 55,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685a97b415848191a6ad3aaa42a630f7-resume-customizer-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
+      "h1": [
+        "Career Fitness"
+      ],
+      "main_words": 808,
+      "title": "Career Fitness — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Career Fitness is a custom GPT that benchmarks your skills, matches job titles, checks salaries, and maps out practical career growth paths.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685a9c19ec2c8191a08945a385a23f4c-career-fitness-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 140,
+      "title_length": 52,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685a9c19ec2c8191a08945a385a23f4c-career-fitness-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
+      "h1": [
+        "Letter Composer"
+      ],
+      "main_words": 887,
+      "title": "Letter Composer — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Letter Composer turns your resume and a job post into a tailored, human cover letter you can send today. Draft, customize tone, and export in minutes.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685a9cee3a6481919a7cc5ee05065aae-letter-composer-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 150,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685a9cee3a6481919a7cc5ee05065aae-letter-composer-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "h1": [
+        "bLinkIn Tuner"
+      ],
+      "main_words": 1271,
+      "title": "bLinkIn Tuner — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "bLinkIn Tuner is a Glee‑fully Tool‑ette in the Discovered Careers branch. Capture tiny flashes of interest or dread from your day and tune them into real career signals you can track, compare, and act on.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 204,
+      "title_length": 51,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "h1": [
+        "Career Seeker"
+      ],
+      "main_words": 1193,
+      "title": "Career Seeker — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Career Seeker is your retro-bright job search cockpit inside the Glee‑fully Discovered Careers branch — a focused place to define targets, track roles, manage applications, and keep follow-ups moving without burning out.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 220,
+      "title_length": 51,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/index.html",
+      "h1": [
+        "Glee‑fully Discovered Careers"
+      ],
+      "main_words": 838,
+      "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Discovered Careers is your joyful career navigation branch inside the Glee‑fully Personalizable Tools suite — routing you to resume, cover letter, LinkedIn, and job‑search GPTs with clarity and charm.",
+      "canonical": "https://glee-fully.tools/toolbox/01-discovered-careers/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-6855e58bf8d48191bf27795f6d5ec23c-resume-builder-by-glee-fully",
+        "https://chatgpt.com/g/g-68578aa0c7d48191b02d8078fd26b9e2-discovered-careers-by-glee-fully",
+        "https://chatgpt.com/g/g-68578aaa54588191b70c6aa8aa9bf228-glee-fully-personalizable-tools",
+        "https://chatgpt.com/g/g-685a97b415848191a6ad3aaa42a630f7-resume-customizer-by-glee-fully",
+        "https://chatgpt.com/g/g-685a9c19ec2c8191a08945a385a23f4c-career-fitness-by-glee-fully",
+        "https://chatgpt.com/g/g-685a9cee3a6481919a7cc5ee05065aae-letter-composer-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 200,
+      "title_length": 56
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "h1": [
+        "Personal Librarian"
+      ],
+      "main_words": 1062,
+      "title": "Personal Librarian — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Personal Librarian by Glee‑fully is your cozy digital library assistant for tracking every book you own, what you've read, and what you want to read next. Log physical books, Kindle titles, and audiobooks—all in one friendly GPT.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68576b99c56c81918f1210a5442ab558-personal-librarian-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 229,
+      "title_length": 56,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-68576b99c56c81918f1210a5442ab558-personal-librarian-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "h1": [
+        "Decor Detective"
+      ],
+      "main_words": 878,
+      "title": "Decor Detective — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Decor Detective is a Glee‑fully Tool‑ette that catalogs your seasonal décor, tracks storage bins, and reminds you when to swap decorations in and out. Perfect for homeowners, renters, and anyone drowning in mystery bins.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685aeec6991481918b003881d1da83ad-decor-detective-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 220,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685aeec6991481918b003881d1da83ad-decor-detective-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+      "h1": [
+        "Present Hoarder"
+      ],
+      "main_words": 1197,
+      "title": "Present Hoarder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Present Hoarder is your gift-closet inventory system inside Glee‑fully. Track stashed presents, recipients, occasions, storage locations, budgets, and wrap status—all in one searchable log.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685af65a822881919690d7410a122984-present-hoarder-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 189,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685af65a822881919690d7410a122984-present-hoarder-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "h1": [
+        "Scentinal Journal"
+      ],
+      "main_words": 1003,
+      "title": "Scentinal Journal — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Track candles, wax melts, diffusers, and oils by brand, season, room, mood, burn time, and more with Scentinal Journal — a scent‑loving logbook in the Glee‑fully Treasured Finds toolbox.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68576b99c56c81918f1210a5442ab558-personal-librarian-by-glee-fully",
+        "https://chatgpt.com/g/g-68588c7cfd3c8191ae826e1ca767f3ca-spirited-journal-by-glee-fully",
+        "https://chatgpt.com/g/g-685aeec6991481918b003881d1da83ad-decor-detective-by-glee-fully",
+        "https://chatgpt.com/g/g-685af65a822881919690d7410a122984-present-hoarder-by-glee-fully",
+        "https://chatgpt.com/g/g-685b05275c788191afce321ffd49c523-supply-haus-by-glee-fully",
+        "https://chatgpt.com/g/g-685e94aa448c81918e8afa4b440bb9cd-bag-nabbit-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 186,
+      "title_length": 55,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "h1": [
+        "Spirited Journal"
+      ],
+      "main_words": 1371,
+      "title": "Spirited Journal — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Spirited Journal is the story‑keeper Twig under Glee‑fully Treasured Finds — a custom GPT that helps you log the memories, moments, and meaning behind your favorite books, candles, décor, and keepsakes.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 202,
+      "title_length": 54,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "h1": [
+        "Supply Haus"
+      ],
+      "main_words": 881,
+      "title": "Supply Haus — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Supply Haus is your cozy master inventory for craft and creative supplies—helping you catalog what you own, track what gets used, and know what to restock before the glitter, glue, or tape runs out.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b05275c788191afce321ffd49c523-supply-haus-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 198,
+      "title_length": 49,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b05275c788191afce321ffd49c523-supply-haus-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
+      "h1": [
+        "Bag Nabbit"
+      ],
+      "main_words": 799,
+      "title": "Bag Nabbit — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Bag Nabbit helps you track, tag, and fall back in love with your bag collection — from everyday totes to glam clutches, including wishlist and loaned bags.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685e94aa448c81918e8afa4b440bb9cd-bag-nabbit-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 155,
+      "title_length": 48,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685e94aa448c81918e8afa4b440bb9cd-bag-nabbit-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/index.html",
+      "h1": [
+        "Glee‑fully Treasured Finds"
+      ],
+      "main_words": 721,
+      "title": "Treasured Finds — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Treasured Finds — a cozy, retro-bright branch of the Glee‑fully Toolbox that helps you catalog, tag, and enjoy the books, décor, gifts, scents, spirits, craft supplies, and handbags you love to collect.",
+      "canonical": "https://glee-fully.tools/toolbox/02-treasured-finds/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68576b99c56c81918f1210a5442ab558-personal-librarian-by-glee-fully",
+        "https://chatgpt.com/g/g-68578a97c7c081918ce7858739839d33-treasured-finds-by-glee-fully",
+        "https://chatgpt.com/g/g-68578aaa54588191b70c6aa8aa9bf228-glee-fully-personalizable-tools",
+        "https://chatgpt.com/g/g-685aeec6991481918b003881d1da83ad-decor-detective-by-glee-fully",
+        "https://chatgpt.com/g/g-685af65a822881919690d7410a122984-present-hoarder-by-glee-fully",
+        "https://chatgpt.com/g/g-685b05275c788191afce321ffd49c523-supply-haus-by-glee-fully",
+        "https://chatgpt.com/g/g-685e94aa448c81918e8afa4b440bb9cd-bag-nabbit-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 202,
+      "title_length": 53
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
+      "h1": [
+        "Flavor Meister"
+      ],
+      "main_words": 906,
+      "title": "Flavor Meister — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Flavor Meister is your joyful digital recipe box — a custom GPT that stores, rates, and tags your recipes so home‑cooked wins are easy to repeat.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b061620b08191b61d5a2a0e9d87a1-flavor-meister-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 145,
+      "title_length": 52,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b061620b08191b61d5a2a0e9d87a1-flavor-meister-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "h1": [
+        "Menu Conductor"
+      ],
+      "main_words": 1096,
+      "title": "Menu Conductor — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Menu Conductor is the meal‑planning Tool‑ette inside Glee‑fully Tasty Tracker. Turn your saved recipes, pantry notes, and real‑life schedule into a calm, realistic weekly menu with grocery‑ready outputs.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 203,
+      "title_length": 52,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
+      "h1": [
+        "Wishful Tastes"
+      ],
+      "main_words": 934,
+      "title": "Wishful Tastes — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Wishful Tastes is your epicurean bucket‑list GPT for tracking dream dishes, restaurants, and food experiences until you finally taste them.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b061efdf0819196e66e6b646da237-wishful-tastes-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 139,
+      "title_length": 52,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b061efdf0819196e66e6b646da237-wishful-tastes-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
+      "h1": [
+        "Pantry Shopper"
+      ],
+      "main_words": 1103,
+      "title": "Pantry Shopper — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Pantry Shopper is the grocery‑list co‑pilot inside Glee‑fully Tasty Tracker — turning your pantry, recipes, and meal plans into smart, store‑ready shopping runs.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 161,
+      "title_length": 52,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
+      "h1": [
+        "Palatably Profiled"
+      ],
+      "main_words": 952,
+      "title": "Palatably Profiled — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Palatably Profiled turns your food ratings into a living flavor profile. See what you love, compare tastes across your household, and plan meals everyone enjoys.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b0623a28081919758078164db9957-palatably-profiled-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 161,
+      "title_length": 56,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b0623a28081919758078164db9957-palatably-profiled-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/index.html",
+      "h1": [
+        "Glee‑fully Tasty Tracker"
+      ],
+      "main_words": 1083,
+      "title": "Tasty Tracker — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Glee‑fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.",
+      "canonical": "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68578a8a4f808191ad8524eb6e56beab-tasty-tracker-by-glee-fully",
+        "https://chatgpt.com/g/g-685b06111ae881919036d78bed2af630-pantry-shopper-by-glee-fully",
+        "https://chatgpt.com/g/g-685b061620b08191b61d5a2a0e9d87a1-flavor-meister-by-glee-fully",
+        "https://chatgpt.com/g/g-685b061acda08191b2e43d4dd4f215a8-menu-conductor-by-glee-fully",
+        "https://chatgpt.com/g/g-685b061efdf0819196e66e6b646da237-wishful-tastes-by-glee-fully",
+        "https://chatgpt.com/g/g-685b0623a28081919758078164db9957-palatably-profiled-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 153,
+      "title_length": 51
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
+      "h1": [
+        "Journey Diary"
+      ],
+      "main_words": 872,
+      "title": "Journey Diary — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Journey Diary is a custom travel journal GPT that helps you log trips, capture memories, and turn scattered notes into export‑ready stories.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685ef0500ee0819192d0981d558bf490-journey-diary-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 140,
+      "title_length": 51,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685ef0500ee0819192d0981d558bf490-journey-diary-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "h1": [
+        "Itinerary Hacker"
+      ],
+      "main_words": 713,
+      "title": "Itinerary Hacker — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Itinerary Hacker turns your scattered trip notes into a clean, time‑blocked travel plan you can share, print, or tweak on the fly. Part of the Glee‑fully Traveler's Guide branch.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685ef056f81481918c55e0b11cba406f-itinerary-hacker-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 178,
+      "title_length": 54,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685ef056f81481918c55e0b11cba406f-itinerary-hacker-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
+      "h1": [
+        "Detour Discoverer"
+      ],
+      "main_words": 1085,
+      "title": "Detour Discoverer — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Detour Discoverer is the Traveler's Guide Tool‑ette that finds the worth‑it side trips, scenic stops, and bonus adventures along your planned route.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 148,
+      "title_length": 55,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "h1": [
+        "Dreamland Journeys"
+      ],
+      "main_words": 1158,
+      "title": "Dreamland Journeys — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Dreamland Journeys turns every 'someday' trip into a clear, reusable trip profile. Capture dream destinations, build your travel wishboard, and turn inspiration into ready‑to‑go adventure plans with Glee‑fully's custom GPT.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b072fccec8191a595b10991348f30-dreamland-journeys-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 223,
+      "title_length": 56,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b072fccec8191a595b10991348f30-dreamland-journeys-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+      "h1": [
+        "Memento Log"
+      ],
+      "main_words": 1383,
+      "title": "Memento Log — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Memento Log is the travel memory‑keeper in Glee‑fully's Traveler's Guide branch — a calm little historian for your trips, turning scattered notes, souvenirs, and snapshots into structured, searchable memories.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b072be58c8191ba386b00b33b93b8-memento-log-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 209,
+      "title_length": 49,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b072be58c8191ba386b00b33b93b8-memento-log-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/index.html",
+      "h1": [
+        "Glee‑fully Traveler’s Guide"
+      ],
+      "main_words": 1059,
+      "title": "Traveler's Guide — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Traveler's Guide is a custom‑tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.",
+      "canonical": "https://glee-fully.tools/toolbox/04-travelers-guide/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68578a80a67481919be0a3c9974c02b0-travelers-guide-by-glee-fully",
+        "https://chatgpt.com/g/g-685b072be58c8191ba386b00b33b93b8-memento-log-by-glee-fully",
+        "https://chatgpt.com/g/g-685b072fccec8191a595b10991348f30-dreamland-journeys-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef0500ee0819192d0981d558bf490-journey-diary-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef056f81481918c55e0b11cba406f-itinerary-hacker-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef05b00e881918b840db6cafbc643-detour-discoverer-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 163,
+      "title_length": 54
+    },
+    {
+      "path": "toolbox/05-organized-life/05a-task-maestro/index.html",
+      "h1": [
+        "Task Maestro"
+      ],
+      "main_words": 904,
+      "title": "Task Maestro — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Task Maestro is a custom Glee‑fully GPT that organizes your to‑dos by category, urgency, and due date with gentle nudges, smart tags, and printable checklists.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685ef48107188191973f85550ae7da77-task-maestro-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 159,
+      "title_length": 50,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685ef48107188191973f85550ae7da77-task-maestro-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "h1": [
+        "Thrifty Spender"
+      ],
+      "main_words": 908,
+      "title": "Thrifty Spender — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Thrifty Spender is a Glee‑fully custom GPT that keeps your bills, budgets, and spending habits in one place so you can stay ahead of due dates and make calmer money decisions.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685ef48bfc808191b4414bace0810239-thrifty-spender-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 175,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685ef48bfc808191b4414bace0810239-thrifty-spender-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "h1": [
+        "Giftlist Helper"
+      ],
+      "main_words": 892,
+      "title": "Giftlist Helper — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Giftlist Helper is a custom GPT for tracking wishlists, gift ideas, and gift history so you never scramble for birthday or holiday presents again. Keep all your gifting in one place.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685ef497fa9081919916fb9399c13e7f-giftlist-helper-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 182,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685ef497fa9081919916fb9399c13e7f-giftlist-helper-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "h1": [
+        "Scheduling Wizard"
+      ],
+      "main_words": 497,
+      "title": "Scheduling Wizard — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Turn your scattered tasks, bills, and events into a realistic, calendar‑ready plan with Scheduling Wizard, a Glee‑fully Organized Life Tool‑ette.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 145,
+      "title_length": 55,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
+      "h1": [
+        "Lifestyle Wallboard"
+      ],
+      "main_words": 882,
+      "title": "Lifestyle Wallboard — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Lifestyle Wallboard is your personal life dashboard GPT. Pull bills, goals, habits, and tasks into one calm, at‑a‑glance wallboard you can actually act on.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b073a236481919de38600d5ebdcbb-lifestyle-wallboard-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 155,
+      "title_length": 57,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b073a236481919de38600d5ebdcbb-lifestyle-wallboard-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
+      "h1": [
+        "Neighborly Bazaar"
+      ],
+      "main_words": 1086,
+      "title": "Neighborly Bazaar — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Neighborly Bazaar is a custom GPT that helps you evaluate, price, and list household items so you can turn clutter into fair, neighbor‑friendly sales and donations.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68ec5c6defc08191aec4fff67dac4891-neighborly-bazaar-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 164,
+      "title_length": 55,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-68ec5c6defc08191aec4fff67dac4891-neighborly-bazaar-by-glee-fully"
+      ],
+      "publication_state": "live"
+    },
+    {
+      "path": "toolbox/05-organized-life/index.html",
+      "h1": [
+        "Glee‑fully Organized Life"
+      ],
+      "main_words": 1054,
+      "title": "Organized Life — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Organized Life is a Glee‑fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.",
+      "canonical": "https://glee-fully.tools/toolbox/05-organized-life/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68578a73b8f48191ac85b95f3ff370f3-organized-life-by-glee-fully",
+        "https://chatgpt.com/g/g-685b073a236481919de38600d5ebdcbb-lifestyle-wallboard-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef48107188191973f85550ae7da77-task-maestro-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef48bfc808191b4414bace0810239-thrifty-spender-by-glee-fully",
+        "https://chatgpt.com/g/g-685ef497fa9081919916fb9399c13e7f-giftlist-helper-by-glee-fully",
+        "https://chatgpt.com/g/g-68ec5c6defc08191aec4fff67dac4891-neighborly-bazaar-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 151,
+      "title_length": 52
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "h1": [
+        "Care Check 🩺"
+      ],
+      "main_words": 1053,
+      "title": "Care Check — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Care Check is a calm, plain‑language symptom check‑in in the Healthy Bee‑ing branch that helps you decide when it’s rest, pharmacy, or doctor time—without the late‑night internet spiral.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": true,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 186,
+      "title_length": 48,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "h1": [
+        "Calm Keep"
+      ],
+      "main_words": 1008,
+      "title": "Calm Keep — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Calm Keep by Glee‑fully Healthy Bee‑ing tracks stress, sleep, and small movement patterns so you can build calmer days without guilt or perfection pressure.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": true,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 156,
+      "title_length": 47,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "h1": [
+        "Snappy Count"
+      ],
+      "main_words": 883,
+      "title": "Snappy Count — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Quick, photo‑based nutrition awareness from the Healthy Bee‑ing branch of the Glee‑fully Personalizable Tools™ suite — snap a meal, get a gentle calorie and nutrition estimate, no diet‑culture shame attached.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": true,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 208,
+      "title_length": 50,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "h1": [
+        "Medi Minder"
+      ],
+      "main_words": 1028,
+      "title": "Medi Minder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Medi Minder is a Glee‑fully Tool‑ette GPT for keeping meds, refills, and doctor appointments organized with calm, logistics‑only reminders — not medical advice.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": true,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 160,
+      "title_length": 49,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "h1": [
+        "Moody Log"
+      ],
+      "main_words": 1101,
+      "title": "Moody Log — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Moody Log is a gentle wellness timeline that combines weekly self‑photos, hydration tracking, and mood check‑ins to help you spot patterns between how you feel and how you care for yourself.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68b701ef56948191af70510fd4989fa2-moody-log-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 190,
+      "title_length": 47,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-68b701ef56948191af70510fd4989fa2-moody-log-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "h1": [
+        "Maven Wise"
+      ],
+      "main_words": 1084,
+      "title": "Maven Wise — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Maven Wise is a gentle midlife & hormonal‑change companion GPT that helps you track symptoms, spot patterns, and prepare better conversations with your real‑world care team.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68b5056858dc8191a8021e8a66cbc91f-maven-wise"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 173,
+      "title_length": 48,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-68b5056858dc8191a8021e8a66cbc91f-maven-wise"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/index.html",
+      "h1": [
+        "Glee‑fully Healthy Bee‑ing"
+      ],
+      "main_words": 1241,
+      "title": "Healthy Bee‑ing — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Healthy Bee‑ing is a calm, structured health companion GPT that helps you track symptoms, meds, mood, and habits so you walk into appointments prepared instead of scrambling.",
+      "canonical": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-686c65bd297c8191935a8512471c1609-healthy-bee-ing-by-glee-fully",
+        "https://chatgpt.com/g/g-68b5056858dc8191a8021e8a66cbc91f-maven-wise",
+        "https://chatgpt.com/g/g-68b701ef56948191af70510fd4989fa2-moody-log-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": true,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 174,
+      "title_length": 53
+    },
+    {
+      "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "h1": [
+        "Critter Spotter"
+      ],
+      "main_words": 852,
+      "title": "Critter Spotter — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Spot pets, wildlife, and mystery animals from your photos. Critter Spotter IDs breeds, shares personality traits, and helps you log each critter with trivia and tags.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-685b073a236481919de38600d5ebdcbb"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 166,
+      "title_length": 53,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-685b073a236481919de38600d5ebdcbb"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "h1": [
+        "Roost Wrangler"
+      ],
+      "main_words": 1027,
+      "title": "Roost Wrangler — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Roost Wrangler decodes your home's architecture and furniture style from photos so you can name, tag, and admire your space — no shopping, no renovation pressure, just clear language for what you already love.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68b4fd1f885481919e71f55d6b2d5106-roost-wrangler-by-glee-fully"
+      ],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 209,
+      "title_length": 52,
+      "primary_gpt_links": [
+        "https://chatgpt.com/g/g-68b4fd1f885481919e71f55d6b2d5106-roost-wrangler-by-glee-fully"
+      ],
+      "publication_state": "beta"
+    },
+    {
+      "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "h1": [
+        "Sight Seeker"
+      ],
+      "main_words": 1046,
+      "title": "Sight Seeker — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Sight Seeker is a Glee‑fully Tool‑ette that identifies landscapes, skylines, and starry skies from your photos, then adds lore, location guesses, and journaling‑ready context.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 175,
+      "title_length": 50,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "h1": [
+        "Snap Decoder"
+      ],
+      "main_words": 873,
+      "title": "Snap Decoder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Snap Decoder by Glee‑fully turns your screenshot stash into a searchable story — decoding quotes, error messages, and UI oddities so you remember why you captured them.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 168,
+      "title_length": 50,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "h1": [
+        "Motif Muse"
+      ],
+      "main_words": 1064,
+      "title": "Motif Muse — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Motif Muse is a design‑savvy Glee‑fully Tool‑ette GPT that pulls color palettes, motifs, and style tags out of your photos so you can name and reuse the looks you love.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 168,
+      "title_length": 48,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "h1": [
+        "Maker Matcher"
+      ],
+      "main_words": 956,
+      "title": "Maker Matcher — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Maker Matcher helps you identify crafts and hobbies from photos, tools, or work‑in‑progress projects, then tags them and suggests where to explore next in the Glee‑fully Toolbox.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": false,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 178,
+      "title_length": 51,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "h1": [
+        "Self Fixer"
+      ],
+      "main_words": 958,
+      "title": "Self Fixer — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Self Fixer helps you identify mystery objects, broken bits, and DIY parts so you can understand what they are, what they do, and what to do next.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/",
+      "gpt_links": [],
+      "overlay": 1,
+      "unavailable": true,
+      "schema_types": [
+        "SoftwareApplication",
+        "BreadcrumbList"
+      ],
+      "description_length": 145,
+      "title_length": 48,
+      "primary_gpt_links": [],
+      "publication_state": "unavailable"
+    },
+    {
+      "path": "toolbox/07-identity-known/index.html",
+      "h1": [
+        "Glee‑fully Identity Known"
+      ],
+      "main_words": 1123,
+      "title": "Identity Known — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "Identity Known is a Glee-fully Personalizable Tool™ — a custom-tuned GPT that turns your photos, screenshots, and 'what is this?' moments into clear, friendly answers with lore and context.",
+      "canonical": "https://glee-fully.tools/toolbox/07-identity-known/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68578a73b8f48191ac85b95f3ff370f3-organized-life-by-glee-fully",
+        "https://chatgpt.com/g/g-68578a80a67481919be0a3c9974c02b0-travelers-guide-by-glee-fully",
+        "https://chatgpt.com/g/g-68578a97c7c081918ce7858739839d33-treasured-finds-by-glee-fully",
+        "https://chatgpt.com/g/g-686c65c5f85c8191812ed69613afcd07-identity-known-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fccde1c08191a14ce69219dc8ab3-critter-spotter-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fd1f885481919e71f55d6b2d5106-roost-wrangler-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fd573a74819186a27d60efca12ef-sight-seeker-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fda253c081919161af36ddc20260-snap-decoder-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fe189cac819189de192afa1854ad-motif-muse-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fe5ea5c88191a2f5f06aeb6fa169-maker-matcher-by-glee-fully",
+        "https://chatgpt.com/g/g-68b4fe9927c88191991b13e732347ad2-self-fixer-by-glee-fully"
+      ],
+      "overlay": 0,
+      "unavailable": true,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList"
+      ],
+      "description_length": 189,
+      "title_length": 52
+    },
+    {
+      "path": "toolbox/index.html",
+      "h1": [
+        "Glee‑fully Toolbox"
+      ],
+      "main_words": 654,
+      "title": "Toolbox — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "The Glee‑fully Toolbox GPT is your retro‑bright command center for the full suite of custom Tools and Tool‑ettes — helping you pick, launch, and link them together.",
+      "canonical": "https://glee-fully.tools/toolbox/",
+      "gpt_links": [
+        "https://chatgpt.com/g/g-68578aaa54588191b70c6aa8aa9bf228-glee-fully-personalizable-tools"
+      ],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "CollectionPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 164,
+      "title_length": 45
+    },
+    {
+      "path": "under-construction.html",
+      "h1": [
+        "This corner of the toolbox is still being built."
+      ],
+      "main_words": 161,
+      "title": "Under Construction — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "This corner of the Glee‑fully Toolbox is under construction while deeper docs and system maps come together.",
+      "canonical": "https://glee-fully.tools/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebSite"
+      ],
+      "description_length": 108,
+      "title_length": 56
+    },
+    {
+      "path": "universe/index.html",
+      "h1": [
+        "Where Glee‑fully fits in the bigger map."
+      ],
+      "main_words": 780,
+      "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "description": "See where Glee‑fully Personalizable Tools™ 🧰🌳 sits inside the OverKill Hill P³™ universe — alongside AskJamie™, BrandGuard™, and experimental narrative worlds.",
+      "canonical": "https://glee-fully.tools/universe/",
+      "gpt_links": [],
+      "overlay": 0,
+      "unavailable": false,
+      "schema_types": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "description_length": 159,
+      "title_length": 53
+    }
+  ]
+}

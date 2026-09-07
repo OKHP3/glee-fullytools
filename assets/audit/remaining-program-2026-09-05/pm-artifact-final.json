@@ -1,0 +1,62 @@
+{
+  "implementationCommit": "6f5d4d5c472c4e2bc66bf1a29e58464e692463a8",
+  "sourceBranch": "codex/assessment-corrections-20260905",
+  "stagingDirectory": "C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c",
+  "archive": "C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c.tar",
+  "localArtifact": [
+    {
+      "cmd": "& 'C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' scripts/public-artifact.py stage --output 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c' --commit 6f5d4d5c472c4e2bc66bf1a29e58464e692463a8",
+      "chunk_id": "9b9e0d",
+      "wall_time_seconds": 3.1916798,
+      "exit_code": 0,
+      "original_token_count": 52,
+      "output": "{\r\n  \"commit\": \"6f5d4d5c472c4e2bc66bf1a29e58464e692463a8\",\r\n  \"files\": 711,\r\n  \"html_pages\": 63,\r\n  \"bytes\": 208684194,\r\n  \"hidden_public_files\": [\r\n    \".nojekyll\",\r\n    \".well-known/security.txt\"\r\n  ]\r\n}\r\n"
+    },
+    {
+      "cmd": "& 'C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' scripts/public-artifact.py verify --output 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c' --commit 6f5d4d5c472c4e2bc66bf1a29e58464e692463a8",
+      "chunk_id": "ec85b8",
+      "wall_time_seconds": 5.8379297999999995,
+      "exit_code": 0,
+      "original_token_count": 52,
+      "output": "{\r\n  \"commit\": \"6f5d4d5c472c4e2bc66bf1a29e58464e692463a8\",\r\n  \"files\": 711,\r\n  \"html_pages\": 63,\r\n  \"bytes\": 208684194,\r\n  \"hidden_public_files\": [\r\n    \".nojekyll\",\r\n    \".well-known/security.txt\"\r\n  ]\r\n}\r\n"
+    },
+    {
+      "cmd": "tar -cf 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c.tar' -C 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c' .",
+      "chunk_id": "ff9b6b",
+      "wall_time_seconds": 1.9690935999999999,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "cmd": "& 'C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' scripts/public-artifact.py verify-tar --output 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c' --commit 6f5d4d5c472c4e2bc66bf1a29e58464e692463a8 --archive 'C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/public-site-6f5d4d5c.tar'",
+      "chunk_id": "f9c9db",
+      "wall_time_seconds": 8.5780988,
+      "exit_code": 0,
+      "original_token_count": 61,
+      "output": "{\r\n  \"commit\": \"6f5d4d5c472c4e2bc66bf1a29e58464e692463a8\",\r\n  \"files\": 711,\r\n  \"html_pages\": 63,\r\n  \"bytes\": 208684194,\r\n  \"hidden_public_files\": [\r\n    \".nojekyll\",\r\n    \".well-known/security.txt\"\r\n  ],\r\n  \"pages_archive_verified\": true\r\n}\r\n"
+    }
+  ],
+  "packagedBrowser": {
+    "chunk_id": "c7051d",
+    "wall_time_seconds": 6.8094823,
+    "exit_code": 0,
+    "original_token_count": 124,
+    "output": "{\n  \"status\": \"passed\",\n  \"browser\": \"Chromium\",\n  \"publicSiteDirectory\": \"C:\\\\Users\\\\jamie\\\\.codex\\\\visualizations\\\\2026\\\\09\\\\05\\\\01a07294-1521-77f3-bc34-a7176b6e0444\\\\remaining-program\\\\public-site-6f5d4d5c\",\n  \"checks\": [\n    \"quota failure keeps online page\",\n    \"unavailable storage keeps online page\",\n    \"query shell deduplication\",\n    \"cold offline adapter from service worker\",\n    \"offline query and search results\",\n    \"uncached offline fallback\",\n    \"reconnect navigation\"\n  ]\n}\n"
+  },
+  "sourceFingerprintVerification": {
+    "files": 23,
+    "mismatches": []
+  },
+  "independentReview": {
+    "reviewer": "/root/search_consent",
+    "scope": "Content Worker changes; all42 schema identities, targeted health/memory/identity/legal edges, all60 sitemapURLs and57dates/3omissions, publication1/24/17, unchangedfeed and38 advisory dispositions",
+    "result": "No actionable introduced defect found",
+    "method": "Read-only source and evidence review; no external calls"
+  },
+  "boundaries": [
+    "Local staging/tar/browser evidence only; no GitHub upload/download/deploy/live verification.",
+    "Accepted earlier8dea009c/f5f33986 commits preserved; main9b4ade05 remained unchanged.",
+    "Original clone tracked source unchanged; its untracked assessment packet preserved."
+  ]
+}

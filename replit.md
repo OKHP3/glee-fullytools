@@ -14,29 +14,37 @@ available. The authoritative promise and inventory contract is
   ASKJAMIE, and CROSS-BRAND sections. Glee-fully pages use the coral and cream
   brand contract documented in `AGENTS.md`.
 - **Fonts:** Google Fonts (Fredoka, Open Sans, Poppins, and DM Sans)
-- **Dependencies:** Browser services load via CDN (Mermaid.js v11, Ko-fi, and
-  Google Analytics G-89W66VMGPB). Optional local Node metadata exists for
+- **Dependencies:** Mermaid v11 is vendored locally. Google Fonts is external;
+  Google Analytics G-89W66VMGPB loads only after opt-in. Ko-fi is an outbound
+  link. Optional local Node metadata exists for
   Lighthouse and Puppeteer, but the site does not run on Node or a bundler.
 - **Hosting:** Static site served with Python's built-in HTTP server in dev
 
 ## Project Structure
 
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
-- `assets/css/theme.css` — Central stylesheet (6,552 lines), organized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Within each scope, sections retain original relative order so cascade is unchanged.
-- `assets/js/app.js` — Shared JS (907 lines): progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
+- `assets/css/theme.css` — Central stylesheet, organized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Current counts come from the source and generated portfolio statistics; historical scope-map counts below retain their original dates.
+- `assets/js/app.js` — Shared JS: progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
 - `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `sw.js` — Root-scoped service worker with a versioned, same-origin offline shell and `/offline.html` fallback
-- `toolbox/` — Central hub with 1 Toolbox page, 7 thematic branches, and 42
+- `toolbox/`  -  Central hub with 1 Toolbox page, 7 thematic branches, and 42
   Tool-ette pages
-- `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
+- `about/`, `contact/`, `legal/`, `persona/`, `universe/`, `ecosystem/`, `showcase/`, `foundry/` — Supporting pages (`showcase/` is the portfolio case-study page added 2026-05-27)
 - `robots.txt` — Bot policy (GPTBot blocked for training; OAI-SearchBot, ChatGPT-User allowed)
-- `sitemap.xml` — 60 indexable public URLs
-- `feed.xml` — 49 branch and Tool-ette update entries (not a full-site mirror)
+- `sitemap.xml`  -  61 indexable public URLs
+- `feed.xml`  -  49 branch and Tool-ette update entries (not a full-site mirror)
 
 ## Workflows
 
 - **Start application:** `python3 scripts/serve-site.py` (port 5000, no-cache webview)
+
+On Windows, set `$env:PYTHONUTF8='1'` in PowerShell and use an existing working
+Python 3 interpreter instead of `python3`. `py -3` works only if its registered
+interpreter exists. The September 5 local checks used the installed Codex
+bundled Python when the system launcher pointed to a missing executable.
+Browser runners require an already installed Playwright runtime/browser;
+static-lint fallback is not browser evidence. No install is part of this runbook.
 
 ## CI Gate (GitHub Actions)
 
@@ -44,7 +52,7 @@ available. The authoritative promise and inventory contract is
 
 1. **`validate-site.py`** — checks all pages for title, h1, description, canonical, og:url, theme-color, manifest, favicon, skip link, JSON-LD parseability, Mermaid referral invariant. Also enforces a global **CSS-lines drift invariant**: the `<!-- STAT:CSS-LINES -->` value in `showcase/index.html` must be within ±50 lines of the actual `theme.css` line count (fix by running `python3 scripts/sync-portfolio-stats.py`). Exits non-zero on any critical issue.
 2. **`check-links.py`** — validates every internal href against the filesystem and cross-references against `sitemap.xml`. Exits non-zero on broken links or sitemap mismatches.
-3. **`build-search-index.py`** — rebuilds `assets/data/search-index.json`; fails the workflow if the index file is missing after the build.
+3. **`build-search-index.py --check`** — compares `assets/data/search-index.json` with the source without rewriting it; fails if committed output is missing or stale.
 
 This gate prevents regressions (deprecated meta tags, broken hrefs, missing metadata, stale search index) from reaching the live GitHub Pages deployment.
 
@@ -103,6 +111,14 @@ artifact contains the homepage, 404 page, robots policy, sitemap, and manifest.
 The Pages workflow also runs the supported browser viewport/asset QA before
 deployment. The standalone viewport workflow remains useful for fast feedback
 on responsive changes.
+
+The current detailed release handoff, runtime inventory, and unresolved CI/host
+choices are in `docs/remaining-program-2026-09-05/platform-release.md`.
+`scripts/tests/test-release-readiness.cjs` can exercise installed Node Playwright
+engines. It is supplementary evidence, not execution of the Python browser gates.
+The Python viewport and inclusive runners still call the Nix/gcc shim setup
+unconditionally; do not invoke that host-specific setup on Windows. The proposed
+host-aware fix is documented in the handoff and remains separately reviewed work.
 
 The three companion repositories use the same release stages but retain
 site-specific adapters for domains, page inventories, generated files, browser
@@ -179,10 +195,10 @@ A zero-dependency, fully client-side search engine indexes every published page 
 | Component | Path | Purpose |
 |---|---|---|
 | Index builder | `scripts/build-search-index.py` | Walks every `*.html`, extracts title/description/canonical/h1-h3/body, writes `assets/data/search-index.json` |
-| Search index | `assets/data/search-index.json` | 60 indexable pages, ~130 KB raw (~30 KB gzipped) — committed to repo, no backend needed |
+| Search index | `assets/data/search-index.json` | 61 indexable pages, ~430 KB raw — committed to repo, no backend needed |
 | Runtime | `assets/js/app.js` (search section, line 263+) | Lazy-loads index, tokenizes query, weighted field scoring, renders modal results |
 | Styles | `assets/css/theme.css` (search section at end) | Modal, nav button, result cards, dark-mode aware |
-| Wired into | All 60 HTML pages | `<script src="/assets/js/app.js" defer>` — single script, no separate search.js |
+| Wired into | All 61 indexable HTML pages | `<script src="/assets/js/app.js" defer>` — single script, no separate search.js |
 
 **Triggers:** Click magnifier in nav · press `/` outside an input · press ⌘K / Ctrl+K · arrive at any page with `?s=query` (matches the JSON-LD `SearchAction` declared on the homepage)
 
@@ -197,17 +213,17 @@ HTML navigations for repeat visits, and serves `offline.html` when a navigation
 cannot reach the network. It never intercepts or caches third-party requests,
 including fonts, analytics, Ko-fi, ChatGPT, Mermaid, and the arcade iframe.
 
-When changing a pre-cached asset, increment `CACHE_NAME` in `sw.js` and update
-the CSS cache token with `python3 scripts/sync-css-version.py`. The offline page
+After changing a pre-cached asset, run `python3 scripts/sync-css-version.py`
+last to derive the cache version and CSS token from content. The offline page
 is deliberately excluded from the search index and sitemap.
 
-**Why no Lunr.js or Algolia:** The site has 60 indexable pages and the raw text trims to ~130 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
+**Why no Lunr.js or Algolia:** The site has 61 indexable pages and the raw search index is ~430 KB. A homemade weighted scorer (title × 10, headings × 5, description × 4, body × 1) is plenty fast at this scale and adds zero external dependencies, matching the site's no-build philosophy.
 
 **Two surfaces, one engine:** The search section of `app.js` powers (a) the global ⌘K/`/` modal injected into every page's nav, and (b) the dedicated `/search/` page. The dedicated page declares `data-glee-search-inline` on `<main>` plus three hooks: `[data-glee-search-inline-input]`, `[data-glee-search-inline-status]`, `[data-glee-search-inline-results]`. On boot it detects the inline marker and runs `attachInline()` instead of opening the modal — and writes the query back into the URL as `?q=` for shareability. The `?s=` param still auto-opens the modal everywhere else.
 
 ## Today's Sparkle management
 
-The sparkle banner (`<section class="site-specials">`) appears in the `<header>` of all 63 HTML pages. It highlights the current featured GPT Tool.
+The sparkle banner (`<section class="site-specials">`) appears in the `<header>` of all 64 HTML pages. It highlights the current featured GPT Tool.
 
 | Component | Path | Purpose |
 |---|---|---|
@@ -218,12 +234,35 @@ The sparkle banner (`<section class="site-specials">`) appears in the `<header>`
 **When you update the sparkle (change `assets/data/sparkle.json`):**
 
 1. Edit `assets/data/sparkle.json` with the new `emoji`, `label`, `description`, `suffix`, and `url`.
-2. Run `python3 scripts/sync-sparkle-fallback.py` to patch the static fallback in all 63 HTML files.
+2. Run `python3 scripts/sync-sparkle-fallback.py` to patch the static fallback in all 64 HTML files.
 3. The runtime loader in `app.js` §6 handles live browser updates automatically — no JS changes needed.
 
 The sync script is idempotent: safe to re-run; it skips files already up to date.
 
-## Validation tooling (2026-05-03)
+## Current maintenance commands (2026-09-05)
+
+`scripts/README.md` is the active script inventory. Source editing is followed
+by these serial generators, with the generated diff reviewed before validation:
+
+```bash
+python3 scripts/build-search-index.py
+python3 scripts/sync-portfolio-stats.py
+python3 scripts/build-search-index.py
+python3 scripts/sync-css-version.py
+```
+
+The second index pass captures any stats copy changes. Then run the check-only
+release sequence above and the focused regressions relevant to the change.
+`bash scripts/post-merge.sh` checks committed index, stats, CSS/offline versions,
+CSP, structure and links. It does not regenerate or repair files. Run it only in
+a Bash environment with a working `python3`; use the equivalent Python checks
+directly on Windows when that environment is unavailable.
+
+`feed.xml` and `icon-map.json` have archived generators and are not routine
+release outputs. Feed/date policy remains deferred under `docs/suite-promise.md`.
+Do not execute the historical commands below against the current site.
+
+## Historical validation tooling (2026-05-03, superseded)
 
 Seven standalone Python scripts under `scripts/` keep the site honest. **Run order
 matters** — `inject-jsonld` reads `og:image` to set `primaryImageOfPage`, so it

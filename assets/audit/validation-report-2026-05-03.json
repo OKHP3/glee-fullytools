@@ -1,5 +1,5 @@
 {
-  "scanned": 63,
+  "scanned": 64,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -27,6 +27,11 @@
       "issues": [],
       "warnings": [],
       "path": "ecosystem/index.html"
+    },
+    {
+      "issues": [],
+      "warnings": [],
+      "path": "foundry/index.html"
     },
     {
       "issues": [],

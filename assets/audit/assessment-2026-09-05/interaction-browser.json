@@ -1,0 +1,65 @@
+[
+  {
+    "test": "default SW registration",
+    "value": {
+      "readyState": "complete",
+      "registered": true,
+      "controller": false,
+      "enhancements": true
+    }
+  },
+  {
+    "test": "mobile keyboard nav",
+    "open": "true",
+    "closed": "false",
+    "focus": "nav-toggle"
+  },
+  {
+    "test": "global accent search",
+    "status": "8 results found for résumé.",
+    "first": "/toolbox/01-discovered-careers/01a-resume-builder/"
+  },
+  {
+    "test": "global focus restored",
+    "focus": "okh-search-trigger"
+  },
+  {
+    "test": "dedicated accent search",
+    "status": "1 result found.",
+    "url": "https://glee-fully.tools/search/?q=resume",
+    "categories": "All\nPage"
+  },
+  {
+    "test": "dedicated updated query URL",
+    "url": "https://glee-fully.tools/search/?q=resume",
+    "status": "8 results found."
+  },
+  {
+    "test": "SW after 2.5s module delay",
+    "value": {
+      "readyState": "complete",
+      "registered": false,
+      "enhancements": true
+    }
+  },
+  {
+    "test": "cache module membership",
+    "value": {
+      "controller": true,
+      "moduleCached": false,
+      "keys": [
+        "glee-fully-shell-v11302095650886695523"
+      ]
+    }
+  },
+  {
+    "test": "offline dedicated search with HTTP cache disabled",
+    "status": "Loading index…",
+    "enhancements": false,
+    "errors": [
+      "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+      "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+      "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    ]
+  }
+]

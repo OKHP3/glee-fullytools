@@ -1,6 +1,6 @@
 # Resilient web behavior contract
 
-**Reviewed:** 2026-09-04  
+**Reviewed:** 2026-09-05
 **Owner:** Project owner  
 **Executable evidence:** `python3 scripts/resilience-qa.py`
 
@@ -16,10 +16,13 @@ game can work offline.
 - The home page, toolbox, branch hubs, Tool-ette pages, search page, utility
   pages, internal navigation, local search index, manifest, and first-party
   assets are served by the public origin.
-- A successful same-origin navigation is eligible for the versioned service
-  worker's navigation cache. The intentional precache includes `/`,
+- Successful HTML navigation within the public page routes is eligible for the
+  versioned service worker's navigation cache. Query strings are client-side
+  state: the worker stores one HTML shell per pathname and preserves the full
+  requested URL for the page. Other paths and third-party requests are not
+  retained. The intentional precache includes `/`,
   `/search/`, `/toolbox/`, `/about/`, the offline page, the shared runtime
-  assets, the manifest, and the favicon.
+  assets including the dynamically loaded Glee adapter, the manifest, and the favicon.
 - The browser may use the installable manifest with root scope and standalone
   display. Installation remains a browser/platform decision, not a promise
   that every browser exposes an install button.
@@ -34,6 +37,11 @@ game can work offline.
 - When connectivity returns, navigation uses the network response and updates
   the same-origin navigation cache. A new worker version removes older
   `glee-fully-shell-*` caches during activation before claiming clients.
+- Cache writes are best effort. Storage or quota failures cannot replace a
+  successful network response with offline content. Runtime HTML storage is
+  bounded to 80 entries beyond the intentional precache; serialized writes
+  remove the oldest entries when needed. Evicted routes need a network visit
+  again. There is no age-based retention guarantee.
 - A service-worker failure is progressive enhancement: normal online browsing
   remains available, but no offline guarantee is made until the worker has
   installed and a route has been cached.
@@ -68,6 +76,42 @@ game can work offline.
 The CI runner installs all three Playwright engines before invoking the full
 check. `--static-only` is intended for environments where browsers are not
 installed; it must not be used as a substitute for the release gate.
+
+`node --test scripts/tests/test-sw-resilience.cjs` separately exercises the
+production worker with unavailable storage, quota failures, query variants,
+concurrent cache growth, cold-offline adapter loading, and cache activation.
+These deterministic checks supplement the real-browser journeys.
+`node scripts/tests/test-sw-browser.cjs` supplies a focused Chromium journey
+using an existing Playwright installation. It explicitly registers the production
+worker, injects storage failures, clears ordinary HTTP cache, and verifies the
+offline adapter and search before reconnecting. `PUBLIC_SITE_DIR` can point at
+the staged artifact. Automatic application registration is a separate bootstrap
+contract; this focused runner does not certify that timing.
+
+## Reviewed public artifact boundary
+
+`scripts/public-artifact.py` stages the public root files, public HTML page
+directories, runtime CSS/JavaScript, the three named runtime JSON files, image
+assets, and the vendored Mermaid modules with their license/version records.
+Downloads require an explicit filename in the allowlist; none are currently
+published. Development templates, documentation, audit output, brand profiles,
+agent/skill packages, and repository/tooling configuration are excluded.
+
+The required hidden public files are `.nojekyll` and
+`.well-known/security.txt`. Pages enables hidden-file transfer only over the
+reviewed staging directory. Before and after generic artifact transfer, the
+same verifier checks the complete inventory, rejects links/reparse points and
+unexpected files, compares file bytes with the release checkout, verifies the
+provenance commit, and resolves local page, sitemap, manifest, search-index,
+stylesheet, script-import, and precache references inside the artifact.
+The final Pages tar is checked again before deployment, without extraction:
+all file names and bytes, including the required hidden files, must still match.
+`_headers` remains a portability file; its presence does not establish that
+GitHub Pages sends those HTTP headers.
+
+Local staging and transfer simulation do not establish deployed behavior.
+After an owner-authorized release, live security.txt, provenance, public routes,
+and excluded development URLs still need verification.
 
 ## Supported behavior and limits
 

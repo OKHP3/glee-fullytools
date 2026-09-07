@@ -1,1 +1,5 @@
 .githooks/* text eol=lf
+scripts/post-merge.sh text eol=lf
+assets/data/search-index.json text eol=lf
+assets/data/universe-map.json text eol=lf
+assets/audit/universe-map/* text eol=lf

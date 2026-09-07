@@ -1,0 +1,17 @@
+{
+  "remote_sha": "9b4ade05dbe6f8c755f20c2e7bc2e19b03da1b47",
+  "truncated": false,
+  "locale_content_config_or_indexes": [
+    "assets/data/search-index.json"
+  ],
+  "workflow_files": [
+    ".github/workflows/i18n-page-sync.yml",
+    ".github/workflows/mermaid-version-watch.yml",
+    ".github/workflows/pages.yml",
+    ".github/workflows/resilience-qa.yml",
+    ".github/workflows/sparkle-qa.yml",
+    ".github/workflows/validate.yml",
+    ".github/workflows/viewport-qa.yml"
+  ],
+  "translation_skill_count": 5
+}

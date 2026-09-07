@@ -1,0 +1,558 @@
+{
+  "baseline": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "implementation": "6f5d4d5c472c4e2bc66bf1a29e58464e692463a8",
+  "files": [
+    {
+      "path": ".github/workflows/validate.yml",
+      "working_tree_sha256": "79659c53ac5dac0f0ce1ab9f9398a485cf68c7fe557f4ab390c2aa45be9436fa"
+    },
+    {
+      "path": "404.html",
+      "working_tree_sha256": "1deee70c877719c04e8e4538c85b720c1765152836edd52b6affa71b5f17ba1f"
+    },
+    {
+      "path": "AGENTS.md",
+      "working_tree_sha256": "921aaa24be4a60cff5edf9c8d42bbad279d4c8e6916a5db08ae880176983e0c5"
+    },
+    {
+      "path": "_headers",
+      "working_tree_sha256": "d459fc370f4218246964bc57a33b3c06b0b5a0aa346314ba62b8939f5e46c900"
+    },
+    {
+      "path": "about/index.html",
+      "working_tree_sha256": "eb0713a8513191653db15df5d4ca3bef8824df32f83370cd0d8d0d8dccec62ba"
+    },
+    {
+      "path": "arcade/index.html",
+      "working_tree_sha256": "92f3453a508367abf45db76d03c53a276e86477a50cd6d8c9e928ba189b231c0"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/content-advisories-before.json",
+      "working_tree_sha256": "7cc40a95f47c911aadb2557cae9561ac5fe570f4b8ca6d0e8b8241765e45a229"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/content-advisory-dispositions.json",
+      "working_tree_sha256": "59d2d80495517a717bb8793d8b24e54d4cc6b19ae192d060b07bf4535e51b0e0"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/content-claim-check.json",
+      "working_tree_sha256": "525274cbf226cbb47de62219a4f8a3688ee2092b0117f63f9e2696db1139e7c6"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/content-tests.json",
+      "working_tree_sha256": "fcaf133b225bfebe41065041aa767c543b97d9b2f2739406e493568614285b90"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/content-validation.json",
+      "working_tree_sha256": "dce6b5c01ecdddc06354335ff26e2daf79008cfe1811f03a909bbf37f95e753b"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/date-baseline.json",
+      "working_tree_sha256": "3842419eced131ea3f2d97e1be7eba8968b56b07653b02990f2c4e39bcf7fb68"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/date-history-review.json",
+      "working_tree_sha256": "0db255709b3bd1b560100465b69bad17c7e6fdf3af590079ecc60319fde5b87f"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/date-review.json",
+      "working_tree_sha256": "b856ef8357d8941cb24dea7f00a76f0ed868c88003ee854a40c03775de5ec11d"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-accessibility-after.json",
+      "working_tree_sha256": "8cd918d0fd4a6463d2fd7471bdef82ea102d535c74d60526080a7dfce8f3d197"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-accessibility-final.json",
+      "working_tree_sha256": "85c2118b9273e27009b94c1b225dc73044ae8de0ccaf3ea64c9641473c4b8431"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-accessibility-focus-reproduction.json",
+      "working_tree_sha256": "87125e7f2ae53a70387500b41edb415acf6b71e6e5841612bae0683b6e54fb3e"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-contrast-after.json",
+      "working_tree_sha256": "aa779f823f094a2e2dc4fa16af314d5fdc78035360de334f27bc1ed371078a42"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-contrast-before.json",
+      "working_tree_sha256": "f2be690dba624ab7c106ab2179d6cdaaddca6b5430eb511bfe442230c49c3537"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-contrast-final.json",
+      "working_tree_sha256": "6d581158726ea33719d81b19aaef21177b225e4f42d261d3a1301adbd79cf2f0"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-home-images-after.json",
+      "working_tree_sha256": "56f8f66cdc6d4f6afde5be0ca331be9ee97a3470a974d8506f8f1583abfd7f38"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-home-repeat-investigation.json",
+      "working_tree_sha256": "1b4f533350234b48b56683bec3335631c6ffaf4f61d9443f23e2e514b8dc7674"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-performance-corrected.json",
+      "working_tree_sha256": "63581f6fedfbb54fba6c747b16021bdb6df0fb46151073c7611bf8d311adb562"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-performance-final.json",
+      "working_tree_sha256": "707886ef6d4caf62989e1cb9dce8e7139f9b6b6db9626f2087f7f22a71c75404"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-performance-initial.json",
+      "working_tree_sha256": "9ca0126aca23b346c7e954154949c93e43e61771c3c14554d2720c0bac50ae18"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-performance.json",
+      "working_tree_sha256": "9ca0126aca23b346c7e954154949c93e43e61771c3c14554d2720c0bac50ae18"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-search-layout-final.json",
+      "working_tree_sha256": "4b6b6c54a3b01581a7c3e76860e1bd6668e39d41c88ad3e7373a655656030ae6"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-search-layout-scheme-final.json",
+      "working_tree_sha256": "e93a40154b010f7e8cb095403c8c34b135ca65acb8b9e19162f82239a4339ce0"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/experience-search-space-candidate.json",
+      "working_tree_sha256": "587e920da202e8eae15107d326c1c0804783269a6829b5eeda2f72047c8bfede"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-browser-webkit-focus-ready.json",
+      "working_tree_sha256": "6229f5f8f58ec7a405e8851d985b73d72e9f18cb28cde3754d7f0c51be5536ee"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-browser-webkit-focus.json",
+      "working_tree_sha256": "dce6c166a6d2d2d2f78e741be91293e68d47a1c4c015473169f490ed5ce7a488"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-browser-webkit-retest.json",
+      "working_tree_sha256": "dab72bb89c41eb585c116dd3be555339a2439e4230f20cde4fac214a0337eeee"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-browser.json",
+      "working_tree_sha256": "4400cd23448cce4ff150bb73f82fd3f1f63ff38aa5a14fff419a669e7fec96e9"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-after.json",
+      "working_tree_sha256": "7c6d77b804ddf1ba53c4f2c4d197fcea48ca375d669d1fb2c1a5895f51ad921d"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-before.json",
+      "working_tree_sha256": "6c0e69734a8ac2e4391c13a1a98241cdf895b41b503fa68a0cc928b0e8dd09f2"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-final.json",
+      "working_tree_sha256": "ade4565ea1323a110c1aad11cc72bcbb3a72df6e044d75efc76629e81124174f"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-verified.json",
+      "working_tree_sha256": "3adf446c1b1d8f5a5e41e50622ad12ca85aecca4aec23f4ec94401274266d376"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-webkit-deferred-tab.json",
+      "working_tree_sha256": "f501f4360442b798a8d7c5b472dadf0435f24c48c487bb12f240d6f946c4393f"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-focus-webkit-tab.json",
+      "working_tree_sha256": "ffd17110d847a9d715a43f5133d915893311f72279ddf7cfa0043672a67eab1d"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-inventory.json",
+      "working_tree_sha256": "5672157f0eec6a6584478badc82ab71eced3837316bf863ff9d744e6bf49e994"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-release-final.json",
+      "working_tree_sha256": "584473ca9aa3d620d2c745943736fdfd0b324c235052f48119cf548e0c2b98c3"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/platform-webkit-native-tab.json",
+      "working_tree_sha256": "d8165abbfc9e8392d788c195096abbe1b781a149498fec7bac304666db1139b4"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-accent-before.json",
+      "working_tree_sha256": "9673d90ba8c1d24606a23b63aa1faf23361b04c4316146ca3cc0f24ed866e9ab"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-accent-final.json",
+      "working_tree_sha256": "2822c663e134b73ca97d426133cf022759176be89a2caeb5d0ee656bd900f78b"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-advisory-audit.json",
+      "working_tree_sha256": "b28186071020e49ae8cd73a7558df6a1c74d673bae7e5507014d8512b35a5f83"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-browser-final.json",
+      "working_tree_sha256": "cffb2e78d5275c114488c401d59c7c4963ab195ecc15ad51945e9d1950debc36"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-focused-tests.json",
+      "working_tree_sha256": "b35d07e2a014a238c35318b9121e91090e202866a1a18d03d5d3acc4367e8f9a"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-integration-checks.json",
+      "working_tree_sha256": "ce62547601e6f2802b96010ad14acde3c27c7d0f4776b977252a1149344c53fd"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-rendered-final.json",
+      "working_tree_sha256": "6c20a35835bdb5c44d6f92d4a2688926b6268bf356c10d23174823a02d6122ac"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-resilience-static.json",
+      "working_tree_sha256": "45447f48f070086c98f0176e1607215ba30ddb52bd695567f3913a619d195d8d"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-responsive-final.json",
+      "working_tree_sha256": "ed2c7caa5470f92317379cbf46dcbc0db50a5223af44dbb42d39c81dcd590740"
+    },
+    {
+      "path": "assets/audit/remaining-program-2026-09-05/pm-validation.json",
+      "working_tree_sha256": "43adc99e4613bc3870ed05ccbe8d7640dbf70e55879d8f6576f90b4e63ec58d7"
+    },
+    {
+      "path": "assets/css/theme.css",
+      "working_tree_sha256": "85d9e1cccdcf74f9a009f2ad94b5825669536ba1799bc83bc21437eee02b02f4"
+    },
+    {
+      "path": "assets/data/search-index.json",
+      "working_tree_sha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62"
+    },
+    {
+      "path": "assets/js/app.js",
+      "working_tree_sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a"
+    },
+    {
+      "path": "config/csp-policies.json",
+      "working_tree_sha256": "f65f655bd742bbbbe966292e0ba8b579aefb9174cad0b40702bd35f2e0a56d8a"
+    },
+    {
+      "path": "contact/index.html",
+      "working_tree_sha256": "0a2766c2093aa6d01b75ffa21c12418420d0d2a6406932abb6988b6eb2b2606c"
+    },
+    {
+      "path": "docs/adr/0004-enforced-csp-headers.md",
+      "working_tree_sha256": "b2e05f77b595b998170f094b7a339b1b91b77ae5277ecee2fb641940c754ad41"
+    },
+    {
+      "path": "docs/companion-publishing-contract.md",
+      "working_tree_sha256": "560fb163fc2b98ff4f2c54352cc02148eda9b530d47221677d7d5d5bdd3b147b"
+    },
+    {
+      "path": "docs/deployment.md",
+      "working_tree_sha256": "ed1a147e689e36d8370a5c8d641c77779cc72070f415378dc5e07b2bc23f3cc8"
+    },
+    {
+      "path": "docs/release-governance.md",
+      "working_tree_sha256": "2c29f107dbecacda12952eb88b735efee1403e9eaa6d251ad688ddc6fea76f65"
+    },
+    {
+      "path": "docs/remaining-program-2026-09-05/assignment-register.md",
+      "working_tree_sha256": "def1d28401d615adae36c0d9e49d88ad74c1b7e11bde481d3db8abc45803f277"
+    },
+    {
+      "path": "docs/remaining-program-2026-09-05/content-and-dates.md",
+      "working_tree_sha256": "a191cbe6c484880059159c9ca53b5d4ab5a3a3713b2ab282df4597e9970ce0e2"
+    },
+    {
+      "path": "docs/remaining-program-2026-09-05/experience-performance.md",
+      "working_tree_sha256": "5b04e2209a4ef6d51c6fba8b3e8b946def8f78f73cfbc185f4fd8d5ca44a532b"
+    },
+    {
+      "path": "docs/remaining-program-2026-09-05/platform-release.md",
+      "working_tree_sha256": "cfbc3ae469143f6ae13e258a7a88d972106ff2a644886f65edd80bf679090340"
+    },
+    {
+      "path": "docs/remaining-program-2026-09-05/pr-draft.md",
+      "working_tree_sha256": "1f924e0c22aad05ace889d48252b4768e819cf4d0d7fdd68729ab1dc73b86cc7"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "working_tree_sha256": "91b7136db67ab9f9d55263b941ca124559fce5d989d336339e31fcebeaf1edc7"
+    },
+    {
+      "path": "ecosystem/index.html",
+      "working_tree_sha256": "3000f93318321b57abbe1978b1d2b46ae498dcbe520c85104aa7fe204741e28c"
+    },
+    {
+      "path": "index.html",
+      "working_tree_sha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c"
+    },
+    {
+      "path": "legal/index.html",
+      "working_tree_sha256": "50bbc4487fd8385a2ce8d6da6bfa35b6dad09d2719e24619acab374f95cc2508"
+    },
+    {
+      "path": "offline.html",
+      "working_tree_sha256": "b54feee5581e17f0b11edac6d95436804fff3be7e3621d360dbadcc5aa9cb050"
+    },
+    {
+      "path": "persona/index.html",
+      "working_tree_sha256": "7be65f77f28942d5ba02f76330b48cd785b8cab469f442186bbe71491b2aa8fe"
+    },
+    {
+      "path": "replit.md",
+      "working_tree_sha256": "696b1e548800860154bd82294631501392dc3c9dac552e9422f5eaf2716eadc7"
+    },
+    {
+      "path": "scripts/README.md",
+      "working_tree_sha256": "fc90a54012aafe6cc2fdd0b547ad318927147acc4ec4e8c08068ab9690db1ad1"
+    },
+    {
+      "path": "scripts/audit-tool-ette-promises.py",
+      "working_tree_sha256": "12834535d80d1fe8f524b53acadc054a51d7737be334d9ff79bac80b19c15dbd"
+    },
+    {
+      "path": "scripts/check-accent-contrast.py",
+      "working_tree_sha256": "2bcf867c6b830f595493dfd8dfbddee7050aa9749f7c09b822eeadee25297945"
+    },
+    {
+      "path": "scripts/check-catalog-claims.py",
+      "working_tree_sha256": "80dc0c0d6fe592982fbc1620c70d1c1d713df14dfefb34413ed12df22410fd92"
+    },
+    {
+      "path": "scripts/tests/capture-release-inventory.py",
+      "working_tree_sha256": "20f0e74236dc5046f8d0e3381d4b0e8bbc311d25848fc734307ad7d927c300f3"
+    },
+    {
+      "path": "scripts/tests/test-experience-performance.cjs",
+      "working_tree_sha256": "c5aa2c3762c9ac1da4efdcc5110762cbab9458a0913086e61b659545d846321d"
+    },
+    {
+      "path": "scripts/tests/test-release-readiness.cjs",
+      "working_tree_sha256": "12a06fd1dd943f721854b32a870aa8f465bbb199540d177614be522b099a7ed8"
+    },
+    {
+      "path": "scripts/tests/test_check_accent_contrast.py",
+      "working_tree_sha256": "14e1e2bbabe818ab092027c29ab18805732ee475fa9b028854737a771ad541cc"
+    },
+    {
+      "path": "scripts/tests/test_content_claims.py",
+      "working_tree_sha256": "397dfe49ea68c2490fd97c31fd81cf5f6dac49b0c74d123465a48df1a32016e0"
+    },
+    {
+      "path": "search/index.html",
+      "working_tree_sha256": "e09e62ceb26f895a1ed1435ad77dbed288f8ff1b9a434e1be85258979bd08f92"
+    },
+    {
+      "path": "showcase/index.html",
+      "working_tree_sha256": "4451b2158282e9db8a1e0eb07539866085e99659d0d30fa07c21928adaf50e63"
+    },
+    {
+      "path": "sitemap.xml",
+      "working_tree_sha256": "8a7e4251f1c0b1bc14a2325bf875c10f9840db47a51ca81639d546fa39e54a25"
+    },
+    {
+      "path": "sw.js",
+      "working_tree_sha256": "e47243cea3ac05dcc7162821a2ada0e6672de97678eaa370547df4a09ec8ea9e"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "working_tree_sha256": "d6ae0d453d1d0e9743f7182af697831b94b4584ca0189683e2f238b9d0656298"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "working_tree_sha256": "91b1dcca532a4aa47f0f7002f34ff884581a17bf8490cac1664708d8edb84509"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
+      "working_tree_sha256": "844810f260297018a670c8fd5a921a99c7fbcf30ce7cdfe662976cb38f05cbd5"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
+      "working_tree_sha256": "406785b24a0f20dc11ac3a47be2ef3bc61591d67bb1aac2656b0818491b98671"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "working_tree_sha256": "a938f179ada95be7cf5a35bcd2e7510655b47db410ea69362569078c0072610d"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "working_tree_sha256": "afc82b49b6f375d01d0e80d7b88851373d6f5a57f69525b76cca9f4ae17d2bbb"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/index.html",
+      "working_tree_sha256": "6cd3e70ce61ce644544e9ba6225461cc7e544db7c40e03531f8f9d8795a4754f"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "working_tree_sha256": "5d124da5802513dffa7f79f99f05cf1fd44fc44eecebacf5a83b50c08044302e"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "working_tree_sha256": "4df650afbfe003fd960c8d11167146209814ae7ed16aeba48056bd8528698ae2"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+      "working_tree_sha256": "13ae9df37fa345b2b88a2774b4eedf330385df5e467700978aac4ae892142fc8"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "working_tree_sha256": "395ce88dd492f19e0814dfb8afbdbe178b853b823ceea56bb1d4f7071a063904"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "working_tree_sha256": "676ad041fabbf380b3f26725678c1e95939f7a15c8c06876fef65edf5e4b99c0"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "working_tree_sha256": "145eafd5f20b0fe34895813253e0cba147436776c03ae9b08fac46b7b54a3fa4"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
+      "working_tree_sha256": "2d09c043e0c1264fc64b814d426867f4bc49ed838ece3830fe8edef6fae068de"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/index.html",
+      "working_tree_sha256": "fb207944f0053ee40efe0a8cd48123a3d46d140d926c89f5079d4a4565a8c3a4"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
+      "working_tree_sha256": "182bd5457f96035aa3ea02d968735f116a0e1ed24cb0414e9439e40ee992648e"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "working_tree_sha256": "895f0365ca13b84329c28059339ee9af6b6bfa704b25a27fde64c2d11162fb8f"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
+      "working_tree_sha256": "1242563c925d88d95be8e8a4cee297945ed6c45c3c4a664444a12022d0e99562"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
+      "working_tree_sha256": "6a0bcd9d2d1cd6dc24686e41e9562e4de0d601dc741c27f8a4ac59e985fdce07"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
+      "working_tree_sha256": "70372fc16749cb805236bcd53d970befa1fef0722da3134c148ae9599cbff4fe"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/index.html",
+      "working_tree_sha256": "83c2a9cf902953c1288f1ea2d7abd8e0a6694ab6117efac50ec753feb749c330"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
+      "working_tree_sha256": "e6562b10f10c843c28892899af5272e62cf3046791199264644086201dfec262"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "working_tree_sha256": "ae8547ab9103f9dabb458f5965367e5f9b1670bf1211c380f340b92368754872"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
+      "working_tree_sha256": "6cfe0207cc2d5765ead47789c0074ddcc785155c9b29222a477458696234cba2"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "working_tree_sha256": "6eb572ae5cf3427b8216b6b20c6be6a7f69f65c4556a7b168a5d9a9b9e8a07ae"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+      "working_tree_sha256": "1ed25b4c7888f47ab494f23b182c4edeea2918b37ba82e8c87fdcd26b3ffb769"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/index.html",
+      "working_tree_sha256": "4cfd338f298f9d3ec8aea94a5849af797747a82e1b004a088779faa84192409d"
+    },
+    {
+      "path": "toolbox/05-organized-life/05a-task-maestro/index.html",
+      "working_tree_sha256": "12b4ca550e3a821e521c80471f9d42d2a1e22a1ee49d54caf0cbfe64b9e7e8ff"
+    },
+    {
+      "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "working_tree_sha256": "36008bb406cb4d73a7824f22d6effee38e02fd526ff55d071ba99cb2e3d99bed"
+    },
+    {
+      "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "working_tree_sha256": "d1b59a7caf4f89f5db8747cc2dd195f6b35839d2a2f449d6ab84354c0fafd7d5"
+    },
+    {
+      "path": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "working_tree_sha256": "8854a2402e0179ca00d4a0201abf35c7fa7f4885d32602823ebb30e781de922a"
+    },
+    {
+      "path": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
+      "working_tree_sha256": "792db57f1da1b6811468b28aa6eb22dccb51b0328fb6ee97c1c26bdde83f719f"
+    },
+    {
+      "path": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
+      "working_tree_sha256": "3c7bd20959e1deb174d1e875bd2bed09a7bd9d997ef9ea697d96aaa492656077"
+    },
+    {
+      "path": "toolbox/05-organized-life/index.html",
+      "working_tree_sha256": "87140ee8e27c223ce43ed551b80c892b2c8bcf5e64006d5f3313b199e4d923bc"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "working_tree_sha256": "07d231843b3490c3da1954db3e96c8b0ea4d3a9f4c30b281a68b24a56b481466"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "working_tree_sha256": "f587c41670a655aad5faa2c19cf5cc363a33cd8519b0416df9630cd9037acae0"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "working_tree_sha256": "6a7e58ba8ac4bb9b337700aeec37d557ce0583594002e6a55201d6239fc9e130"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "working_tree_sha256": "66b789bb84361a30a265cc9b491b426aff3c53248b3708c7ce420abfe8494a82"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "working_tree_sha256": "2b05932fa23ea6d0047381678f057207d8ed1c6db17b2f9b42868ff4e4201a86"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "working_tree_sha256": "a44bece47d88e6b167868c8239878f5bb3d96bad7b542fcb877a55f0fad00799"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/index.html",
+      "working_tree_sha256": "842ecb9ef44d3dc1fd0f8b09d364192cba19ed9f2c53b4dc1ba8f3f62877e9de"
+    },
+    {
+      "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "working_tree_sha256": "ccbec1b83fe2563d058ca98687e50d4a6274da1594c27580ec0ead1ae0eddfd9"
+    },
+    {
+      "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "working_tree_sha256": "1140f5b39364e93be1bc1e99d16b21708a97d6b70d200901002c0dfdc4a20939"
+    },
+    {
+      "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "working_tree_sha256": "1de0032b990f5f46271e13d13956fd91f2c14f31a7be41021e62c09ee22907c9"
+    },
+    {
+      "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "working_tree_sha256": "51660d7dcb286551198f9c2cc23d3151bb34d52ec5711e5be4e79f200c8e54ca"
+    },
+    {
+      "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "working_tree_sha256": "7116600f03d978b623aad4836a6241e880fe522e0ad4ef5ba67b8ef3fce1fc0e"
+    },
+    {
+      "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "working_tree_sha256": "eb16b4ddb754de683bc0e8f2734ddb5a97228548d388ca1450969417482b1863"
+    },
+    {
+      "path": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "working_tree_sha256": "f2754a879ab8a85bf85f5f49f34d59fc235045d934b13d907b2e6a2436776b1c"
+    },
+    {
+      "path": "toolbox/07-identity-known/index.html",
+      "working_tree_sha256": "75af24c51ce17579b3edc388c4072ed4bb3e6610ec85a0b17e4bbc45c0e02a8f"
+    },
+    {
+      "path": "toolbox/index.html",
+      "working_tree_sha256": "cc531ffbb94713562967677012914092fbe93c1d0779b14b1f11943def95a075"
+    },
+    {
+      "path": "under-construction.html",
+      "working_tree_sha256": "a38187eda2b2c8aa98a7416ff9547af734f3e5a69f55468fa06a52bc9f870862"
+    },
+    {
+      "path": "universe/index.html",
+      "working_tree_sha256": "eb46edd0846c722952163c56c39d3ca7a8fd8b77f99ca37856041f272b1f348a"
+    }
+  ]
+}

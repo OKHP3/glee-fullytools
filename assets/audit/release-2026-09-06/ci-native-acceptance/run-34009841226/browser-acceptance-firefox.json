@@ -1,0 +1,185 @@
+{
+  "checked_at": "2026-09-06T03:48:33.334973+00:00",
+  "base_url": "http://localhost:5000",
+  "browser": "firefox",
+  "service_workers": "blocked (separate resilience gate)",
+  "results": [
+    {
+      "name": "served generated index and deep function discovery",
+      "evidence": {
+        "entries": 60,
+        "publication_states": {
+          "beta": 24,
+          "unavailable": 17,
+          "live": 1
+        },
+        "deep_function_query": "seniority"
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "Glee modal identity keyboard and focus return",
+      "evidence": {
+        "dialog": "Search Glee‑fully Tools",
+        "keyboard_destination": "/toolbox/01-discovered-careers/01b-resume-customizer/",
+        "escape_restores_trigger_focus": true
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 2,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "inline query category history reload and keyboard",
+      "evidence": {
+        "query": "budget",
+        "category": "Tool-ette",
+        "history_and_reload": true,
+        "viewports": [
+          1280,
+          375
+        ],
+        "keyboard_destination": "/toolbox/05-organized-life/05b-thrifty-spender/"
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 3,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "consent default grant reload and denied reload",
+      "evidence": {
+        "saved_grant_reload": true,
+        "saved_denial_reload": true,
+        "measurement_requests_sent": 0,
+        "attempts_blocked": 2
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 5,
+      "blocked_measurement_attempts": 2
+    },
+    {
+      "name": "computed hero contrast light",
+      "evidence": {
+        "eyebrow": "rgb(107, 94, 87)",
+        "heading": "rgb(45, 111, 126)",
+        "background": "rgb(255, 247, 241)",
+        "headingSize": "51.2px",
+        "eyebrow_ratio": 5.893957783010411,
+        "heading_ratio": 5.377948643478031
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "computed hero contrast dark",
+      "evidence": {
+        "eyebrow": "rgb(181, 169, 161)",
+        "heading": "rgb(242, 237, 232)",
+        "background": "rgb(42, 39, 36)",
+        "headingSize": "51.2px",
+        "eyebrow_ratio": 6.473644920512114,
+        "heading_ratio": 12.767110455267575
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "computed hero contrast auto-light",
+      "evidence": {
+        "eyebrow": "rgb(107, 94, 87)",
+        "heading": "rgb(45, 111, 126)",
+        "background": "rgb(255, 247, 241)",
+        "headingSize": "51.2px",
+        "eyebrow_ratio": 5.893957783010411,
+        "heading_ratio": 5.377948643478031
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "computed hero contrast auto-dark",
+      "evidence": {
+        "eyebrow": "rgb(181, 169, 161)",
+        "heading": "rgb(242, 237, 232)",
+        "background": "rgb(42, 39, 36)",
+        "headingSize": "51.2px",
+        "eyebrow_ratio": 6.473644920512114,
+        "heading_ratio": 12.767110455267575
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    },
+    {
+      "name": "Neighborly Bazaar SVG decodes",
+      "evidence": {
+        "decoded_dimensions": [
+          800,
+          534
+        ]
+      },
+      "status": "PASS",
+      "health": {
+        "page_errors": [],
+        "http_failures": [],
+        "request_failures": [],
+        "first_party_console_errors": []
+      },
+      "blocked_external_requests": 1,
+      "blocked_measurement_attempts": 0
+    }
+  ],
+  "failures": 0
+}

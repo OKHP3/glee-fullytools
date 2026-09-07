@@ -1,0 +1,23 @@
+{
+  "purpose": "Reproduce the WebKit native acceptance timeout against the local HTTP fixture.",
+  "browser": "WebKit",
+  "production_csp": "upgrade-insecure-requests",
+  "without_local_fixture_adaptation": {
+    "analytics_type": "undefined",
+    "upgraded_requests": [
+      "https://127.0.0.1:57129/assets/css/theme.css?v=10030d12",
+      "https://127.0.0.1:57129/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+      "https://127.0.0.1:57129/assets/js/app.js?v=ea91ea25",
+      "https://127.0.0.1:57129/site.webmanifest",
+      "https://127.0.0.1:57129/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp"
+    ],
+    "failures": ["SSL connect error"]
+  },
+  "with_local_navigation_fixture_adaptation": {
+    "analytics_type": "object",
+    "first_party_requests_remain_http": true,
+    "external_font_request": "https://fonts.googleapis.com/css2?family=Fredoka...",
+    "page_errors": []
+  },
+  "conclusion": "The native timeout is caused by WebKit applying the shipped transport directive to loopback HTTP. The focused fixture removes only '; upgrade-insecure-requests' from same-origin local HTML navigation responses; production HTML and all resource allowlists remain unchanged."
+}

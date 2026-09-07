@@ -52,6 +52,28 @@ concurrency rules, artifact retention, report upload, check-only generated
 output behavior, and release-report structure. Cross-site comparison should
 compare these mechanics, not blindly synchronize files.
 
+### Explicit source and target review
+
+Before any future promotion, record one reviewed source commit and blob per
+file, each target repository and expected HEAD/blob, the exact semantic change,
+protected adapter differences, and target-specific acceptance checks. A mismatch
+or dirty target stops the proposed transfer until it is reconciled. Equal bytes
+are a no-op; a newer Git timestamp is not authority to overwrite another copy.
+
+`scripts/sync-foundation-files.py` still uses last Git-touch time to choose the
+canonical group when two content groups exist. Its default dry run is useful
+inventory; its `--apply` and `--commit` modes do not implement the explicit
+review model described here. Do not use their automatic source choice as a
+substitute for review. The concrete September 5 candidate manifest and failure
+cases are in `remaining-program-2026-09-05/platform-release.md`.
+
+The proposed first promotion uses the accepted Glee corrective implementation
+as evidence for shared search/compatibility improvements, with separate target
+reviews for OverKill Hill and AskJamie. Glee adapter code, content/index data,
+publication labels, analytics identity, and Glee-scoped CSS stay in their owning
+site unless a specific cross-site change is requested. No sibling source was
+written by this program, and no promotion executor has been implemented.
+
 ## Protected differences
 
 Do not copy or normalize palettes, typography, logos, illustrations, copy,

@@ -35,6 +35,13 @@ jobs:
       - name: Start local HTTP server
         run: python3 scripts/serve-site.py > /tmp/resilience-server.log 2>&1 &
 
+      - name: Generate the same universe inventory as publication
+        run: |
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-portfolio-stats.py
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-css-version.py
+
       - name: Wait for server to be ready
         run: |
           for i in $(seq 1 30); do
@@ -47,11 +54,26 @@ jobs:
       - name: Run resilient web behavior acceptance checks
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
 
+      - name: Verify generated maps in all installed engines
+        run: python3 scripts/tests/test-universe-browser.py
+
+      - name: Run native visitor acceptance in all installed engines
+        run: |
+          failed=0
+          for browser in chromium firefox webkit; do
+            python3 scripts/tests/test_browser_acceptance.py \
+              --base-url http://localhost:5000 --browser "$browser" \
+              --output "assets/audit/browser-acceptance-$browser.json" || failed=1
+          done
+          exit "$failed"
+
       - name: Upload resilience report
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: resilience-qa-report
-          path: assets/audit/resilience-qa-*.json
+          path: |
+            assets/audit/resilience-qa-*.json
+            assets/audit/browser-acceptance-*.json
           if-no-files-found: error
           retention-days: 30

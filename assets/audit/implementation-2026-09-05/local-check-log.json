@@ -1,0 +1,298 @@
+{
+  "description": "Local tool results retained from initial integration; session completions are recorded separately. Later main integration and final acceptance are described in the completion record.",
+  "records": [
+    [
+      {
+        "command": "scripts/validate-site.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "8badb8",
+            "wall_time_seconds": 6.579754,
+            "exit_code": 1,
+            "original_token_count": 106,
+            "output": "\r\nScanned 63 pages\r\n  issues:   0\r\n  warnings: 0\r\n  detail:   assets\\audit\\validation-report-2026-05-03.json\r\n\r\nscripts/ count drift: scripts/*.py count is 26 but AGENTS.md documents 25 (drift +1). Classify the new/removed script in AGENTS.md and bump the STAT:SCRIPTS-PY marker.\r\n  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->\r\n\r\nOffline shell: sw.js has no /offline.html navigation fallback\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/check-links.py --no-report",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "5aa061",
+            "wall_time_seconds": 1.0834159,
+            "exit_code": 0,
+            "original_token_count": 56,
+            "output": "Pages scanned:    63\r\nInternal links:   2718\r\nExternal links:   1088\r\nBroken links:     0\r\nStyle issues:     0\r\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\r\nNoindex exclusions: 0\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/check-csp.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "254d5f",
+            "wall_time_seconds": 0.0000189,
+            "exit_code": 1,
+            "original_token_count": 16,
+            "output": "CSP policy file is stale. Run: python3 scripts/generate-csp.py\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/check-accent-contrast.py --strict",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "419dbf",
+            "wall_time_seconds": 5.5705949,
+            "exit_code": 0,
+            "original_token_count": 144,
+            "output": "Accent contrast advisory scan (light + dark mode + branded hover states)\r\n  HTML files scanned : 72\r\n  CSS files scanned  : 1\r\n  Advisories         : 0\r\n  Info notes         : 0\r\n  Hover checks       : 8 (0 failures)\r\n  Report             : assets\\audit\\accent-contrast-report.json\r\n\r\n  Light-mode palette : accent #d35b2d / bg #f6f2ee → 3.55:1\r\n  Dark-mode palette  : accent #f07585 / surface #241c1a → 6.04:1\r\n\r\n  No body-text accent color violations found.\r\n\r\nAdvisories are reported without --strict.\r\nUse --strict to exit 1 on any advisory or hover-state failure.\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/check-glee-dark-coverage.py --section all --require-both",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "7ad5df",
+            "wall_time_seconds": 3.7978218999999998,
+            "exit_code": 0,
+            "original_token_count": 76,
+            "output": "check-glee-dark-coverage: OK — 16 light-surface rule(s) (13 background, 6 border) in the GLEE section all have dark-mode overrides in both forms.\r\ncheck-glee-dark-coverage: OK — 10 light-surface rule(s) (10 background, 1 border) in the ASKJAMIE section all have dark-mode overrides in both forms.\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/sync-social-card.py --check",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "c4aea1",
+            "wall_time_seconds": 3.7939502000000003,
+            "exit_code": 0,
+            "original_token_count": 16,
+            "output": "\r\nSocial-card metadata is current across 62 published pages.\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/resilience-qa.py --static-only",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "2837b1",
+            "wall_time_seconds": 5.5944936,
+            "exit_code": 0,
+            "original_token_count": 21,
+            "output": "Static resilience checks: PASS\r\nReport: assets\\audit\\resilience-qa-2026-09-05.json\r\n"
+          }
+        }
+      },
+      {
+        "command": "-m unittest discover -s scripts/tests -p 'test_*.py'",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "698d36",
+            "wall_time_seconds": 10.0019716,
+            "session_id": 15246,
+            "original_token_count": 0,
+            "output": ""
+          }
+        }
+      }
+    ],
+    [
+      {
+        "command": "scripts/validate-site.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "ef5876",
+            "wall_time_seconds": 0.0000017,
+            "exit_code": 0,
+            "original_token_count": 28,
+            "output": "\r\nScanned 63 pages\r\n  issues:   0\r\n  warnings: 0\r\n  detail:   assets\\audit\\validation-report-2026-05-03.json\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/check-csp.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "e5e855",
+            "wall_time_seconds": 0.0000037,
+            "exit_code": 0,
+            "original_token_count": 10,
+            "output": "CSP policies verified for 63 pages.\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/build-search-index.py --check",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "420a10",
+            "wall_time_seconds": 0.0000038,
+            "exit_code": 0,
+            "original_token_count": 23,
+            "output": "Indexing 60 HTML pages…\r\nCommitted assets\\data\\search-index.json is current — 60 pages\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/sync-portfolio-stats.py --check",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "6b1c91",
+            "wall_time_seconds": 0.0000085,
+            "exit_code": 0,
+            "original_token_count": 39,
+            "output": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7711\r\n  about\\index.html — already up to date\r\n  showcase\\index.html — already up to date\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/sync-css-version.py --check",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "dfa84e",
+            "wall_time_seconds": 0.0000044,
+            "exit_code": 0,
+            "original_token_count": 15,
+            "output": "  CSS token -> ec7094c3  (all 63 file(s) already current)\r\n"
+          }
+        }
+      },
+      {
+        "command": "-m unittest discover -s scripts/tests -p 'test_*.py'",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "de5b5d",
+            "wall_time_seconds": 10.0009041,
+            "session_id": 64548,
+            "original_token_count": 7,
+            "output": "............................"
+          }
+        }
+      },
+      {
+        "command": "scripts/tests/test-visitor-truth.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "8d2681",
+            "wall_time_seconds": 1.0158026,
+            "exit_code": 0,
+            "original_token_count": 28,
+            "output": ".........\r\n----------------------------------------------------------------------\r\nRan 9 tests in 3.390s\r\n\r\nOK\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/tests/test-search-index.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "3792b0",
+            "wall_time_seconds": 4.4021072,
+            "exit_code": 0,
+            "original_token_count": 27,
+            "output": "...\r\n----------------------------------------------------------------------\r\nRan 3 tests in 1.829s\r\n\r\nOK\r\n"
+          }
+        }
+      },
+      {
+        "command": "scripts/tests/test-post-merge.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "4b5b48",
+            "wall_time_seconds": 10.0025537,
+            "session_id": 35454,
+            "original_token_count": 0,
+            "output": ""
+          }
+        }
+      },
+      {
+        "command": "scripts/tests/test-reconciliation.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "0d882f",
+            "wall_time_seconds": 10.0012939,
+            "session_id": 78188,
+            "original_token_count": 0,
+            "output": ""
+          }
+        }
+      },
+      {
+        "command": "scripts/check-workflow-actions.py",
+        "result": {
+          "status": "fulfilled",
+          "value": {
+            "chunk_id": "ebdfe1",
+            "wall_time_seconds": 7.3197212,
+            "exit_code": 0,
+            "original_token_count": 16,
+            "output": "GitHub Actions version policy check passed (7 workflow files).\r\n"
+          }
+        }
+      }
+    ],
+    [
+      {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "bf5c20",
+          "wall_time_seconds": 0.0000112,
+          "exit_code": 0,
+          "original_token_count": 33,
+          "output": "....s..........\r\n----------------------------------------------------------------------\r\nRan 43 tests in 17.353s\r\n\r\nOK (skipped=1)\r\n"
+        }
+      },
+      {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "d12e10",
+          "wall_time_seconds": 0.0000019,
+          "exit_code": 0,
+          "original_token_count": 27,
+          "output": ".....\r\n----------------------------------------------------------------------\r\nRan 5 tests in 5.712s\r\n\r\nOK\r\n"
+        }
+      },
+      {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "5257d1",
+          "wall_time_seconds": 0.0000012,
+          "exit_code": 0,
+          "original_token_count": 209,
+          "output": "C:\\Users\\jamie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\unittest\\case.py:589: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='utf-8'>\r\n  if method() is not None:\r\nResourceWarning: Enable tracemalloc to get the object allocation traceback\r\n...\r\n----------------------------------------------------------------------\r\nRan 3 tests in 2.786s\r\n\r\nOK\r\n  CSS token -> a06fd750  (1 file(s) updated, 0 already current)\r\n  Offline shell version and precache URLs synchronized\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\nERROR: offline shell is stale. Run scripts/sync-css-version.py after all content generators.\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\n  Offline shell version and precache URLs synchronized\r\n  CSS token -> a06fd750  (all 1 file(s) already current)\r\n"
+        }
+      },
+      {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "a6e98d",
+          "wall_time_seconds": 0.0000015,
+          "exit_code": 1,
+          "original_token_count": 331,
+          "output": "  done  /toolbox/05-organized-life/05a-task-maestro/\n  done  /toolbox/05-organized-life/05b-thrifty-spender/\n  done  /toolbox/05-organized-life/05c-giftlist-helper/\n  done  /toolbox/05-organized-life/05d-scheduling-wizard/\n  done  /toolbox/05-organized-life/05e-lifestyle-wallboard/\n  done  /toolbox/05-organized-life/05f-neighborly-bazaar/\n  done  /toolbox/06-healthy-bee-ing/\n  done  /toolbox/06-healthy-bee-ing/06a-care-check/\n  done  /toolbox/06-healthy-bee-ing/06b-calm-keep/\n  done  /toolbox/06-healthy-bee-ing/06c-snappy-count/\n  done  /toolbox/06-healthy-bee-ing/06d-medi-minder/\n  done  /toolbox/06-healthy-bee-ing/06e-moody-log/\n  done  /toolbox/06-healthy-bee-ing/06f-maven-wise/\n  done  /toolbox/07-identity-known/\n  done  /toolbox/07-identity-known/07a-critter-spotter/\n  done  /toolbox/07-identity-known/07b-roost-wrangler/\n  done  /toolbox/07-identity-known/07c-sight-seeker/\n  done  /toolbox/07-identity-known/07d-snap-decoder/\n  done  /toolbox/07-identity-known/07e-motif-muse/\n  done  /toolbox/07-identity-known/07f-maker-matcher/\n  done  /toolbox/07-identity-known/07g-self-fixer/\n  done  /arcade/\n  done  /404.html\n  done  /under-construction.html\n  done  /offline.html\n\nTotal: 504 checks - 1 failures\nResults: C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools\\assets\\audit\\responsive-qa\\results.json\n"
+        }
+      }
+    ]
+  ]
+}

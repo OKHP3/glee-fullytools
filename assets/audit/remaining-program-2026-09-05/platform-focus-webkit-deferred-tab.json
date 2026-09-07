@@ -1,0 +1,137 @@
+{
+  "generatedAt": "2026-09-05T22:39:22.799Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "node": "v24.19.0",
+  "playwright": "1.62.1",
+  "fixture": "Local HTTP; only upgrade-insecure-requests removed; service workers and third parties blocked; actual committed search JSON served.",
+  "checks": [
+    {
+      "engine": "webkit",
+      "name": "navigation /",
+      "status": "PASS",
+      "evidence": {
+        "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/01a-resume-builder/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /search/?q=resume",
+      "status": "PASS",
+      "evidence": {
+        "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "search query, keyboard, history and modal focus",
+      "status": "PASS",
+      "evidence": {
+        "firstResumeResult": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "keyboardDestination": "/toolbox/01-discovered-careers/01b-resume-customizer/"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return pointer",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return keyboard",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return shortcut",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "modal focus return immediate-close",
+      "status": "PASS",
+      "evidence": {
+        "focused": ".okh-search-trigger"
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "skip link moves focus and next Tab into main",
+      "status": "FAIL",
+      "error": "{\"focusedMain\":true,\"nextFocus\":{\"inside\":false,\"tag\":\"BUTTON\",\"href\":null,\"className\":\"okh-search-trigger\"}}"
+    },
+    {
+      "engine": "webkit",
+      "name": "consent choice hydrates after reload",
+      "status": "PASS",
+      "evidence": {
+        "optionalExternalRequestsBlocked": 15
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "Neighborly Bazaar image decodes",
+      "status": "PASS",
+      "evidence": {
+        "width": 800,
+        "height": 534
+      }
+    }
+  ],
+  "servedSha256": {
+    "index.html": "db9a17c58f4c10ff6222a85d14316f3706714b49c57f7e60a004d615285599a8",
+    "assets/css/theme.css": "43d453145833611661389f95d81a29aeac29d2ba81f77facaf422e94e9a761b7",
+    "assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp": "7ae51fe024c6d628fdeaae10b3d1fabeb0c02e3fdf12b21b858bbff95a1f989c",
+    "assets/img/arcade/chai-chasers-social-1280.jpg": "df56795c26f741b27bf596fb94239bf3c745e09a7e00879a12d0d1faad990613",
+    "assets/js/app.js": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+    "assets/js/glee-site-enhancements.js": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8",
+    "site.webmanifest": "4601a6e62e268fb000d94cc558e940d96898a4da5cad7ae7538ee859ae3ce464",
+    "assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp": "65c9ce0cdca8fa3c1869aa682f7732e76c7c5d01da901f3d11c8c31a20a3b742",
+    "assets/data/sparkle.json": "063967cc60da77dea2c379605445532916ba10c085a9f3cf6784c1219c48a3f6",
+    "toolbox/01-discovered-careers/index.html": "36655135e640c46e649a56b8dc63cacf8eec6ba4cf63e36a5e1792d28e0ed56e",
+    "assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-300.webp": "501cae6e4d06e81ca8ce2f6ef9e2c32cb0fab759ea524c20fc977a61268bf6e6",
+    "toolbox/01-discovered-careers/01a-resume-builder/index.html": "89e0294e864c9e7b8408399cc45ee664a2aa5c5623bfae6498aa60172e28c68d",
+    "assets/img/webp/glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-768.webp": "113ef361fd0462762965d34531aa83b908337a00b6cec2052a90830432330633",
+    "assets/img/tool-ettes/01a-resume-builder-illustration.svg": "a85a18d52829e7f82998e039e7d320ef29891f9af151d3912524cfdb2301ef9b",
+    "search/index.html": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+    "assets/data/search-index.json": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c",
+    "toolbox/01-discovered-careers/01b-resume-customizer/index.html": "e54ad8f879a7fd2ea8d3b0333eb2a8a9e72da37313d175a7d879a45d6e36bf03",
+    "assets/img/tool-ettes/01b-resume-customizer-illustration.svg": "d82c41d0b85342534f67ec2d5a888ae9a839e46589466b34e51f2838a8a6aa12",
+    "legal/index.html": "8b46bfa36d765d5dc702609cd796d3f53c26741da0e12f8817a63a51a47b5f3a",
+    "toolbox/05-organized-life/05f-neighborly-bazaar/index.html": "957eaa4fb5281d298e045cea071e3d630f1208f8664374091b57fd6ca74d795c",
+    "assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg": "2be12b2de5185a5fbc1ee63d5c0762e3c1567c16e33961211d06cd71b561f8bd"
+  },
+  "summary": {
+    "PASS": 11,
+    "FAIL": 1,
+    "NOT RUN": 0
+  }
+}

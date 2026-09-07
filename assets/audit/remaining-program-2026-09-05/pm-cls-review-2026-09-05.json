@@ -1,0 +1,216 @@
+{
+  "reviewedAt": "2026-09-06T01:43:38.735Z",
+  "reviewer": "Implementation PM",
+  "baseCommit": "b15257b6d6177b7d900a5eacd27187903f6a2567",
+  "publicSourceCommit": "6f5d4d5c472c4e2bc66bf1a29e58464e692463a8",
+  "node": "v24.11.1",
+  "methodReview": "Independently checked against web.dev CLS/session-window references: strict <1000ms gap and <5000ms duration; input shifts excluded without bridging; shared accumulator used by observer and synthetic suite.",
+  "sourceChecks": [
+    {
+      "file": "experience-cls-session-smoke-2026-09-05.json",
+      "sha256": "44e294fee643c2ed987a2964fad66962d9ebe70a147fb9f7169bb758453a3713",
+      "pass": true
+    },
+    {
+      "file": "experience-home-repeat-investigation.json",
+      "sha256": "1b4f533350234b48b56683bec3335631c6ffaf4f61d9443f23e2e514b8dc7674",
+      "pass": true
+    },
+    {
+      "file": "experience-performance-corrected.json",
+      "sha256": "63581f6fedfbb54fba6c747b16021bdb6df0fb46151073c7611bf8d311adb562",
+      "pass": true
+    },
+    {
+      "file": "experience-performance-final.json",
+      "sha256": "707886ef6d4caf62989e1cb9dce8e7139f9b6b6db9626f2087f7f22a71c75404",
+      "pass": true
+    },
+    {
+      "file": "experience-performance-initial.json",
+      "sha256": "9ca0126aca23b346c7e954154949c93e43e61771c3c14554d2720c0bac50ae18",
+      "pass": true
+    },
+    {
+      "file": "experience-performance.json",
+      "sha256": "9ca0126aca23b346c7e954154949c93e43e61771c3c14554d2720c0bac50ae18",
+      "pass": true
+    },
+    {
+      "file": "experience-search-space-candidate.json",
+      "sha256": "587e920da202e8eae15107d326c1c0804783269a6829b5eeda2f72047c8bfede",
+      "pass": true
+    }
+  ],
+  "derivedRowsIndependentlyChecked": 152,
+  "derivedSummary": {
+    "confirmed-empty-shift-observation": 55,
+    "legacy-total-insufficient-timestamps": 97
+  },
+  "sourceFingerprintChecks": [
+    {
+      "file": "index.html",
+      "sha256": "238e0b8df2615db02a752aa1badc083ac62a883f2e1480b88628ddb563f1bb2c",
+      "pass": true
+    },
+    {
+      "file": "assets/css/theme.css",
+      "sha256": "85d9e1cccdcf74f9a009f2ad94b5825669536ba1799bc83bc21437eee02b02f4",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+      "sha256": "7ae51fe024c6d628fdeaae10b3d1fabeb0c02e3fdf12b21b858bbff95a1f989c",
+      "pass": true
+    },
+    {
+      "file": "assets/js/app.js",
+      "sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "pass": true
+    },
+    {
+      "file": "assets/js/glee-site-enhancements.js",
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+      "sha256": "65c9ce0cdca8fa3c1869aa682f7732e76c7c5d01da901f3d11c8c31a20a3b742",
+      "pass": true
+    },
+    {
+      "file": "assets/img/arcade/chai-chasers-social-1280.jpg",
+      "sha256": "df56795c26f741b27bf596fb94239bf3c745e09a7e00879a12d0d1faad990613",
+      "pass": true
+    },
+    {
+      "file": "assets/data/sparkle.json",
+      "sha256": "063967cc60da77dea2c379605445532916ba10c085a9f3cf6784c1219c48a3f6",
+      "pass": true
+    },
+    {
+      "file": "toolbox/01-discovered-careers/index.html",
+      "sha256": "6cd3e70ce61ce644544e9ba6225461cc7e544db7c40e03531f8f9d8795a4754f",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-300.webp",
+      "sha256": "501cae6e4d06e81ca8ce2f6ef9e2c32cb0fab759ea524c20fc977a61268bf6e6",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-300.webp",
+      "sha256": "5eb0875c7cc3339e47bbdd1053ac898619e94da3f7a4feec952c80ac263ea26b",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-300.webp",
+      "sha256": "dd350cff4b7bd99f3a4b5b1d1ee7f75cd0921365a2e728e783a4481b5ee5ad51",
+      "pass": true
+    },
+    {
+      "file": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "sha256": "d6ae0d453d1d0e9743f7182af697831b94b4584ca0189683e2f238b9d0656298",
+      "pass": true
+    },
+    {
+      "file": "assets/img/tool-ettes/01a-resume-builder-illustration.svg",
+      "sha256": "a85a18d52829e7f82998e039e7d320ef29891f9af151d3912524cfdb2301ef9b",
+      "pass": true
+    },
+    {
+      "file": "assets/img/webp/glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-768.webp",
+      "sha256": "113ef361fd0462762965d34531aa83b908337a00b6cec2052a90830432330633",
+      "pass": true
+    },
+    {
+      "file": "search/index.html",
+      "sha256": "e09e62ceb26f895a1ed1435ad77dbed288f8ff1b9a434e1be85258979bd08f92",
+      "pass": true
+    },
+    {
+      "file": "assets/data/search-index.json",
+      "sha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62",
+      "pass": true
+    },
+    {
+      "file": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "sha256": "91b1dcca532a4aa47f0f7002f34ff884581a17bf8490cac1664708d8edb84509",
+      "pass": true
+    },
+    {
+      "file": "assets/img/tool-ettes/01b-resume-customizer-illustration.svg",
+      "sha256": "d82c41d0b85342534f67ec2d5a888ae9a839e46589466b34e51f2838a8a6aa12",
+      "pass": true
+    },
+    {
+      "file": "legal/index.html",
+      "sha256": "50bbc4487fd8385a2ce8d6da6bfa35b6dad09d2719e24619acab374f95cc2508",
+      "pass": true
+    },
+    {
+      "file": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
+      "sha256": "3c7bd20959e1deb174d1e875bd2bed09a7bd9d997ef9ea697d96aaa492656077",
+      "pass": true
+    },
+    {
+      "file": "assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg",
+      "sha256": "2be12b2de5185a5fbc1ee63d5c0762e3c1567c16e33961211d06cd71b561f8bd",
+      "pass": true
+    },
+    {
+      "file": "site.webmanifest",
+      "sha256": "4601a6e62e268fb000d94cc558e940d96898a4da5cad7ae7538ee859ae3ce464",
+      "pass": true
+    }
+  ],
+  "historicalTrackedReportChanges": [],
+  "syntheticTests": {
+    "exitCode": 0,
+    "stdout": "✔ separated bursts select their maximum instead of lifetime total (1.0019ms)\n✔ a gap strictly below one second joins; exactly one second resets (0.3895ms)\n✔ window duration strictly below five seconds joins; exactly five seconds resets (0.2004ms)\n✔ recent input is excluded and cannot bridge two separate windows (0.146ms)\n✔ later smaller windows do not replace maximum; a larger one does (0.1384ms)\n✔ empty and entirely input-driven observations stay zero (1.6747ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 180.378\n",
+    "stderr": ""
+  },
+  "runnerSyntax": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "boundedSmokeReview": {
+    "cases": 2,
+    "profile": "constrained-mobile",
+    "route": "home",
+    "cache": [
+      "cold",
+      "repeat"
+    ],
+    "cls": [
+      0,
+      0
+    ],
+    "layoutShiftTotal": [
+      0,
+      0
+    ],
+    "failures": 0
+  },
+  "limits": [
+    "No new broad sampling or 504-case sweep.",
+    "Historical nonzero totals lack timestamps; current CLS and numeric before/after improvement cannot be recovered.",
+    "Existing source artifact and tar were not rebuilt; earlier provenance remains tied to 6f5d4d5c.",
+    "Historical reports include duplicates and are not independent sample counts."
+  ],
+  "reassessmentReproduction": {
+    "exitCode": 0,
+    "stdout": "{\"destination\":\"C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/cls-pm-reassessment-1788659017977.json\",\"summary\":{\"confirmed-empty-shift-observation\":55,\"legacy-total-insufficient-timestamps\":97}}\n",
+    "stderr": ""
+  },
+  "overwriteRefusal": {
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools\\scripts\\tests\\test-experience-performance.cjs:34\r\n  if (!destination || fs.existsSync(destination)) throw new Error('Supply a new evidence filename; existing evidence will not be overwritten.');\r\n                                                  ^\r\n\r\nError: Supply a new evidence filename; existing evidence will not be overwritten.\r\n    at Object.<anonymous> (C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools\\scripts\\tests\\test-experience-performance.cjs:34:57)\r\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)\r\n    at Object..js (node:internal/modules/cjs/loader:1893:10)\r\n    at Module.load (node:internal/modules/cjs/loader:1481:32)\r\n    at Module._load (node:internal/modules/cjs/loader:1300:12)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47\r\n\r\nNode.js v24.11.1\r\n"
+  },
+  "finalQaSha256": {
+    "scripts/tests/test-experience-performance.cjs": "26e4c268e02c191540ba6edef497853dbe5d75a3b163a9fa923bff0669b49c91",
+    "scripts/tests/test-cls-session-window.cjs": "5d941420fd51711cd091e3e84d68a15da2124125ffe43bb69fcc49f9dc1e2d5c"
+  }
+}

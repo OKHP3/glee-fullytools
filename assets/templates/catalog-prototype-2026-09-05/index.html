@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>A little room for everyday life | Glee-fully local prototype</title>
+  <link rel="stylesheet" href="prototype.css">
+  <script defer src="catalog-data.js"></script>
+  <script defer src="prototype.js"></script>
+</head>
+<body>
+  <a class="skip" href="#catalog">Skip to the catalog</a>
+  <div class="preview-note">Local design study <span>Existing catalog content. No publication changes.</span></div>
+  <header class="site-header">
+    <a href="#home" class="brand" aria-label="Glee-fully home"><img src="butterfly.webp" alt="" width="42" height="42"><span>Glee-fully<small>Personalizable Tools</small></span></a>
+    <nav aria-label="Primary"><a href="#catalog">The Toolbox</a><button id="open-guide" type="button">How to choose</button></nav>
+    <button class="quiet" id="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
+  </header>
+  <main id="home">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">A little structure. A lot of you.</p>
+        <h1 id="hero-title">Make room for<br><span>everyday life.</span></h1>
+        <p class="intro">A warm place to find personalizable GPT tools for work, home, travel, and the things that make life yours.</p>
+        <a class="primary" href="#catalog">Explore the Toolbox <span aria-hidden="true">↗</span></a>
+        <p class="small-note">Browse here. Read the status. Choose your next step.</p>
+      </div>
+      <figure class="hero-art"><img src="butterfly-room.webp" alt="A coral, teal, and cream butterfly with a looping path" width="960" height="640"><figcaption>More curiosity.<br>Less where-do-I-start.</figcaption></figure>
+    </section>
+    <section class="availability-strip" aria-label="Catalog status">
+      <p><strong>42</strong> Tool-ettes <span>across seven branches</span></p>
+      <p><span class="state live">1 live catalog entry</span><span class="state beta">24 beta</span><span class="state unavailable">17 unavailable</span></p>
+      <button id="show-status-help" type="button">What these labels mean <span aria-hidden="true">↗</span></button>
+    </section>
+    <section id="catalog" class="catalog" aria-labelledby="catalog-title">
+      <div class="section-top"><div><p class="eyebrow">The Toolbox</p><h2 id="catalog-title">What could use a little help?</h2></div><p>Choose a branch, search a task,<br>or just follow your curiosity.</p></div>
+      <form class="search-row" role="search">
+        <label for="query">Search the catalog</label>
+        <div class="search-box"><span aria-hidden="true">⌕</span><input id="query" type="search" placeholder="Try resume, budget, or scheduling" autocomplete="off"><button type="reset" aria-label="Clear search">Clear</button></div>
+        <label for="state-filter">Availability</label>
+        <select id="state-filter"><option value="all">All catalog entries</option><option value="live">Live catalog entry</option><option value="beta">Beta</option><option value="unavailable">Unavailable</option></select>
+      </form>
+      <div class="browse-layout">
+        <aside aria-label="Filter by branch"><button class="branch-choice active" type="button" data-branch="all" aria-pressed="true"><span>✳</span>All seven branches</button><div id="branches"></div><p class="branch-note">One shared Toolbox.<br>Room for different parts of life.</p></aside>
+        <div class="results-area"><div class="result-summary"><p id="result-count" role="status" aria-live="polite"></p><button id="reset-filters" type="button">Reset filters</button></div><div id="results" class="results"></div></div>
+      </div>
+    </section>
+    <section class="choosing" id="choosing" aria-labelledby="choosing-title"><p class="eyebrow">A useful first step</p><h2 id="choosing-title">A catalog, with a little context.</h2><div class="three-steps"><article><span>01</span><h3>Find your corner</h3><p>Follow a branch or search the task on your mind. The names and routes stay familiar.</p></article><article><span>02</span><h3>Read the label</h3><p>Beta and unavailable entries remain discoverable. A clear status travels with each result.</p></article><article><span>03</span><h3>Choose with context</h3><p>Review the catalog detail before following an external destination. External GPT behavior is a separate question.</p></article></div></section>
+  </main>
+  <footer><a class="brand" href="#home"><img src="butterfly.webp" alt="" width="32" height="32">Glee-fully</a><p>A local, reversible design study for review.<br>Content snapshot: September 5, 2026. Nothing has been published.</p><a href="https://glee-fully.tools/toolbox/" target="_blank" rel="noopener noreferrer">Visit the current public Toolbox ↗</a></footer>
+  <dialog id="detail" aria-labelledby="detail-title"><form method="dialog"><button class="close" aria-label="Close detail">×</button></form><div id="detail-body"></div></dialog>
+  <dialog id="status-help" aria-labelledby="status-title"><form method="dialog"><button class="close" aria-label="Close status guide">×</button></form><p class="eyebrow">Before you choose</p><h2 id="status-title">The status is part of the story.</h2><dl><dt><span class="state live">Live catalog entry</span></dt><dd>The public catalog page is live. This label does not certify external GPT behavior.</dd><dt><span class="state beta">Beta</span></dt><dd>A public page with a reviewed destination and a beta signal. The experience is not presented as finished or behavior-verified.</dd><dt><span class="state unavailable">Unavailable</span></dt><dd>A concept remains available to read, but its ChatGPT destination is withheld. Explore another catalog entry from here.</dd></dl><p class="small-note">These meanings follow the existing suite publication contract.</p></dialog>
+</body>
+</html>

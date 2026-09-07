@@ -1,0 +1,6 @@
+{
+  "scenario": "Network navigation succeeds; Cache.put rejects with quota error",
+  "expected": "fresh-successful-network",
+  "observed": "offline-fallback",
+  "pass": false
+}

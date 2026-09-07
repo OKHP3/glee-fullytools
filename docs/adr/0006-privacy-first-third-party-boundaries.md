@@ -22,7 +22,7 @@ consume the repository’s `_headers` file.
    a font build pipeline. Document it as a browser-visible third-party request.
 2. Make Google Analytics 4 optional and off by default. Load it only after an
    explicit legal-page opt-in, store that choice locally, disable GA4 client
-   storage, and turn off Google signals and ad-personalisation signals.
+   storage, and turn off Google signals and ad-personalization signals.
 3. Keep the owner’s analytics property retention policy at 14 months or less.
    This is an owner-side configuration requirement, not something static code
    can enforce.

@@ -1,0 +1,12 @@
+{
+  "validate": {
+    "exit": 0,
+    "stdout": "\nScanned 63 pages\n  issues:   0\n  warnings: 0\n  detail:   assets/audit/validation-report-2026-05-03.json\n",
+    "stderr": ""
+  },
+  "links": {
+    "exit": 0,
+    "stdout": "Pages scanned:    63\nInternal links:   2690\nExternal links:   1098\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n",
+    "stderr": ""
+  }
+}

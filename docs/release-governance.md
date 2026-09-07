@@ -36,7 +36,7 @@ itself prevent a direct push or prove that an owner approved a pull request.
 Emergency direct pushes are an owner decision and must be followed by the same
 validation and release review. They are not the normal or preferred path.
 
-## Required checks
+## Required checks in the repository policy
 
 When branch protection is configured, require these PR checks by their job
 names:
@@ -86,7 +86,7 @@ The owner-side `main` rule should be configured with:
 - Require at least one approving review from a code owner.
 - Dismiss stale approvals when new commits are pushed.
 - Require all conversations to be resolved.
-- Require the three PR checks above before merging.
+- Require all four PR checks listed above before merging.
 - Require branches to be up to date before merging when practical.
 - Block force pushes and branch deletion.
 - Apply the rule to administrators.
@@ -96,7 +96,7 @@ These settings are GitHub repository controls, not checked-in files. The
 repository cannot truthfully claim they are active until the owner configures
 and rechecks them in GitHub.
 
-## Current observed GitHub settings
+## Historical observed GitHub settings (2026-08-31)
 
 Repository inspection rechecked on 2026-08-31 found:
 
@@ -124,10 +124,28 @@ but its job is not included in this previously observed branch rule yet. The
 owner should add `Resilient web behavior (Chromium, Firefox, WebKit)` to the
 required checks after the workflow has completed once on GitHub.
 
-The verified branch rule now blocks routine direct pushes and makes the
-documented pull-request release path enforceable. Emergency bypasses remain an
-owner decision and must be recorded and followed by the same validation and
-release review.
+The historical observation above is retained for provenance and does not
+override the newer observation below.
+
+## Latest observed GitHub settings (2026-09-05)
+
+A fresh read of `repos/OKHP3/Glee-fullyTools/branches/main/protection` found
+**zero** required approving reviews and **code-owner review not required**.
+Strict freshness and administrator enforcement are enabled; force pushes and
+branch deletion are disabled. The required contexts are the three validation,
+viewport, and Sparkle names listed above. Resilience is not in that remote rule.
+
+The repository policy still calls for an approving owner review and all four
+checks. These are owner review requirements, not a claim that GitHub currently
+enforces them. The owner must explicitly choose whether to configure the remote
+rule to match. No repository setting was changed during the September 5 program.
+Recheck the rule at the actual release, because observed settings can change.
+
+Local acceptance of `8dea009c7b1887b129a1c5540ec1a39f6c028841` is recorded in
+the Architect packet and the implementation record. It does not establish
+successful CI, GitHub artifact transfer, deployment, or live verification of the
+final release commit. The executable handoff and separate pending categories
+are in `remaining-program-2026-09-05/platform-release.md`.
 
 ## Dependency update cadence
 

@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import argparse
 import re
 import sys
 from datetime import date
@@ -117,7 +118,11 @@ def sitemap_exclusion(path: Path) -> dict | None:
     }
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description="Validate internal links and sitemap coverage.")
+    parser.add_argument("--no-report", action="store_true",
+                        help="Check without creating or updating the audit report.")
+    args = parser.parse_args(argv)
     pages = []
     all_internal = 0
     all_external = 0
@@ -188,9 +193,8 @@ def main() -> int:
     extra_in_sitemap = sorted(sitemap_urls - file_urls)
 
     audit_dir = ROOT / "assets" / "audit"
-    audit_dir.mkdir(exist_ok=True)
     out = audit_dir / f"links-report-{REPORT_DATE}.json"
-    out.write_text(json.dumps({
+    report = {
         "generated": REPORT_DATE,
         "pages_scanned": len(pages),
         "internal_links": all_internal,
@@ -204,7 +208,10 @@ def main() -> int:
             "intentionally_excluded": excluded_from_sitemap,
         },
         "by_page": pages,
-    }, indent=2), encoding="utf-8")
+    }
+    if not args.no_report:
+        audit_dir.mkdir(exist_ok=True)
+        out.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     print(f"Pages scanned:    {len(pages)}")
     print(f"Internal links:   {all_internal}")
@@ -225,7 +232,8 @@ def main() -> int:
     print(f"Noindex exclusions: {len(excluded_from_sitemap)}")
     for excluded in excluded_from_sitemap:
         print(f"  = excluded from sitemap: {excluded['url']} ({excluded['reason']})")
-    print(f"Detail: {out.relative_to(ROOT)}")
+    if not args.no_report:
+        print(f"Detail: {out.relative_to(ROOT)}")
     return 1 if broken or missing_from_sitemap or extra_in_sitemap else 0
 
 

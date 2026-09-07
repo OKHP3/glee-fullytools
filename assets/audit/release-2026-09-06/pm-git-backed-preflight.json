@@ -1,0 +1,23 @@
+{
+  "recordedAt": "2026-09-06T03:42:54.988Z",
+  "sourceCommit": "547d1c122b774f1aef55b92ee28739aa5d5def9a",
+  "evidenceCopy": "C:/Users/jamie/.codex/visualizations/2026/09/05/01a07294-1521-77f3-bc34-a7176b6e0444/remaining-program/release-preflight-git-547d1c12",
+  "checks": [
+    {
+      "args": [
+        "scripts/validate-site.py"
+      ],
+      "exitCode": 0,
+      "stdout": "\r\nScanned 63 pages\r\n  issues:   0\r\n  warnings: 0\r\n  detail:   assets\\audit\\validation-report-2026-05-03.json\r\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "scripts/check-csp.py"
+      ],
+      "exitCode": 0,
+      "stdout": "CSP policies verified for 63 pages.\r\n",
+      "stderr": ""
+    }
+  ]
+}

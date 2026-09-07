@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-09-05T22:26:20.828Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "node": "v24.19.0",
+  "playwright": "1.62.1",
+  "fixture": "Local HTTP; only upgrade-insecure-requests removed; service workers and third parties blocked; actual committed search JSON served.",
+  "checks": [
+    {
+      "engine": "webkit",
+      "name": "navigation /",
+      "status": "PASS",
+      "evidence": {
+        "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /toolbox/01-discovered-careers/01a-resume-builder/",
+      "status": "PASS",
+      "evidence": {
+        "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "navigation /search/?q=resume",
+      "status": "PASS",
+      "evidence": {
+        "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+        "overflow": false
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "search query, keyboard, history and modal focus",
+      "status": "FAIL",
+      "error": "Modal close did not return focus to the opener: {\"tag\":\"INPUT\",\"className\":\"okh-search-input\",\"text\":\"\"}\n\nfalse !== true\n"
+    },
+    {
+      "engine": "webkit",
+      "name": "consent choice hydrates after reload",
+      "status": "PASS",
+      "evidence": {
+        "optionalExternalRequestsBlocked": 10
+      }
+    },
+    {
+      "engine": "webkit",
+      "name": "Neighborly Bazaar image decodes",
+      "status": "PASS",
+      "evidence": {
+        "width": 800,
+        "height": 534
+      }
+    }
+  ],
+  "servedSha256": {
+    "index.html": "f0aeca0b4b2d6c3b903815d524a27974a155fc9328583daaf257ca4c2a74c2f7",
+    "assets/css/theme.css": "43d453145833611661389f95d81a29aeac29d2ba81f77facaf422e94e9a761b7",
+    "assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp": "7ae51fe024c6d628fdeaae10b3d1fabeb0c02e3fdf12b21b858bbff95a1f989c",
+    "assets/js/app.js": "19e8b0e6f96b9abf0d4289667e68f6462232d8c361486c59b5b7151971209103",
+    "assets/img/arcade/chai-chasers-social-1280.jpg": "df56795c26f741b27bf596fb94239bf3c745e09a7e00879a12d0d1faad990613",
+    "site.webmanifest": "4601a6e62e268fb000d94cc558e940d96898a4da5cad7ae7538ee859ae3ce464",
+    "assets/js/glee-site-enhancements.js": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8",
+    "assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp": "65c9ce0cdca8fa3c1869aa682f7732e76c7c5d01da901f3d11c8c31a20a3b742",
+    "assets/data/sparkle.json": "063967cc60da77dea2c379605445532916ba10c085a9f3cf6784c1219c48a3f6",
+    "toolbox/01-discovered-careers/index.html": "34b5f75494631edbacc6b33deaf697bcd319e43f41e29168ecaf3e4194e9ce7d",
+    "assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-300.webp": "501cae6e4d06e81ca8ce2f6ef9e2c32cb0fab759ea524c20fc977a61268bf6e6",
+    "toolbox/01-discovered-careers/01a-resume-builder/index.html": "f31fd4901f011698e8a15ae7a5fbc4b75aeb5f1e60e1694ffbed8f8f7a197ad2",
+    "assets/img/webp/glee-fully-tools-title-upper-left-butterfly-multiple-under-construction-wide-768.webp": "113ef361fd0462762965d34531aa83b908337a00b6cec2052a90830432330633",
+    "assets/img/tool-ettes/01a-resume-builder-illustration.svg": "a85a18d52829e7f82998e039e7d320ef29891f9af151d3912524cfdb2301ef9b",
+    "search/index.html": "13fc123be9b04bcff9b3c58c02e16df4e61dc62bddebaa4c0f4d7c701b6357bd",
+    "assets/data/search-index.json": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c",
+    "toolbox/01-discovered-careers/01b-resume-customizer/index.html": "e93c3d006239b32cdf94be0f90dfced87fd02816f93fbcb6769d7ea121a962de",
+    "assets/img/tool-ettes/01b-resume-customizer-illustration.svg": "d82c41d0b85342534f67ec2d5a888ae9a839e46589466b34e51f2838a8a6aa12",
+    "legal/index.html": "5554eb0a3474fc642aebe3f4b57a11b14e8cce5edf3a7af3517d15d262336dd9",
+    "toolbox/05-organized-life/05f-neighborly-bazaar/index.html": "db40a58ba4a5ef9d77f5cdaff6b15eae64db54c4fc48d9087173405b5fa16e10",
+    "assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg": "2be12b2de5185a5fbc1ee63d5c0762e3c1567c16e33961211d06cd71b561f8bd"
+  },
+  "summary": {
+    "PASS": 6,
+    "FAIL": 1,
+    "NOT RUN": 0
+  }
+}

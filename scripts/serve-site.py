@@ -15,6 +15,6 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
         pass  # silence per-request noise; errors still show via exception
 
 socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("0.0.0.0", PORT), NoCacheHandler) as httpd:
+with http.server.ThreadingHTTPServer(("0.0.0.0", PORT), NoCacheHandler) as httpd:
     print(f"Serving on http://0.0.0.0:{PORT}", flush=True)
     httpd.serve_forever()

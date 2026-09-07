@@ -1,0 +1,17 @@
+{
+  "method": "Read-only Node VM source execution with document already complete and persisted granted consent; inspect worker precache literal",
+  "lateLoad": {
+    "readyState": "complete",
+    "registered": 0,
+    "loadListenerInstalled": true
+  },
+  "consent": {
+    "savedConsent": "granted",
+    "analyticsScriptAppended": true,
+    "visibleStatus": "Optional analytics is off for this browser."
+  },
+  "missingModule": {
+    "path": "/assets/js/glee-site-enhancements.js",
+    "includedInPrecache": false
+  }
+}

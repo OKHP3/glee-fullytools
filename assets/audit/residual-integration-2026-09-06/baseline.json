@@ -1,0 +1,24 @@
+{
+  "base": "51dc40a0f565aa79f112be1728bfa2e316c1f0ee",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/validate-site.py"
+      ],
+      "exit_code": 0,
+      "stdout": "\nScanned 63 pages\n  issues:   0\n  warnings: 0\n  detail:   assets/audit/validation-report-2026-05-03.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-links.py",
+        "--no-report"
+      ],
+      "exit_code": 0,
+      "stdout": "Pages scanned:    63\nInternal links:   2719\nExternal links:   1157\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n",
+      "stderr": ""
+    }
+  ]
+}

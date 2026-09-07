@@ -1,0 +1,1529 @@
+{
+  "date": "2026-09-05T17:03:18.628Z",
+  "scope": "17 representative routes x 2 widths, Chromium, light, fresh context per width, service workers blocked to measure network deployment",
+  "rows": [
+    {
+      "route": "/ecosystem/",
+      "width": 375,
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "9135",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 05 Sep 2026 17:03:13 GMT",
+        "etag": "W/\"6a9c36cc-a354\"",
+        "expires": "Sat, 05 Sep 2026 17:11:41 GMT",
+        "last-modified": "Sat, 05 Sep 2026 15:35:40 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "HIT",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "120fae625670089649e2567f4e4cb99135da59a1",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "81D4:45094:A71D3:C4AFD:6A9C4AF5",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-dfw-kdfw8210081-DFW",
+        "x-timer": "S1788627794.629950,VS0,VE59"
+      },
+      "errors": [],
+      "failed": [],
+      "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": [
+        "The Glee‑fully Toolbox, at a glance."
+      ],
+      "scrollWidth": 375,
+      "height": 19387,
+      "mainTop": 163.3125,
+      "brokenImages": [],
+      "links": [
+        {
+          "text": "Home",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "🔭 OKHP³™ Universe",
+          "href": "/universe/"
+        },
+        {
+          "text": "Look in the Box",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "Browse branches & twigs",
+          "href": "#branches"
+        },
+        {
+          "text": "Mermaid.AI",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "Mermaid.AI →",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "#01 — Discovered Careers",
+          "href": "/toolbox/01-discovered-careers/"
+        },
+        {
+          "text": "01a — Resume Builder",
+          "href": "/toolbox/01-discovered-careers/01a-resume-builder/"
+        },
+        {
+          "text": "01b — Resume Customizer",
+          "href": "/toolbox/01-discovered-careers/01b-resume-customizer/"
+        },
+        {
+          "text": "01c — Career Fitness",
+          "href": "/toolbox/01-discovered-careers/01c-career-fitness/"
+        },
+        {
+          "text": "01d — Letter Composer",
+          "href": "/toolbox/01-discovered-careers/01d-letter-composer/"
+        },
+        {
+          "text": "01e — bLinkIn Tuner",
+          "href": "/toolbox/01-discovered-careers/01e-blinkin-tuner/"
+        },
+        {
+          "text": "01f — Career Seeker",
+          "href": "/toolbox/01-discovered-careers/01f-career-seeker/"
+        },
+        {
+          "text": "#02 — Treasured Finds",
+          "href": "/toolbox/02-treasured-finds/"
+        },
+        {
+          "text": "02a — Personal Librarian",
+          "href": "/toolbox/02-treasured-finds/02a-personal-librarian/"
+        },
+        {
+          "text": "02b — Decor Detective",
+          "href": "/toolbox/02-treasured-finds/02b-decor-detective/"
+        },
+        {
+          "text": "02c — Present Hoarder",
+          "href": "/toolbox/02-treasured-finds/02c-present-hoarder/"
+        },
+        {
+          "text": "02d — Scentinal Journal",
+          "href": "/toolbox/02-treasured-finds/02d-scentinal-journal/"
+        },
+        {
+          "text": "02e — Spirited Journal",
+          "href": "/toolbox/02-treasured-finds/02e-spirited-journal/"
+        },
+        {
+          "text": "02f — Supply Haus",
+          "href": "/toolbox/02-treasured-finds/02f-supply-haus/"
+        },
+        {
+          "text": "02g — Bag Nabbit",
+          "href": "/toolbox/02-treasured-finds/02g-bag-nabbit/"
+        },
+        {
+          "text": "#03 — Tasty Tracker",
+          "href": "/toolbox/03-tasty-tracker/"
+        },
+        {
+          "text": "03a — Flavor Meister",
+          "href": "/toolbox/03-tasty-tracker/03a-flavor-meister/"
+        },
+        {
+          "text": "03b — Menu Conductor",
+          "href": "/toolbox/03-tasty-tracker/03b-menu-conductor/"
+        },
+        {
+          "text": "03c — Wishful Tastes",
+          "href": "/toolbox/03-tasty-tracker/03c-wishful-tastes/"
+        },
+        {
+          "text": "03d — Pantry Shopper",
+          "href": "/toolbox/03-tasty-tracker/03d-pantry-shopper/"
+        },
+        {
+          "text": "03e — Palatably Profiled",
+          "href": "/toolbox/03-tasty-tracker/03e-palatably-profiled/"
+        },
+        {
+          "text": "#04 — Traveler’s Guide",
+          "href": "/toolbox/04-travelers-guide/"
+        },
+        {
+          "text": "04a — Journey Diary",
+          "href": "/toolbox/04-travelers-guide/04a-journey-diary/"
+        },
+        {
+          "text": "04b — Itinerary Hacker",
+          "href": "/toolbox/04-travelers-guide/04b-itinerary-hacker/"
+        },
+        {
+          "text": "04c — Detour Discoverer",
+          "href": "/toolbox/04-travelers-guide/04c-detour-discoverer/"
+        },
+        {
+          "text": "04d — Dreamland Journeys",
+          "href": "/toolbox/04-travelers-guide/04d-dreamland-journeys/"
+        },
+        {
+          "text": "04e — Memento Log",
+          "href": "/toolbox/04-travelers-guide/04e-memento-log/"
+        },
+        {
+          "text": "#05 — Organized Life",
+          "href": "/toolbox/05-organized-life/"
+        },
+        {
+          "text": "05a — Task Maestro",
+          "href": "/toolbox/05-organized-life/05a-task-maestro/"
+        },
+        {
+          "text": "05b — Thrifty Spender",
+          "href": "/toolbox/05-organized-life/05b-thrifty-spender/"
+        },
+        {
+          "text": "05c — Giftlist Helper",
+          "href": "/toolbox/05-organized-life/05c-giftlist-helper/"
+        },
+        {
+          "text": "05d — Scheduling Wizard",
+          "href": "/toolbox/05-organized-life/05d-scheduling-wizard/"
+        },
+        {
+          "text": "05e — Lifestyle Wallboard",
+          "href": "/toolbox/05-organized-life/05e-lifestyle-wallboard/"
+        },
+        {
+          "text": "05f — Neighborly Bazaar",
+          "href": "/toolbox/05-organized-life/05f-neighborly-bazaar/"
+        },
+        {
+          "text": "#06 — Healthy Bee‑ing",
+          "href": "/toolbox/06-healthy-bee-ing/"
+        },
+        {
+          "text": "06a — Care Check",
+          "href": "/toolbox/06-healthy-bee-ing/06a-care-check/"
+        },
+        {
+          "text": "06b — Calm Keep",
+          "href": "/toolbox/06-healthy-bee-ing/06b-calm-keep/"
+        },
+        {
+          "text": "06c — Snappy Count",
+          "href": "/toolbox/06-healthy-bee-ing/06c-snappy-count/"
+        },
+        {
+          "text": "06d — Medi Minder",
+          "href": "/toolbox/06-healthy-bee-ing/06d-medi-minder/"
+        },
+        {
+          "text": "06e — Moody Log",
+          "href": "/toolbox/06-healthy-bee-ing/06e-moody-log/"
+        },
+        {
+          "text": "06f — Maven Wise",
+          "href": "/toolbox/06-healthy-bee-ing/06f-maven-wise/"
+        },
+        {
+          "text": "#07 — Identity Known",
+          "href": "/toolbox/07-identity-known/"
+        },
+        {
+          "text": "07a — Critter Spotter",
+          "href": "/toolbox/07-identity-known/07a-critter-spotter/"
+        },
+        {
+          "text": "07b — Roost Wrangler",
+          "href": "/toolbox/07-identity-known/07b-roost-wrangler/"
+        },
+        {
+          "text": "07c — Sight Seeker",
+          "href": "/toolbox/07-identity-known/07c-sight-seeker/"
+        },
+        {
+          "text": "07d — Snap Decoder",
+          "href": "/toolbox/07-identity-known/07d-snap-decoder/"
+        },
+        {
+          "text": "07e — Motif Muse",
+          "href": "/toolbox/07-identity-known/07e-motif-muse/"
+        },
+        {
+          "text": "07f — Maker Matcher",
+          "href": "/toolbox/07-identity-known/07f-maker-matcher/"
+        },
+        {
+          "text": "07g — Self Fixer",
+          "href": "/toolbox/07-identity-known/07g-self-fixer/"
+        },
+        {
+          "text": "Looking in the Toolbox",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "Hear the Voice",
+          "href": "/persona/"
+        },
+        {
+          "text": "Open the OKHP³™ Universe",
+          "href": "/universe/"
+        }
+      ],
+      "text": "Home\nEcosystem\n\n🔭 OKHP³™ Universe\n\nThe Glee‑fully Toolbox, at a glance.\n\nVisual ecosystem map of the Glee‑fully Toolbox — from the main trunk GPT through seven category‑level Tools (branches) and their Tool‑ettes (twigs).\n\nUse this as your “you are here” layer when you hop between GPTs, Tool‑ettes, and future experiments across the Glee‑fully universe.\n\nLook in the Box\nBrowse branches & twigs\n\nDiagrams on this page are rendered with Mermaid.AI. Try Mermaid.AI → if you want to explore the syntax yourself.\n\nHow to read this ecosystem\n\nGlee‑fully is structured like a small, well‑labeled tree: one Toolbox trunk, seven Tools as branches, and Tool‑ettes as twigs that handle focused jobs. This page names every branch and twig so you always know where you are.\n\nTrunk 🌳 — The Toolbox\n\nGlee‑fully Personalizable Tools is the command center. It introduces the structure, links to all seven Tools, and helps you choose the right Tool‑ette for whatever you’re doing today.\n\nBranches 🌵 — The Tools\n\nEach Tool is a category‑level GPT that owns one life arena — careers, collections, food, travel, routines, wellbeing, or personal identity. Inside each branch live smaller Tool‑ettes.\n\nTwigs 🌿 — The Tool‑ettes\n\nTool‑ettes are single‑purpose specialists: résumé polishers, snack planners, scent journals, task maestros, and more. They inherit the tone and structure of their parent Tool while focusing on one job.\n\nBranches & twigs of the Toolbox\n\nBelow are all seven Tools (branches) with their Tool‑ettes (twigs), aligned to the inventory that powers the Glee‑fully Toolbox.\n\n#01 — Discovered Careers\n\nCareer clarity, search, and polish. This branch is your personal career studio: mapping options, tuning résumés, and getting you ready for your next move.\n\nTool‑ettes in this branch\n01a — Resume Builder\n01b — Resume Customizer\n01c — Career Fitness\n01d — Letter Composer\n01e — bLinkIn Tuner\n01f — Career Seeker\n#02 — Treasured Finds\n\nCollections, keepsakes, and thoughtful gifting. This branch tracks the objects, spaces, and supplies that make your world feel like yours.\n\nTool‑ettes in this branch\n02a — Personal Librarian\n02b — Decor Detective\n02c — Present Hoarder\n02d — Scentinal Journal\n02e — Spirited Journal\n02f — Supply Haus\n02g — Bag Nabbit\n#03 — Tasty Tracker\n\nFood, flavors, and kitchen logistics. This branch keeps menus aligned with your tastes, pantry, and future cravings — without killing the joy of eating.\n\nTool‑ettes in this branch\n03a — Flavor Meister\n03b — Menu Conductor\n03c — Wishful Tastes\n03d — Pantry Shopper\n03e — Palatably Profiled\n#04 — Traveler’s Guide\n\nTrips, micro‑adventures, and memory‑keeping. This branch covers planning, improvising, and remembering where you’ve been.\n\nTool‑ettes in this branch\n04a — Journey Diary\n04b — Itinerary Hacker\n04c — Detour Discoverer\n04d — Dreamland Journeys\n04e — Memento Log\n#05 — Organized Life\n\nEveryday logistics: tasks, money, gifts, schedules, and neighborhood life. This branch is the control panel for your practical world.\n\nTool‑ettes in this branch\n05a — Task Maestro\n05b — Thrifty Spender\n05c — Giftlist Helper\n05d — Scheduling Wizard\n05e — Lifestyle Wallboard\n05f — Neighborly Bazaar\n#06 — Healthy Bee‑ing\n\nMood, energy, and self‑care routines. This branch keeps an eye on how you’re feeling, what supports you, and how to pace your days.\n\nTool‑ettes in this branch\n06a — Care Check\n06b — Calm Keep\n06c — Snappy Count\n06d — Medi Minder\n06e — Moody Log\n06f — Maven Wise\n#07 — Identity Known\n\nHome, aesthetic, and self‑expression. This branch helps you recognize patterns, styles and objects of interest so you can name and refine what makes your space and style feel uniquely yours.\n\nTool‑ettes in this branch\n07a — Critter Spotter\n07b — Roost Wrangler\n07c — Sight Seeker\n07d — Snap Decoder\n07e — Motif Muse\n07f — Maker Matcher\n07g — Self Fixer\nWhere this fits in the wider universe\n\nGlee‑fully sits alongside OverKill Hill P³™ and AskJamie™ as the “joy layer” — cozy tools for everyday life. For the full studio‑wide map, visit the OKHP³™ Universe page.\n\nExplore the Toolbox\n\nStart from the trunk and let the Toolbox route you to the right branch and twig.\n\nLooking in the Toolbox\n\nMeet the Voice & Muse\n\nLearn how Glee & Jamie shape the tone, guardrails, and playfulness behind every Tool.\n\nHear the Voice\n\nSee the full P³ map\n\nView how Glee‑fully connects with OverKill Hill P³™ and AskJamie™ at the universe level.\n\nOpen the OKHP³™ Universe",
+      "resources": [
+        {
+          "name": "https://glee-fully.tools/assets/css/theme.css?v=b60e5d83",
+          "bytes": 48183,
+          "duration": 37.200000047683716
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 2370,
+          "duration": 81.29999995231628
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/app.js?v=3",
+          "bytes": 12111,
+          "duration": 36.200000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/mermaid-init.js",
+          "bytes": 4295,
+          "duration": 64.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/glee-site-enhancements.js",
+          "bytes": 2541,
+          "duration": 17.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "bytes": 1322,
+          "duration": 18.700000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/data/sparkle.json",
+          "bytes": 496,
+          "duration": 26.799999952316284
+        }
+      ],
+      "navigation": [
+        {
+          "ttfb": 733.0999999046326,
+          "domContentLoaded": 860.2999999523163,
+          "load": 992.2999999523163
+        }
+      ]
+    },
+    {
+      "route": "/universe/",
+      "width": 375,
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "7085",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 05 Sep 2026 17:03:14 GMT",
+        "etag": "W/\"6a9c36cc-6a60\"",
+        "expires": "Sat, 05 Sep 2026 17:11:42 GMT",
+        "last-modified": "Sat, 05 Sep 2026 15:35:40 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "HIT",
+        "x-cache-hits": "0",
+        "x-fastly-request-id": "89c2fadb77b96923c8af02ff702d03440c41f42d",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "11DE:DCF57:7AC2B9:A90CE8:6A9C4AF6",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-dfw-kdfw8210081-DFW",
+        "x-timer": "S1788627795.694792,VS0,VE45"
+      },
+      "errors": [],
+      "failed": [],
+      "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": [
+        "Where Glee‑fully fits in the bigger map."
+      ],
+      "scrollWidth": 375,
+      "height": 4432,
+      "mainTop": 163.3125,
+      "brokenImages": [],
+      "links": [
+        {
+          "text": "Home",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "Back to Glee‑fully home",
+          "href": "/"
+        },
+        {
+          "text": "Explore the Toolbox",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "OverKill Hill P³™",
+          "href": "https://overkillhill.com/"
+        },
+        {
+          "text": "Glee‑fully Personalizable Tools™",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "00 — Glee‑fully Toolbox",
+          "href": "https://glee-fully.tools/toolbox/"
+        },
+        {
+          "text": "01 — Discovered Careers",
+          "href": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+        },
+        {
+          "text": "02 — Treasured Finds",
+          "href": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+        },
+        {
+          "text": "03 — Tasty Tracker",
+          "href": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+        },
+        {
+          "text": "04 — Traveler’s Guide",
+          "href": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+        },
+        {
+          "text": "05 — Organized Life",
+          "href": "https://glee-fully.tools/toolbox/05-organized-life/"
+        },
+        {
+          "text": "06 — Healthy Bee‑ing",
+          "href": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+        },
+        {
+          "text": "07 — Identity Known",
+          "href": "https://glee-fully.tools/toolbox/07-identity-known/"
+        },
+        {
+          "text": "AskJamie™",
+          "href": "https://askjamie.bot/"
+        },
+        {
+          "text": "AJ01 — Résumé Representative",
+          "href": "https://askjamie.bot/lens-system/resume-representative/"
+        },
+        {
+          "text": "AJ02 — Professional Portfolio",
+          "href": "https://askjamie.bot/lens-system/professional-portfolio/"
+        },
+        {
+          "text": "AJ03 — Enterprise Sleuth",
+          "href": "https://askjamie.bot/lens-system/enterprise-sleuth/"
+        },
+        {
+          "text": "AJ04 — OKHP³ BrandGuard™",
+          "href": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+        },
+        {
+          "text": "BRG00 — Builders FirstSource",
+          "href": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/"
+        },
+        {
+          "text": "BFS — Framing Intelligent Futures",
+          "href": "https://overkillhill.com/projects/bfs-framing-intelligent-futures/"
+        },
+        {
+          "text": "UNT00 — Un‑NOCKed Truth",
+          "href": "https://overkillhill.com/projects/un-nocked-truth/"
+        },
+        {
+          "text": "PSR00 — PathScrib-R",
+          "href": "https://overkillhill.com/projects/pathscrib-r/"
+        },
+        {
+          "text": "ARE00 — Abrahamic Reference Engine",
+          "href": "https://overkillhill.com/projects/abrahamic-reference-engine/"
+        },
+        {
+          "text": "HMT00 — HomeTools",
+          "href": "https://overkillhill.com/projects/hometools/"
+        },
+        {
+          "text": "FDY00 — The Found-Rᵧ",
+          "href": "https://overkillhill.com/found-ry/"
+        },
+        {
+          "text": "Magnus Progenitor Saga",
+          "href": "https://overkillhill.com/writings/magnus-saga/"
+        },
+        {
+          "text": "Biases as Constants",
+          "href": "https://overkillhill.com/writings/biases-as-constants/"
+        },
+        {
+          "text": "Mermaid.AI",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "Mermaid.AI →",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "/toolbox/",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "/ecosystem/",
+          "href": "/ecosystem/"
+        },
+        {
+          "text": "/persona/",
+          "href": "/persona/"
+        },
+        {
+          "text": "askjamie.bot",
+          "href": "https://askjamie.bot/"
+        }
+      ],
+      "text": "Home\nUniverse\n\nOKHP³™ UNIVERSE\n\nWhere Glee‑fully fits in the bigger map.\n\nThis is the Glee‑side view of the OverKill Hill P³™ universe — how the cozy Tools, AskJamie™, and deeper experimental work all connect.\n\nStart here when you want to know what lives where: everyday Tools, narrative experiments, BrandGuard™, and the frameworks that power them.\n\nBack to Glee‑fully home\nExplore the Toolbox\n\nOverKill Hill P³™\n\nGlee‑fully Personalizable Tools™\n\n00 — Glee‑fully Toolbox\n\n01 — Discovered Careers\n\n02 — Treasured Finds\n\n03 — Tasty Tracker\n\n04 — Traveler’s Guide\n\n05 — Organized Life\n\n06 — Healthy Bee‑ing\n\n07 — Identity Known\n\nAskJamie™\n\nAJ01 — Résumé Representative\n\nAJ02 — Professional Portfolio\n\nAJ03 — Enterprise Sleuth\n\nAJ04 — OKHP³ BrandGuard™\n\nBRG00 — Builders FirstSource\n\nBRG01 — LEGO\n\nBRG02 — Starbucks\n\nBRG03 — Brooks Running\n\nBRG04 — Ping\n\nBRG05 — Costco\n\nBRG06 — Hershey\n\nBRG07 — LVMH\n\nBRG08 — Dollar General\n\nBRG09 — Coca-Cola\n\nBRG10 — Discount Tires\n\nBRG11 — Scheels\n\nBFS — Framing Intelligent Futures\n\nUNT00 — Un‑NOCKed Truth\n\nUNT01 — Geared-Up\n\nUNT02 — Dialed-In\n\nUNT03 — Hunted-Down\n\nPSR00 — PathScrib-R\n\nARE00 — Abrahamic Reference Engine\n\nHMT00 — HomeTools\n\nHMT01 — Homestead‑R\n\nHMT01 — HomeVisual-R\n\nHMT01 — FloorPlan-R\n\nHMT01 — HomeEstimate-R\n\nFDY00 — The Found-Rᵧ\n\nGPTs to build GPTs\n\nWriting & Narrative Experiments\n\nKnowledge Files\n\nProtocols & Promptcraft\n\nMagnus Progenitor Saga\n\nBiases as Constants\n\nDiagram of the OverKill Hill P³™ universe from Glee‑fully’s perspective, showing relationships between OverKill Hill, Glee‑fully Tools, AskJamie™, BrandGuard™, and experimental worlds.\n\nThis diagram is rendered with Mermaid.AI. Try Mermaid.AI → if you want to explore the syntax yourself.\n\nHow to read this map\n\nEach node is a pillar in the OverKill Hill P³™ stack. Some are live, some are active experiments, and some are narrative sandboxes. Glee‑fully sits on the “joy layer” — everyday, personalizable Tools that rest on top of serious system thinking.\n\nGlee‑fully Personalizable Tools™\n\nCozy, colorful GPT Tools and Tool‑ettes built for real life — trips, projects, routines, snacks, self‑care, and all the delightful mess in between.\n\nAskJamie™\n\nThe calm, articulate helpdesk. Jamie narrates the systems, surfaces tradeoffs, and explains how different pieces of the universe fit together.\n\nOverKill Hill P³™\n\nThe backbone studio — canon, frameworks, diagrams, and governance for how Tools, prompts, and experiments are designed and evolved.\n\nWhere to explore next\n\nUse this map as your “you are here” layer. From Glee‑fully, you can drop down into details or pan out to the wider universe.\n\nStep into the Toolbox: browse live Glee‑fully Tools and Tool‑ettes at /toolbox/.\nSee the full ecosystem: get the structural view of Glee‑fully’s modules and flows at /ecosystem/.\nMeet the Voice & Muse: learn how Glee and Jamie show up in‑world at /persona/.\nCross over to AskJamie™: for enterprise, career, and BrandGuard‑style work, visit askjamie.bot.",
+      "resources": [
+        {
+          "name": "https://glee-fully.tools/assets/css/theme.css?v=b60e5d83",
+          "bytes": 0,
+          "duration": 1.0999999046325684
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 0,
+          "duration": 1.2999999523162842
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 739,
+          "duration": 36.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/mermaid-init.js",
+          "bytes": 0,
+          "duration": 0.9000000953674316
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/app.js?v=3",
+          "bytes": 0,
+          "duration": 0.8000001907348633
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/glee-site-enhancements.js",
+          "bytes": 0,
+          "duration": 0.10000014305114746
+        },
+        {
+          "name": "https://glee-fully.tools/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "bytes": 0,
+          "duration": 0.20000004768371582
+        },
+        {
+          "name": "https://glee-fully.tools/assets/data/sparkle.json",
+          "bytes": 0,
+          "duration": 0.19999980926513672
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/mermaid.esm.min.mjs",
+          "bytes": 11456,
+          "duration": 58.90000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4CAJECRU.mjs",
+          "bytes": 15988,
+          "duration": 81.20000004768372
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-WUBWJARI.mjs",
+          "bytes": 4310,
+          "duration": 99.20000004768372
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-IJBDOHL6.mjs",
+          "bytes": 545,
+          "duration": 104.79999995231628
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-2NMSUPJH.mjs",
+          "bytes": 3201,
+          "duration": 59.60000014305115
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-Z6V44ARX.mjs",
+          "bytes": 26918,
+          "duration": 66.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZNLK7HRR.mjs",
+          "bytes": 1256,
+          "duration": 77.80000019073486
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-YDMLL4PJ.mjs",
+          "bytes": 1377,
+          "duration": 78.10000014305115
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-5IMINLNL.mjs",
+          "bytes": 9882,
+          "duration": 78.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-NUDPKBEF.mjs",
+          "bytes": 16387,
+          "duration": 80.90000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VRZKL3EH.mjs",
+          "bytes": 1080,
+          "duration": 83.70000004768372
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4OADUZ5Q.mjs",
+          "bytes": 8487,
+          "duration": 88.60000014305115
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-DZP67EKU.mjs",
+          "bytes": 16416,
+          "duration": 88.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZQN7UHIL.mjs",
+          "bytes": 2958,
+          "duration": 92.90000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AQ6EADP3.mjs",
+          "bytes": 685,
+          "duration": 59.700000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-H7VHZCWX.mjs",
+          "bytes": 39427,
+          "duration": 59.799999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-STOV2HOB.mjs",
+          "bytes": 1211,
+          "duration": 78.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-QJSWEUOL.mjs",
+          "bytes": 38341,
+          "duration": 78.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VY2OSTJR.mjs",
+          "bytes": 7233,
+          "duration": 98.70000004768372
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/flowDiagram-YHGXBVSY.mjs",
+          "bytes": 571,
+          "duration": 62.799999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VTHDQ7BV.mjs",
+          "bytes": 682,
+          "duration": 135.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AZZRMDJM.mjs",
+          "bytes": 569,
+          "duration": 135.59999990463257
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-RCXAM2GK.mjs",
+          "bytes": 524,
+          "duration": 136.39999985694885
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-CLS4B6BI.mjs",
+          "bytes": 19939,
+          "duration": 135.29999995231628
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-EICP7K5X.mjs",
+          "bytes": 1187,
+          "duration": 135.90000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/dagre-MPVFI544.mjs",
+          "bytes": 4448,
+          "duration": 557.5999999046326
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-R7JDMUKV.mjs",
+          "bytes": 10586,
+          "duration": 54.60000014305115
+        }
+      ],
+      "navigation": [
+        {
+          "ttfb": 62.200000047683716,
+          "domContentLoaded": 117.09999990463257,
+          "load": 139.79999995231628
+        }
+      ]
+    },
+    {
+      "route": "/ecosystem/",
+      "width": 1440,
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "3",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "9135",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 05 Sep 2026 17:03:16 GMT",
+        "etag": "W/\"6a9c36cc-a354\"",
+        "expires": "Sat, 05 Sep 2026 17:11:41 GMT",
+        "last-modified": "Sat, 05 Sep 2026 15:35:40 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "HIT",
+        "x-cache-hits": "1",
+        "x-fastly-request-id": "16b6a325702a09330031c9789dd08aa4c7b6c25e",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "81D4:45094:A71D3:C4AFD:6A9C4AF5",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-dfw-kdfw8210115-DFW",
+        "x-timer": "S1788627797.830848,VS0,VE5"
+      },
+      "errors": [],
+      "failed": [],
+      "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": [
+        "The Glee‑fully Toolbox, at a glance."
+      ],
+      "scrollWidth": 1440,
+      "height": 9750,
+      "mainTop": 124.046875,
+      "brokenImages": [],
+      "links": [
+        {
+          "text": "Home",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "🔭 OKHP³™ Universe",
+          "href": "/universe/"
+        },
+        {
+          "text": "Look in the Box",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "Browse branches & twigs",
+          "href": "#branches"
+        },
+        {
+          "text": "Glee‑fully Toolbox 🧰(Trunk 🌳)",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "01 — Discovered Careers",
+          "href": "/toolbox/01-discovered-careers/"
+        },
+        {
+          "text": "02 — Treasured Finds",
+          "href": "/toolbox/02-treasured-finds/"
+        },
+        {
+          "text": "03 — Tasty Tracker",
+          "href": "/toolbox/03-tasty-tracker/"
+        },
+        {
+          "text": "04 — Traveler’s Guide",
+          "href": "/toolbox/04-travelers-guide/"
+        },
+        {
+          "text": "05 — Organized Life",
+          "href": "/toolbox/05-organized-life/"
+        },
+        {
+          "text": "06 — Healthy Bee‑ing",
+          "href": "/toolbox/06-healthy-bee-ing/"
+        },
+        {
+          "text": "07 — Identity Known",
+          "href": "/toolbox/07-identity-known/"
+        },
+        {
+          "text": "Mermaid.AI",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "Mermaid.AI →",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "#01 — Discovered Careers",
+          "href": "/toolbox/01-discovered-careers/"
+        },
+        {
+          "text": "01a — Resume Builder",
+          "href": "/toolbox/01-discovered-careers/01a-resume-builder/"
+        },
+        {
+          "text": "01b — Resume Customizer",
+          "href": "/toolbox/01-discovered-careers/01b-resume-customizer/"
+        },
+        {
+          "text": "01c — Career Fitness",
+          "href": "/toolbox/01-discovered-careers/01c-career-fitness/"
+        },
+        {
+          "text": "01d — Letter Composer",
+          "href": "/toolbox/01-discovered-careers/01d-letter-composer/"
+        },
+        {
+          "text": "01e — bLinkIn Tuner",
+          "href": "/toolbox/01-discovered-careers/01e-blinkin-tuner/"
+        },
+        {
+          "text": "01f — Career Seeker",
+          "href": "/toolbox/01-discovered-careers/01f-career-seeker/"
+        },
+        {
+          "text": "#02 — Treasured Finds",
+          "href": "/toolbox/02-treasured-finds/"
+        },
+        {
+          "text": "02a — Personal Librarian",
+          "href": "/toolbox/02-treasured-finds/02a-personal-librarian/"
+        },
+        {
+          "text": "02b — Decor Detective",
+          "href": "/toolbox/02-treasured-finds/02b-decor-detective/"
+        },
+        {
+          "text": "02c — Present Hoarder",
+          "href": "/toolbox/02-treasured-finds/02c-present-hoarder/"
+        },
+        {
+          "text": "02d — Scentinal Journal",
+          "href": "/toolbox/02-treasured-finds/02d-scentinal-journal/"
+        },
+        {
+          "text": "02e — Spirited Journal",
+          "href": "/toolbox/02-treasured-finds/02e-spirited-journal/"
+        },
+        {
+          "text": "02f — Supply Haus",
+          "href": "/toolbox/02-treasured-finds/02f-supply-haus/"
+        },
+        {
+          "text": "02g — Bag Nabbit",
+          "href": "/toolbox/02-treasured-finds/02g-bag-nabbit/"
+        },
+        {
+          "text": "#03 — Tasty Tracker",
+          "href": "/toolbox/03-tasty-tracker/"
+        },
+        {
+          "text": "03a — Flavor Meister",
+          "href": "/toolbox/03-tasty-tracker/03a-flavor-meister/"
+        },
+        {
+          "text": "03b — Menu Conductor",
+          "href": "/toolbox/03-tasty-tracker/03b-menu-conductor/"
+        },
+        {
+          "text": "03c — Wishful Tastes",
+          "href": "/toolbox/03-tasty-tracker/03c-wishful-tastes/"
+        },
+        {
+          "text": "03d — Pantry Shopper",
+          "href": "/toolbox/03-tasty-tracker/03d-pantry-shopper/"
+        },
+        {
+          "text": "03e — Palatably Profiled",
+          "href": "/toolbox/03-tasty-tracker/03e-palatably-profiled/"
+        },
+        {
+          "text": "#04 — Traveler’s Guide",
+          "href": "/toolbox/04-travelers-guide/"
+        },
+        {
+          "text": "04a — Journey Diary",
+          "href": "/toolbox/04-travelers-guide/04a-journey-diary/"
+        },
+        {
+          "text": "04b — Itinerary Hacker",
+          "href": "/toolbox/04-travelers-guide/04b-itinerary-hacker/"
+        },
+        {
+          "text": "04c — Detour Discoverer",
+          "href": "/toolbox/04-travelers-guide/04c-detour-discoverer/"
+        },
+        {
+          "text": "04d — Dreamland Journeys",
+          "href": "/toolbox/04-travelers-guide/04d-dreamland-journeys/"
+        },
+        {
+          "text": "04e — Memento Log",
+          "href": "/toolbox/04-travelers-guide/04e-memento-log/"
+        },
+        {
+          "text": "#05 — Organized Life",
+          "href": "/toolbox/05-organized-life/"
+        },
+        {
+          "text": "05a — Task Maestro",
+          "href": "/toolbox/05-organized-life/05a-task-maestro/"
+        },
+        {
+          "text": "05b — Thrifty Spender",
+          "href": "/toolbox/05-organized-life/05b-thrifty-spender/"
+        },
+        {
+          "text": "05c — Giftlist Helper",
+          "href": "/toolbox/05-organized-life/05c-giftlist-helper/"
+        },
+        {
+          "text": "05d — Scheduling Wizard",
+          "href": "/toolbox/05-organized-life/05d-scheduling-wizard/"
+        },
+        {
+          "text": "05e — Lifestyle Wallboard",
+          "href": "/toolbox/05-organized-life/05e-lifestyle-wallboard/"
+        },
+        {
+          "text": "05f — Neighborly Bazaar",
+          "href": "/toolbox/05-organized-life/05f-neighborly-bazaar/"
+        },
+        {
+          "text": "#06 — Healthy Bee‑ing",
+          "href": "/toolbox/06-healthy-bee-ing/"
+        },
+        {
+          "text": "06a — Care Check",
+          "href": "/toolbox/06-healthy-bee-ing/06a-care-check/"
+        },
+        {
+          "text": "06b — Calm Keep",
+          "href": "/toolbox/06-healthy-bee-ing/06b-calm-keep/"
+        },
+        {
+          "text": "06c — Snappy Count",
+          "href": "/toolbox/06-healthy-bee-ing/06c-snappy-count/"
+        },
+        {
+          "text": "06d — Medi Minder",
+          "href": "/toolbox/06-healthy-bee-ing/06d-medi-minder/"
+        },
+        {
+          "text": "06e — Moody Log",
+          "href": "/toolbox/06-healthy-bee-ing/06e-moody-log/"
+        },
+        {
+          "text": "06f — Maven Wise",
+          "href": "/toolbox/06-healthy-bee-ing/06f-maven-wise/"
+        },
+        {
+          "text": "#07 — Identity Known",
+          "href": "/toolbox/07-identity-known/"
+        },
+        {
+          "text": "07a — Critter Spotter",
+          "href": "/toolbox/07-identity-known/07a-critter-spotter/"
+        },
+        {
+          "text": "07b — Roost Wrangler",
+          "href": "/toolbox/07-identity-known/07b-roost-wrangler/"
+        },
+        {
+          "text": "07c — Sight Seeker",
+          "href": "/toolbox/07-identity-known/07c-sight-seeker/"
+        },
+        {
+          "text": "07d — Snap Decoder",
+          "href": "/toolbox/07-identity-known/07d-snap-decoder/"
+        },
+        {
+          "text": "07e — Motif Muse",
+          "href": "/toolbox/07-identity-known/07e-motif-muse/"
+        },
+        {
+          "text": "07f — Maker Matcher",
+          "href": "/toolbox/07-identity-known/07f-maker-matcher/"
+        },
+        {
+          "text": "07g — Self Fixer",
+          "href": "/toolbox/07-identity-known/07g-self-fixer/"
+        },
+        {
+          "text": "Looking in the Toolbox",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "Hear the Voice",
+          "href": "/persona/"
+        },
+        {
+          "text": "Open the OKHP³™ Universe",
+          "href": "/universe/"
+        }
+      ],
+      "text": "Home\nEcosystem\n\n🔭 OKHP³™ Universe\n\nThe Glee‑fully Toolbox, at a glance.\n\nVisual ecosystem map of the Glee‑fully Toolbox — from the main trunk GPT through seven category‑level Tools (branches) and their Tool‑ettes (twigs).\n\nUse this as your “you are here” layer when you hop between GPTs, Tool‑ettes, and future experiments across the Glee‑fully universe.\n\nLook in the Box\nBrowse branches & twigs\n\nGlee‑fully Toolbox 🧰\n(Trunk 🌳)\n\n01 — Discovered Careers\n\n02 — Treasured Finds\n\n03 — Tasty Tracker\n\n04 — Traveler’s Guide\n\n05 — Organized Life\n\n06 — Healthy Bee‑ing\n\n07 — Identity Known\n\nDiagrams on this page are rendered with Mermaid.AI. Try Mermaid.AI → if you want to explore the syntax yourself.\n\nHow to read this ecosystem\n\nGlee‑fully is structured like a small, well‑labeled tree: one Toolbox trunk, seven Tools as branches, and Tool‑ettes as twigs that handle focused jobs. This page names every branch and twig so you always know where you are.\n\nTrunk 🌳 — The Toolbox\n\nGlee‑fully Personalizable Tools is the command center. It introduces the structure, links to all seven Tools, and helps you choose the right Tool‑ette for whatever you’re doing today.\n\nBranches 🌵 — The Tools\n\nEach Tool is a category‑level GPT that owns one life arena — careers, collections, food, travel, routines, wellbeing, or personal identity. Inside each branch live smaller Tool‑ettes.\n\nTwigs 🌿 — The Tool‑ettes\n\nTool‑ettes are single‑purpose specialists: résumé polishers, snack planners, scent journals, task maestros, and more. They inherit the tone and structure of their parent Tool while focusing on one job.\n\nBranches & twigs of the Toolbox\n\nBelow are all seven Tools (branches) with their Tool‑ettes (twigs), aligned to the inventory that powers the Glee‑fully Toolbox.\n\n#01 — Discovered Careers\n\nCareer clarity, search, and polish. This branch is your personal career studio: mapping options, tuning résumés, and getting you ready for your next move.\n\nTool‑ettes in this branch\n01a — Resume Builder\n01b — Resume Customizer\n01c — Career Fitness\n01d — Letter Composer\n01e — bLinkIn Tuner\n01f — Career Seeker\n#02 — Treasured Finds\n\nCollections, keepsakes, and thoughtful gifting. This branch tracks the objects, spaces, and supplies that make your world feel like yours.\n\nTool‑ettes in this branch\n02a — Personal Librarian\n02b — Decor Detective\n02c — Present Hoarder\n02d — Scentinal Journal\n02e — Spirited Journal\n02f — Supply Haus\n02g — Bag Nabbit\n#03 — Tasty Tracker\n\nFood, flavors, and kitchen logistics. This branch keeps menus aligned with your tastes, pantry, and future cravings — without killing the joy of eating.\n\nTool‑ettes in this branch\n03a — Flavor Meister\n03b — Menu Conductor\n03c — Wishful Tastes\n03d — Pantry Shopper\n03e — Palatably Profiled\n#04 — Traveler’s Guide\n\nTrips, micro‑adventures, and memory‑keeping. This branch covers planning, improvising, and remembering where you’ve been.\n\nTool‑ettes in this branch\n04a — Journey Diary\n04b — Itinerary Hacker\n04c — Detour Discoverer\n04d — Dreamland Journeys\n04e — Memento Log\n#05 — Organized Life\n\nEveryday logistics: tasks, money, gifts, schedules, and neighborhood life. This branch is the control panel for your practical world.\n\nTool‑ettes in this branch\n05a — Task Maestro\n05b — Thrifty Spender\n05c — Giftlist Helper\n05d — Scheduling Wizard\n05e — Lifestyle Wallboard\n05f — Neighborly Bazaar\n#06 — Healthy Bee‑ing\n\nMood, energy, and self‑care routines. This branch keeps an eye on how you’re feeling, what supports you, and how to pace your days.\n\nTool‑ettes in this branch\n06a — Care Check\n06b — Calm Keep\n06c — Snappy Count\n06d — Medi Minder\n06e — Moody Log\n06f — Maven Wise\n#07 — Identity Known\n\nHome, aesthetic, and self‑expression. This branch helps you recognize patterns, styles and objects of interest so you can name and refine what makes your space and style feel uniquely yours.\n\nTool‑ettes in this branch\n07a — Critter Spotter\n07b — Roost Wrangler\n07c — Sight Seeker\n07d — Snap Decoder\n07e — Motif Muse\n07f — Maker Matcher\n07g — Self Fixer\nWhere this fits in the wider universe\n\nGlee‑fully sits alongside OverKill Hill P³™ and AskJamie™ as the “joy layer” — cozy tools for everyday life. For the full studio‑wide map, visit the OKHP³™ Universe page.\n\nExplore the Toolbox\n\nStart from the trunk and let the Toolbox route you to the right branch and twig.\n\nLooking in the Toolbox\n\nMeet the Voice & Muse\n\nLearn how Glee & Jamie shape the tone, guardrails, and playfulness behind every Tool.\n\nHear the Voice\n\nSee the full P³ map\n\nView how Glee‑fully connects with OverKill Hill P³™ and AskJamie™ at the universe level.\n\nOpen the OKHP³™ Universe",
+      "resources": [
+        {
+          "name": "https://glee-fully.tools/assets/css/theme.css?v=b60e5d83",
+          "bytes": 48183,
+          "duration": 43.09999990463257
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 2370,
+          "duration": 87.09999990463257
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/app.js?v=3",
+          "bytes": 12111,
+          "duration": 43.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/mermaid-init.js",
+          "bytes": 4295,
+          "duration": 43.200000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/glee-site-enhancements.js",
+          "bytes": 2541,
+          "duration": 16.600000143051147
+        },
+        {
+          "name": "https://glee-fully.tools/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "bytes": 1322,
+          "duration": 16.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/mermaid.esm.min.mjs",
+          "bytes": 11456,
+          "duration": 28.299999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/data/sparkle.json",
+          "bytes": 496,
+          "duration": 23.90000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-WUBWJARI.mjs",
+          "bytes": 4310,
+          "duration": 19
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-IJBDOHL6.mjs",
+          "bytes": 545,
+          "duration": 19.399999856948853
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-YDMLL4PJ.mjs",
+          "bytes": 1377,
+          "duration": 19.399999856948853
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4CAJECRU.mjs",
+          "bytes": 15988,
+          "duration": 22.799999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-NUDPKBEF.mjs",
+          "bytes": 16387,
+          "duration": 23.09999990463257
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZQN7UHIL.mjs",
+          "bytes": 2958,
+          "duration": 23.100000143051147
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4OADUZ5Q.mjs",
+          "bytes": 8487,
+          "duration": 36.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-Z6V44ARX.mjs",
+          "bytes": 26918,
+          "duration": 36.60000014305115
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VRZKL3EH.mjs",
+          "bytes": 1080,
+          "duration": 41.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZNLK7HRR.mjs",
+          "bytes": 1256,
+          "duration": 23.299999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VY2OSTJR.mjs",
+          "bytes": 7233,
+          "duration": 24.299999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-5IMINLNL.mjs",
+          "bytes": 9882,
+          "duration": 27.699999809265137
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-2NMSUPJH.mjs",
+          "bytes": 3201,
+          "duration": 38.299999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-STOV2HOB.mjs",
+          "bytes": 1211,
+          "duration": 38.39999985694885
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-DZP67EKU.mjs",
+          "bytes": 16416,
+          "duration": 41.19999980926514
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AQ6EADP3.mjs",
+          "bytes": 685,
+          "duration": 23.09999990463257
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-H7VHZCWX.mjs",
+          "bytes": 39427,
+          "duration": 27.700000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-QJSWEUOL.mjs",
+          "bytes": 38341,
+          "duration": 38.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/flowDiagram-YHGXBVSY.mjs",
+          "bytes": 571,
+          "duration": 14.400000095367432
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AZZRMDJM.mjs",
+          "bytes": 569,
+          "duration": 18.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-RCXAM2GK.mjs",
+          "bytes": 524,
+          "duration": 20.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VTHDQ7BV.mjs",
+          "bytes": 682,
+          "duration": 20.799999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-EICP7K5X.mjs",
+          "bytes": 1187,
+          "duration": 20.799999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-CLS4B6BI.mjs",
+          "bytes": 19939,
+          "duration": 20.40000009536743
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/dagre-MPVFI544.mjs",
+          "bytes": 4448,
+          "duration": 16.299999952316284
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-R7JDMUKV.mjs",
+          "bytes": 10586,
+          "duration": 18.5
+        }
+      ],
+      "navigation": [
+        {
+          "ttfb": 465.89999985694885,
+          "domContentLoaded": 597.7000000476837,
+          "load": 699.5
+        }
+      ]
+    },
+    {
+      "route": "/universe/",
+      "width": 1440,
+      "status": 200,
+      "headers": {
+        "accept-ranges": "bytes",
+        "access-control-allow-origin": "*",
+        "age": "3",
+        "cache-control": "max-age=600",
+        "content-encoding": "gzip",
+        "content-length": "7085",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 05 Sep 2026 17:03:18 GMT",
+        "etag": "W/\"6a9c36cc-6a60\"",
+        "expires": "Sat, 05 Sep 2026 17:11:42 GMT",
+        "last-modified": "Sat, 05 Sep 2026 15:35:40 GMT",
+        "server": "GitHub.com",
+        "strict-transport-security": "max-age=31556952",
+        "vary": "Accept-Encoding",
+        "via": "1.1 varnish",
+        "x-cache": "HIT",
+        "x-cache-hits": "1",
+        "x-fastly-request-id": "b59ef1c9d3009f58ab068004c38d70ecc99041ff",
+        "x-github-edge-region": "iad",
+        "x-github-request-id": "11DE:DCF57:7AC2B9:A90CE8:6A9C4AF6",
+        "x-proxy-cache": "MISS",
+        "x-served-by": "cache-dfw-kdfw8210115-DFW",
+        "x-timer": "S1788627798.119274,VS0,VE3"
+      },
+      "errors": [],
+      "failed": [],
+      "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": [
+        "Where Glee‑fully fits in the bigger map."
+      ],
+      "scrollWidth": 1440,
+      "height": 2758,
+      "mainTop": 124.046875,
+      "brokenImages": [],
+      "links": [
+        {
+          "text": "Home",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "Back to Glee‑fully home",
+          "href": "/"
+        },
+        {
+          "text": "Explore the Toolbox",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "OverKill Hill P³™",
+          "href": "https://overkillhill.com/"
+        },
+        {
+          "text": "Glee‑fully Personalizable Tools™",
+          "href": "https://glee-fully.tools/"
+        },
+        {
+          "text": "00 — Glee‑fully Toolbox",
+          "href": "https://glee-fully.tools/toolbox/"
+        },
+        {
+          "text": "01 — Discovered Careers",
+          "href": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+        },
+        {
+          "text": "02 — Treasured Finds",
+          "href": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+        },
+        {
+          "text": "03 — Tasty Tracker",
+          "href": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+        },
+        {
+          "text": "04 — Traveler’s Guide",
+          "href": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+        },
+        {
+          "text": "05 — Organized Life",
+          "href": "https://glee-fully.tools/toolbox/05-organized-life/"
+        },
+        {
+          "text": "06 — Healthy Bee‑ing",
+          "href": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+        },
+        {
+          "text": "07 — Identity Known",
+          "href": "https://glee-fully.tools/toolbox/07-identity-known/"
+        },
+        {
+          "text": "AskJamie™",
+          "href": "https://askjamie.bot/"
+        },
+        {
+          "text": "AJ01 — Résumé Representative",
+          "href": "https://askjamie.bot/lens-system/resume-representative/"
+        },
+        {
+          "text": "AJ02 — Professional Portfolio",
+          "href": "https://askjamie.bot/lens-system/professional-portfolio/"
+        },
+        {
+          "text": "AJ03 — Enterprise Sleuth",
+          "href": "https://askjamie.bot/lens-system/enterprise-sleuth/"
+        },
+        {
+          "text": "AJ04 — OKHP³ BrandGuard™",
+          "href": "https://askjamie.bot/lens-system/okhp3-brandguard/"
+        },
+        {
+          "text": "BRG00 — Builders FirstSource",
+          "href": "https://askjamie.bot/lens-system/okhp3-brandguard/bfs-framing-intelligent-futures/"
+        },
+        {
+          "text": "BFS — Framing Intelligent Futures",
+          "href": "https://overkillhill.com/projects/bfs-framing-intelligent-futures/"
+        },
+        {
+          "text": "UNT00 — Un‑NOCKed Truth",
+          "href": "https://overkillhill.com/projects/un-nocked-truth/"
+        },
+        {
+          "text": "PSR00 — PathScrib-R",
+          "href": "https://overkillhill.com/projects/pathscrib-r/"
+        },
+        {
+          "text": "ARE00 — Abrahamic Reference Engine",
+          "href": "https://overkillhill.com/projects/abrahamic-reference-engine/"
+        },
+        {
+          "text": "HMT00 — HomeTools",
+          "href": "https://overkillhill.com/projects/hometools/"
+        },
+        {
+          "text": "FDY00 — The Found-Rᵧ",
+          "href": "https://overkillhill.com/found-ry/"
+        },
+        {
+          "text": "Magnus Progenitor Saga",
+          "href": "https://overkillhill.com/writings/magnus-saga/"
+        },
+        {
+          "text": "Biases as Constants",
+          "href": "https://overkillhill.com/writings/biases-as-constants/"
+        },
+        {
+          "text": "Mermaid.AI",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "Mermaid.AI →",
+          "href": "https://mermaidchart.cello.so/UhVlNtC2MlS"
+        },
+        {
+          "text": "/toolbox/",
+          "href": "/toolbox/"
+        },
+        {
+          "text": "/ecosystem/",
+          "href": "/ecosystem/"
+        },
+        {
+          "text": "/persona/",
+          "href": "/persona/"
+        },
+        {
+          "text": "askjamie.bot",
+          "href": "https://askjamie.bot/"
+        }
+      ],
+      "text": "Home\nUniverse\n\nOKHP³™ UNIVERSE\n\nWhere Glee‑fully fits in the bigger map.\n\nThis is the Glee‑side view of the OverKill Hill P³™ universe — how the cozy Tools, AskJamie™, and deeper experimental work all connect.\n\nStart here when you want to know what lives where: everyday Tools, narrative experiments, BrandGuard™, and the frameworks that power them.\n\nBack to Glee‑fully home\nExplore the Toolbox\n\nOverKill Hill P³™\n\nGlee‑fully Personalizable Tools™\n\n00 — Glee‑fully Toolbox\n\n01 — Discovered Careers\n\n02 — Treasured Finds\n\n03 — Tasty Tracker\n\n04 — Traveler’s Guide\n\n05 — Organized Life\n\n06 — Healthy Bee‑ing\n\n07 — Identity Known\n\nAskJamie™\n\nAJ01 — Résumé Representative\n\nAJ02 — Professional Portfolio\n\nAJ03 — Enterprise Sleuth\n\nAJ04 — OKHP³ BrandGuard™\n\nBRG00 — Builders FirstSource\n\nBRG01 — LEGO\n\nBRG02 — Starbucks\n\nBRG03 — Brooks Running\n\nBRG04 — Ping\n\nBRG05 — Costco\n\nBRG06 — Hershey\n\nBRG07 — LVMH\n\nBRG08 — Dollar General\n\nBRG09 — Coca-Cola\n\nBRG10 — Discount Tires\n\nBRG11 — Scheels\n\nBFS — Framing Intelligent Futures\n\nUNT00 — Un‑NOCKed Truth\n\nUNT01 — Geared-Up\n\nUNT02 — Dialed-In\n\nUNT03 — Hunted-Down\n\nPSR00 — PathScrib-R\n\nARE00 — Abrahamic Reference Engine\n\nHMT00 — HomeTools\n\nHMT01 — Homestead‑R\n\nHMT01 — HomeVisual-R\n\nHMT01 — FloorPlan-R\n\nHMT01 — HomeEstimate-R\n\nFDY00 — The Found-Rᵧ\n\nGPTs to build GPTs\n\nWriting & Narrative Experiments\n\nKnowledge Files\n\nProtocols & Promptcraft\n\nMagnus Progenitor Saga\n\nBiases as Constants\n\nDiagram of the OverKill Hill P³™ universe from Glee‑fully’s perspective, showing relationships between OverKill Hill, Glee‑fully Tools, AskJamie™, BrandGuard™, and experimental worlds.\n\nThis diagram is rendered with Mermaid.AI. Try Mermaid.AI → if you want to explore the syntax yourself.\n\nHow to read this map\n\nEach node is a pillar in the OverKill Hill P³™ stack. Some are live, some are active experiments, and some are narrative sandboxes. Glee‑fully sits on the “joy layer” — everyday, personalizable Tools that rest on top of serious system thinking.\n\nGlee‑fully Personalizable Tools™\n\nCozy, colorful GPT Tools and Tool‑ettes built for real life — trips, projects, routines, snacks, self‑care, and all the delightful mess in between.\n\nAskJamie™\n\nThe calm, articulate helpdesk. Jamie narrates the systems, surfaces tradeoffs, and explains how different pieces of the universe fit together.\n\nOverKill Hill P³™\n\nThe backbone studio — canon, frameworks, diagrams, and governance for how Tools, prompts, and experiments are designed and evolved.\n\nWhere to explore next\n\nUse this map as your “you are here” layer. From Glee‑fully, you can drop down into details or pan out to the wider universe.\n\nStep into the Toolbox: browse live Glee‑fully Tools and Tool‑ettes at /toolbox/.\nSee the full ecosystem: get the structural view of Glee‑fully’s modules and flows at /ecosystem/.\nMeet the Voice & Muse: learn how Glee and Jamie show up in‑world at /persona/.\nCross over to AskJamie™: for enterprise, career, and BrandGuard‑style work, visit askjamie.bot.",
+      "resources": [
+        {
+          "name": "https://glee-fully.tools/assets/css/theme.css?v=b60e5d83",
+          "bytes": 0,
+          "duration": 1.2000000476837158
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 0,
+          "duration": 1.2999999523162842
+        },
+        {
+          "name": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap",
+          "bytes": 739,
+          "duration": 29
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/app.js?v=3",
+          "bytes": 0,
+          "duration": 1
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/mermaid-init.js",
+          "bytes": 0,
+          "duration": 0.8999998569488525
+        },
+        {
+          "name": "https://glee-fully.tools/assets/js/glee-site-enhancements.js",
+          "bytes": 0,
+          "duration": 0.20000004768371582
+        },
+        {
+          "name": "https://glee-fully.tools/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "bytes": 0,
+          "duration": 0.2999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/data/sparkle.json",
+          "bytes": 0,
+          "duration": 0.2999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/mermaid.esm.min.mjs",
+          "bytes": 0,
+          "duration": 0.2999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-IJBDOHL6.mjs",
+          "bytes": 0,
+          "duration": 0.6999998092651367
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-WUBWJARI.mjs",
+          "bytes": 0,
+          "duration": 1.0999999046325684
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-NUDPKBEF.mjs",
+          "bytes": 0,
+          "duration": 1.5999999046325684
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-YDMLL4PJ.mjs",
+          "bytes": 0,
+          "duration": 1.7999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4CAJECRU.mjs",
+          "bytes": 0,
+          "duration": 1.4000000953674316
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZQN7UHIL.mjs",
+          "bytes": 0,
+          "duration": 2.0999999046325684
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-4OADUZ5Q.mjs",
+          "bytes": 0,
+          "duration": 2.200000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VRZKL3EH.mjs",
+          "bytes": 0,
+          "duration": 2.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-Z6V44ARX.mjs",
+          "bytes": 0,
+          "duration": 2.9000000953674316
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-ZNLK7HRR.mjs",
+          "bytes": 0,
+          "duration": 2.6000001430511475
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-2NMSUPJH.mjs",
+          "bytes": 0,
+          "duration": 2.6000001430511475
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-5IMINLNL.mjs",
+          "bytes": 0,
+          "duration": 2.6000001430511475
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VY2OSTJR.mjs",
+          "bytes": 0,
+          "duration": 2.6000001430511475
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-DZP67EKU.mjs",
+          "bytes": 0,
+          "duration": 2.6000001430511475
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-STOV2HOB.mjs",
+          "bytes": 0,
+          "duration": 2.5
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AQ6EADP3.mjs",
+          "bytes": 0,
+          "duration": 2.700000047683716
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-QJSWEUOL.mjs",
+          "bytes": 0,
+          "duration": 2.8999998569488525
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-H7VHZCWX.mjs",
+          "bytes": 0,
+          "duration": 2.8999998569488525
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/flowDiagram-YHGXBVSY.mjs",
+          "bytes": 0,
+          "duration": 0.2999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-AZZRMDJM.mjs",
+          "bytes": 0,
+          "duration": 0.7000000476837158
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-RCXAM2GK.mjs",
+          "bytes": 0,
+          "duration": 0.7999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-VTHDQ7BV.mjs",
+          "bytes": 0,
+          "duration": 0.9000000953674316
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-EICP7K5X.mjs",
+          "bytes": 0,
+          "duration": 0.9000000953674316
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-CLS4B6BI.mjs",
+          "bytes": 0,
+          "duration": 0.5999999046325684
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/dagre-MPVFI544.mjs",
+          "bytes": 0,
+          "duration": 0.2999999523162842
+        },
+        {
+          "name": "https://glee-fully.tools/assets/vendor/mermaid/chunks/mermaid.esm.min/chunk-R7JDMUKV.mjs",
+          "bytes": 0,
+          "duration": 0.3000001907348633
+        }
+      ],
+      "navigation": [
+        {
+          "ttfb": 28.899999856948853,
+          "domContentLoaded": 77.39999985694885,
+          "load": 107.29999995231628
+        }
+      ]
+    }
+  ]
+}

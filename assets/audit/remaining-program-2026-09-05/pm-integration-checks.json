@@ -1,0 +1,300 @@
+{
+  "baseline": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "scope": "PM final generated-source verification; exact bytes will be matched to implementation commit and artifact",
+  "generators": [
+    {
+      "args": "scripts/build-search-index.py",
+      "chunk_id": "826fd7",
+      "wall_time_seconds": 1.2800975,
+      "exit_code": 0,
+      "original_token_count": 23,
+      "output": "Indexing 60 HTML pages…\r\n\r\nWrote assets\\data\\search-index.json — 60 pages, 427.3 KB\r\n"
+    },
+    {
+      "args": "scripts/sync-portfolio-stats.py",
+      "chunk_id": "632e00",
+      "wall_time_seconds": 1.0590155,
+      "exit_code": 0,
+      "original_token_count": 36,
+      "output": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7745\r\n  about\\index.html — already up to date\r\n  + showcase\\index.html — updated\r\n"
+    },
+    {
+      "args": "scripts/build-search-index.py",
+      "chunk_id": "9071ab",
+      "wall_time_seconds": 1.5949485,
+      "exit_code": 0,
+      "original_token_count": 23,
+      "output": "Indexing 60 HTML pages…\r\n\r\nWrote assets\\data\\search-index.json — 60 pages, 427.3 KB\r\n"
+    },
+    {
+      "args": "scripts/generate-csp.py",
+      "chunk_id": "a355f7",
+      "wall_time_seconds": 2.8213754,
+      "exit_code": 0,
+      "original_token_count": 10,
+      "output": "CSP policies verified for 63 pages.\r\n"
+    },
+    {
+      "args": "scripts/sync-css-version.py",
+      "chunk_id": "2f202e",
+      "wall_time_seconds": 8.5541284,
+      "exit_code": 0,
+      "original_token_count": 31,
+      "output": "  CSS token -> 10030d12  (63 file(s) updated, 0 already current)\r\n  Offline shell version and precache URLs synchronized\r\n"
+    }
+  ],
+  "checkOnly": [
+    {
+      "args": "scripts/build-search-index.py --check",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "977857",
+        "wall_time_seconds": 2.1019907,
+        "exit_code": 0,
+        "original_token_count": 23,
+        "output": "Indexing 60 HTML pages…\r\nCommitted assets\\data\\search-index.json is current — 60 pages\r\n"
+      }
+    },
+    {
+      "args": "scripts/sync-portfolio-stats.py --check",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "725a04",
+        "wall_time_seconds": 1.8766845,
+        "exit_code": 0,
+        "original_token_count": 39,
+        "output": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7745\r\n  about\\index.html — already up to date\r\n  showcase\\index.html — already up to date\r\n"
+      }
+    },
+    {
+      "args": "scripts/sync-css-version.py --check",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "6f0983",
+        "wall_time_seconds": 2.1353575,
+        "exit_code": 0,
+        "original_token_count": 15,
+        "output": "  CSS token -> 10030d12  (all 63 file(s) already current)\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-csp.py",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "d4c937",
+        "wall_time_seconds": 2.7784184,
+        "exit_code": 0,
+        "original_token_count": 10,
+        "output": "CSP policies verified for 63 pages.\r\n"
+      }
+    },
+    {
+      "args": "scripts/sync-social-card.py --check",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "18a9e0",
+        "wall_time_seconds": 2.2194342,
+        "exit_code": 0,
+        "original_token_count": 16,
+        "output": "\r\nSocial-card metadata is current across 62 published pages.\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-workflow-actions.py",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "755504",
+        "wall_time_seconds": 0.7080216,
+        "exit_code": 0,
+        "original_token_count": 16,
+        "output": "GitHub Actions version policy check passed (7 workflow files).\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-glee-dark-coverage.py --section all --require-both",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "99c719",
+        "wall_time_seconds": 1.4809859,
+        "exit_code": 0,
+        "original_token_count": 76,
+        "output": "check-glee-dark-coverage: OK — 16 light-surface rule(s) (13 background, 6 border) in the GLEE section all have dark-mode overrides in both forms.\r\ncheck-glee-dark-coverage: OK — 10 light-surface rule(s) (10 background, 1 border) in the ASKJAMIE section all have dark-mode overrides in both forms.\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-catalog-claims.py",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "8d4962",
+        "wall_time_seconds": 1.6524733,
+        "exit_code": 0,
+        "original_token_count": 1166,
+        "output": "{\r\n  \"pages\": 42,\r\n  \"errors\": 0,\r\n  \"results\": [\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01a-resume-builder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01b-resume-customizer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01c-career-fitness/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01d-letter-composer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01e-blinkin-tuner/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/01-discovered-careers/01f-career-seeker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02a-personal-librarian/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02b-decor-detective/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02c-present-hoarder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02d-scentinal-journal/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02e-spirited-journal/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02f-supply-haus/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/02-treasured-finds/02g-bag-nabbit/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03a-flavor-meister/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03b-menu-conductor/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03c-wishful-tastes/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03d-pantry-shopper/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/03-tasty-tracker/03e-palatably-profiled/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04a-journey-diary/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04b-itinerary-hacker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04c-detour-discoverer/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04d-dreamland-journeys/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/04-travelers-guide/04e-memento-log/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05a-task-maestro/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05b-thrifty-spender/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05c-giftlist-helper/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05d-scheduling-wizard/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05e-lifestyle-wallboard/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/05-organized-life/05f-neighborly-bazaar/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06a-care-check/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06b-calm-keep/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06c-snappy-count/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06d-medi-minder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06e-moody-log/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/06-healthy-bee-ing/06f-maven-wise/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07a-critter-spotter/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07b-roost-wrangler/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07c-sight-seeker/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07d-snap-decoder/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07e-motif-muse/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07f-maker-matcher/index.html\",\r\n      \"errors\": []\r\n    },\r\n    {\r\n      \"path\": \"toolbox/07-identity-known/07g-self-fixer/index.html\",\r\n      \"errors\": []\r\n    }\r\n  ]\r\n}\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-links.py --no-report",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "6c4754",
+        "wall_time_seconds": 2.8207915999999997,
+        "exit_code": 0,
+        "original_token_count": 56,
+        "output": "Pages scanned:    63\r\nInternal links:   2719\r\nExternal links:   1087\r\nBroken links:     0\r\nStyle issues:     0\r\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\r\nNoindex exclusions: 0\r\n"
+      }
+    }
+  ],
+  "reportChecks": [
+    {
+      "args": "scripts/validate-site.py",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "3b7d3f",
+        "wall_time_seconds": 4.4593679999999996,
+        "exit_code": 0,
+        "original_token_count": 28,
+        "output": "\r\nScanned 63 pages\r\n  issues:   0\r\n  warnings: 0\r\n  detail:   assets\\audit\\validation-report-2026-05-03.json\r\n"
+      }
+    },
+    {
+      "args": "scripts/check-accent-contrast.py --strict",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "448727",
+        "wall_time_seconds": 3.5572872,
+        "exit_code": 1,
+        "original_token_count": 280,
+        "output": "Accent contrast advisory scan (light + dark mode + branded hover states)\r\n  HTML files scanned : 72\r\n  CSS files scanned  : 1\r\n  Advisories         : 1\r\n  Info notes         : 0\r\n  Hover checks       : 8 (1 failures)\r\n  Report             : assets\\audit\\accent-contrast-report.json\r\n\r\n  Light-mode palette : accent #d35b2d / bg #f6f2ee → 3.55:1\r\n  Dark-mode palette  : accent #f07585 / surface #241c1a → 6.04:1\r\n\r\nAdvisories (accent color on body-text elements):\r\n  [ADVISORY] assets\\css\\theme.css:None — html[data-theme=\"light\"] .glee-main .footer-column a:hover\r\n    Rule     : known-hover-state-missing\r\n    Detail   : Required hover rule is missing: html[data-theme=\"light\"] .glee-main .footer-column a:hover.\r\n    Snippet  : \r\n    Ratios   : light ?:1 / dark ?:1\r\n\r\n\r\nHover-state contrast failures:\r\n  [ADVISORY] assets\\css\\theme.css:? — Glee footer link hover (light)\r\n    Detail   : Required hover rule is missing: html[data-theme=\"light\"] .glee-main .footer-column a:hover.\r\n    Snippet  : \r\n\r\nAdvisories are reported without --strict.\r\nUse --strict to exit 1 on any advisory or hover-state failure.\r\n"
+      }
+    },
+    {
+      "args": "scripts/resilience-qa.py --static-only",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "36a5ad",
+        "wall_time_seconds": 1.8825834000000001,
+        "exit_code": 0,
+        "original_token_count": 21,
+        "output": "Static resilience checks: PASS\r\nReport: assets\\audit\\resilience-qa-2026-09-05.json\r\n"
+      }
+    },
+    {
+      "args": "scripts/audit-site.py --quiet",
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "e9647a",
+        "wall_time_seconds": 4.8895686000000005,
+        "exit_code": 0,
+        "original_token_count": 18,
+        "output": "\r\nReport written to assets/docs/audit-report.md\r\nTotal issues found: 0\r\n"
+      }
+    }
+  ],
+  "finalRuns": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "27e389",
+        "wall_time_seconds": 2.4606288,
+        "exit_code": 0,
+        "original_token_count": 144,
+        "output": "Accent contrast advisory scan (light + dark mode + branded hover states)\r\n  HTML files scanned : 72\r\n  CSS files scanned  : 1\r\n  Advisories         : 0\r\n  Info notes         : 0\r\n  Hover checks       : 8 (0 failures)\r\n  Report             : assets\\audit\\accent-contrast-report.json\r\n\r\n  Light-mode palette : accent #d35b2d / bg #f6f2ee → 3.55:1\r\n  Dark-mode palette  : accent #f07585 / surface #241c1a → 6.04:1\r\n\r\n  No body-text accent color violations found.\r\n\r\nAdvisories are reported without --strict.\r\nUse --strict to exit 1 on any advisory or hover-state failure.\r\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "d64052",
+        "wall_time_seconds": 10.0019279,
+        "session_id": 8560,
+        "original_token_count": 10,
+        "output": "........................................"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "7f57f5",
+        "wall_time_seconds": 10.0016046,
+        "session_id": 20992,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "08ed68",
+        "wall_time_seconds": 10.0020601,
+        "session_id": 70632,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "bfc6c4",
+        "wall_time_seconds": 10.0011198,
+        "session_id": 65253,
+        "original_token_count": 18,
+        "output": "PASS automatic service-worker registration after a late adapter import\n"
+      }
+    }
+  ],
+  "completion": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "17c49e",
+        "wall_time_seconds": 0.0000198,
+        "exit_code": 0,
+        "original_token_count": 33,
+        "output": "...s..........\r\n----------------------------------------------------------------------\r\nRan 54 tests in 13.746s\r\n\r\nOK (skipped=1)\r\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "fced78",
+        "wall_time_seconds": 0.000005,
+        "exit_code": 0,
+        "original_token_count": 733,
+        "output": "{\n  \"checkedAt\": \"2026-09-05T23:03:09.873Z\",\n  \"base\": \"http://127.0.0.1:5187\",\n  \"browser\": \"Chromium\",\n  \"results\": [\n    {\n      \"name\": \"hero contrast light\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"eyebrow\": \"rgb(107, 94, 87)\",\n        \"heading\": \"rgb(45, 111, 126)\",\n        \"background\": \"rgb(255, 247, 241)\",\n        \"eyebrowRatio\": 5.893957783010411,\n        \"headingRatio\": 5.377948643478031\n      }\n    },\n    {\n      \"name\": \"hero contrast dark\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"eyebrow\": \"rgb(181, 169, 161)\",\n        \"heading\": \"rgb(242, 237, 232)\",\n        \"background\": \"rgb(42, 39, 36)\",\n        \"eyebrowRatio\": 6.473644920512114,\n        \"headingRatio\": 12.767110455267575\n      }\n    },\n    {\n      \"name\": \"hero contrast auto-light\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"eyebrow\": \"rgb(107, 94, 87)\",\n        \"heading\": \"rgb(45, 111, 126)\",\n        \"background\": \"rgb(255, 247, 241)\",\n        \"eyebrowRatio\": 5.893957783010411,\n        \"headingRatio\": 5.377948643478031\n      }\n    },\n    {\n      \"name\": \"hero contrast auto-dark\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"eyebrow\": \"rgb(181, 169, 161)\",\n        \"heading\": \"rgb(242, 237, 232)\",\n        \"background\": \"rgb(42, 39, 36)\",\n        \"eyebrowRatio\": 6.473644920512114,\n        \"headingRatio\": 12.767110455267575\n      }\n    },\n    {\n      \"name\": \"Neighborly illustration decodes\",\n      \"status\": \"PASS\",\n      \"evidence\": [\n        800,\n        534\n      ]\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 320\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 320,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 375\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 375,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 390\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 390,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 414\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 414,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 768\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 768,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 1024\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 1024,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 1280\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 1280,\n        \"decodedImages\": 3\n      }\n    },\n    {\n      \"name\": \"Resume Builder route and image recheck 1440\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 1440,\n        \"decodedImages\": 3\n      }\n    }\n  ],\n  \"failures\": 0\n}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "cc5e32",
+        "wall_time_seconds": 0.0000016,
+        "exit_code": 0,
+        "original_token_count": 1654,
+        "output": "{\n  \"generatedAt\": \"2026-09-05T23:02:59.185Z\",\n  \"commit\": \"f5f33986e6ee287fb165c75e82ef01e5d3ed1f99\",\n  \"node\": \"v24.11.1\",\n  \"playwright\": \"1.62.1\",\n  \"fixture\": \"Local HTTP; only upgrade-insecure-requests removed; service workers and third parties blocked; actual committed search JSON served.\",\n  \"checks\": [\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"navigation /\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"navigation /toolbox/01-discovered-careers/\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"navigation /toolbox/01-discovered-careers/01a-resume-builder/\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"navigation /search/?q=resume\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Search — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"search query, keyboard, history and modal focus\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"firstResumeResult\": \"/toolbox/01-discovered-careers/01a-resume-builder/\",\n        \"keyboardDestination\": \"/toolbox/01-discovered-careers/01b-resume-customizer/\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"modal focus return pointer\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"modal focus return keyboard\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"modal focus return shortcut\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"modal focus return immediate-close\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"skip link moves focus and records native Tab behavior\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focusedMain\": true,\n        \"nextInMain\": true,\n        \"nativeTabDestination\": \"link\",\n        \"nextLinkCoverage\": \"PASS\"\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"consent choice hydrates after reload\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"optionalExternalRequestsBlocked\": 15\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"ordinary fragment focus, history and reduced motion\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"fragment\": \"#why\",\n        \"scrollBehavior\": \"auto\",\n        \"historyRestored\": true\n      }\n    },\n    {\n      \"engine\": \"chromium\",\n      \"name\": \"Neighborly Bazaar image decodes\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 800,\n        \"height\": 534\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"navigation /\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"navigation /toolbox/01-discovered-careers/\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"navigation /toolbox/01-discovered-careers/01a-resume-builder/\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"navigation /search/?q=resume\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"title\": \"Search — Glee‑fully Personalizable Tools™ 🧰🌳\",\n        \"overflow\": false\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"search query, keyboard, history and modal focus\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"firstResumeResult\": \"/toolbox/01-discovered-careers/01a-resume-builder/\",\n        \"keyboardDestination\": \"/toolbox/01-discovered-careers/01b-resume-customizer/\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"modal focus return pointer\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"modal focus return keyboard\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"modal focus return shortcut\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"modal focus return immediate-close\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focused\": \".okh-search-trigger\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"skip link moves focus and records native Tab behavior\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"focusedMain\": true,\n        \"nextInMain\": false,\n        \"nativeTabDestination\": \"inside\",\n        \"nextLinkCoverage\": \"NOT RUN: native browser Tab excludes links\"\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"consent choice hydrates after reload\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"optionalExternalRequestsBlocked\": 15\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"ordinary fragment focus, history and reduced motion\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"fragment\": \"#why\",\n        \"scrollBehavior\": \"auto\",\n        \"historyRestored\": true\n      }\n    },\n    {\n      \"engine\": \"webkit\",\n      \"name\": \"Neighborly Bazaar image decodes\",\n      \"status\": \"PASS\",\n      \"evidence\": {\n        \"width\": 800,\n        \"height\": 534\n      }\n    }\n  ],\n  \"limitations\": [\n    {\n      \"engine\": \"webkit\",\n      \"coverage\": \"Next-link Tab navigation NOT RUN: native browser Tab excludes anchors even in an isolated HTML fixture.\"\n    }\n  ],\n  \"servedSha256\": \"23 source files fingerprinted\",\n  \"summary\": {\n    \"PASS\": 26,\n    \"FAIL\": 0,\n    \"NOT RUN\": 0\n  }\n}\n"
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "584d06",
+        "wall_time_seconds": 7e-7,
+        "exit_code": 0,
+        "original_token_count": 133,
+        "output": "PASS Glee modal identity, suggestions, publication state, focus return\nPASS inline query, category, history, reload and keyboard\nPASS inline and modal share ranking and retry failed index\nPASS deep function discovery and responsive search rendering\nPASS shared sibling search default and entries schema still work\nPASS consent hydration null\nPASS consent hydration granted\nPASS consent hydration denied\nPASS enable disable re-enable and reload use the saved choice\nPASS storage exceptions remain truthful and controls stay usable\n"
+      }
+    }
+  ],
+  "commands": [
+    "$env:PYTHONUTF8='1'\n& 'C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' scripts/check-accent-contrast.py --strict",
+    "$env:PYTHONUTF8='1'\n& 'C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -m unittest discover -s scripts/tests -p 'test_*.py'",
+    "$env:NODE_PATH='C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'\n$env:QA_BASE='http://127.0.0.1:5187'\n$env:QA_OUTPUT='assets/audit/remaining-program-2026-09-05/pm-rendered-final.json'\nnode scripts/tests/test-rendered-acceptance.cjs",
+    "$env:NODE_PATH='C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'\n$env:RELEASE_READINESS_ENGINES='chromium,webkit'\n$env:RELEASE_READINESS_OUTPUT='assets/audit/remaining-program-2026-09-05/pm-browser-final.json'\nnode scripts/tests/test-release-readiness.cjs",
+    "$env:PYTHONUTF8='1'\n$env:NODE_PATH='C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'\n$env:SEARCH_TEST_PYTHON='C:/Users/jamie/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'\nnode scripts/tests/test-search-consent.cjs"
+  ],
+  "notes": [
+    "Initial strict contrast missing-selector failure is retained; updated guarded-selector enforcement and negative fixtures pass.",
+    "Report-writing fixed outputs were copied to dated packet and restored to original committed bytes.",
+    "Browser report baseline HEAD predates working-tree changes; served source SHA256 values identify tested bytes.",
+    "Node browser fixture coverage and runtime limits are documented; none is live/CI proof."
+  ]
+}

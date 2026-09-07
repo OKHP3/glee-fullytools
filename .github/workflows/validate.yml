@@ -36,6 +36,19 @@ jobs:
       - name: Install dependencies
         run: pip install beautifulsoup4
 
+      - name: Generate current search and universe maps
+        run: |
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-portfolio-stats.py
+          python3 scripts/build-search-index.py
+          python3 scripts/sync-css-version.py
+
+      - name: Check universe integration and freshness
+        run: |
+          python3 scripts/tests/test-universe-integration.py
+          python3 .agents/skills/okhp3-universe-map/tests/test-universe-map.py
+          python3 scripts/sync-universe-map.py --check
+
       - name: Check committed search index is current
         run: python3 scripts/build-search-index.py --check
 
@@ -53,6 +66,37 @@ jobs:
 
       - name: Run template metadata regressions
         run: python3 -m unittest scripts/tests/test_validate_template_metadata.py
+
+      - name: Run publication and offline release regressions
+        run: |
+          python3 scripts/tests/test-reconciliation.py
+          python3 scripts/tests/test_sync_css_version.py
+          python3 -m unittest scripts.tests.test_browser_acceptance_fixture
+
+      - name: Run post-merge hook regressions
+        run: python3 scripts/tests/test-post-merge.py
+
+      - name: Run client behavior regressions
+        run: node scripts/tests/test-client-regressions.cjs
+
+      - name: Run CLS session-window regressions
+        run: node --test scripts/tests/test-cls-session-window.cjs
+
+      - name: Run discovery, publication, asset, and artifact regressions
+        run: |
+          python3 scripts/tests/test-visitor-truth.py
+          python3 scripts/tests/test_content_claims.py
+          python3 scripts/tests/test-search-index.py
+          python3 scripts/tests/test_public_artifact.py
+          python3 scripts/tests/test_svg_assets.py
+          python3 scripts/tests/test_offline_validation.py
+          node --test scripts/tests/test-sw-resilience.cjs
+          node scripts/tests/test-sw-bootstrap.cjs
+
+      - name: Check skill identities and branch-audit regressions
+        run: |
+          python3 .agents/skills/okhp3-skill-cataloger/scripts/gen-skills-readme.py --skills-dir .agents/skills --check --quiet
+          python3 .agents/skills/okhp3-replit-repl-janitor/tests/test-audit-repo.py
 
       - name: Run social-card synchronizer regressions
         run: python3 -m unittest scripts/tests/test_sync_social_card.py

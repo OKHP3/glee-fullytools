@@ -1,0 +1,321 @@
+<!-- AUTOGEN:UNIVERSE-MAP -->
+<section aria-label="Universe map">
+<details><summary>Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n3210e3534c98d031[&quot;Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n3210e3534c98d031 &quot;https://glee-fully.tools/&quot; &quot;Glee-fully Personalizable Tools#8482; #8212; a joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.&quot; _self
+  n0752f3eb82170555[&quot;About Glee #38; Jamie #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n0752f3eb82170555 &quot;https://glee-fully.tools/about/&quot; &quot;Meet Glee and Jamie, and discover how a late-night kitchen question inspired the warm, retro-bright Glee-fully catalog of personalizable GPT ideas.&quot; _self
+  n3210e3534c98d031 --&gt; n0752f3eb82170555
+  nd9cdfde393122db9[&quot;The Arcade: Chai Chasers #124; Glee-fully Tools (Published page)&quot;]
+  click nd9cdfde393122db9 &quot;https://glee-fully.tools/arcade/&quot; &quot;Meet Joey and Phoebe in Glee-fully Chai Chasers, an original cascading-reels game with iced chai and butterflies. Open the browser game from the Arcade.&quot; _self
+  n3210e3534c98d031 --&gt; nd9cdfde393122db9
+  n5a82423f57dd4c32[&quot;Contact #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n5a82423f57dd4c32 &quot;https://glee-fully.tools/contact/&quot; &quot;Get in touch with Glee-fully and AskJamie#8482;. Contact us for custom GPT design, tool licensing, enterprise architecture, or collaboration opportunities.&quot; _self
+  n3210e3534c98d031 --&gt; n5a82423f57dd4c32
+  n417655d14b53795f[&quot;Ecosystem #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n417655d14b53795f &quot;https://glee-fully.tools/ecosystem/&quot; &quot;Visual ecosystem map of the Glee-fully Toolbox #8212; from the main trunk GPT through seven Tools (branches) and their Tool-ettes (twigs).&quot; _self
+  n3210e3534c98d031 --&gt; n417655d14b53795f
+  nb8e058cbb802173f[&quot;Legal Notice #38; Usage Disclaimer #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nb8e058cbb802173f &quot;https://glee-fully.tools/legal/&quot; &quot;Read the Glee-fully legal notice: usage terms, AI limitations, privacy disclosures, third-party boundaries, and studio contact information.&quot; _self
+  n3210e3534c98d031 --&gt; nb8e058cbb802173f
+  n0b062696e24353ae[&quot;The Voice #38; Muse #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n0b062696e24353ae &quot;https://glee-fully.tools/persona/&quot; &quot;Explore the intended Glee-fully voice: warm, witty, and retro-bright. Read the persona guide and its limits as a description of external GPT behavior.&quot; _self
+  n3210e3534c98d031 --&gt; n0b062696e24353ae
+  n9cf34a0d8c1e9d53[&quot;Search #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n9cf34a0d8c1e9d53 &quot;https://glee-fully.tools/search/&quot; &quot;Search the Glee-fully catalog by topic or category. Find branch hubs, Tool-ette descriptions, guides, and publication states.&quot; _self
+  n3210e3534c98d031 --&gt; n9cf34a0d8c1e9d53
+  nb76aab53678bf624[&quot;Showcase #8212; Glee-fully Personalizable Tools#8482; (Published page)&quot;]
+  click nb76aab53678bf624 &quot;https://glee-fully.tools/showcase/&quot; &quot;Explore the Glee-fully website case study: catalog structure, static delivery, browser search, design choices, and evidence from repository checks.&quot; _self
+  n3210e3534c98d031 --&gt; nb76aab53678bf624
+  n215e259005af25e1[&quot;Toolbox #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n215e259005af25e1 &quot;https://glee-fully.tools/toolbox/&quot; &quot;Browse the Glee-fully Toolbox: seven branches of focused helpers, with intended uses and current launch states to guide your next step.&quot; _self
+  n3210e3534c98d031 --&gt; n215e259005af25e1
+  nb6620751b5a63fd8[&quot;OKHP³#8482; Universe #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nb6620751b5a63fd8 &quot;https://glee-fully.tools/universe/&quot; &quot;Explore the current Glee-fully page map, with Toolbox branches, Tool-ette publication states, and links to the OverKill Hill and AskJamie universe maps.&quot; _self
+  n3210e3534c98d031 --&gt; nb6620751b5a63fd8
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/">Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Glee-fully Personalizable Tools™ — a joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.</li>
+<li><a href="https://glee-fully.tools/about/">About Glee &amp; Jamie — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Meet Glee and Jamie, and discover how a late-night kitchen question inspired the warm, retro-bright Glee-fully catalog of personalizable GPT ideas.</li>
+<li><a href="https://glee-fully.tools/arcade/">The Arcade: Chai Chasers | Glee-fully Tools</a> (Published page) Meet Joey and Phoebe in Glee-fully Chai Chasers, an original cascading-reels game with iced chai and butterflies. Open the browser game from the Arcade.</li>
+<li><a href="https://glee-fully.tools/contact/">Contact — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Get in touch with Glee-fully and AskJamie™. Contact us for custom GPT design, tool licensing, enterprise architecture, or collaboration opportunities.</li>
+<li><a href="https://glee-fully.tools/ecosystem/">Ecosystem — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Visual ecosystem map of the Glee-fully Toolbox — from the main trunk GPT through seven Tools (branches) and their Tool-ettes (twigs).</li>
+<li><a href="https://glee-fully.tools/legal/">Legal Notice &amp; Usage Disclaimer — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Read the Glee-fully legal notice: usage terms, AI limitations, privacy disclosures, third-party boundaries, and studio contact information.</li>
+<li><a href="https://glee-fully.tools/persona/">The Voice &amp; Muse — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore the intended Glee-fully voice: warm, witty, and retro-bright. Read the persona guide and its limits as a description of external GPT behavior.</li>
+<li><a href="https://glee-fully.tools/search/">Search — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Search the Glee-fully catalog by topic or category. Find branch hubs, Tool-ette descriptions, guides, and publication states.</li>
+<li><a href="https://glee-fully.tools/showcase/">Showcase — Glee-fully Personalizable Tools™</a> (Published page) Explore the Glee-fully website case study: catalog structure, static delivery, browser search, design choices, and evidence from repository checks.</li>
+<li><a href="https://glee-fully.tools/toolbox/">Toolbox — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Browse the Glee-fully Toolbox: seven branches of focused helpers, with intended uses and current launch states to guide your next step.</li>
+<li><a href="https://glee-fully.tools/universe/">OKHP³™ Universe — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore the current Glee-fully page map, with Toolbox branches, Tool-ette publication states, and links to the OverKill Hill and AskJamie universe maps.</li>
+</ul></details>
+<details><summary>Toolbox — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n215e259005af25e1[&quot;Toolbox #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n215e259005af25e1 &quot;https://glee-fully.tools/toolbox/&quot; &quot;Browse the Glee-fully Toolbox: seven branches of focused helpers, with intended uses and current launch states to guide your next step.&quot; _self
+  nafef916ba949a9dd[&quot;Discovered Careers #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nafef916ba949a9dd &quot;https://glee-fully.tools/toolbox/01-discovered-careers/&quot; &quot;Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette#8217;s publication state.&quot; _self
+  n215e259005af25e1 --&gt; nafef916ba949a9dd
+  n6817815d5e239bd9[&quot;Treasured Finds #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n6817815d5e239bd9 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/&quot; &quot;Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.&quot; _self
+  n215e259005af25e1 --&gt; n6817815d5e239bd9
+  n3fde43a31f29ad74[&quot;Tasty Tracker #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n3fde43a31f29ad74 &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/&quot; &quot;Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.&quot; _self
+  n215e259005af25e1 --&gt; n3fde43a31f29ad74
+  n6495dccbc63d8d24[&quot;Traveler#39;s Guide #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n6495dccbc63d8d24 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/&quot; &quot;Traveler#39;s Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.&quot; _self
+  n215e259005af25e1 --&gt; n6495dccbc63d8d24
+  n64ac892a0be226c9[&quot;Organized Life #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n64ac892a0be226c9 &quot;https://glee-fully.tools/toolbox/05-organized-life/&quot; &quot;Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.&quot; _self
+  n215e259005af25e1 --&gt; n64ac892a0be226c9
+  n8f8ec4dab069cc8c[&quot;Healthy Bee-ing #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n8f8ec4dab069cc8c &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/&quot; &quot;Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.&quot; _self
+  n215e259005af25e1 --&gt; n8f8ec4dab069cc8c
+  n9a15f666c57bfb42[&quot;Identity Known #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n9a15f666c57bfb42 &quot;https://glee-fully.tools/toolbox/07-identity-known/&quot; &quot;Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette#8217;s availability and limitations.&quot; _self
+  n215e259005af25e1 --&gt; n9a15f666c57bfb42
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/">Toolbox — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Browse the Glee-fully Toolbox: seven branches of focused helpers, with intended uses and current launch states to guide your next step.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/">Discovered Careers — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette’s publication state.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/">Treasured Finds — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/">Tasty Tracker — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/">Traveler&#x27;s Guide — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Traveler&#x27;s Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/">Organized Life — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/">Healthy Bee-ing — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/">Identity Known — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette’s availability and limitations.</li>
+</ul></details>
+<details><summary>Discovered Careers — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  nafef916ba949a9dd[&quot;Discovered Careers #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nafef916ba949a9dd &quot;https://glee-fully.tools/toolbox/01-discovered-careers/&quot; &quot;Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette#8217;s publication state.&quot; _self
+  n4d8ae83deade52e1[&quot;Resume Builder #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n4d8ae83deade52e1 &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/&quot; &quot;Resume Builder is a guided, keyword-aware GPT that helps you create or polish professional resumes, match job posts, and export clean, shareable versions.&quot; _self
+  nafef916ba949a9dd --&gt; n4d8ae83deade52e1
+  nc7cd6627e750278e[&quot;Resume Customizer #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nc7cd6627e750278e &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/&quot; &quot;Resume Customizer explores tailoring a resume to a job posting: compare requirements, choose evidence, and draft relevant sections. Beta listing.&quot; _self
+  nafef916ba949a9dd --&gt; nc7cd6627e750278e
+  ne823d404f0891f71[&quot;Career Fitness #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click ne823d404f0891f71 &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/&quot; &quot;Career Fitness is a custom GPT that benchmarks your skills, matches job titles, checks salaries, and maps out practical career growth paths.&quot; _self
+  nafef916ba949a9dd --&gt; ne823d404f0891f71
+  n65b197ed5fbcdcdf[&quot;Letter Composer #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n65b197ed5fbcdcdf &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/&quot; &quot;Letter Composer turns your resume and a job post into a tailored, human cover letter you can send today. Draft, customize tone, and export in minutes.&quot; _self
+  nafef916ba949a9dd --&gt; n65b197ed5fbcdcdf
+  ne626fc3929f2b7d4[&quot;bLinkIn Tuner #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click ne626fc3929f2b7d4 &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/&quot; &quot;bLinkIn Tuner explores energizing moments at work, recurring interests, and career experiments. Read the concept#59; its GPT destination is unavailable.&quot; _self
+  nafef916ba949a9dd --&gt; ne626fc3929f2b7d4
+  n44de0f306cb66f32[&quot;Career Seeker #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n44de0f306cb66f32 &quot;https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/&quot; &quot;Career Seeker explores job-search plans, application tracking, and role comparisons. Read the concept#59; its GPT destination is unavailable.&quot; _self
+  nafef916ba949a9dd --&gt; n44de0f306cb66f32
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/">Discovered Careers — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette’s publication state.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/">Resume Builder — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Resume Builder is a guided, keyword-aware GPT that helps you create or polish professional resumes, match job posts, and export clean, shareable versions.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/">Resume Customizer — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Resume Customizer explores tailoring a resume to a job posting: compare requirements, choose evidence, and draft relevant sections. Beta listing.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/">Career Fitness — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Career Fitness is a custom GPT that benchmarks your skills, matches job titles, checks salaries, and maps out practical career growth paths.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/">Letter Composer — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Letter Composer turns your resume and a job post into a tailored, human cover letter you can send today. Draft, customize tone, and export in minutes.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/">bLinkIn Tuner — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) bLinkIn Tuner explores energizing moments at work, recurring interests, and career experiments. Read the concept; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/">Career Seeker — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Career Seeker explores job-search plans, application tracking, and role comparisons. Read the concept; its GPT destination is unavailable.</li>
+</ul></details>
+<details><summary>Treasured Finds — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n6817815d5e239bd9[&quot;Treasured Finds #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n6817815d5e239bd9 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/&quot; &quot;Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.&quot; _self
+  n18a2012a8265b175[&quot;Personal Librarian #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n18a2012a8265b175 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/&quot; &quot;Personal Librarian explores book inventories, reading progress, and wishlists across print, ebooks, and audio. Read the beta catalog entry.&quot; _self
+  n6817815d5e239bd9 --&gt; n18a2012a8265b175
+  nf54150c6d35cd871[&quot;Decor Detective #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nf54150c6d35cd871 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/&quot; &quot;Decor Detective explores seasonal decor inventories by room, bin, holiday, and condition. Read the beta catalog entry and proposed workflow.&quot; _self
+  n6817815d5e239bd9 --&gt; nf54150c6d35cd871
+  n3052e6355b74c13e[&quot;Present Hoarder #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n3052e6355b74c13e &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/&quot; &quot;Present Hoarder explores organizing gifts already bought: recipients, occasions, storage spots, and budgets. Read the beta catalog entry.&quot; _self
+  n6817815d5e239bd9 --&gt; n3052e6355b74c13e
+  n07f0ab7e370ce50d[&quot;Scentinal Journal #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n07f0ab7e370ce50d &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/&quot; &quot;Scentinal Journal explores fragrance notes and scent preferences. Read the concept and suggested workflow#59; its GPT destination is unavailable.&quot; _self
+  n6817815d5e239bd9 --&gt; n07f0ab7e370ce50d
+  n8d576e4f127278f2[&quot;Spirited Journal #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n8d576e4f127278f2 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/&quot; &quot;Spirited Journal explores stories behind treasured possessions and keepsakes. Read the concept#59; its GPT destination is unavailable.&quot; _self
+  n6817815d5e239bd9 --&gt; n8d576e4f127278f2
+  n72bc593a9f47cb97[&quot;Supply Haus #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n72bc593a9f47cb97 &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/&quot; &quot;Supply Haus explores craft-supply lists, storage locations, and project materials. Read the beta catalog entry and proposed workflow.&quot; _self
+  n6817815d5e239bd9 --&gt; n72bc593a9f47cb97
+  ne9cfaed644c1d7ec[&quot;Bag Nabbit #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click ne9cfaed644c1d7ec &quot;https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/&quot; &quot;Bag Nabbit helps you track, tag, and fall back in love with your bag collection #8212; from everyday totes to glam clutches, including wishlist and loaned bags.&quot; _self
+  n6817815d5e239bd9 --&gt; ne9cfaed644c1d7ec
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/">Treasured Finds — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/">Personal Librarian — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Personal Librarian explores book inventories, reading progress, and wishlists across print, ebooks, and audio. Read the beta catalog entry.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/">Decor Detective — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Decor Detective explores seasonal decor inventories by room, bin, holiday, and condition. Read the beta catalog entry and proposed workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/">Present Hoarder — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Present Hoarder explores organizing gifts already bought: recipients, occasions, storage spots, and budgets. Read the beta catalog entry.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/">Scentinal Journal — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Scentinal Journal explores fragrance notes and scent preferences. Read the concept and suggested workflow; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/">Spirited Journal — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Spirited Journal explores stories behind treasured possessions and keepsakes. Read the concept; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/">Supply Haus — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Supply Haus explores craft-supply lists, storage locations, and project materials. Read the beta catalog entry and proposed workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/">Bag Nabbit — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Bag Nabbit helps you track, tag, and fall back in love with your bag collection — from everyday totes to glam clutches, including wishlist and loaned bags.</li>
+</ul></details>
+<details><summary>Tasty Tracker — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n3fde43a31f29ad74[&quot;Tasty Tracker #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n3fde43a31f29ad74 &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/&quot; &quot;Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.&quot; _self
+  nb5f3e63ec3bd4a8e[&quot;Flavor Meister #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nb5f3e63ec3bd4a8e &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/&quot; &quot;Flavor Meister explores recipe notes, variations, and cooking reflections you can save yourself. Read the beta catalog entry and intended workflow.&quot; _self
+  n3fde43a31f29ad74 --&gt; nb5f3e63ec3bd4a8e
+  nac69a17dbd7e111f[&quot;Menu Conductor #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nac69a17dbd7e111f &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/&quot; &quot;Menu Conductor explores meal plans shaped by your recipes, time, and preferences. Read the concept#59; its GPT destination is unavailable.&quot; _self
+  n3fde43a31f29ad74 --&gt; nac69a17dbd7e111f
+  nca3b9511c43bb2c9[&quot;Wishful Tastes #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nca3b9511c43bb2c9 &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/&quot; &quot;Wishful Tastes is your epicurean bucket-list GPT for tracking dream dishes, restaurants, and food experiences until you finally taste them.&quot; _self
+  n3fde43a31f29ad74 --&gt; nca3b9511c43bb2c9
+  n42df55a537ff42fc[&quot;Pantry Shopper #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n42df55a537ff42fc &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/&quot; &quot;Pantry Shopper is the grocery-list co-pilot inside Glee-fully Tasty Tracker #8212; turning your pantry, recipes, and meal plans into smart, store-ready shopping runs.&quot; _self
+  n3fde43a31f29ad74 --&gt; n42df55a537ff42fc
+  nc10ed658654792a0[&quot;Palatably Profiled #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nc10ed658654792a0 &quot;https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/&quot; &quot;Palatably Profiled turns your food ratings into a living flavor profile. See what you love, compare tastes across your household, and plan meals everyone enjoys.&quot; _self
+  n3fde43a31f29ad74 --&gt; nc10ed658654792a0
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/">Tasty Tracker — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/">Flavor Meister — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Flavor Meister explores recipe notes, variations, and cooking reflections you can save yourself. Read the beta catalog entry and intended workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/">Menu Conductor — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Menu Conductor explores meal plans shaped by your recipes, time, and preferences. Read the concept; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/">Wishful Tastes — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Wishful Tastes is your epicurean bucket-list GPT for tracking dream dishes, restaurants, and food experiences until you finally taste them.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/">Pantry Shopper — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Pantry Shopper is the grocery-list co-pilot inside Glee-fully Tasty Tracker — turning your pantry, recipes, and meal plans into smart, store-ready shopping runs.</li>
+<li><a href="https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/">Palatably Profiled — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Palatably Profiled turns your food ratings into a living flavor profile. See what you love, compare tastes across your household, and plan meals everyone enjoys.</li>
+</ul></details>
+<details><summary>Traveler&#x27;s Guide — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n6495dccbc63d8d24[&quot;Traveler#39;s Guide #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n6495dccbc63d8d24 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/&quot; &quot;Traveler#39;s Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.&quot; _self
+  ne6c054739d3ac539[&quot;Journey Diary #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click ne6c054739d3ac539 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/&quot; &quot;Journey Diary is a custom travel journal GPT that helps you log trips, capture memories, and turn scattered notes into export-ready stories.&quot; _self
+  n6495dccbc63d8d24 --&gt; ne6c054739d3ac539
+  n7ccbfb888f018416[&quot;Itinerary Hacker #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n7ccbfb888f018416 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/&quot; &quot;Itinerary Hacker explores trip routes, activity options, and daily schedules. Read the beta catalog entry and planning workflow.&quot; _self
+  n6495dccbc63d8d24 --&gt; n7ccbfb888f018416
+  n5467c645c1629635[&quot;Detour Discoverer #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n5467c645c1629635 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/&quot; &quot;Detour Discoverer is the Traveler#39;s Guide Tool-ette that finds the worth-it side trips, scenic stops, and bonus adventures along your planned route.&quot; _self
+  n6495dccbc63d8d24 --&gt; n5467c645c1629635
+  n476e63e872f65499[&quot;Dreamland Journeys #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n476e63e872f65499 &quot;https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/&quot; &quot;Dreamland Journeys explores travel wishlists and ideas for future adventures. Read the beta catalog entry and proposed workflow.&quot; _self
+  n6495dccbc63d8d24 --&gt; n476e63e872f65499
+  n855f5c0d5519725e[&quot;Memento Log #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n855f5c0d5519725e &quot;https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/&quot; &quot;Memento Log explores travel stories, keepsake notes, and photo captions you can save yourself. Read the beta catalog entry.&quot; _self
+  n6495dccbc63d8d24 --&gt; n855f5c0d5519725e
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/">Traveler&#x27;s Guide — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Traveler&#x27;s Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/">Journey Diary — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Journey Diary is a custom travel journal GPT that helps you log trips, capture memories, and turn scattered notes into export-ready stories.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/">Itinerary Hacker — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Itinerary Hacker explores trip routes, activity options, and daily schedules. Read the beta catalog entry and planning workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/">Detour Discoverer — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Detour Discoverer is the Traveler&#x27;s Guide Tool-ette that finds the worth-it side trips, scenic stops, and bonus adventures along your planned route.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/">Dreamland Journeys — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Dreamland Journeys explores travel wishlists and ideas for future adventures. Read the beta catalog entry and proposed workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/">Memento Log — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Memento Log explores travel stories, keepsake notes, and photo captions you can save yourself. Read the beta catalog entry.</li>
+</ul></details>
+<details><summary>Organized Life — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n64ac892a0be226c9[&quot;Organized Life #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n64ac892a0be226c9 &quot;https://glee-fully.tools/toolbox/05-organized-life/&quot; &quot;Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.&quot; _self
+  n237a23ed8d029a3a[&quot;Task Maestro #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n237a23ed8d029a3a &quot;https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/&quot; &quot;Task Maestro is a custom Glee-fully GPT that organizes your to-dos by category, urgency, and due date with gentle nudges, smart tags, and printable checklists.&quot; _self
+  n64ac892a0be226c9 --&gt; n237a23ed8d029a3a
+  n3fff3f1219281a82[&quot;Thrifty Spender #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n3fff3f1219281a82 &quot;https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/&quot; &quot;Thrifty Spender explores spending categories, budget notes, and planning questions. Read the beta catalog entry and its limitations.&quot; _self
+  n64ac892a0be226c9 --&gt; n3fff3f1219281a82
+  n8a398b1b4e5f292b[&quot;Giftlist Helper #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n8a398b1b4e5f292b &quot;https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/&quot; &quot;Giftlist Helper explores gift ideas, wishlists, recipients, and occasions. Read the beta catalog entry#59; bring your own notes to each conversation.&quot; _self
+  n64ac892a0be226c9 --&gt; n8a398b1b4e5f292b
+  n93252a5c20c0ed35[&quot;Scheduling Wizard #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n93252a5c20c0ed35 &quot;https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/&quot; &quot;Scheduling Wizard is an unavailable Organized Life concept for turning tasks, bills, and events into a calendar-ready plan.&quot; _self
+  n64ac892a0be226c9 --&gt; n93252a5c20c0ed35
+  nab33e95c1f6b3943[&quot;Lifestyle Wallboard #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nab33e95c1f6b3943 &quot;https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/&quot; &quot;Lifestyle Wallboard explores summaries of bills, goals, habits, and tasks you provide. Read the beta catalog entry#59; automatic app connections are not verified.&quot; _self
+  n64ac892a0be226c9 --&gt; nab33e95c1f6b3943
+  ndc5305ec0157956d[&quot;Neighborly Bazaar #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click ndc5305ec0157956d &quot;https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/&quot; &quot;Neighborly Bazaar is a custom GPT that helps you evaluate, price, and list household items so you can turn clutter into fair, neighbor-friendly sales and donations.&quot; _self
+  n64ac892a0be226c9 --&gt; ndc5305ec0157956d
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/">Organized Life — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/">Task Maestro — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Task Maestro is a custom Glee-fully GPT that organizes your to-dos by category, urgency, and due date with gentle nudges, smart tags, and printable checklists.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/">Thrifty Spender — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Thrifty Spender explores spending categories, budget notes, and planning questions. Read the beta catalog entry and its limitations.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/">Giftlist Helper — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Giftlist Helper explores gift ideas, wishlists, recipients, and occasions. Read the beta catalog entry; bring your own notes to each conversation.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/">Scheduling Wizard — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Scheduling Wizard is an unavailable Organized Life concept for turning tasks, bills, and events into a calendar-ready plan.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/">Lifestyle Wallboard — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Lifestyle Wallboard explores summaries of bills, goals, habits, and tasks you provide. Read the beta catalog entry; automatic app connections are not verified.</li>
+<li><a href="https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/">Neighborly Bazaar — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Neighborly Bazaar is a custom GPT that helps you evaluate, price, and list household items so you can turn clutter into fair, neighbor-friendly sales and donations.</li>
+</ul></details>
+<details><summary>Healthy Bee-ing — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n8f8ec4dab069cc8c[&quot;Healthy Bee-ing #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n8f8ec4dab069cc8c &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/&quot; &quot;Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.&quot; _self
+  nd85c2a9ed61ad5b0[&quot;Care Check #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nd85c2a9ed61ad5b0 &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/&quot; &quot;Care Check is an unavailable concept for organizing symptom notes for a health professional. It does not provide verified triage or diagnosis.&quot; _self
+  n8f8ec4dab069cc8c --&gt; nd85c2a9ed61ad5b0
+  nd913d575500ef2c6[&quot;Calm Keep #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nd913d575500ef2c6 &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/&quot; &quot;Calm Keep by Glee-fully Healthy Bee-ing tracks stress, sleep, and small movement patterns so you can build calmer days without guilt or perfection pressure.&quot; _self
+  n8f8ec4dab069cc8c --&gt; nd913d575500ef2c6
+  nccdda90bf54bebd3[&quot;Snappy Count #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nccdda90bf54bebd3 &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/&quot; &quot;Snappy Count explores meal notes and rough nutrition estimates, with uncertainty. Read the concept#59; its GPT destination is unavailable.&quot; _self
+  n8f8ec4dab069cc8c --&gt; nccdda90bf54bebd3
+  nf64f650b87d653df[&quot;Medi Minder #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nf64f650b87d653df &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/&quot; &quot;Medi Minder is a Glee-fully Tool-ette GPT for keeping meds, refills, and doctor appointments organized with calm, logistics-only reminders #8212; not medical advice.&quot; _self
+  n8f8ec4dab069cc8c --&gt; nf64f650b87d653df
+  nd7a00284b738e3d0[&quot;Moody Log #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nd7a00284b738e3d0 &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/&quot; &quot;Moody Log explores mood notes and reflection prompts. Read the beta catalog entry, intended use, and external data-handling boundaries.&quot; _self
+  n8f8ec4dab069cc8c --&gt; nd7a00284b738e3d0
+  n19961d4928b464b0[&quot;Maven Wise #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n19961d4928b464b0 &quot;https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/&quot; &quot;Maven Wise explores midlife and hormonal-change notes for reflection or clinician conversations. Read the beta catalog entry and limitations.&quot; _self
+  n8f8ec4dab069cc8c --&gt; n19961d4928b464b0
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/">Healthy Bee-ing — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/">Care Check — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Care Check is an unavailable concept for organizing symptom notes for a health professional. It does not provide verified triage or diagnosis.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/">Calm Keep — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Calm Keep by Glee-fully Healthy Bee-ing tracks stress, sleep, and small movement patterns so you can build calmer days without guilt or perfection pressure.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/">Snappy Count — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Snappy Count explores meal notes and rough nutrition estimates, with uncertainty. Read the concept; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/">Medi Minder — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Medi Minder is a Glee-fully Tool-ette GPT for keeping meds, refills, and doctor appointments organized with calm, logistics-only reminders — not medical advice.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/">Moody Log — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Moody Log explores mood notes and reflection prompts. Read the beta catalog entry, intended use, and external data-handling boundaries.</li>
+<li><a href="https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/">Maven Wise — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Maven Wise explores midlife and hormonal-change notes for reflection or clinician conversations. Read the beta catalog entry and limitations.</li>
+</ul></details>
+<details><summary>Identity Known — Glee-fully Personalizable Tools™ 🧰🌳</summary>
+<pre class="mermaid">flowchart LR
+  %% Generated navigation relationships, not project completion claims.
+  n9a15f666c57bfb42[&quot;Identity Known #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n9a15f666c57bfb42 &quot;https://glee-fully.tools/toolbox/07-identity-known/&quot; &quot;Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette#8217;s availability and limitations.&quot; _self
+  n70deeee3469206ad[&quot;Critter Spotter #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n70deeee3469206ad &quot;https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/&quot; &quot;Critter Spotter explores animal identification from photos or descriptions. Read the beta catalog entry#59; check identification ideas independently.&quot; _self
+  n9a15f666c57bfb42 --&gt; n70deeee3469206ad
+  n2c1d6aa32144fe4f[&quot;Roost Wrangler #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n2c1d6aa32144fe4f &quot;https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/&quot; &quot;Roost Wrangler explores home, furniture, and design styles through photos and descriptions. Read the beta catalog entry and proposed workflow.&quot; _self
+  n9a15f666c57bfb42 --&gt; n2c1d6aa32144fe4f
+  n7b82503ef3311a43[&quot;Sight Seeker #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n7b82503ef3311a43 &quot;https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/&quot; &quot;Sight Seeker explores scenery, landmark, and sky identification ideas. Read the concept and limitations#59; its GPT destination is unavailable.&quot; _self
+  n9a15f666c57bfb42 --&gt; n7b82503ef3311a43
+  n4ab3ec4a2315e58e[&quot;Snap Decoder #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n4ab3ec4a2315e58e &quot;https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/&quot; &quot;Snap Decoder explores screenshots, quotes, and error messages. Read the concept and suggested workflow#59; its GPT destination is unavailable.&quot; _self
+  n9a15f666c57bfb42 --&gt; n4ab3ec4a2315e58e
+  n8b58db28580c2cdf[&quot;Motif Muse #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n8b58db28580c2cdf &quot;https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/&quot; &quot;Motif Muse explores colors, patterns, and visual styles. Read the concept and suggested workflow#59; its GPT destination is unavailable.&quot; _self
+  n9a15f666c57bfb42 --&gt; n8b58db28580c2cdf
+  n012a1cec5506ac58[&quot;Maker Matcher #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click n012a1cec5506ac58 &quot;https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/&quot; &quot;Maker Matcher explores crafts, materials, and tools. Read the concept and identification limits#59; its GPT destination is unavailable.&quot; _self
+  n9a15f666c57bfb42 --&gt; n012a1cec5506ac58
+  nd3cd2305f1fcfd3d[&quot;Self Fixer #8212; Glee-fully Personalizable Tools#8482; #129520;#127795; (Published page)&quot;]
+  click nd3cd2305f1fcfd3d &quot;https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/&quot; &quot;Self Fixer helps you identify mystery objects, broken bits, and DIY parts so you can understand what they are, what they do, and what to do next.&quot; _self
+  n9a15f666c57bfb42 --&gt; nd3cd2305f1fcfd3d
+  classDef concept fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-dasharray:5 5
+</pre><ul>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/">Identity Known — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette’s availability and limitations.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/">Critter Spotter — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Critter Spotter explores animal identification from photos or descriptions. Read the beta catalog entry; check identification ideas independently.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/">Roost Wrangler — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Roost Wrangler explores home, furniture, and design styles through photos and descriptions. Read the beta catalog entry and proposed workflow.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/">Sight Seeker — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Sight Seeker explores scenery, landmark, and sky identification ideas. Read the concept and limitations; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/">Snap Decoder — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Snap Decoder explores screenshots, quotes, and error messages. Read the concept and suggested workflow; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/">Motif Muse — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Motif Muse explores colors, patterns, and visual styles. Read the concept and suggested workflow; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/">Maker Matcher — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Maker Matcher explores crafts, materials, and tools. Read the concept and identification limits; its GPT destination is unavailable.</li>
+<li><a href="https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/">Self Fixer — Glee-fully Personalizable Tools™ 🧰🌳</a> (Published page) Self Fixer helps you identify mystery objects, broken bits, and DIY parts so you can understand what they are, what they do, and what to do next.</li>
+</ul></details>
+</section>
+<!-- /AUTOGEN:UNIVERSE-MAP -->

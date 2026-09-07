@@ -64,13 +64,13 @@ dates and counts.
   trunk-to-branch-to-tool-ette taxonomy, and a coherent visitor path. The public
   hub does not certify the behavior or availability of externally hosted GPTs.
 - **Current status:** The site is implemented and deployable as a static website
-  in the **active growth and refinement** phase. It has 60 indexable public
+  in the **active growth and refinement** phase. It has 61 indexable public
   pages, 7 branch hubs, and 42 Tool-ettes; publication states and the meaning of
   complete are authoritative in `docs/suite-promise.md`.
 
 ### Architecture and entry points
 
-- Production content is 63 validator-scoped HTML files: the homepage,
+- Production content is 64 validator-scoped HTML files: the homepage,
   supporting pages, the Toolbox hub, seven branch pages, 42 tool-ette pages,
   and the site's utility/fallback pages. HTML under `assets/`
   and `.agents/` is development or agent content and is excluded by site tools.
@@ -88,19 +88,24 @@ dates and counts.
   to `main`. A separate workflow runs Playwright viewport QA when HTML, CSS, or
   JavaScript changes.
 
+The September 7, 2026 FoundRy feature-page addition brings the current tree to
+64 production HTML files and 61 indexable pages. `/foundry/` introduces the
+locally run builder with public source; it adds no public application runtime. Earlier dated
+validation counts below remain historical.
+
 ### Verified validation baseline
 
 The repository's latest recorded validation passed on 2026-08-29, re-run after
 scoping the CSP `img-src` allowlist (see `scripts/csp.py`) and fixing the
 dark-mode `theme-color` value (see `scripts/normalize-head.py`) -- both
 confirmed clean at 63 production HTML pages, 0 issues, 0 warnings, 0 broken
-links, 60 sitemap URLs. The current tree contains 63 production HTML files, 60
+links, 60 sitemap URLs. The current tree contains 64 production HTML files, 61
 sitemap URLs, and 49 Atom feed entries. Re-run these commands after any content
 or tooling change to establish a current baseline:
 
 ```bash
 python3 scripts/validate-site.py
-# Expected: 63 files; 0 issues; 0 warnings
+# Expected: 64 files; 0 issues; 0 warnings
 
 python3 scripts/check-links.py
 # Expected: 0 broken links and 0 sitemap mismatches; link totals vary by content
@@ -677,7 +682,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->25<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-09-04; see `scripts/README.md` for the current active/archive classification (supersedes the counts in Script categories below) |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->28<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-09-06; `sync-universe-map.py` generates the public map after indexing. See `scripts/README.md` for active/archive classification. |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette
@@ -691,7 +696,7 @@ baseline -- update it here when the inventory changes materially.
 **Glee-fully-specific scripts not on siblings:**
 Active: `check-accent-contrast.py`, `check-glee-dark-coverage.py`,
 `check-public-headers.py`, `check-workflow-actions.py`, `run-viewport-qa.py`,
-`inclusive-accessibility-qa.py`, `serve-site.py`, `sparkle-qa.py`,
+`inclusive-accessibility-qa.py`, `public-artifact.py`, `serve-site.py`, `sparkle-qa.py`,
 `sync-css-version.py`, `sync-image-alt.py`,
 `sync-foundation-files.py`, `sync-portfolio-stats.py`, `sync-social-card.py`,
 `sync-sparkle-fallback.py`.

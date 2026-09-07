@@ -581,16 +581,28 @@ def _check_offline_shell() -> list:
     if not offline.is_file():
         issues.append("offline.html is missing")
     app_text = app.read_text(encoding="utf-8", errors="replace") if app.is_file() else ""
-    if 'serviceWorker.register("/sw.js"' not in app_text:
-        issues.append("app.js does not register /sw.js")
+    brand_module = ROOT / "assets" / "js" / "glee-site-enhancements.js"
+    registration_text = app_text + "\n" + (
+        brand_module.read_text(encoding="utf-8", errors="replace")
+        if brand_module.is_file() else ""
+    )
+    if 'serviceWorker.register("/sw.js"' not in registration_text:
+        issues.append("client runtime does not register /sw.js")
 
     sw = worker.read_text(encoding="utf-8", errors="replace")
     if not re.search(r'CACHE_NAME\s*=\s*["\']glee-fully-shell-v\d+["\']', sw):
         issues.append("sw.js cache name is not versioned")
-    if 'caches.match("/offline.html")' not in sw:
+    # Accept the tested cache-scoped helper as well as the legacy direct call.
+    # This is a source-presence gate; worker regressions prove fallback behavior.
+    direct_fallback = re.search(r'''\bcaches\.match\(\s*["']/offline\.html["']\s*\)''', sw)
+    scoped_fallback = (
+        re.search(r'''\bcachedResponse\(\s*["']/offline\.html["']\s*\)''', sw)
+        and re.search(r'\basync\s+function\s+cachedResponse\s*\(', sw)
+    )
+    if not (direct_fallback or scoped_fallback):
         issues.append("sw.js has no /offline.html navigation fallback")
-    if not re.search(r'register\("/sw\.js",\s*\{\s*scope:\s*"/"\s*\}\)', app_text):
-        issues.append("app.js registration is not root-scoped")
+    if not re.search(r'register\("/sw\.js",\s*\{\s*scope:\s*"/"\s*\}\)', registration_text):
+        issues.append("client runtime registration is not root-scoped")
 
     precache = re.search(
         r"const\s+PRECACHE_URLS\s*=\s*\[(.*?)\];", sw, re.DOTALL
@@ -676,14 +688,12 @@ def _check_stat_markers_drift(tolerance: int = 2) -> list:
     tool_ettes = [p for p in real if tool_ette_pat.match(p["url"])]
     branches   = [p for p in real if branch_pat.match(p["url"])]
 
-    destination_pattern = re.compile(
-        r"https?://(?:chatgpt\.com|chat\.openai\.com)/g/g-[a-z0-9]+",
-        re.IGNORECASE,
-    )
+    import runpy
+    launch_urls = runpy.run_path(str(Path(__file__).with_name("audit-tool-ette-promises.py")))["launch_urls"]
     gpt_count = 0
     for f in sorted(ROOT.glob("toolbox/*/*/index.html")):
         html_text = f.read_text(encoding="utf-8", errors="replace")
-        if destination_pattern.search(html_text):
+        if launch_urls(html_text):
             gpt_count += 1
 
     live = {

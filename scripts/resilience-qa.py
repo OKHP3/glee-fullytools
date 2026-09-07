@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-resilience-qa.py — installability, offline, browser, crawler, and dependency QA
+resilience-qa.py  -  installability, offline, browser, crawler, and dependency QA
 ===============================================================================
 
 This is the executable acceptance check for docs/resilience.md.  It deliberately
@@ -90,6 +90,8 @@ CHROMIUM_ARGS = [
 
 def ensure_browser_runtime() -> None:
     """Reuse the verified libgbm/Playwright setup used by viewport QA."""
+    if not os.environ.get("REPL_ID"):
+        return
     helper_path = ROOT / "scripts" / "run-viewport-qa.py"
     spec = importlib.util.spec_from_file_location("_viewport_qa_runtime", helper_path)
     if spec is None or spec.loader is None:
@@ -203,9 +205,15 @@ def static_checks() -> tuple[list[dict], list[str]]:
     ]
     if external_precache:
         failures.append(f"service worker precaches third-party URLs: {external_precache}")
-    if 'scope: "/"' not in (ROOT / "assets/js/app.js").read_text(
-        encoding="utf-8", errors="replace"
-    ):
+    registration_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="replace")
+        for path in (
+            ROOT / "assets/js/app.js",
+            ROOT / "assets/js/glee-site-enhancements.js",
+        )
+        if path.is_file()
+    )
+    if 'scope: "/"' not in registration_text:
         failures.append("service-worker registration is not root scoped")
 
     for kind, route in CRAWLER_ROUTES:
@@ -323,6 +331,11 @@ def goto_assert_first_party(page, base_url: str, route: str, label: str) -> dict
         base_url.rstrip("/") + route, wait_until="domcontentloaded", timeout=15000
     )
     status = response.status if response else 0
+    page.wait_for_function("""() => [...document.styleSheets].some(sheet => {
+      try { return sheet.href && sheet.href.includes('/assets/css/theme.css') && sheet.cssRules.length > 0; }
+      catch (_) { return false; }
+    })""", timeout=15000)
+    page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
     heading = page.locator("h1").first.text_content(timeout=5000).strip()
     viewport = page.evaluate(
         """() => ({
@@ -355,6 +368,20 @@ def browser_journeys(base_url: str, browser_names: list[str]) -> tuple[list[dict
     results: list[dict] = []
     failures: list[str] = []
     base_origin = urlparse(base_url).netloc
+    local_http = urlparse(base_url).scheme == "http" and urlparse(base_url).hostname in {"localhost", "127.0.0.1"}
+
+    def serve_test_route(route) -> None:
+        # WebKit upgrades even loopback HTTP under the production CSP. Remove
+        # only that transport directive from local test documents; keep all
+        # resource allowlists and the shipped HTML unchanged.
+        if local_http and route.request.is_navigation_request() and urlparse(route.request.url).netloc == base_origin:
+            response = route.fetch()
+            if "text/html" in response.headers.get("content-type", ""):
+                route.fulfill(response=response, body=response.text().replace("; upgrade-insecure-requests", ""))
+            else:
+                route.fulfill(response=response)
+        else:
+            route.continue_()
 
     with sync_playwright() as pw:
         for browser_name in browser_names:
@@ -369,7 +396,8 @@ def browser_journeys(base_url: str, browser_names: list[str]) -> tuple[list[dict
                 continue
 
             browser_result = {"browser": browser_name, "ok": True, "journeys": []}
-            context = browser.new_context(viewport={"width": 390, "height": 844})
+            context = browser.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+            context.route("**/*", serve_test_route)
             page = context.new_page()
             page_errors: list[str] = []
             page.on("pageerror", lambda exc: page_errors.append(str(exc)[:160]))
@@ -410,7 +438,7 @@ def browser_journeys(base_url: str, browser_names: list[str]) -> tuple[list[dict
                 # still render, while the Arcade's direct-link fallback appears
                 # after its documented timeout.
                 blocked: list[str] = []
-                blocked_context = browser.new_context(viewport={"width": 1280, "height": 800})
+                blocked_context = browser.new_context(viewport={"width": 1280, "height": 800}, service_workers="block")
                 blocked_context.add_init_script(
                     "localStorage.setItem('glee-analytics-consent', 'granted')"
                 )
@@ -421,7 +449,7 @@ def browser_journeys(base_url: str, browser_names: list[str]) -> tuple[list[dict
                         blocked.append(target.netloc)
                         route.abort()
                     else:
-                        route.continue_()
+                        serve_test_route(route)
 
                 blocked_context.route("**/*", block_external)
                 blocked_page = blocked_context.new_page()
@@ -528,6 +556,10 @@ def chromium_lifecycle(base_url: str) -> tuple[dict, list[str]]:
                 goto_assert_first_party(page, lifecycle_url, "/", "online repeat /")
             )
             wait_for_control(page)
+            warmed_headings = {}
+            for route in ONLINE_NAVIGATION_ROUTES:
+                item = goto_assert_first_party(page, lifecycle_url, route, "controlled warm")
+                warmed_headings[route] = item["heading"]
             cache_state = page.evaluate(
                 """async () => ({
                   controller: !!navigator.serviceWorker.controller,
@@ -553,6 +585,8 @@ def chromium_lifecycle(base_url: str) -> tuple[dict, list[str]]:
             for route in ONLINE_NAVIGATION_ROUTES:
                 try:
                     item = goto_assert_first_party(page, lifecycle_url, route, f"offline {route}")
+                    if item["heading"] != warmed_headings[route]:
+                        item["issues"].append("visited page was replaced by the generic offline fallback")
                 except Exception as exc:
                     item = {"route": route, "issues": [f"navigation error: {str(exc)[:120]}"]}
                 result["journeys"].append(item)

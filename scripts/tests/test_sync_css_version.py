@@ -73,6 +73,84 @@ class SyncCssVersionTests(unittest.TestCase):
                 _MODULE.REPO = old_repo
                 _MODULE.THEME_CSS = old_theme
 
+    def test_javascript_tokens_cover_html_and_worker_with_crlf_normalization(self) -> None:
+        """Version both shared JS URLs consistently and keep check mode read-only."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            css = root / "assets" / "css" / "theme.css"
+            app = root / "assets" / "js" / "app.js"
+            enhancements = root / "assets" / "js" / "glee-site-enhancements.js"
+            page = root / "about" / "index.html"
+            worker = root / "sw.js"
+            css.parent.mkdir(parents=True)
+            app.parent.mkdir(parents=True)
+            page.parent.mkdir(parents=True)
+            (root / "index.html").write_text("shell\n", encoding="utf-8")
+            css.write_text("body {}\n", encoding="utf-8")
+            app.write_bytes(b"console.log('app');\r\n")
+            enhancements.write_bytes(b"console.log('enhance');\r\n")
+            app.write_bytes(b'const moduleUrl = "/assets/js/glee-site-enhancements.js";\r\n')
+            page.write_text(
+                '<script src="/assets/js/app.js?v=stale&mode=test#keep"></script>\n'
+                '<script src="https://cdn.example/assets/js/app.js?v=foreign"></script>\n'
+                '<script src="/assets/js/glee-site-enhancements.js#keep"></script>\n',
+                encoding="utf-8",
+            )
+            worker.write_text(
+                'const CACHE_NAME = "glee-fully-shell-v1";\n'
+                'const PRECACHE_URLS = ["/", "/assets/js/app.js?v=3", '
+                '"/assets/js/glee-site-enhancements.js"];\n',
+                encoding="utf-8",
+            )
+
+            old_repo = _MODULE.REPO
+            old_theme = _MODULE.THEME_CSS
+            try:
+                _MODULE.REPO = root
+                _MODULE.THEME_CSS = css
+                before_page = page.read_bytes()
+                before_worker = worker.read_bytes()
+                before_app = app.read_bytes()
+                status, output = self.run_main("--check")
+                self.assertEqual(status, 1)
+                self.assertIn("STALE: assets/js/app.js adapter import", output)
+                self.assertIn("offline shell is stale", output)
+                self.assertEqual(page.read_bytes(), before_page)
+                self.assertEqual(worker.read_bytes(), before_worker)
+                self.assertEqual(app.read_bytes(), before_app)
+
+                status, output = self.run_main()
+                self.assertEqual(status, 0)
+                tokens = _MODULE.javascript_tokens(root)
+                app_source = app.read_text(encoding="utf-8")
+                self.assertIn(
+                    f'glee-site-enhancements.js?v={tokens["glee-site-enhancements"]}',
+                    app_source,
+                )
+                rewritten = page.read_text(encoding="utf-8")
+                self.assertIn(f'app.js?v={tokens["app"]}&mode=test#keep', rewritten)
+                self.assertIn('https://cdn.example/assets/js/app.js?v=foreign', rewritten)
+                self.assertIn(
+                    f'glee-site-enhancements.js?v={tokens["glee-site-enhancements"]}#keep',
+                    rewritten,
+                )
+                worker_text = worker.read_text(encoding="utf-8")
+                self.assertIn(f'/assets/js/app.js?v={tokens["app"]}', worker_text)
+                self.assertIn(
+                    f'/assets/js/glee-site-enhancements.js?v={tokens["glee-site-enhancements"]}',
+                    worker_text,
+                )
+                stable_worker = worker.read_bytes()
+                stable_page = page.read_bytes()
+                stable_app = app.read_bytes()
+                self.assertEqual(self.run_main()[0], 0)
+                self.assertEqual(worker.read_bytes(), stable_worker)
+                self.assertEqual(page.read_bytes(), stable_page)
+                self.assertEqual(app.read_bytes(), stable_app)
+            finally:
+                _MODULE.REPO = old_repo
+                _MODULE.THEME_CSS = old_theme
+
 
 if __name__ == "__main__":
     unittest.main()

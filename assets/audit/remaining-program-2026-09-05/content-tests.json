@@ -1,0 +1,45 @@
+{
+  "first_reproduction": {
+    "tests": 6,
+    "failed": 1,
+    "reason": "Current corpus test rejected unsupported application/price/screenshot claims on all 42 Tool-ette pages before source changes."
+  },
+  "second_reproduction": {
+    "tests": 8,
+    "failed": 1,
+    "reason": "Residual author-instruction fixture was not rejected until the existing promise audit markers were extended."
+  },
+  "checks": [
+    {
+      "command": "python3 scripts/tests/test_content_claims.py",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.234s\n\nOK\n"
+    },
+    {
+      "command": "python3 scripts/tests/test-visitor-truth.py",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 2.511s\n\nOK\n"
+    },
+    {
+      "command": "python3 scripts/audit-tool-ette-promises.py",
+      "exit_code": 0,
+      "stdout": "Tool-ette promise surface: 42 pages; 1 live, 24 beta, 17 unavailable\nPASS: unique catalog identities, explicit states, no public scaffold, and all GPT entry points agree with primary destinations\n",
+      "stderr": ""
+    },
+    {
+      "command": "python3 scripts/check-catalog-claims.py --report assets\\audit\\remaining-program-2026-09-05\\content-claim-check.json",
+      "exit_code": 0,
+      "stdout": "{\n  \"pages\": 42,\n  \"errors\": 0,\n  \"results\": [\n    {\n      \"path\": \"toolbox/01-discovered-careers/01a-resume-builder/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/01-discovered-careers/01b-resume-customizer/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/01-discovered-careers/01c-career-fitness/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/01-discovered-careers/01d-letter-composer/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/01-discovered-careers/01e-blinkin-tuner/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/01-discovered-careers/01f-career-seeker/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02a-personal-librarian/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02b-decor-detective/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02c-present-hoarder/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02d-scentinal-journal/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02e-spirited-journal/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02f-supply-haus/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/02-treasured-finds/02g-bag-nabbit/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/03-tasty-tracker/03a-flavor-meister/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/03-tasty-tracker/03b-menu-conductor/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/03-tasty-tracker/03c-wishful-tastes/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/03-tasty-tracker/03d-pantry-shopper/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/03-tasty-tracker/03e-palatably-profiled/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/04-travelers-guide/04a-journey-diary/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/04-travelers-guide/04b-itinerary-hacker/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/04-travelers-guide/04c-detour-discoverer/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/04-travelers-guide/04d-dreamland-journeys/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/04-travelers-guide/04e-memento-log/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05a-task-maestro/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05b-thrifty-spender/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05c-giftlist-helper/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05d-scheduling-wizard/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05e-lifestyle-wallboard/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/05-organized-life/05f-neighborly-bazaar/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06a-care-check/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06b-calm-keep/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06c-snappy-count/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06d-medi-minder/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06e-moody-log/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/06-healthy-bee-ing/06f-maven-wise/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07a-critter-spotter/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07b-roost-wrangler/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07c-sight-seeker/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07d-snap-decoder/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07e-motif-muse/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07f-maker-matcher/index.html\",\n      \"errors\": []\n    },\n    {\n      \"path\": \"toolbox/07-identity-known/07g-self-fixer/index.html\",\n      \"errors\": []\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": "python3 scripts/check-links.py --no-report",
+      "exit_code": 0,
+      "stdout": "Pages scanned:    63\nInternal links:   2719\nExternal links:   1087\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n",
+      "stderr": ""
+    }
+  ],
+  "source_freeze": "Worker content and date source freeze, before PM serialized generation"
+}

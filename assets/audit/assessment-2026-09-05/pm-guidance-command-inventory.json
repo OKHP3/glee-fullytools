@@ -1,0 +1,407 @@
+[
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 49,
+    "script": "scripts/build-search-index.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 50,
+    "script": "scripts/audit-assets.py",
+    "exists": true,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 51,
+    "script": "scripts/generate-feed.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 53,
+    "script": "scripts/post-merge.sh",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 123,
+    "script": "scripts/validate-site.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 124,
+    "script": "scripts/check-links.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 127,
+    "script": "scripts/build-search-index.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 130,
+    "script": "scripts/normalize-head.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 131,
+    "script": "scripts/activate-icons.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 132,
+    "script": "scripts/inject-jsonld.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 133,
+    "script": "scripts/inject-breadcrumb.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 136,
+    "script": "scripts/audit-assets.py",
+    "exists": true,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": ".agents/agent-skills.md",
+    "line": 137,
+    "script": "scripts/generate-feed.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 235,
+    "script": "scripts/normalize-head.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 236,
+    "script": "scripts/activate-icons.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 237,
+    "script": "scripts/inject-jsonld.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 238,
+    "script": "scripts/inject-breadcrumb.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 241,
+    "script": "scripts/build-search-index.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 242,
+    "script": "scripts/sync-portfolio-stats.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "replit.md",
+    "line": 243,
+    "script": "scripts/audit-assets.py",
+    "exists": true,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "replit.md",
+    "line": 248,
+    "script": "scripts/validate-site.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "replit.md",
+    "line": 249,
+    "script": "scripts/check-links.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 252,
+    "script": "scripts/convert-hero-webp.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 253,
+    "script": "scripts/inject-hero-picture.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 254,
+    "script": "scripts/convert-gpt-icons-webp.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 255,
+    "script": "scripts/inject-gpt-icon-picture.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 258,
+    "script": "scripts/update-placeholder-dimensions.py",
+    "exists": false,
+    "archived_exists": true,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "replit.md",
+    "line": 259,
+    "script": "scripts/post-merge.sh",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": true,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 38,
+    "script": "scripts/sync-css-version.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 62,
+    "script": "scripts/check-workflow-actions.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 63,
+    "script": "scripts/build-search-index.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 64,
+    "script": "scripts/sync-portfolio-stats.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 65,
+    "script": "scripts/sync-css-version.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 66,
+    "script": "scripts/sync-social-card.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 67,
+    "script": "scripts/validate-site.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 68,
+    "script": "scripts/check-links.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 69,
+    "script": "scripts/audit-site.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 70,
+    "script": "scripts/check-accent-contrast.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 71,
+    "script": "scripts/check-glee-dark-coverage.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 72,
+    "script": "scripts/resilience-qa.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/deployment.md",
+    "line": 95,
+    "script": "scripts/check-public-headers.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/roadmap.md",
+    "line": 17,
+    "script": "scripts/audit-site.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/roadmap.md",
+    "line": 18,
+    "script": "scripts/responsive-qa.mjs",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  },
+  {
+    "document": "docs/roadmap.md",
+    "line": 19,
+    "script": "scripts/sync-portfolio-stats.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": true
+  },
+  {
+    "document": "docs/roadmap.md",
+    "line": 44,
+    "script": "scripts/resilience-qa.py",
+    "exists": true,
+    "archived_exists": false,
+    "invokes_shell_with_python": false,
+    "compatibility_shim": false
+  }
+]

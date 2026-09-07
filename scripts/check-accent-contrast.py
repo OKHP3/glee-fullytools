@@ -316,7 +316,7 @@ HOVER_CONTRAST_CHECKS = (
     },
     {
         "name": "Glee footer link hover (light)",
-        "selector": "html[data-theme=\"light\"] .glee-main .footer-column a:hover",
+        "selector": "html[data-theme=\"light\"]:where(:not([data-color-scheme=\"dark\"])) .glee-main .footer-column a:hover",
         "mode": "light",
         "background": "#fff7f1",
         "required": True,
@@ -392,6 +392,9 @@ def scan_hover_contrast(path: Path) -> list[dict]:
     findings = []
     for check in HOVER_CONTRAST_CHECKS:
         def is_dark_selector(selector: str) -> bool:
+            # Excluding pinned dark is a light rule, not a dark declaration.
+            selector = selector.replace(':not([data-color-scheme="dark"])', '')
+            selector = selector.replace(":not([data-color-scheme='dark'])", '')
             return (
                 'data-color-scheme="dark"' in selector
                 or "data-color-scheme='dark'" in selector

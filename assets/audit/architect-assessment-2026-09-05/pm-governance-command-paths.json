@@ -1,0 +1,32 @@
+[
+  {
+    "referencedPath": "scripts/normalize-head.py",
+    "exists": false,
+    "archivedExists": true
+  },
+  {
+    "referencedPath": "scripts/activate-icons.py",
+    "exists": false,
+    "archivedExists": true
+  },
+  {
+    "referencedPath": "scripts/inject-jsonld.py",
+    "exists": false,
+    "archivedExists": true
+  },
+  {
+    "referencedPath": "scripts/inject-breadcrumb.py",
+    "exists": false,
+    "archivedExists": true
+  },
+  {
+    "referencedPath": "scripts/audit-assets.py",
+    "exists": true,
+    "archivedExists": true
+  },
+  {
+    "referencedPath": "scripts/generate-feed.py",
+    "exists": false,
+    "archivedExists": true
+  }
+]

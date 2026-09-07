@@ -1,6 +1,8 @@
 User-agent: *
+Disallow: /assets/audit/
+Disallow: /assets/docs/
+Disallow: /assets/templates/
 Allow: /
-Disallow: /assets/
 
 User-agent: GPTBot
 Disallow: /

@@ -1,0 +1,35 @@
+{
+  "generated": "2026-05-28",
+  "html_files_scanned": 72,
+  "css_files_scanned": 1,
+  "advisory_count": 0,
+  "info_count": 0,
+  "hover_check_count": 8,
+  "hover_failure_count": 0,
+  "findings": [],
+  "light_mode": {
+    "bg": "#f6f2ee",
+    "surface": "#f6f2ee",
+    "accent_colors": [
+      "#d94f63",
+      "#d35b2d"
+    ],
+    "worst_contrast": 3.55
+  },
+  "dark_mode": {
+    "bg": "#1a1210",
+    "surface": "#241c1a",
+    "accent_colors": [
+      "#f07585"
+    ],
+    "worst_contrast": 6.04,
+    "source": "assets\\css\\theme.css"
+  },
+  "rule": "var(--color-accent) must not be used as the sole color signal for normal-weight body text smaller than 18.67 px. Light-mode contrast: #d94f63 = 3.37:1, #d35b2d = 3.55:1 (bg #f6f2ee). Dark-mode contrast: #f07585 = 4.9:1 (surface #241c1a). Passes WCAG 2.1 AA for large/bold text (>=18.67px normal or >=14px bold) but light-mode fails for normal body text. Any rule that fails on either mode is flagged ADVISORY.",
+  "passes": [
+    "Pass 1 \u2014 HTML inline style= attributes and utility class names",
+    "Pass 2 \u2014 CSS rule blocks in project stylesheet(s)",
+    "Pass 3 \u2014 Hardcoded hex text colors inside dark-mode CSS blocks",
+    "Pass 4 \u2014 Known branded hover-state colors against their surfaces"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "base": "http://127.0.0.1:49701",
+  "stripLocalCsp": true,
+  "error": null,
+  "analytics": "object",
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: Could not connect to server"
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:49701/",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/css/theme.css?v=10030d12",
+      "failure": null
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+      "failure": {
+        "errorText": "Could not connect to server"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/js/app.js?v=ea91ea25",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/site.webmanifest",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/js/glee-site-enhancements.js?v=ebfa263e",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/img/arcade/chai-chasers-social-1280.jpg",
+      "failure": null
+    },
+    {
+      "url": "http://127.0.0.1:49701/assets/data/sparkle.json",
+      "failure": null
+    }
+  ]
+}

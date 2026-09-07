@@ -1,0 +1,64 @@
+{
+  "captured_at": "2026-09-05T17:02:08.117949+00:00",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 1,
+      "seconds": 0.13,
+      "stdout": "",
+      "stderr": "....F..................\n======================================================================\nFAIL: test_relative_report_is_rooted_in_repo_with_nonreconfigurable_console (test_audit_site.AuditSiteTests.test_relative_report_is_rooted_in_repo_with_nonreconfigurable_console)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Volumes/OKH-Local/04_GitHub_Mirrors/Glee-fullyTools/scripts/tests/test_audit_site.py\", line 63, in test_relative_report_is_rooted_in_repo_with_nonreconfigurable_console\n    self.assertIn(\"Report written to reports/audit.md\", console.getvalue())\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'Report written to reports/audit.md' not found in '  [  1] caf\u00e9-\u2603/index.html\\n\\nReport written to /private/var/folders/xr/fws01t4s6l91k1k_7_ldftqm0000gn/T/tmpy7piyjnb/reports/audit.md\\nTotal issues found: 1\\n'\n\n----------------------------------------------------------------------\nRan 23 tests in 0.021s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/tests/test-reconciliation.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.23,
+      "stdout": "  CSS token -> a06fd750  (1 file(s) updated, 0 already current)\n  Offline shell version and precache URLs synchronized\n  CSS token -> a06fd750  (all 1 file(s) already current)\nERROR: offline shell is stale. Run scripts/sync-css-version.py after all content generators.\n  CSS token -> a06fd750  (all 1 file(s) already current)\n  Offline shell version and precache URLs synchronized\n  CSS token -> a06fd750  (all 1 file(s) already current)\n",
+      "stderr": "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/case.py:615: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>\n  result = method()\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n...\n----------------------------------------------------------------------\nRan 3 tests in 0.165s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/tests/test-post-merge.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.08,
+      "stdout": "",
+      "stderr": ".....\n----------------------------------------------------------------------\nRan 5 tests in 0.044s\n\nOK\n"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/tests/test-client-regressions.cjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.05,
+      "stdout": "Analytics toggling and iframe load/error/timeout regressions passed.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/audit-site.py",
+        "--quiet",
+        "--report",
+        "assets/docs/assessment-2026-09-05/infrastructure-static-audit-output.md"
+      ],
+      "exit_code": 0,
+      "seconds": 0.38,
+      "stdout": "\nReport written to assets/docs/assessment-2026-09-05/infrastructure-static-audit-output.md\nTotal issues found: 40\n",
+      "stderr": ""
+    }
+  ]
+}

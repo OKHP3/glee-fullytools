@@ -1,0 +1,473 @@
+{
+  "date": "2026-09-06",
+  "base_url": "http://localhost:5000",
+  "contract": "docs/resilience.md",
+  "static_checks": [
+    {
+      "kind": "core",
+      "route": "/",
+      "file": "index.html",
+      "ok": true,
+      "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Welcome to Glee‑fully",
+      "issues": []
+    },
+    {
+      "kind": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "file": "toolbox/01-discovered-careers/index.html",
+      "ok": true,
+      "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Glee‑fully Discovered Careers",
+      "issues": []
+    },
+    {
+      "kind": "tool-ette",
+      "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+      "file": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "ok": true,
+      "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Glee‑fully Resume Builder",
+      "issues": []
+    },
+    {
+      "kind": "search",
+      "route": "/search/",
+      "file": "search/index.html",
+      "ok": true,
+      "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Search the Glee‑fully Toolbox",
+      "issues": []
+    },
+    {
+      "kind": "utility",
+      "route": "/404.html",
+      "file": "404.html",
+      "ok": true,
+      "title": "Page not found — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "This page isn’t in the toolbox (yet).",
+      "issues": []
+    },
+    {
+      "kind": "utility",
+      "route": "/offline.html",
+      "file": "offline.html",
+      "ok": true,
+      "title": "Offline — Glee‑fully Personalizable Tools™",
+      "h1": "You’re offline for a moment.",
+      "issues": []
+    },
+    {
+      "kind": "installability",
+      "route": "/site.webmanifest",
+      "ok": true,
+      "manifest": {
+        "name": "Glee-fully Personalizable Tools™",
+        "short_name": "Glee-fully",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone"
+      },
+      "icon_count": 7,
+      "service_worker_cache": "glee-fully-shell-v8778555809938203386",
+      "precache_count": 12
+    }
+  ],
+  "browser_checks": [
+    {
+      "browser": "chromium",
+      "ok": true,
+      "journeys": [
+        {
+          "label": "core navigation",
+          "route": "/",
+          "status": 200,
+          "heading": "Welcome to Glee‑fully",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "branch navigation",
+          "route": "/toolbox/01-discovered-careers/",
+          "status": 200,
+          "heading": "Glee‑fully Discovered Careers",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "tool-ette navigation",
+          "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+          "status": 200,
+          "heading": "Glee‑fully Resume Builder",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "search navigation",
+          "route": "/search/",
+          "status": 200,
+          "heading": "Search the Glee‑fully Toolbox",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "200% zoom",
+          "heading": "Search the Glee‑fully Toolbox",
+          "visible": true
+        },
+        {
+          "label": "third-party failure",
+          "route": "/arcade/",
+          "status": 200,
+          "heading": "Glee‑fully Chai Chasers",
+          "viewport": {
+            "width": 1280,
+            "scrollWidth": 1280,
+            "headingVisible": true
+          },
+          "issues": [],
+          "blocked_origins": [
+            "fonts.googleapis.com",
+            "okhp3.github.io",
+            "www.googletagmanager.com"
+          ],
+          "fallback_visible": true,
+          "ko_fi_link_present": true,
+          "first_party_nav_present": true
+        }
+      ]
+    },
+    {
+      "browser": "firefox",
+      "ok": true,
+      "journeys": [
+        {
+          "label": "core navigation",
+          "route": "/",
+          "status": 200,
+          "heading": "Welcome to Glee‑fully",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "branch navigation",
+          "route": "/toolbox/01-discovered-careers/",
+          "status": 200,
+          "heading": "Glee‑fully Discovered Careers",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "tool-ette navigation",
+          "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+          "status": 200,
+          "heading": "Glee‑fully Resume Builder",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "search navigation",
+          "route": "/search/",
+          "status": 200,
+          "heading": "Search the Glee‑fully Toolbox",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "200% zoom",
+          "heading": "Search the Glee‑fully Toolbox",
+          "visible": true
+        },
+        {
+          "label": "third-party failure",
+          "route": "/arcade/",
+          "status": 200,
+          "heading": "Glee‑fully Chai Chasers",
+          "viewport": {
+            "width": 1280,
+            "scrollWidth": 1280,
+            "headingVisible": true
+          },
+          "issues": [],
+          "blocked_origins": [
+            "fonts.googleapis.com",
+            "okhp3.github.io",
+            "www.googletagmanager.com"
+          ],
+          "fallback_visible": true,
+          "ko_fi_link_present": true,
+          "first_party_nav_present": true
+        }
+      ]
+    },
+    {
+      "browser": "webkit",
+      "ok": true,
+      "journeys": [
+        {
+          "label": "core navigation",
+          "route": "/",
+          "status": 200,
+          "heading": "Welcome to Glee‑fully",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "branch navigation",
+          "route": "/toolbox/01-discovered-careers/",
+          "status": 200,
+          "heading": "Glee‑fully Discovered Careers",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "tool-ette navigation",
+          "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+          "status": 200,
+          "heading": "Glee‑fully Resume Builder",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "search navigation",
+          "route": "/search/",
+          "status": 200,
+          "heading": "Search the Glee‑fully Toolbox",
+          "viewport": {
+            "width": 390,
+            "scrollWidth": 390,
+            "headingVisible": true
+          },
+          "issues": []
+        },
+        {
+          "label": "200% zoom",
+          "heading": "Search the Glee‑fully Toolbox",
+          "visible": true
+        },
+        {
+          "label": "third-party failure",
+          "route": "/arcade/",
+          "status": 200,
+          "heading": "Glee‑fully Chai Chasers",
+          "viewport": {
+            "width": 1280,
+            "scrollWidth": 1280,
+            "headingVisible": true
+          },
+          "issues": [],
+          "blocked_origins": [
+            "fonts.googleapis.com",
+            "okhp3.github.io",
+            "www.googletagmanager.com"
+          ],
+          "fallback_visible": true,
+          "ko_fi_link_present": true,
+          "first_party_nav_present": true
+        }
+      ]
+    }
+  ],
+  "lifecycle_check": {
+    "browser": "chromium",
+    "journeys": [
+      {
+        "label": "online warm /",
+        "route": "/",
+        "status": 200,
+        "heading": "Welcome to Glee‑fully",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "online warm /toolbox/01-discovered-careers/",
+        "route": "/toolbox/01-discovered-careers/",
+        "status": 200,
+        "heading": "Glee‑fully Discovered Careers",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "online warm /toolbox/01-discovered-careers/01a-resume-builder/",
+        "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "status": 200,
+        "heading": "Glee‑fully Resume Builder",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "online warm /search/",
+        "route": "/search/",
+        "status": 200,
+        "heading": "Search the Glee‑fully Toolbox",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "online repeat /",
+        "route": "/",
+        "status": 200,
+        "heading": "Welcome to Glee‑fully",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "offline /",
+        "route": "/",
+        "status": 200,
+        "heading": "Welcome to Glee‑fully",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "offline /toolbox/01-discovered-careers/",
+        "route": "/toolbox/01-discovered-careers/",
+        "status": 200,
+        "heading": "Glee‑fully Discovered Careers",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "offline /toolbox/01-discovered-careers/01a-resume-builder/",
+        "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+        "status": 200,
+        "heading": "Glee‑fully Resume Builder",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "offline /search/",
+        "route": "/search/",
+        "status": 200,
+        "heading": "Search the Glee‑fully Toolbox",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "offline fallback",
+        "route": "/not-cached-by-resilience-qa/",
+        "status": 200,
+        "heading": "You’re offline for a moment.",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      },
+      {
+        "label": "reconnect",
+        "route": "/",
+        "status": 200,
+        "heading": "Welcome to Glee‑fully",
+        "viewport": {
+          "width": 1280,
+          "scrollWidth": 1280,
+          "headingVisible": true
+        },
+        "issues": []
+      }
+    ],
+    "lifecycle_base_url": "http://127.0.0.1:42525",
+    "stale_cache_seeded": true,
+    "cache_after_warm": {
+      "controller": true,
+      "keys": [
+        "glee-fully-shell-v8778555809938203386"
+      ],
+      "entries": 1
+    },
+    "stale_cache_removed": true,
+    "cache_after_reconnect": {
+      "shell": "glee-fully-shell-v8778555809938203386",
+      "cachedStatus": 200,
+      "cached": true
+    },
+    "cache_update_source_check": true,
+    "ok": true
+  },
+  "failures": [],
+  "ok": true,
+  "mode": "full",
+  "failure_count": 0
+}

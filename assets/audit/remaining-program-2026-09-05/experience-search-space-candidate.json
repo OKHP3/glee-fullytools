@@ -1,0 +1,3202 @@
+{
+  "startedAt": "2026-09-05T22:40:48.096Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 2,
+  "experimentalCssResponseAppend": "\nbody.glee-main .glee-search-page__categories{min-height:4rem}body.glee-main .glee-search-page__results-wrap{min-height:22rem}@media(max-width:600px){body.glee-main .glee-search-page__categories{min-height:8rem}}\n",
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 239606,
+      "gzipBytes": 47027,
+      "sha256": "43d453145833611661389f95d81a29aeac29d2ba81f77facaf422e94e9a761b7"
+    },
+    "assets/js/app.js": {
+      "bytes": 50362,
+      "gzipBytes": 12889,
+      "sha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 436530,
+      "gzipBytes": 120673,
+      "sha256": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c"
+    }
+  },
+  "performance": [
+    {
+      "profile": "desktop",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 1,
+      "cache": "cold",
+      "startedAt": "2026-09-05T22:40:49.230Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 360,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          130
+        ],
+        "navigation": {
+          "domContentLoaded": 202.20000000298023,
+          "load": 204.79999999701977,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 272
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 272
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\desktop-search-cold-1.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          1,
+          1.4000000059604645,
+          0.7000000029802322,
+          3.5,
+          1.5,
+          1.7000000029802322,
+          1.3999999910593033,
+          1.1000000089406967,
+          0.5999999940395355,
+          0.5999999940395355,
+          0.5,
+          0.9000000059604645,
+          1.0999999940395355,
+          0.9000000059604645,
+          0.5,
+          0.4000000059604645,
+          0.699999988079071,
+          0.7000000029802322,
+          0.7999999970197678,
+          2.4000000059604645,
+          1.0999999940395355,
+          0.7000000029802322,
+          0.9000000059604645,
+          1.0999999940395355,
+          0.7999999970197678,
+          0.7000000029802322,
+          0.6000000089406967,
+          0.5999999940395355,
+          0.5999999940395355,
+          0.9000000059604645,
+          0.7000000029802322,
+          0.5999999940395355,
+          0.7000000029802322,
+          0.5999999940395355,
+          0.7000000029802322,
+          0.9000000059604645,
+          0.7999999970197678,
+          0.5999999940395355,
+          1.300000011920929,
+          1.3999999910593033,
+          0.800000011920929,
+          0.5999999940395355,
+          0.7000000029802322,
+          0.7999999970197678,
+          1,
+          0.5,
+          0.5,
+          0.5999999940395355,
+          0.6000000089406967,
+          0.7000000029802322
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 19.600000008940697,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 18,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 7.5999999940395355,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 10.099999994039536,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "desktop",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 1,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T22:40:50.940Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 144,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [],
+        "navigation": {
+          "domContentLoaded": 53.599999994039536,
+          "load": 57.79999999701977,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 108
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 108
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\desktop-search-repeat-1.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          1,
+          1.9000000059604645,
+          0.8999999910593033,
+          2.1000000089406967,
+          3.5,
+          1.2000000029802322,
+          0.8999999910593033,
+          0.6000000089406967,
+          0.5,
+          0.8999999910593033,
+          0.5,
+          0.5,
+          0.6000000089406967,
+          0.5999999940395355,
+          0.5999999940395355,
+          0.6000000089406967,
+          0.5,
+          0.5999999940395355,
+          0.6000000089406967,
+          0.7999999970197678,
+          0.5999999940395355,
+          0.5,
+          1.2000000029802322,
+          1.0999999940395355,
+          1.300000011920929,
+          2.5,
+          1.5,
+          1.2999999970197678,
+          0.7000000029802322,
+          2,
+          1,
+          1.0999999940395355,
+          0.7999999970197678,
+          0.7999999970197678,
+          1.1000000089406967,
+          2.5999999940395355,
+          1.7000000029802322,
+          1.4000000059604645,
+          1.5999999940395355,
+          1.2999999970197678,
+          0.7000000029802322,
+          0.4000000059604645,
+          0.5999999940395355,
+          0.5,
+          0.5,
+          0.5999999940395355,
+          0.5,
+          0.7000000029802322,
+          0.6000000089406967,
+          0.8999999910593033
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 10.599999994039536,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 4.800000011920929,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 7.700000002980232,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 8.799999997019768,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "desktop",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 2,
+      "cache": "cold",
+      "startedAt": "2026-09-05T22:40:52.557Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 308,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          104
+        ],
+        "navigation": {
+          "domContentLoaded": 144.80000001192093,
+          "load": 163.1000000089407,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 208
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 208
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\desktop-search-cold-2.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          1.1000000089406967,
+          1.2999999970197678,
+          3.8999999910593033,
+          2.7000000029802322,
+          1.1000000089406967,
+          0.699999988079071,
+          0.5,
+          0.5999999940395355,
+          0.6000000089406967,
+          0.5999999940395355,
+          0.4000000059604645,
+          0.5,
+          0.7999999970197678,
+          0.5999999940395355,
+          0.4000000059604645,
+          0.3999999910593033,
+          0.6000000089406967,
+          0.5999999940395355,
+          0.7999999970197678,
+          0.9000000059604645,
+          1.4000000059604645,
+          1.2999999970197678,
+          0.8999999910593033,
+          0.800000011920929,
+          1.5,
+          0.7999999970197678,
+          0.5999999940395355,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.29999999701976776,
+          0.5,
+          0.3999999910593033,
+          0.7000000029802322,
+          0.20000000298023224,
+          0.4000000059604645,
+          0.3999999910593033,
+          0.4000000059604645,
+          0.5999999940395355,
+          0.4000000059604645,
+          0.3999999910593033,
+          0.5,
+          0.4000000059604645,
+          0.5,
+          0.5,
+          0.4000000059604645,
+          0.5,
+          1.5,
+          1.199999988079071
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 20.5,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 9,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 7.5,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 7.199999988079071,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "desktop",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 2,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T22:40:54.153Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 124,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [],
+        "navigation": {
+          "domContentLoaded": 51.29999999701977,
+          "load": 53.79999999701977,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 92
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 92
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\desktop-search-repeat-2.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          1.0999999940395355,
+          2,
+          0.6000000089406967,
+          0.5999999940395355,
+          1.9000000059604645,
+          0.699999988079071,
+          0.5,
+          0.4000000059604645,
+          0.5,
+          2.0999999940395355,
+          1,
+          0.9000000059604645,
+          0.5999999940395355,
+          0.5,
+          0.800000011920929,
+          1.199999988079071,
+          1.2000000029802322,
+          0.9000000059604645,
+          0.8999999910593033,
+          0.800000011920929,
+          0.3999999910593033,
+          0.5,
+          1,
+          0.7999999970197678,
+          1.2000000029802322,
+          0.9000000059604645,
+          0.7999999970197678,
+          1.7000000029802322,
+          1.2999999970197678,
+          2.0999999940395355,
+          1.4000000059604645,
+          1.0999999940395355,
+          0.7000000029802322,
+          0.7000000029802322,
+          0.9000000059604645,
+          0.7999999970197678,
+          0.8999999910593033,
+          0.7000000029802322,
+          0.7000000029802322,
+          0.9000000059604645,
+          1,
+          0.5,
+          0.5,
+          0.5999999940395355,
+          0.9000000059604645,
+          1.5,
+          0.8999999910593033,
+          0.7999999970197678,
+          0.7000000029802322,
+          1.2999999970197678
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 6.4000000059604645,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 9.5,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 3.2999999970197678,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 3.2999999970197678,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 1,
+      "cache": "cold",
+      "startedAt": "2026-09-05T22:40:55.677Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 1624,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          116,
+          52,
+          89,
+          438
+        ],
+        "navigation": {
+          "domContentLoaded": 1679,
+          "load": 1749.9000000059605,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 1624
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 1624
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\constrained-mobile-search-cold-1.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          19.200000002980232,
+          13.700000002980232,
+          18.299999997019768,
+          14.700000002980232,
+          13.400000005960464,
+          5.5999999940395355,
+          11.700000002980232,
+          3.8999999910593033,
+          13.900000005960464,
+          4.0999999940395355,
+          13,
+          6.600000008940697,
+          7.199999988079071,
+          6.4000000059604645,
+          1.7999999970197678,
+          2.1000000089406967,
+          6,
+          5.399999991059303,
+          10.399999991059303,
+          5.799999997019768,
+          10.399999991059303,
+          3.5,
+          3.4000000059604645,
+          9.299999997019768,
+          4.5,
+          18,
+          11.400000005960464,
+          6.5999999940395355,
+          4.9000000059604645,
+          7.5,
+          11.700000002980232,
+          4.799999997019768,
+          9.600000008940697,
+          4.5,
+          3.7999999970197678,
+          9.099999994039536,
+          5.899999991059303,
+          7.5,
+          4.700000002980232,
+          4.0999999940395355,
+          11,
+          4.200000002980232,
+          5.9000000059604645,
+          6.5999999940395355,
+          3.9000000059604645,
+          11.5,
+          5.0999999940395355,
+          8.200000002980232,
+          3.7999999970197678,
+          4
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 181.40000000596046,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 211.5,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 53,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 137.70000000298023,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13129
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 1,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T22:41:00.799Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "59f54d4f802fa98033490f3fb3f792290e5110597b14ad5a84e422fa2a46bffd",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 464,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          141,
+          65,
+          54
+        ],
+        "navigation": {
+          "domContentLoaded": 516.1000000089407,
+          "load": 579.1000000089407,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 348
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 464
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\constrained-mobile-search-repeat-1.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          5.0999999940395355,
+          9.200000002980232,
+          7.799999997019768,
+          10.5,
+          4.699999988079071,
+          11.900000005960464,
+          9.5,
+          5.800000011920929,
+          5.399999991059303,
+          11.400000005960464,
+          7.5,
+          11.399999991059303,
+          14.300000011920929,
+          14.600000008940697,
+          6.5,
+          4.600000008940697,
+          9,
+          3.5,
+          9.899999991059303,
+          5,
+          8.400000005960464,
+          9.799999997019768,
+          9.100000008940697,
+          3.3999999910593033,
+          4.100000008940697,
+          10.299999997019768,
+          5.399999991059303,
+          5.5,
+          5.600000008940697,
+          4.5,
+          7.5,
+          6.899999991059303,
+          3,
+          5.199999988079071,
+          5.800000011920929,
+          3.9000000059604645,
+          10.399999991059303,
+          3.6000000089406967,
+          4.100000008940697,
+          8.099999994039536,
+          5.200000002980232,
+          5.200000002980232,
+          7.799999997019768,
+          4.0999999940395355,
+          4.100000008940697,
+          10.899999991059303,
+          6,
+          9.799999997019768,
+          4.600000008940697,
+          8.599999994039536
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 114.8999999910593,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 142.09999999403954,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 55.900000005960464,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 56.599999994039536,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 2,
+      "cache": "cold",
+      "startedAt": "2026-09-05T22:41:04.038Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 1488,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          137,
+          66,
+          149,
+          526
+        ],
+        "navigation": {
+          "domContentLoaded": 1559.7000000029802,
+          "load": 1650.4000000059605,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 1488
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 1488
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\constrained-mobile-search-cold-2.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          20.200000002980232,
+          4.5,
+          3.7999999970197678,
+          1.9000000059604645,
+          20.69999998807907,
+          14.700000002980232,
+          13.399999991059303,
+          5.9000000059604645,
+          4.9000000059604645,
+          5.4000000059604645,
+          8.099999994039536,
+          23.100000008940697,
+          41.6000000089407,
+          13,
+          6.299999997019768,
+          27.100000008940697,
+          7.799999997019768,
+          2.2000000029802322,
+          2.3999999910593033,
+          5.100000008940697,
+          12.800000011920929,
+          20.200000002980232,
+          31.299999997019768,
+          11.799999997019768,
+          7,
+          4.200000002980232,
+          10.200000002980232,
+          13.900000005960464,
+          38.20000000298023,
+          8.400000005960464,
+          17.599999994039536,
+          9.099999994039536,
+          9.200000002980232,
+          20.900000005960464,
+          10.799999997019768,
+          13.600000008940697,
+          14.100000008940697,
+          9.799999997019768,
+          15.600000008940697,
+          15.799999997019768,
+          4.600000008940697,
+          3.8999999910593033,
+          20,
+          20.80000001192093,
+          13.400000005960464,
+          15,
+          13.200000002980232,
+          9.200000002980232,
+          26.099999994039536,
+          8.5
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 308,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 194.59999999403954,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 132.6000000089407,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 170.6000000089407,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 47312
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 13086
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1232
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 1769
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 120915
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 421
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "constrained-mobile",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "repetition": 2,
+      "cache": "repeat",
+      "startedAt": "2026-09-05T22:41:09.773Z",
+      "documentSha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "runtimeSha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a",
+      "actualUrl": "http://127.0.0.1:51045/search/?q=seniority",
+      "status": 200,
+      "initialImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "lazy",
+          "fetchPriority": "auto"
+        }
+      ],
+      "initialViewport": {
+        "lcp": {
+          "ms": 560,
+          "element": "P",
+          "url": ""
+        },
+        "cls": 0,
+        "shifts": [],
+        "longTasks": [
+          52,
+          184,
+          100,
+          61
+        ],
+        "navigation": {
+          "domContentLoaded": 633.3000000119209,
+          "load": 710.1000000089407,
+          "transferSize": 4887,
+          "encodedBodySize": 4587
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "ms": 464
+          },
+          {
+            "name": "first-contentful-paint",
+            "ms": 560
+          }
+        ],
+        "fontStatus": "loaded",
+        "fonts": [],
+        "headingFont": "Fredoka, Poppins, sans-serif",
+        "bodyFont": "\"Open Sans\", system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        "overflow": 0
+      },
+      "initialResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "screenshot": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\search-space-candidate\\constrained-mobile-search-repeat-2.png",
+      "allImages": [
+        {
+          "src": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "width": 40,
+          "height": 40,
+          "renderedWidth": 40,
+          "renderedHeight": 40,
+          "top": 10,
+          "loading": "eager",
+          "fetchPriority": "auto"
+        }
+      ],
+      "finalResources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "searchCost": {
+        "decodedCharacters": 427007,
+        "parseMs": [
+          9.900000005960464,
+          7,
+          9.099999994039536,
+          22.700000002980232,
+          10.800000011920929,
+          15.399999991059303,
+          9.700000002980232,
+          14.299999997019768,
+          17.099999994039536,
+          13.400000005960464,
+          16.5,
+          14.5,
+          8.799999997019768,
+          27.700000002980232,
+          11.699999988079071,
+          7.600000008940697,
+          38.099999994039536,
+          3,
+          2,
+          13.200000002980232,
+          6.9000000059604645,
+          10.900000005960464,
+          8.5,
+          14.600000008940697,
+          12,
+          6.700000002980232,
+          14.800000011920929,
+          8.599999994039536,
+          14,
+          9.700000002980232,
+          11.799999997019768,
+          6.799999997019768,
+          12.700000002980232,
+          14.200000002980232,
+          6.899999991059303,
+          9.099999994039536,
+          5.9000000059604645,
+          11.799999997019768,
+          16.100000008940697,
+          5.700000002980232,
+          10.600000008940697,
+          5.399999991059303,
+          8.5,
+          6.600000008940697,
+          10.799999997019768,
+          6.100000008940697,
+          4.199999988079071,
+          5.9000000059604645,
+          12.200000002980232,
+          9.700000002980232
+        ],
+        "searches": [
+          {
+            "query": "resume",
+            "scriptAndLayoutMs": 104.29999999701977,
+            "resultCount": 12
+          },
+          {
+            "query": "budget",
+            "scriptAndLayoutMs": 73.40000000596046,
+            "resultCount": 17
+          },
+          {
+            "query": "seniority",
+            "scriptAndLayoutMs": 87,
+            "resultCount": 2
+          },
+          {
+            "query": "scheduling",
+            "scriptAndLayoutMs": 84,
+            "resultCount": 10
+          }
+        ]
+      },
+      "result": "PASS",
+      "resources": [
+        {
+          "url": "http://127.0.0.1:51045/search/?q=seniority",
+          "type": "Document",
+          "status": 200,
+          "mime": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 4809
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/css/theme.css?v=0994704c",
+          "type": "Stylesheet",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+          "type": "Stylesheet",
+          "failure": {
+            "error": "net::ERR_NETWORK_ACCESS_DENIED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+          "type": "Image",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "image/webp",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/app.js?v=3",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/js/glee-site-enhancements.js",
+          "type": "Script",
+          "servedFromCache": true,
+          "status": 200,
+          "mime": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/sparkle.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        },
+        {
+          "url": "http://127.0.0.1:51045/assets/data/search-index.json",
+          "type": "Fetch",
+          "status": 200,
+          "mime": "application/json",
+          "fromDiskCache": true,
+          "fromServiceWorker": false,
+          "encodedDataLength": 0
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Open+Sans:wght@400;600&family=Poppins:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    }
+  ],
+  "accessibility": [],
+  "failures": [],
+  "base": "http://127.0.0.1:51045",
+  "finishedAt": "2026-09-05T22:41:13.417Z"
+}

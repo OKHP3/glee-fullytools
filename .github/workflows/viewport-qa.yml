@@ -55,7 +55,7 @@ jobs:
       - name: Report page count
         # Echo the live page count so it is visible in the Actions log without
         # hardcoding a number.  Mirrors the glob logic in run-viewport-qa.py:
-        #   CORE_PAGES (14 stable top-level and utility pages, not under toolbox/)
+        #   CORE_PAGES (15 stable top-level and utility pages, not under toolbox/)
         #   + toolbox/*/index.html          (branch hubs)
         #   + toolbox/*/*/index.html        (tool-ettes)
         run: |
@@ -64,9 +64,9 @@ jobs:
           root = Path('.')
           branches = len(list(root.glob('toolbox/*/index.html')))
           tools    = len(list(root.glob('toolbox/*/*/index.html')))
-          total    = 14 + branches + tools   # 14 = len(CORE_PAGES) in run-viewport-qa.py
+          total    = 15 + branches + tools   # 15 = len(CORE_PAGES) in run-viewport-qa.py
           print(f'Running viewport QA: {total} pages × 8 viewports')
-          print(f'  core={14}  branches={branches}  tool-ettes={tools}')
+          print(f'  core={15}  branches={branches}  tool-ettes={tools}')
           EOF
 
       - name: Run viewport QA
@@ -78,6 +78,9 @@ jobs:
       - name: Run inclusive accessibility QA
         run: python3 scripts/inclusive-accessibility-qa.py
 
+      - name: Run native visitor acceptance in Chromium
+        run: python3 scripts/tests/test_browser_acceptance.py --base-url http://localhost:5000 --browser chromium --output assets/audit/browser-acceptance-chromium.json
+
       - name: Upload QA report and failure screenshots
         uses: actions/upload-artifact@v7
         if: always()
@@ -86,5 +89,6 @@ jobs:
           path: |
             assets/audit/viewport-qa-full-*.json
             assets/audit/inclusive-accessibility-qa-*.json
+            assets/audit/browser-acceptance-chromium.json
             assets/audit/screenshots/
           retention-days: 30

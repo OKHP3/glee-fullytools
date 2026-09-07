@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/Users/okh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "scripts/tests/test-search-consent.cjs"
+  ],
+  "exit_code": 1,
+  "stdout": "PASS automatic service-worker registration after a late adapter import\nPASS Glee modal identity, suggestions, publication state, focus return\nPASS inline query, category, history, reload and keyboard\nPASS inline and modal share ranking and retry failed index\nPASS deep function discovery and responsive search rendering\nPASS shared sibling search default and entries schema still work\nPASS catalog locale boundary glee-main en\nPASS catalog locale boundary glee-main en-US\nPASS catalog locale boundary glee-main es-ES\nPASS catalog locale boundary glee-main es-MX\nPASS catalog locale boundary  fr-FR\nPASS catalog locale boundary askjamie-main es-MX\nPASS consent hydration null\nPASS consent hydration granted\nPASS consent hydration denied\nPASS enable disable re-enable and reload use the saved choice\nPASS storage exceptions remain truthful and controls stay usable\n",
+  "stderr": "FAIL catalog locale boundary glee-main en-GB: undeclared exact locale has an explicit English fallback notice\n\nfalse !== true\n\nFAIL catalog locale boundary glee-main fr-FR: only the declared brand catalog is requested\n+ actual - expected\n\n  [\n+   'search-index.fr.json'\n-   'search-index.json'\n  ]\n\nFAIL catalog locale boundary glee-main fr-CA: only the declared brand catalog is requested\n+ actual - expected\n\n  [\n+   'search-index.fr.json'\n-   'search-index.json'\n  ]\n\n"
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "command": [
+      "C:\\Users\\jamie\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/tests",
+      "-p",
+      "test_*.py"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ".......................\n----------------------------------------------------------------------\nRan 23 tests in 0.640s\n\nOK\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\jamie\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "scripts/tests/test-reconciliation.py"
+    ],
+    "exit_code": 0,
+    "stdout": "  CSS token -> a06fd750  (1 file(s) updated, 0 already current)\n  Offline shell version and precache URLs synchronized\n  CSS token -> a06fd750  (all 1 file(s) already current)\nERROR: offline shell is stale. Run scripts/sync-css-version.py after all content generators.\n  CSS token -> a06fd750  (all 1 file(s) already current)\n  Offline shell version and precache URLs synchronized\n  CSS token -> a06fd750  (all 1 file(s) already current)\n",
+    "stderr": "C:\\Users\\jamie\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\unittest\\case.py:615: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='utf-8'>\n  result = method()\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n...\n----------------------------------------------------------------------\nRan 3 tests in 1.482s\n\nOK\n"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/tests/test-client-regressions.cjs"
+    ],
+    "exit_code": 0,
+    "stdout": "Analytics toggling and iframe load/error/timeout regressions passed.\n",
+    "stderr": ""
+  }
+]

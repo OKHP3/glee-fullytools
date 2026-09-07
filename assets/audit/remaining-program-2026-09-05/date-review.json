@@ -1,0 +1,622 @@
+{
+  "review_date": "2026-09-05",
+  "source_baseline": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "date_basis": "Significant source changes in this package plus separately inspected substantive Git diffs. Historical date-only values use the calendar date shown in the selected commit timestamp, not an assumed UTC day or current audit date. Three entries omit optional dates when the bounded history review did not establish a reliable significant update. Reviewed source hashes precede PM generation.",
+  "official_guidance": "https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap",
+  "legal_prior_substantive_commit": "184c8ab9fa785a2911d2183a9f2f0aba2bfd4e85",
+  "legal_current_visible_date": "September 5, 2026",
+  "updated": 57,
+  "retained": 0,
+  "feed_sha256_before": "523e6160a6ed14e73c7da8a2171f70261df7f4edb40b1c989e2bc4359e7b9053",
+  "feed_sha256_after": "523e6160a6ed14e73c7da8a2171f70261df7f4edb40b1c989e2bc4359e7b9053",
+  "entries": [
+    {
+      "path": "index.html",
+      "url": "https://glee-fully.tools/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Removed unsupported GPT-5 model assertion and unverified personality guarantee. Also corrected hero source sizing and below-fold Chai image loading using Experience Worker browser measurements.",
+      "baseline_sha256": "93a60160be38d9479fe53f0b8835f5d06e9a1befde0e87146ebceac4c288aa53",
+      "reviewed_source_sha256": "aa82651f5dc8bb93d96b76367060937513eea7d075267a7e8fdb3e33a9f97e65"
+    },
+    {
+      "path": "search/index.html",
+      "url": "https://glee-fully.tools/search/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Corrected visible search keyboard instructions and removed instant-results assertion; substantive visitor instructions in accepted implementation.",
+      "baseline_sha256": "d0016ba9d964ac7f2d3101e77b2975425b0ada10a47068cbd605f117326dbe7b",
+      "reviewed_source_sha256": "47e57fe39f42d9670073fe00df2edb565c8458ab5586b751010f7aa6065d6e58",
+      "source_commit": "8dea009c7b1887b129a1c5540ec1a39f6c028841",
+      "source_commit_date": "2026-09-05T16:06:12-05:00"
+    },
+    {
+      "path": "toolbox/index.html",
+      "url": "https://glee-fully.tools/toolbox/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Git commit 8dea009c on September 5 substantially rewrote catalog routing, primary actions, provider boundaries, and Identity Known summary; inspected actual body diff, not only commit timestamp. This package also removes the remaining single-session/shared-understanding assertion.",
+      "baseline_sha256": "f23179c9909ecc4b65ca8a1f2b04db6de54620e1d4c37a7e84ff0ee337bd3b83",
+      "reviewed_source_sha256": "97a260ee0b6baa09febc6041d7f016e552d628b06bc9ee94bd25603899b5dce7",
+      "source_commit": "8dea009c7b1887b129a1c5540ec1a39f6c028841"
+    },
+    {
+      "path": "ecosystem/index.html",
+      "url": "https://glee-fully.tools/ecosystem/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": null,
+      "action": "omitted",
+      "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date.",
+      "baseline_sha256": "ead2af2d09f5b1659fca28096ecd91a7982612c4a2d58a0dec27e861928e26e3",
+      "reviewed_source_sha256": "ead2af2d09f5b1659fca28096ecd91a7982612c4a2d58a0dec27e861928e26e3"
+    },
+    {
+      "path": "about/index.html",
+      "url": "https://glee-fully.tools/about/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-04",
+      "action": "updated",
+      "reason": "Corrected the public count of non-placeholder external destinations; earlier September 4 b2cae9d3 also substantively clarified catalog intent and unverified external behavior.",
+      "baseline_sha256": "9d79b758a1f7f34a2ecc1a0d4d75dbc0b4af0e453f8f5c8a59922e6a3ccb6861",
+      "reviewed_source_sha256": "baaf025a368afd89934d2b6de77a24107223df9ec0612c7e6729b6061c16cf02",
+      "source_commit": "c479fc3197027d83efd6e27443c3a4e7c433bfbc",
+      "source_commit_date": "2026-09-04T19:44:29-05:00"
+    },
+    {
+      "path": "showcase/index.html",
+      "url": "https://glee-fully.tools/showcase/",
+      "previous_lastmod": "2026-05-27",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Corrected architecture, dependency, search, schema-eligibility, governance, and release assertions against current source.",
+      "baseline_sha256": "cc891762ed686a30542ae68b1315f64368502866f5bdd7b4e4734db1b231b0d9",
+      "reviewed_source_sha256": "607365a1167a160fbacf7969ff2acd28e17e88c6a3f44ade49560e8baf1cf1cb"
+    },
+    {
+      "path": "universe/index.html",
+      "url": "https://glee-fully.tools/universe/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": null,
+      "action": "omitted",
+      "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date.",
+      "baseline_sha256": "ec4d8cc77e390d1b29972daa269f0d233eaef2916d8adf35ee9c831356dde2d2",
+      "reviewed_source_sha256": "ec4d8cc77e390d1b29972daa269f0d233eaef2916d8adf35ee9c831356dde2d2"
+    },
+    {
+      "path": "persona/index.html",
+      "url": "https://glee-fully.tools/persona/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Removed unsupported external routing and safety-check guarantees; qualified persona description.",
+      "baseline_sha256": "b93c31f9e5ce20118b552055570039422b5c032a266fcb8d4d08f27ba2a56681",
+      "reviewed_source_sha256": "815d1560e83deb665d63e9aae885c19aac5ca73a9164dc0b5d0a192f172392f4"
+    },
+    {
+      "path": "contact/index.html",
+      "url": "https://glee-fully.tools/contact/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": null,
+      "action": "omitted",
+      "reason": "Bounded review of the latest 60 path commits found cache/head maintenance and an August 22 noreferrer-only main-content diff, but no reliably established significant content update. Removed optional lastmod rather than assert the old May 12 date.",
+      "baseline_sha256": "81cd17bcc14cda7f3813a2261fc3788a9fb69f13583e6a135ae7cbf1a03d1e92",
+      "reviewed_source_sha256": "81cd17bcc14cda7f3813a2261fc3788a9fb69f13583e6a135ae7cbf1a03d1e92"
+    },
+    {
+      "path": "legal/index.html",
+      "url": "https://glee-fully.tools/legal/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Distinguished provider retention configuration from owner target and corrected visible review date; prior substantial privacy changes confirmed in commit 184c8ab9.",
+      "baseline_sha256": "963db2ea2cb295f7a2dc8229b5711390373bfe267423f63800b0112e74c75fea",
+      "reviewed_source_sha256": "8b46bfa36d765d5dc702609cd796d3f53c26741da0e12f8817a63a51a47b5f3a"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "4465ad7a8871ce0408cf6697fa75a56cd566a9b080499f25be326b8fd8d7dcc7",
+      "reviewed_source_sha256": "10e695e5a4343d1988b49f0a21ef5553c1d70d37b7b2ef3399e65e51ba296cb7"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "3dd74fca8c1580edc9a8ecf659bbccff8b298eb58dbe5d51a3921c06be06c239",
+      "reviewed_source_sha256": "9fb37d6fb8b22ad58e09c4b201b9b1ec22027c6f155e01ea03e6b1b2506f2f22"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "6efc65567454180d15b481e20220c7b681500433440470493b2411afe7395d11",
+      "reviewed_source_sha256": "e54ad8f879a7fd2ea8d3b0333eb2a8a9e72da37313d175a7d879a45d6e36bf03"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01c-career-fitness/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "6809296ea1d88c4abedef0724d02e4077125752df84886afcb20a2c203e335d0",
+      "reviewed_source_sha256": "c37a4b82ff048d8a7572eafad49a69ab60bf3b7b210bfed668fb83ee2bc42b27"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01d-letter-composer/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "01599256b2c814ab3a2a0b788073442c133f00797078496c1459c1c2ccebe911",
+      "reviewed_source_sha256": "c6778f7b828c2c86185cba9b5b510943a535ee7951f7efcea9bf50c6b902f578"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "cacae852e6361f66e013021f2000d30446dee4d044748b0159a4ce90548a3470",
+      "reviewed_source_sha256": "da0e91f9511dab75135ff1b0f2694e2fa73175fe4e305753dcc1bcaa9223d2b7"
+    },
+    {
+      "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "d13d6697f387c79d365297ac6adcee6fb92314346ee57bbb16dad8c52b5e4f24",
+      "reviewed_source_sha256": "ac34a2a4c5fc1e22a9d7ceb53f1485f98e131ed08eeab3c48d22dd4eb8008ffe"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "769513087258efde9e2fd73140270bedf81163782e1dcce9e1a9e956b2f06c13",
+      "reviewed_source_sha256": "6b8f30152c35e478df33973d69bedace595d4d53b4d8ab859af73e4e9d457afd"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "b04daac9457aa14b2d4a174a01fd7ec5a427e90c7dafa242cf5d61da72b13312",
+      "reviewed_source_sha256": "659ce97844bfa6c7807c235076c236da86cd0eb5a87c4368fca0a3c1ced37d6c"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "6f289c815e538800e02d9a4d6a75c3587cbd2f783ccd11637067171a1a53f4d1",
+      "reviewed_source_sha256": "f753ae0ca367e2efbe0df0c553ae7f912a66ae8cbc4a3fb66267a9324c935594"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "723ae62c8f08d69ac6285da9d9d8b945abc263edf38e1124cf3de6646ebe8b0d",
+      "reviewed_source_sha256": "35d0b9c01b9970f8977bd7de3909fa31a57d86a1a35c793347521ebb70b767fd"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "5f89beb3f7ea7f6096c0ce60c5f48f3484ed1098c1b0e79e718e75b10e6f9994",
+      "reviewed_source_sha256": "dfbe368d4314746d67ac1f65ae9329dd5dcacadb29f7052ba410835f8783d6ff"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "5036e55c5d7f0a45458f941ba475c9fbde166621768dbfb34d2c276f30f321bc",
+      "reviewed_source_sha256": "9cc8438374385e110a9d9469919f54b45f1b737c0780f4099eb064759c16a188"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "c1f226ec365df33812559ccda22a1a23dcaae296c1f61e57ce2fb66cef80fd2a",
+      "reviewed_source_sha256": "36832a82b257968862b2eb298c2a4c13a4744f01c142d73389e72bcf0c00b943"
+    },
+    {
+      "path": "toolbox/02-treasured-finds/02g-bag-nabbit/index.html",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "e2121ebc6876059fbc1d8cd4b0a496f0e043d20adc365ee90be7371c79a1986a",
+      "reviewed_source_sha256": "0349595789c92f6ed4d5a4a21e0c92f5d8471443a8b0064e7a3a6f7b132c3945"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "dd1b4ef1dcb8052f15c26f11de2b963039e56e78ff98184b628cedbca1fde7f8",
+      "reviewed_source_sha256": "db0e1a1e7f0c7fb623a25262eac834773729cfbefb5905343ffa9c95cd589a98"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03a-flavor-meister/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "5ea41a4e74f7f1995020999c8c94afc26cf79c73c805e2c97afbf19765130566",
+      "reviewed_source_sha256": "137b76abc225e0cb1eadd6ce3924920ef4f57028ef6c7058dc93a1b06345582f"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "74b7aba8612f839cb736719cf492677906c13c05538d7462ade58cdd4b045152",
+      "reviewed_source_sha256": "37f73e4827e1fd006e1c0ad2ac3b9ad98ee68cbe6b615209efb59186960f7877"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03c-wishful-tastes/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "6257dc9aa07831ae875fe4f8b826e78a8b02f94dba1a6481914955beb1fc9c3d",
+      "reviewed_source_sha256": "b53b8b21f9c3c74e5f3d5027bca0d5fb1edd149297f45d0440c009d6661130f8"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03d-pantry-shopper/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "0f9cff8a9f61880b54f58aa8f39e897abdce36fe6274b9ac441be41518f3ea9b",
+      "reviewed_source_sha256": "5a5d4d379ec5269685de02c9f90a52c33ccd4f074ac08cd9ed59fac17b4da664"
+    },
+    {
+      "path": "toolbox/03-tasty-tracker/03e-palatably-profiled/index.html",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "48520ef3e5b35722e48a02ca83f48593200cd61d231d4cfbc0b4d69f79736e15",
+      "reviewed_source_sha256": "52f415bcc0bd3013afddb66ed11c856128ef070390c8eb5b934f0fe7fb4bdeda"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "0ad49fecb2278811be2ed033a1219ff59d2aee31416532f25f136d5ec6c05002",
+      "reviewed_source_sha256": "92c6673fd4973260b7650df8ead6ab218f73cb7d61f3555855abd104a87f4cbc"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04a-journey-diary/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "76bb3789d4d3ee622920e7e609bb56c52106b3d0a180bcf8c43520777a3c0e56",
+      "reviewed_source_sha256": "20174286485ac7ba360b506c597aed3571d04c575532bded04fc0026bcf26c97"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "9def1282db3de81aeb48110456c6764624062a0fecbe2daac84a52a38bba4e6c",
+      "reviewed_source_sha256": "5e55946ff04cac1fe2cf641c813d3c090b06b5423ada41d712b3786cd29b9eab"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04c-detour-discoverer/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "16f5f37bac42e711b44cb54bde3e8ee2fcc2dd70d58ea800a9627a353f5f5efc",
+      "reviewed_source_sha256": "475878e46fb677eb753b94d8b391240dc1acba00086e4125246d5937981129c8"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "434baf5087ed6cd5ed5b7574f83cbdf8b629f44a67296bb8e8bc8cc9f9ba7acf",
+      "reviewed_source_sha256": "ec7bde276f50e34565a2dad9c0e510fab364ea52d4be6323a2b30ee2538555ac"
+    },
+    {
+      "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "50fa9ad6decfc76c3ee1d5b748ed2aaf550841212e60307d2227a9dbf297a13a",
+      "reviewed_source_sha256": "cccb6ae4ba3c4337851480f52ddd6be15a166c4e8d56cfcd14e34851f7795417"
+    },
+    {
+      "path": "toolbox/05-organized-life/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "ceea149a307532d318d7fe7d0cd71b7cb8e091b99fb8eb126d62e6b7a13a5515",
+      "reviewed_source_sha256": "9b129df32dcc1bd1bf475b5d4dfdfbc325c52f1ba69c8d24b38d76cee2054060"
+    },
+    {
+      "path": "toolbox/05-organized-life/05a-task-maestro/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "57467f5ee237f409cad50e6ce1f60a2469142f3e28e2ba07b7db44ab835b9ac6",
+      "reviewed_source_sha256": "2ed87b161153a37d203047dab63f7f60acdbd4eb2f862a3d0b2bb757eae2131c"
+    },
+    {
+      "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "96dfdec58f7ac924eb3069e59738d127beefa1466a8ec6d2274b522802da9f22",
+      "reviewed_source_sha256": "3831caeb826e1b2f373f60542032dce990a9c53ced4b5519a749e5871b193ea4"
+    },
+    {
+      "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "6161dd1971abb23ca1a6e67264841090e086ec95ef5541b54943d4c690ec2df6",
+      "reviewed_source_sha256": "d22fc8950772dcb3c04f0b58818dd80a572c40f88ede75433c06df6bfd9c7eac"
+    },
+    {
+      "path": "toolbox/05-organized-life/05d-scheduling-wizard/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "68fcd278b3743a2406bf3d4f97098f5ad6d89286633eda259c533ee6aad49d30",
+      "reviewed_source_sha256": "d7b7326d88275d4b6167f0cd99ab3a764ac91b52685f725297e4c0ad75fc11ac"
+    },
+    {
+      "path": "toolbox/05-organized-life/05e-lifestyle-wallboard/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "64964eb6071ffdd5a26cf4919e3520aeacf51449dba6d5bde68a6715a73d75f0",
+      "reviewed_source_sha256": "6de432c6b3d89474f7e22c94d3738146da91ca9b8b6bf4699a8874f12c40283a"
+    },
+    {
+      "path": "toolbox/05-organized-life/05f-neighborly-bazaar/index.html",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "3fb92d0acf71215d2822097c83f2ee806600f7e0be145f462d7fcb90490bcd72",
+      "reviewed_source_sha256": "d1cff837b8169fadc67f63020fe2f03a9709cfd6c61c51963dd7e3c3ba8cd0b0"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "3b8a9aed9436be95d932050bd2e950456c180db589ffbf4b156a3c06ab783217",
+      "reviewed_source_sha256": "dd0fe0828691e91c2bd4ed17eeb13b718ed161249e9bde8b9266157066b42373"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "7c02138dca4d654d94c8c3e774012f29909c5674c960992c8f539e39fe8b4011",
+      "reviewed_source_sha256": "97e3997ae4343a32e92b07891c01d56aece21004fada53acc9ecd6a1bbc141d4"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06b-calm-keep/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "5afe7489c28a153707f15b2ea30cc2551b65e5ca1da53da491db621785f09399",
+      "reviewed_source_sha256": "073acd2a0c20a3c856512c4a240703108d59c1dcfc0dcf5272320a5644278fd6"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "3dff75f7b98fa56d47e294296a6118ab3a2a6a62a3d2bbe6aa4090fd0dac8d25",
+      "reviewed_source_sha256": "fe0dad33f0b47dbbb212ea5e600ba9719901080a619ba1e016a2267604c8001d"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06d-medi-minder/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "dee6ad13c27312c98280e06e13c23b4004cfa8709b6ccf0c5f44d5d7825c401f",
+      "reviewed_source_sha256": "71fdcc53cf83e1e7a056b9cfeaf2923d2dff7c0cffc0b76719dbb80992d66b15"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "36badc339dc98d7c0d42730d593d46a3292bd09c7f83d70631ba1466702131cf",
+      "reviewed_source_sha256": "63fdaa2a02af5f58330eb78cc79410a01e89d08c80d5f3406c6e8bde2e46dcf8"
+    },
+    {
+      "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "197e19df448df43691848d58248581b3ab4826a314d8715b43d9fe4ceb4e5ce7",
+      "reviewed_source_sha256": "aefaf9f14d033a5ddda7830c9d72327af4ed47f2320d170315f15f575ebc0b5c"
+    },
+    {
+      "path": "toolbox/07-identity-known/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Added a visible intended-use/provider boundary and corrected unsupported branch memory, routing, integration, or authoring claims where present.",
+      "baseline_sha256": "1bc8b72b5b34ac977db664e5ceb8792a92a7556d864bfae5770b58c24120e9d8",
+      "reviewed_source_sha256": "fcbcff971880fcdb93ea7628fe03e19a89fc1159bb9ab3fd47fd9cbf1cc99d9b"
+    },
+    {
+      "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "505a0076a3d3ad3315885cdf5fcc1faf239842e1427a04b38d7ca81aafd5b09b",
+      "reviewed_source_sha256": "63ef9376d91dcf2e256453dcd3287a03b4824fe260564eb489a766f2dbdeab5a"
+    },
+    {
+      "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "fcd95c9b40b0e062a494c38a7e82096cb576bb51d5cc2ebdeb13282172c7b6de",
+      "reviewed_source_sha256": "7ef4ebf9897511b6c560e34c0f1a9a83c35680cfe5ee2f2f26339c170506c1b7"
+    },
+    {
+      "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "5dc51f80b38a2f2505d4df9b37ba3bcf326fe60438f1ae1fa809205b314d2962",
+      "reviewed_source_sha256": "41383ae21f7defe3ff2d9c8f318da86d3074d5f07858eecd9561d011869a3bc1"
+    },
+    {
+      "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "f5608302dd01fa975170f04e0e74968e55026aed98bd7a9725edbb5ef2dbe2b0",
+      "reviewed_source_sha256": "77d0f056330ca8287e15fe1c3e902ffabe702b44c4aed38cffdbe02c282ce0a7"
+    },
+    {
+      "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "cf1b0517dfc1685af4b9c1fe0f4f0c1010e04dae857aea3c6c32e96ba6fc5abe",
+      "reviewed_source_sha256": "c08dc9714068f87edc05ddd81bb40779bfe9dfd52e4f47ce166cfdf263f3151c"
+    },
+    {
+      "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "3652d07e7d86d9c24f98e41434090762b8db3f1a4160c480fda78a6ccd538435",
+      "reviewed_source_sha256": "60b7980a2dbb628d00506f89a9f9e95928f1fb41dc6fddaf1da70c1eb4636c08"
+    },
+    {
+      "path": "toolbox/07-identity-known/07g-self-fixer/index.html",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/",
+      "previous_lastmod": "2026-05-12",
+      "lastmod": "2026-09-05",
+      "action": "updated",
+      "reason": "Replaced unsupported application, price, and screenshot schema with catalog WebPage identity; added visible intended-use boundary and corrected unsupported claims.",
+      "baseline_sha256": "c9287ef5dcae4085adfe7bd7bbeab01538b5887616342be792d6a10be5b19c32",
+      "reviewed_source_sha256": "46529a14d3c3179c584b006a0888042c435a001292af44eba86ae011da1131ca"
+    },
+    {
+      "path": "arcade/index.html",
+      "url": "https://glee-fully.tools/arcade/",
+      "previous_lastmod": "2026-07-15",
+      "lastmod": "2026-09-04",
+      "action": "updated",
+      "reason": "Added the explicit playable-preview failure path and corrected optional-analytics disclosure. Later c479fc31 punctuation alone is not treated as a significant update.",
+      "baseline_sha256": "ae06dc355a2d667dae1382b09a18778c3c8a935eab6636420d9cf2e729bc29d2",
+      "reviewed_source_sha256": "99110a01849d47e5da9d2220a891f9ab348efdb4143cc495307257ebeb320d12",
+      "source_commit": "184c8ab9fa785a2911d2183a9f2f0aba2bfd4e85",
+      "source_commit_date": "2026-09-04T01:13:44Z"
+    }
+  ],
+  "omitted": 3
+}

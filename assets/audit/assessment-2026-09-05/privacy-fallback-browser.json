@@ -1,0 +1,96 @@
+[
+  {
+    "test": "analytics display versus stored preference",
+    "consent": null,
+    "attempts": [],
+    "data": {
+      "status": "Optional analytics is off for this browser.",
+      "preference": null,
+      "script": false
+    }
+  },
+  {
+    "test": "analytics display versus stored preference",
+    "consent": "granted",
+    "attempts": [
+      "https://www.googletagmanager.com/gtag/js?id=G-89W66VMGPB"
+    ],
+    "data": {
+      "status": "Optional analytics is off for this browser.",
+      "preference": "granted",
+      "script": true
+    }
+  },
+  {
+    "test": "JavaScript disabled",
+    "route": "/",
+    "data": {
+      "h1": "Welcome to Glee‑fully",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [],
+      "overflow": false
+    }
+  },
+  {
+    "test": "JavaScript disabled",
+    "route": "/search/",
+    "data": {
+      "h1": "Search the Glee‑fully Toolbox",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [
+        "JavaScript is required for live search. Browse the Toolbox or explore a branch to find your tools.",
+        "\n        \n          Browse the toolbox\n          Live search needs JavaScript. Here's the full directory you can browse instead:\n          \n            All branches in the Toolbox\n            Discovered Careers\n            Treasured Finds\n            Tasty Tracker\n            Traveler's Guide\n      "
+      ],
+      "overflow": false
+    }
+  },
+  {
+    "test": "JavaScript disabled",
+    "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+    "data": {
+      "h1": "Glee‑fully Resume Builder",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [],
+      "overflow": false
+    }
+  },
+  {
+    "test": "third parties blocked",
+    "route": "/",
+    "data": {
+      "h1": "Welcome to Glee‑fully",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [],
+      "overflow": false
+    }
+  },
+  {
+    "test": "third parties blocked",
+    "route": "/search/",
+    "data": {
+      "h1": "Search the Glee‑fully Toolbox",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [
+        "<p class=\"glee-search-page__lede\">JavaScript is required for live search. <a href=\"/toolbox/\">Browse the Toolbox</a> or explore a branch to find your tools.</p>",
+        "\n        <section class=\"container glee-search-page__nojs\">\n          <h2>Browse the toolbox</h2>\n          <p>Live search needs JavaScript. Here's the full directory you can browse instead:</p>\n          <ul class=\"glee-search-page__directory\">\n            <li><a href=\"/toolbox/\">All branches in th"
+      ],
+      "overflow": false
+    }
+  },
+  {
+    "test": "third parties blocked",
+    "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+    "data": {
+      "h1": "Glee‑fully Resume Builder",
+      "mainVisible": "visible",
+      "hiddenSections": 0,
+      "noscript": [],
+      "overflow": false
+    }
+  }
+]

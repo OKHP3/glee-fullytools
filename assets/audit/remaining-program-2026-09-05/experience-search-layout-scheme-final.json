@@ -1,0 +1,2554 @@
+{
+  "startedAt": "2026-09-05T22:53:34.098Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 2,
+  "experimentalCssResponseAppend": null,
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 239934,
+      "gzipBytes": 47114,
+      "sha256": "5f9be24576b2dccbd9e66d156257db018ef20f5810fa1899c4c014bd13ceffcf"
+    },
+    "assets/js/app.js": {
+      "bytes": 50236,
+      "gzipBytes": 12846,
+      "sha256": "f6b91804ad809f023f08a6e02cd9c882341478a7ad13b716b8ceeac6e747d22a"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 436530,
+      "gzipBytes": 120673,
+      "sha256": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c"
+    }
+  },
+  "performance": [],
+  "accessibility": [],
+  "failures": [],
+  "base": "http://127.0.0.1:58829",
+  "layouts": [
+    {
+      "kind": "homepage-images",
+      "width": 320,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 1029.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "",
+          "width": 236.40625,
+          "top": 1733.875,
+          "viewportHeight": 900,
+          "naturalWidth": 0,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 724.78125,
+          "bottom": 922.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 954.296875,
+          "bottom": 23464.578125,
+          "height": 22510.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 23464.578125,
+          "bottom": 23669.546875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 23781.546875,
+          "bottom": 24810.90625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 724.78125,
+          "bottom": 922.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 954.296875,
+          "bottom": 1306.296875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1306.296875,
+          "bottom": 1511.265625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1623.265625,
+          "bottom": 2652.625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 1686.796875,
+          "height": 730.5
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1686.796875,
+          "bottom": 1896.765625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 2008.765625,
+          "bottom": 3038.125,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 1308.296875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1308.296875,
+          "bottom": 1518.265625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1630.265625,
+          "bottom": 2659.625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 23644.796875,
+          "height": 22688.5
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 23644.796875,
+          "bottom": 23854.765625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 23966.765625,
+          "bottom": 24996.125,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 724.78125,
+          "bottom": 922.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 954.296875,
+          "bottom": 23464.578125,
+          "height": 22510.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 23464.578125,
+          "bottom": 23669.546875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 23781.546875,
+          "bottom": 24810.90625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 724.78125,
+          "bottom": 922.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 954.296875,
+          "bottom": 1306.296875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1306.296875,
+          "bottom": 1511.265625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1623.265625,
+          "bottom": 2652.625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 1686.796875,
+          "height": 730.5
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1686.796875,
+          "bottom": 1896.765625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 2008.765625,
+          "bottom": 3038.125,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 1308.296875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1308.296875,
+          "bottom": 1518.265625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1630.265625,
+          "bottom": 2659.625,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 726.78125,
+          "bottom": 924.296875,
+          "height": 197.515625
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 956.296875,
+          "bottom": 23644.796875,
+          "height": 22688.5
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 23644.796875,
+          "bottom": 23854.765625,
+          "height": 209.96875
+        },
+        {
+          "selector": "footer",
+          "top": 23966.765625,
+          "bottom": 24996.125,
+          "height": 1029.359375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 320,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "kind": "homepage-images",
+      "width": 390,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 240,
+          "top": 941.234375,
+          "viewportHeight": 900,
+          "naturalWidth": 240,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:58829/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1620.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 15374.5,
+          "height": 14564.953125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 15374.5,
+          "bottom": 15579.46875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 15691.46875,
+          "bottom": 16665.296875,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1161.546875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1161.546875,
+          "bottom": 1366.515625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1478.515625,
+          "bottom": 2452.34375,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1282.015625,
+          "height": 472.46875
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1282.015625,
+          "bottom": 1486.984375,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1598.984375,
+          "bottom": 2572.8125,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1161.546875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1161.546875,
+          "bottom": 1366.515625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1478.515625,
+          "bottom": 2452.34375,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 15374.5,
+          "height": 14564.953125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 15374.5,
+          "bottom": 15579.46875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 15691.46875,
+          "bottom": 16665.296875,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 15374.5,
+          "height": 14564.953125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 15374.5,
+          "bottom": 15579.46875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 15691.46875,
+          "bottom": 16665.296875,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1161.546875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1161.546875,
+          "bottom": 1366.515625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1478.515625,
+          "bottom": 2452.34375,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1282.015625,
+          "height": 472.46875
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1282.015625,
+          "bottom": 1486.984375,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1598.984375,
+          "bottom": 2572.8125,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 1161.546875,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 1161.546875,
+          "bottom": 1366.515625,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 1478.515625,
+          "bottom": 2452.34375,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 648,
+          "bottom": 777.546875,
+          "height": 129.546875
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 809.546875,
+          "bottom": 15374.5,
+          "height": 14564.953125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 15374.5,
+          "bottom": 15579.46875,
+          "height": 204.96875
+        },
+        {
+          "selector": "footer",
+          "top": 15691.46875,
+          "bottom": 16665.296875,
+          "height": 973.828125
+        }
+      ],
+      "kind": "search-layout",
+      "width": 390,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "kind": "homepage-images",
+      "width": 820,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 262.390625,
+          "top": 741.421875,
+          "viewportHeight": 900,
+          "naturalWidth": 262,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:58829/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1268.859375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9972.953125,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9972.953125,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9972.953125,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 2124.671875,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9972.953125,
+          "height": 904.734375
+        }
+      ],
+      "kind": "search-layout",
+      "width": 820,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "kind": "homepage-images",
+      "width": 980,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 313.59375,
+          "top": 742.703125,
+          "viewportHeight": 900,
+          "naturalWidth": 313,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:58829/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1312.28125,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 980,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1024,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 520,
+          "top": 745.5,
+          "viewportHeight": 900,
+          "naturalWidth": 520,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:58829/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1452.671875,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1024,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "kind": "homepage-images",
+      "width": 1440,
+      "scale": 1,
+      "images": [
+        {
+          "src": "http://127.0.0.1:58829/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+          "width": 450,
+          "top": 321.9375,
+          "viewportHeight": 900,
+          "naturalWidth": 518,
+          "loading": "eager",
+          "fetchPriority": "high",
+          "sizes": "(min-width: 820px) and (max-width: 980px) clamp(260px, 32vw, 480px), (max-width: 1024px) clamp(240px, 60vw, 520px), clamp(260px, 36vw, 520px)"
+        },
+        {
+          "src": "http://127.0.0.1:58829/assets/img/arcade/chai-chasers-social-1280.jpg",
+          "width": 300,
+          "top": 1140.34375,
+          "viewportHeight": 900,
+          "naturalWidth": 1280,
+          "loading": "lazy",
+          "fetchPriority": "auto",
+          "sizes": ""
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "light",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "light",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "light",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "light",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "light",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "light",
+      "state": "reset",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "dark",
+      "state": "empty",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=zzzzunmatchablequeryzzzz",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "dark",
+      "state": "no-results",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "2 results for “seniority”",
+      "results": 2,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "dark",
+      "state": "query",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/?q=seniority&cat=About",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "0 results",
+      "results": 1,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 928.5625,
+          "height": 352
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 928.5625,
+          "bottom": 1107.9375,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 1219.9375,
+          "bottom": 1723.65625,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "dark",
+      "state": "category",
+      "pass": true
+    },
+    {
+      "url": "http://127.0.0.1:58829/search/",
+      "actualTheme": "light",
+      "actualColorScheme": "dark",
+      "overflow": 0,
+      "status": "60 results. Type to search the catalog.",
+      "results": 60,
+      "boxes": [
+        {
+          "selector": ".glee-search-page__categories",
+          "top": 480.5625,
+          "bottom": 544.5625,
+          "height": 64
+        },
+        {
+          "selector": ".glee-search-page__results-wrap",
+          "top": 576.5625,
+          "bottom": 8776.84375,
+          "height": 8200.28125
+        },
+        {
+          "selector": ".glee-search-page__shortcuts",
+          "top": 8776.84375,
+          "bottom": 8956.21875,
+          "height": 179.375
+        },
+        {
+          "selector": "footer",
+          "top": 9068.21875,
+          "bottom": 9571.9375,
+          "height": 503.71875
+        }
+      ],
+      "kind": "search-layout",
+      "width": 1440,
+      "theme": "dark",
+      "state": "reset",
+      "pass": true
+    }
+  ],
+  "finishedAt": "2026-09-05T22:54:06.106Z"
+}

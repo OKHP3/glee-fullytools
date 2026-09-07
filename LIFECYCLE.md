@@ -20,7 +20,7 @@
 ## Current state: Active
 
 The Glee-fully Tools site is publicly deployed at `https://glee-fully.tools` and
-actively maintained. The current phase is **active growth and refinement** —
+actively maintained. The current phase is **active growth and refinement**.
 new Tool-ettes are added as the GPT suite expands, and the toolbox structure is
 stable. The public site is a catalog and routing hub; it does not imply that
 every externally hosted GPT is finished.
@@ -30,8 +30,8 @@ criteria are maintained in [`docs/suite-promise.md`](docs/suite-promise.md).
 
 ### Evidence
 
-- 63 production HTML files, including fallback pages
-- 60 indexable public pages (the sitemap and search index)
+- 64 production HTML files, including fallback pages
+- 61 indexable public pages (the sitemap and search index)
 - 1 Toolbox hub, 7 branch hubs, and 42 Tool-ettes
 - Tool-ette states: 1 live, 24 beta, 17 unavailable
 - Tool-ette behavior verification: 25 partial, 2 blocked by missing owner
@@ -39,7 +39,7 @@ criteria are maintained in [`docs/suite-promise.md`](docs/suite-promise.md).
 - 49 Atom entries (7 branches + 42 Tool-ettes; not a full-site page count)
 - GitHub Actions CI validates HTML, links, and sitemap on every push
 - `scripts/validate-site.py` and `scripts/check-links.py` pass with 0 issues
-- `assets/data/search-index.json` indexes all 60 indexable pages
+- `assets/data/search-index.json` indexes all 61 indexable pages
 
 ---
 
@@ -66,7 +66,7 @@ remove from the OKHP3 universe page, preserve the repo read-only.
 - **B3** — Decide whether the README's portfolio positioning copy should be reconciled onto `/about/` or the homepage.
 - **C2** — Decide where visible per-page “Last updated” timestamps belong.
 - **C3** — Decide whether to author one FAQ JSON-LD entry for each tool-ette.
-- **PurgeCSS / CSS minification** — Decide whether the measured performance benefit justifies a build-step exception to the no-build philosophy. WebP delivery is already shipped.
+- **PurgeCSS / CSS minification**  -  Decide whether the measured performance benefit justifies a build-step exception to the no-build philosophy. WebP delivery is already shipped.
 - **Orphaned butterfly art** — Decide whether to retain or remove the approximately 22 MB of unused source artwork.
 
 These are documented owner decisions, not release blockers. B2 (Keep exploring

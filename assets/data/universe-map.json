@@ -1,0 +1,752 @@
+{
+  "schema": 1,
+  "generator": "0.1.4",
+  "config_sha256": "0f6ebe93c34e2f9ae39e7cf5433e79c5878d7e6363d051096f6a98344c57fa84",
+  "sources": [
+    {
+      "origin": "https://glee-fully.tools",
+      "sha256": "f16cf93a1bdd3fad3769785f74afe69a93e79ac623855f9bdcd13c63f870fca7",
+      "records": 61
+    }
+  ],
+  "nodes": [
+    {
+      "id": "https://glee-fully.tools/",
+      "url": "https://glee-fully.tools/",
+      "title": "Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Glee-fully Personalizable Tools™ — a joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": null
+    },
+    {
+      "id": "https://glee-fully.tools/about/",
+      "url": "https://glee-fully.tools/about/",
+      "title": "About Glee & Jamie — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Meet Glee and Jamie, and discover how a late-night kitchen question inspired the warm, retro-bright Glee-fully catalog of personalizable GPT ideas.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/arcade/",
+      "url": "https://glee-fully.tools/arcade/",
+      "title": "The Arcade: Chai Chasers | Glee-fully Tools",
+      "description": "Meet Joey and Phoebe in Glee-fully Chai Chasers, an original cascading-reels game with iced chai and butterflies. Open the browser game from the Arcade.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/contact/",
+      "url": "https://glee-fully.tools/contact/",
+      "title": "Contact — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Get in touch with Glee-fully and AskJamie™. Contact us for custom GPT design, tool licensing, enterprise architecture, or collaboration opportunities.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/ecosystem/",
+      "url": "https://glee-fully.tools/ecosystem/",
+      "title": "Ecosystem — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Visual ecosystem map of the Glee-fully Toolbox — from the main trunk GPT through seven Tools (branches) and their Tool-ettes (twigs).",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/foundry/",
+      "url": "https://glee-fully.tools/foundry/",
+      "title": "Glee-fully FoundRy | Glee-fully Personalizable Tools™",
+      "description": "Meet the Glee-fully FoundRy: a locally run workbench with public source for shaping useful GPTs, Agent Skills, workflows and web tools, with clear briefs, recorded evidence and portable packages.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/legal/",
+      "url": "https://glee-fully.tools/legal/",
+      "title": "Legal Notice & Usage Disclaimer — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Read the Glee-fully legal notice: usage terms, AI limitations, privacy disclosures, third-party boundaries, and studio contact information.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/persona/",
+      "url": "https://glee-fully.tools/persona/",
+      "title": "The Voice & Muse — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore the intended Glee-fully voice: warm, witty, and retro-bright. Read the persona guide and its limits as a description of external GPT behavior.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/search/",
+      "url": "https://glee-fully.tools/search/",
+      "title": "Search — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Search the Glee-fully catalog by topic or category. Find branch hubs, Tool-ette descriptions, guides, and publication states.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/showcase/",
+      "url": "https://glee-fully.tools/showcase/",
+      "title": "Showcase — Glee-fully Personalizable Tools™",
+      "description": "Explore the Glee-fully website case study: catalog structure, static delivery, browser search, design choices, and evidence from repository checks.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/",
+      "url": "https://glee-fully.tools/toolbox/",
+      "title": "Toolbox — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Browse the Glee-fully Toolbox: seven branches of focused helpers, with intended uses and current launch states to guide your next step.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/",
+      "title": "Discovered Careers — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette’s publication state.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/",
+      "title": "Resume Builder — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Resume Builder is a guided, keyword-aware GPT that helps you create or polish professional resumes, match job posts, and export clean, shareable versions.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/",
+      "title": "Resume Customizer — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Resume Customizer explores tailoring a resume to a job posting: compare requirements, choose evidence, and draft relevant sections. Beta listing.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/",
+      "title": "Career Fitness — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Career Fitness is a custom GPT that benchmarks your skills, matches job titles, checks salaries, and maps out practical career growth paths.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/",
+      "title": "Letter Composer — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Letter Composer turns your resume and a job post into a tailored, human cover letter you can send today. Draft, customize tone, and export in minutes.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+      "title": "bLinkIn Tuner — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "bLinkIn Tuner explores energizing moments at work, recurring interests, and career experiments. Read the concept; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/",
+      "url": "https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/",
+      "title": "Career Seeker — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Career Seeker explores job-search plans, application tracking, and role comparisons. Read the concept; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/",
+      "title": "Treasured Finds — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/",
+      "title": "Personal Librarian — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Personal Librarian explores book inventories, reading progress, and wishlists across print, ebooks, and audio. Read the beta catalog entry.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/",
+      "title": "Decor Detective — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Decor Detective explores seasonal decor inventories by room, bin, holiday, and condition. Read the beta catalog entry and proposed workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/",
+      "title": "Present Hoarder — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Present Hoarder explores organizing gifts already bought: recipients, occasions, storage spots, and budgets. Read the beta catalog entry.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/",
+      "title": "Scentinal Journal — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Scentinal Journal explores fragrance notes and scent preferences. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/",
+      "title": "Spirited Journal — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Spirited Journal explores stories behind treasured possessions and keepsakes. Read the concept; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/",
+      "title": "Supply Haus — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Supply Haus explores craft-supply lists, storage locations, and project materials. Read the beta catalog entry and proposed workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "url": "https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/",
+      "title": "Bag Nabbit — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Bag Nabbit helps you track, tag, and fall back in love with your bag collection — from everyday totes to glam clutches, including wishlist and loaned bags.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+      "title": "Tasty Tracker — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Glee-fully Tasty Tracker: a custom GPT for organizing recipes, building meal plans, and creating smart grocery lists. Your joyful kitchen command center.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/",
+      "title": "Flavor Meister — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Flavor Meister explores recipe notes, variations, and cooking reflections you can save yourself. Read the beta catalog entry and intended workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/",
+      "title": "Menu Conductor — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Menu Conductor explores meal plans shaped by your recipes, time, and preferences. Read the concept; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+      "title": "Wishful Tastes — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Wishful Tastes is your epicurean bucket-list GPT for tracking dream dishes, restaurants, and food experiences until you finally taste them.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+      "title": "Pantry Shopper — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Pantry Shopper is the grocery-list co-pilot inside Glee-fully Tasty Tracker — turning your pantry, recipes, and meal plans into smart, store-ready shopping runs.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "url": "https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/",
+      "title": "Palatably Profiled — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Palatably Profiled turns your food ratings into a living flavor profile. See what you love, compare tastes across your household, and plan meals everyone enjoys.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/",
+      "title": "Traveler's Guide — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Traveler's Guide is a custom-tuned GPT for planning, documenting, and remembering trips. Turn wanderlust into reusable itineraries, trip journals, and memory logs.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/",
+      "title": "Journey Diary — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Journey Diary is a custom travel journal GPT that helps you log trips, capture memories, and turn scattered notes into export-ready stories.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+      "title": "Itinerary Hacker — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Itinerary Hacker explores trip routes, activity options, and daily schedules. Read the beta catalog entry and planning workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/",
+      "title": "Detour Discoverer — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Detour Discoverer is the Traveler's Guide Tool-ette that finds the worth-it side trips, scenic stops, and bonus adventures along your planned route.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+      "title": "Dreamland Journeys — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Dreamland Journeys explores travel wishlists and ideas for future adventures. Read the beta catalog entry and proposed workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/",
+      "url": "https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/",
+      "title": "Memento Log — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Memento Log explores travel stories, keepsake notes, and photo captions you can save yourself. Read the beta catalog entry.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/",
+      "title": "Organized Life — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Organized Life is a Glee-fully custom GPT that turns your tasks, budgets, schedules, and dashboards into one cozy, organized hub for personal planning.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/",
+      "title": "Task Maestro — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Task Maestro is a custom Glee-fully GPT that organizes your to-dos by category, urgency, and due date with gentle nudges, smart tags, and printable checklists.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/",
+      "title": "Thrifty Spender — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Thrifty Spender explores spending categories, budget notes, and planning questions. Read the beta catalog entry and its limitations.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/",
+      "title": "Giftlist Helper — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Giftlist Helper explores gift ideas, wishlists, recipients, and occasions. Read the beta catalog entry; bring your own notes to each conversation.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/",
+      "title": "Scheduling Wizard — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Scheduling Wizard is an unavailable Organized Life concept for turning tasks, bills, and events into a calendar-ready plan.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+      "title": "Lifestyle Wallboard — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Lifestyle Wallboard explores summaries of bills, goals, habits, and tasks you provide. Read the beta catalog entry; automatic app connections are not verified.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "url": "https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "title": "Neighborly Bazaar — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Neighborly Bazaar is a custom GPT that helps you evaluate, price, and list household items so you can turn clutter into fair, neighbor-friendly sales and donations.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: live",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+      "title": "Healthy Bee-ing — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/",
+      "title": "Care Check — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Care Check is an unavailable concept for organizing symptom notes for a health professional. It does not provide verified triage or diagnosis.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+      "title": "Calm Keep — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Calm Keep by Glee-fully Healthy Bee-ing tracks stress, sleep, and small movement patterns so you can build calmer days without guilt or perfection pressure.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+      "title": "Snappy Count — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Snappy Count explores meal notes and rough nutrition estimates, with uncertainty. Read the concept; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+      "title": "Medi Minder — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Medi Minder is a Glee-fully Tool-ette GPT for keeping meds, refills, and doctor appointments organized with calm, logistics-only reminders — not medical advice.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/",
+      "title": "Moody Log — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Moody Log explores mood notes and reflection prompts. Read the beta catalog entry, intended use, and external data-handling boundaries.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "url": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/",
+      "title": "Maven Wise — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Maven Wise explores midlife and hormonal-change notes for reflection or clinician conversations. Read the beta catalog entry and limitations.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/",
+      "title": "Identity Known — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette’s availability and limitations.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/",
+      "title": "Critter Spotter — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Critter Spotter explores animal identification from photos or descriptions. Read the beta catalog entry; check identification ideas independently.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/",
+      "title": "Roost Wrangler — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Roost Wrangler explores home, furniture, and design styles through photos and descriptions. Read the beta catalog entry and proposed workflow.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: beta",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/",
+      "title": "Sight Seeker — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Sight Seeker explores scenery, landmark, and sky identification ideas. Read the concept and limitations; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/",
+      "title": "Snap Decoder — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Snap Decoder explores screenshots, quotes, and error messages. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/",
+      "title": "Motif Muse — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Motif Muse explores colors, patterns, and visual styles. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/",
+      "title": "Maker Matcher — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Maker Matcher explores crafts, materials, and tools. Read the concept and identification limits; its GPT destination is unavailable.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/",
+      "url": "https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/",
+      "title": "Self Fixer — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Self Fixer helps you identify mystery objects, broken bits, and DIY parts so you can understand what they are, what they do, and what to do next.",
+      "origin": "https://glee-fully.tools",
+      "status": "Catalog: unavailable",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/"
+    },
+    {
+      "id": "https://glee-fully.tools/universe/",
+      "url": "https://glee-fully.tools/universe/",
+      "title": "OKHP³™ Universe — Glee-fully Personalizable Tools™ 🧰🌳",
+      "description": "Explore the current Glee-fully page map, with Toolbox branches, Tool-ette publication states, and links to the OverKill Hill and AskJamie universe maps.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    }
+  ],
+  "excluded": [],
+  "diagrams": [
+    {
+      "file": "universe-3210e3534c98-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/",
+      "nodes": [
+        "https://glee-fully.tools/",
+        "https://glee-fully.tools/about/",
+        "https://glee-fully.tools/arcade/",
+        "https://glee-fully.tools/contact/",
+        "https://glee-fully.tools/ecosystem/",
+        "https://glee-fully.tools/foundry/",
+        "https://glee-fully.tools/legal/",
+        "https://glee-fully.tools/persona/",
+        "https://glee-fully.tools/search/",
+        "https://glee-fully.tools/showcase/",
+        "https://glee-fully.tools/toolbox/",
+        "https://glee-fully.tools/universe/"
+      ]
+    },
+    {
+      "file": "universe-215e259005af-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/",
+        "https://glee-fully.tools/toolbox/05-organized-life/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+        "https://glee-fully.tools/toolbox/07-identity-known/"
+      ]
+    },
+    {
+      "file": "universe-afef916ba949-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/01-discovered-careers/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/01-discovered-careers/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01a-resume-builder/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01b-resume-customizer/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01c-career-fitness/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01d-letter-composer/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01e-blinkin-tuner/",
+        "https://glee-fully.tools/toolbox/01-discovered-careers/01f-career-seeker/"
+      ]
+    },
+    {
+      "file": "universe-6817815d5e23-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/02-treasured-finds/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/02-treasured-finds/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02a-personal-librarian/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02b-decor-detective/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02c-present-hoarder/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02d-scentinal-journal/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02e-spirited-journal/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02f-supply-haus/",
+        "https://glee-fully.tools/toolbox/02-treasured-finds/02g-bag-nabbit/"
+      ]
+    },
+    {
+      "file": "universe-3fde43a31f29-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/03a-flavor-meister/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/03b-menu-conductor/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/03c-wishful-tastes/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/03d-pantry-shopper/",
+        "https://glee-fully.tools/toolbox/03-tasty-tracker/03e-palatably-profiled/"
+      ]
+    },
+    {
+      "file": "universe-6495dccbc63d-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/04-travelers-guide/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/04-travelers-guide/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/04a-journey-diary/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/04b-itinerary-hacker/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/04c-detour-discoverer/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/04d-dreamland-journeys/",
+        "https://glee-fully.tools/toolbox/04-travelers-guide/04e-memento-log/"
+      ]
+    },
+    {
+      "file": "universe-64ac892a0be2-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/05-organized-life/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/05-organized-life/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05a-task-maestro/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05b-thrifty-spender/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05c-giftlist-helper/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05d-scheduling-wizard/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05e-lifestyle-wallboard/",
+        "https://glee-fully.tools/toolbox/05-organized-life/05f-neighborly-bazaar/"
+      ]
+    },
+    {
+      "file": "universe-8f8ec4dab069-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06a-care-check/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06b-calm-keep/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06c-snappy-count/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06d-medi-minder/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06e-moody-log/",
+        "https://glee-fully.tools/toolbox/06-healthy-bee-ing/06f-maven-wise/"
+      ]
+    },
+    {
+      "file": "universe-9a15f666c57b-detail-analyst-v1-1.mmd",
+      "parent": "https://glee-fully.tools/toolbox/07-identity-known/",
+      "nodes": [
+        "https://glee-fully.tools/toolbox/07-identity-known/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07a-critter-spotter/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07b-roost-wrangler/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07c-sight-seeker/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07d-snap-decoder/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07e-motif-muse/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07f-maker-matcher/",
+        "https://glee-fully.tools/toolbox/07-identity-known/07g-self-fixer/"
+      ]
+    }
+  ],
+  "render_status": "not-run",
+  "status_authority": "scripts/audit-tool-ette-promises.py"
+}

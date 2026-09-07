@@ -1,0 +1,273 @@
+{
+  "commit": "5da805785d47f9bc29058b07d2a5467da32a1573",
+  "artifact_simulation": {
+    "file_count": 750,
+    "total_bytes": 208629563,
+    "templates": [
+      {
+        "path": "assets/templates/INDEX.md",
+        "bytes": 6944
+      },
+      {
+        "path": "assets/templates/template--error.html",
+        "bytes": 12559
+      },
+      {
+        "path": "assets/templates/template--holding.html",
+        "bytes": 12773
+      },
+      {
+        "path": "assets/templates/template--homepage.html",
+        "bytes": 16588
+      },
+      {
+        "path": "assets/templates/template--hub-branch.html",
+        "bytes": 16763
+      },
+      {
+        "path": "assets/templates/template--hub-toolbox.html",
+        "bytes": 18968
+      },
+      {
+        "path": "assets/templates/template--interior-single.html",
+        "bytes": 15812
+      },
+      {
+        "path": "assets/templates/template--mermaid-diagram.html",
+        "bytes": 16625
+      },
+      {
+        "path": "assets/templates/template--tool-detail.html",
+        "bytes": 18613
+      },
+      {
+        "path": "assets/templates/template--utility.html",
+        "bytes": 13795
+      }
+    ],
+    "other_nonruntime": [
+      {
+        "path": ".editorconfig",
+        "bytes": 549
+      },
+      {
+        "path": ".gitattributes",
+        "bytes": 60
+      },
+      {
+        "path": ".gitignore",
+        "bytes": 431
+      },
+      {
+        "path": ".nojekyll",
+        "bytes": 2
+      },
+      {
+        "path": "404.html",
+        "bytes": 15504
+      },
+      {
+        "path": "CHANGELOG.md",
+        "bytes": 1581
+      },
+      {
+        "path": "CLAUDE.md",
+        "bytes": 278
+      },
+      {
+        "path": "cname",
+        "bytes": 16
+      },
+      {
+        "path": "code_of_conduct.md",
+        "bytes": 590
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "bytes": 2365
+      },
+      {
+        "path": "favicon.ico",
+        "bytes": 15406
+      },
+      {
+        "path": "feed.xml",
+        "bytes": 24091
+      },
+      {
+        "path": "gleefully-replit-theme.json",
+        "bytes": 2002
+      },
+      {
+        "path": "humans.txt",
+        "bytes": 780
+      },
+      {
+        "path": "index.html",
+        "bytes": 23701
+      },
+      {
+        "path": "license",
+        "bytes": 905
+      },
+      {
+        "path": "LIFECYCLE.md",
+        "bytes": 3874
+      },
+      {
+        "path": "llms.txt",
+        "bytes": 3446
+      },
+      {
+        "path": "offline.html",
+        "bytes": 5898
+      },
+      {
+        "path": "README.md",
+        "bytes": 5974
+      },
+      {
+        "path": "replit.nix",
+        "bytes": 558
+      },
+      {
+        "path": "robots.txt",
+        "bytes": 206
+      },
+      {
+        "path": "SECURITY.md",
+        "bytes": 1431
+      },
+      {
+        "path": "site.webmanifest",
+        "bytes": 1651
+      },
+      {
+        "path": "sitemap.xml",
+        "bytes": 10758
+      },
+      {
+        "path": "skills-lock.json",
+        "bytes": 290
+      },
+      {
+        "path": "sw.js",
+        "bytes": 2354
+      },
+      {
+        "path": "under-construction.html",
+        "bytes": 15709
+      },
+      {
+        "path": "_headers",
+        "bytes": 6154
+      },
+      {
+        "path": "brand-styles/registry.yaml",
+        "bytes": 669
+      },
+      {
+        "path": "brand-styles/profiles/glee-fully.yaml",
+        "bytes": 6153
+      },
+      {
+        "path": "config/csp-policies.json",
+        "bytes": 6863
+      }
+    ],
+    "largest": [
+      {
+        "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-left-big-toolbox-right-wide-1536.png",
+        "bytes": 3080876
+      },
+      {
+        "path": "assets/img/glee-fully-neon-butterflies.png",
+        "bytes": 3054914
+      },
+      {
+        "path": "assets/img/glee-fully-tools-title-rot-low-mid-butterfly-left-toolbox-right-wide-1536.png",
+        "bytes": 3005166
+      },
+      {
+        "path": "assets/img/glee-fully-tools-title-low-mid-butterfly-left-toolbox-right-wide-1536.png",
+        "bytes": 2944129
+      },
+      {
+        "path": "assets/img/glee-fully-tools-title-high-mid-butterfly-left-toolbox-right-wide-1536.png",
+        "bytes": 2925080
+      },
+      {
+        "path": "assets/img/glee-fully-tools-butterfly-path-left-wide-1536.png",
+        "bytes": 2340554
+      },
+      {
+        "path": "assets/img/glee-fully-tools-butterfly-loop-right-wide-1536.png",
+        "bytes": 2330132
+      },
+      {
+        "path": "assets/img/glee-fully-retro-butterfly-design.png",
+        "bytes": 2317445
+      },
+      {
+        "path": "assets/img/glee-fully-tools-butterfly-path-right-wide-1536.png",
+        "bytes": 2275513
+      },
+      {
+        "path": "assets/img/glee-fully-tools-title-low-center-butterfly-left-toolbox-square-1024.png",
+        "bytes": 2253898
+      },
+      {
+        "path": "assets/img/glee-fully-tools-butterfly-loop-left-wide-1536.png",
+        "bytes": 2248563
+      },
+      {
+        "path": "assets/img/glee-full-tools-title-low-mid-butterfly-perch-toolbox-square-1024.png",
+        "bytes": 2134641
+      },
+      {
+        "path": "assets/img/favicons/favicon.svg",
+        "bytes": 2101324
+      },
+      {
+        "path": "assets/img/glee-fully-tools-background-wide-1536.png",
+        "bytes": 2072093
+      },
+      {
+        "path": "assets/img/glee-full-tools-title-low-mid-butterfly-perch-comp-square-1024.png",
+        "bytes": 2009505
+      }
+    ]
+  },
+  "runtime_bytes": [
+    {
+      "path": "assets/css/theme.css",
+      "bytes": 238664,
+      "gzip_bytes": 46551
+    },
+    {
+      "path": "assets/js/app.js",
+      "bytes": 45975,
+      "gzip_bytes": 11724
+    },
+    {
+      "path": "assets/js/glee-site-enhancements.js",
+      "bytes": 6440,
+      "gzip_bytes": 2253
+    },
+    {
+      "path": "assets/js/mermaid-init.js",
+      "bytes": 13613,
+      "gzip_bytes": 3975
+    },
+    {
+      "path": "assets/data/search-index.json",
+      "bytes": 138909,
+      "gzip_bytes": 26030
+    },
+    {
+      "path": "index.html",
+      "bytes": 23701,
+      "gzip_bytes": 7945
+    }
+  ]
+}

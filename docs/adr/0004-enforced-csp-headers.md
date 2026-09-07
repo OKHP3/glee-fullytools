@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted — policy retained; GitHub Pages delivery not demonstrated
+Accepted. Hash-based meta CSP is implemented; portable HTTP policy delivery
+remains a separate hosting decision. Current-status clarification: 2026-09-05.
 
 ## Date
 
@@ -37,7 +38,7 @@ script or image permission.
 Run `scripts/check-public-headers.py` after a Pages deployment and treat its
 output as the delivery evidence for the public domain.
 
-Final enforced policy:
+Historical portable policy snapshot (2026-07-20, superseded by the generator):
 ```
 default-src 'self';
 script-src 'self' 'unsafe-inline' https://www.googletagmanager.com
@@ -63,14 +64,20 @@ upgrade-insecure-requests
 - `object-src 'none'` blocks Flash/plugin vectors entirely
 - `upgrade-insecure-requests` forces HTTPS for all sub-resources
 
-### Negative
-- GitHub Pages currently does not deliver this policy, so its public site does not
-  receive these controls from `_headers`
-- `unsafe-inline` for scripts is required for gtag config blocks; a nonce-based approach
-  would be more secure but requires server-side rendering to inject nonces dynamically
-- Any new CDN origin requires a `_headers` update before it will load in production
+### Current implementation and remaining limits
+- `scripts/csp.py` generates per-page meta policies and the portable `_headers`
+  policy. `scripts/check-csp.py` verifies them. Current script policies use
+  approved content hashes and do not require `unsafe-inline` or server rendering.
+- Analytics initialization is external and remains opt-in. Vendored Mermaid
+  runs from the same origin. Review the generator before adding external origins.
+- GitHub Pages does not consume `_headers`. Meta CSP remains active, while
+  `frame-ancestors` and other HTTP-only controls need separately verified delivery.
 
 ### Future hardening
-- Replace `unsafe-inline` with a nonce or hash-based approach if/when the site gains
-  server-side rendering capability
-- Add `report-uri` or `report-to` endpoint for violation telemetry
+- Consider HTTP policy delivery only through an owner-approved hosting decision.
+- A violation-reporting endpoint remains a proposal; none is introduced here.
+- The concrete retain-Pages, proxy, and alternate-static-host choices and their
+  required owner decisions are recorded in
+  [the September 5 platform handoff](../remaining-program-2026-09-05/platform-release.md#host-header-decision).
+  Before applying `_headers` to a new host, review its immutable-cache rules,
+  combined HTTP/meta CSP behavior, embedding policy, and HSTS subdomain coverage.

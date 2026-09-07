@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-09-05T17:24:28.892Z",
+  "base": "http://127.0.0.1:5187",
+  "browser": "Chromium",
+  "results": [
+    {
+      "name": "hero contrast light",
+      "status": "FAIL",
+      "error": "Eyebrow 1.10:1"
+    },
+    {
+      "name": "hero contrast dark",
+      "status": "FAIL",
+      "error": "Large heading 2.61:1"
+    },
+    {
+      "name": "hero contrast auto-light",
+      "status": "FAIL",
+      "error": "Eyebrow 1.10:1"
+    },
+    {
+      "name": "hero contrast auto-dark",
+      "status": "FAIL",
+      "error": "Large heading 2.61:1"
+    },
+    {
+      "name": "Neighborly illustration decodes",
+      "status": "FAIL",
+      "error": "page.evaluate: EncodingError: The source image cannot be decoded."
+    }
+  ],
+  "failures": 5
+}

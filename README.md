@@ -41,14 +41,17 @@ Our suite shows that structure can be playful, creativity can be systematic, and
 
 ### 📚 Public inventory
 
-- **63** production HTML files, including utility and fallback pages
-- **60** indexable public pages in the sitemap and search index
+- **64** production HTML files, including utility and fallback pages
+- **61** indexable public pages in the sitemap and search index
 - **1** Toolbox hub, **7** branch hubs, and **42** Tool-ette pages
 - **49** Atom feed entries for the branch and Tool-ette catalog
 
 The feed is an update stream rather than a mirror of every public page, and the
 9 structural templates under `assets/templates/` are development artifacts,
 not additional public pages.
+
+The [FoundRy feature page](foundry/) introduces the locally run workbench with public source
+behind Glee-fully tooling. It is a public explanation, not a hosted builder launch.
 
 ### 💬 Connect
 

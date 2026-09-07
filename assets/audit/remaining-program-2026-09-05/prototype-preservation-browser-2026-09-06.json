@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-09-06T02:45:25.662Z",
+  "browser": "151.0.7922.34",
+  "sourceSha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62",
+  "status": "PASS",
+  "checks": [
+    "42 entries, seven original branches",
+    "17 unavailable filter",
+    "Scheduling concept detail has no external GPT launch and shows source-grounded inputs/intended output",
+    "Escape returns opener focus",
+    "Explore branch focuses catalog heading after rerender",
+    "Organized Life shows six entries",
+    "No horizontal overflow 1440/640/375/320",
+    "Light/dark/reduced-motion/forced-color controls"
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "width": 640,
+      "overflow": 0
+    },
+    {
+      "width": 375,
+      "overflow": 0
+    },
+    {
+      "width": 320,
+      "overflow": 0
+    }
+  ],
+  "errors": []
+}

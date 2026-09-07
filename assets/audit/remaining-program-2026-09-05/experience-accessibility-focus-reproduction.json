@@ -1,0 +1,2798 @@
+{
+  "startedAt": "2026-09-05T22:32:28.647Z",
+  "commit": "f5f33986e6ee287fb165c75e82ef01e5d3ed1f99",
+  "browser": "151.0.7922.34",
+  "sourceRoot": "C:\\Users\\jamie\\.codex\\worktrees\\73b4\\glee-fullytools",
+  "repetitions": 2,
+  "policy": {
+    "kind": "local lab, no live or field measurements",
+    "serviceWorkers": "blocked to isolate HTTP cache",
+    "server": "gzip text; max-age=600 assets and no-cache HTML; cold and same-context repeat navigation to identical URL",
+    "fonts": "real Google Fonts network requests allowed for performance; blocked in isolated accessibility cases",
+    "analytics": "all Google Analytics and Tag Manager requests blocked",
+    "constrained": "4x CPU slowdown, 150 ms request latency, 1.6 Mbps download, 0.75 Mbps upload",
+    "caveats": [
+      "Localhost omits DNS/TLS/origin distance.",
+      "HTTP cache policy is an explicit lab policy, not verified production headers.",
+      "Initial viewport LCP and CLS are observation-window values, not field p75.",
+      "Synthetic search latency is not INP.",
+      "Two samples per condition identify candidates; they do not establish reliable percentile claims."
+    ]
+  },
+  "sourceAssets": {
+    "assets/css/theme.css": {
+      "bytes": 239606,
+      "gzipBytes": 47027,
+      "sha256": "43d453145833611661389f95d81a29aeac29d2ba81f77facaf422e94e9a761b7"
+    },
+    "assets/js/app.js": {
+      "bytes": 49347,
+      "gzipBytes": 12553,
+      "sha256": "19e8b0e6f96b9abf0d4289667e68f6462232d8c361486c59b5b7151971209103"
+    },
+    "assets/js/glee-site-enhancements.js": {
+      "bytes": 4232,
+      "gzipBytes": 1530,
+      "sha256": "92d8ad8cba8052366a676843b52f55e8bf1f73ade7f81d89e884a9f37046ebf8"
+    },
+    "assets/data/search-index.json": {
+      "bytes": 436530,
+      "gzipBytes": 120673,
+      "sha256": "656937c8d276fd4c177530746667469a55b62e572c7ce713de37b95b386e4c7c"
+    }
+  },
+  "performance": [],
+  "accessibility": [
+    {
+      "condition": "reflow-320",
+      "name": "home",
+      "route": "/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-768.webp",
+              "width": 320,
+              "height": 213
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/arcade/chai-chasers-social-1280.jpg",
+              "width": 1280,
+              "height": 640
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "glee-hero-stripes",
+                "right": 322.8129632472992
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "keyboard opens navigation",
+          "pass": true
+        },
+        {
+          "check": "Escape closes navigation and returns focus",
+          "pass": true
+        },
+        {
+          "check": "search receives focus",
+          "pass": true
+        },
+        {
+          "check": "search focus trap loops within dialog",
+          "pass": true
+        },
+        {
+          "check": "search closes and returns focus",
+          "pass": true
+        },
+        {
+          "check": "visible keyboard focus outline",
+          "pass": true,
+          "evidence": {
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineColor": "rgb(217, 79, 99)",
+            "color": "rgb(56, 46, 39)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reflow-320",
+      "name": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01c-career-fitness-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01d-letter-composer-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01e-b-link-in-tuner-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01f-career-seeker-background-retro-stripe-square-300.webp",
+              "width": 160,
+              "height": 160
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 323.60560488700867
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reflow-320",
+      "name": "detail",
+      "route": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Neighborly Bazaar — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg",
+              "width": 800,
+              "height": 534
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 323.67948508262634
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reflow-320",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reflow-320",
+      "name": "diagram",
+      "route": "/ecosystem/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 323.26164722442627
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: Glee‑fully Toolbox 🧰 (Trunk 🌳); 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; /toolbox/; Open the Toolbox hub; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/05-organized-life/; Open Organized Life; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/07-identity-known/; Open Identity Known",
+          "width": 320,
+          "svgWidth": 288
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 2: 01 — Discovered Careers; 01a — Resume Builder; 01b — Resume Customizer; 01c — Career Fitness; 01d — Letter Composer; 01e — bLinkIn Tuner; 01f — Career Seeker; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/01-discovered-careers/01a-resume-builder/; Open Resume Builder; /toolbox/01-discovered-careers/01b-resume-customizer/; Open Resume Customizer; /toolbox/01-discovered-careers/01c-career-fitness/; Open Career Fitness; /toolbox/01-discovered-careers/01d-letter-composer/; Open Letter Composer; /toolbox/01-discovered-careers/01e-blinkin-tuner/; Open bLinkIn Tuner; /toolbox/01-discovered-careers/01f-career-seeker/; Open Career Seeker",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 3: 02 — Treasured Finds; 02a — Personal Librarian; 02b — Decor Detective; 02c — Present Hoarder; 02d — Scentinal Journal; 02e — Spirited Journal; 02f — Supply Haus; 02g — Bag Nabbit; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/02-treasured-finds/02a-personal-librarian/; Open Personal Librarian; /toolbox/02-treasured-finds/02b-decor-detective/; Open Decor Detective; /toolbox/02-treasured-finds/02c-present-hoarder/; Open Present Hoarder; /toolbox/02-treasured-finds/02d-scentinal-journal/; Open Scentinal Journal; /toolbox/02-treasured-finds/02e-spirited-journal/; Open Spirited Journal; /toolbox/02-treasured-finds/02f-supply-haus/; Open Supply Haus; /toolbox/02-treasured-finds/02g-bag-nabbit/; Open Bag Nabbit",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 4: 03 — Tasty Tracker; 03a — Flavor Meister; 03b — Menu Conductor; 03c — Wishful Tastes; 03d — Pantry Shopper; 03e — Palatably Profiled; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/03-tasty-tracker/03a-flavor-meister/; Open Flavor Meister; /toolbox/03-tasty-tracker/03b-menu-conductor/; Open Menu Conductor; /toolbox/03-tasty-tracker/03c-wishful-tastes/; Open Wishful Tastes; /toolbox/03-tasty-tracker/03d-pantry-shopper/; Open Pantry Shopper; /toolbox/03-tasty-tracker/03e-palatably-profiled/; Open Palatably Profiled",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 5: 04 — Traveler’s Guide; 04a — Journey Diary; 04b — Itinerary Hacker; 04c — Detour Discoverer; 04d — Dreamland Journeys; 04e — Memento Log; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/04-travelers-guide/04a-journey-diary/; Open Journey Diary; /toolbox/04-travelers-guide/04b-itinerary-hacker/; Open Itinerary Hacker; /toolbox/04-travelers-guide/04c-detour-discoverer/; Open Detour Discoverer; /toolbox/04-travelers-guide/04d-dreamland-journeys/; Open Dreamland Journeys; /toolbox/04-travelers-guide/04e-memento-log/; Open Memento Log",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 6: 05 — Organized Life; 05a — Task Maestro; 05b — Thrifty Spender; 05c — Giftlist Helper; 05d — Scheduling Wizard; 05e — Lifestyle Wallboard; 05f — Neighborly Bazaar; /toolbox/05-organized-life/; Open Organized Life; /toolbox/05-organized-life/05a-task-maestro/; Open Task Maestro; /toolbox/05-organized-life/05b-thrifty-spender/; Open Thrifty Spender; /toolbox/05-organized-life/05c-giftlist-helper/; Open Giftlist Helper; /toolbox/05-organized-life/05d-scheduling-wizard/; Open Scheduling Wizard; /toolbox/05-organized-life/05e-lifestyle-wallboard/; Open Lifestyle Wallboard; /toolbox/05-organized-life/05f-neighborly-bazaar/; Open Neighborly Bazaar",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 7: 06 — Healthy Bee‑ing; 06a — Care Check; 06b — Calm Keep; 06c — Snappy Count; 06d — Medi Minder; 06e — Moody Log; 06f — Maven Wise; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/06-healthy-bee-ing/06a-care-check/; Open Care Check; /toolbox/06-healthy-bee-ing/06b-calm-keep/; Open Calm Keep; /toolbox/06-healthy-bee-ing/06c-snappy-count/; Open Snappy Count; /toolbox/06-healthy-bee-ing/06d-medi-minder/; Open Medi Minder; /toolbox/06-healthy-bee-ing/06e-moody-log/; Open Moody Log; /toolbox/06-healthy-bee-ing/06f-maven-wise/; Open Maven Wise",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 8: 07 — Identity Known; 07a — Critter Spotter; 07b — Roost Wrangler; 07c — Sight Seeker; 07d — Snap Decoder; 07e — Motif Muse; 07f — Maker Matcher; 07g — Self Fixer; /toolbox/07-identity-known/; Open Identity Known; /toolbox/07-identity-known/07a-critter-spotter/; Open Critter Spotter; /toolbox/07-identity-known/07b-roost-wrangler/; Open Roost Wrangler; /toolbox/07-identity-known/07c-sight-seeker/; Open Sight Seeker; /toolbox/07-identity-known/07d-snap-decoder/; Open Snap Decoder; /toolbox/07-identity-known/07e-motif-muse/; Open Motif Muse; /toolbox/07-identity-known/07f-maker-matcher/; Open Maker Matcher; /toolbox/07-identity-known/07g-self-fixer/; Open Self Fixer",
+          "width": 236.40625,
+          "svgWidth": 212.40625
+        }
+      ]
+    },
+    {
+      "condition": "reflow-320",
+      "name": "universe",
+      "route": "/universe/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 321.39010083675385
+              },
+              {
+                "tag": "DIV",
+                "class": "askjamie-paper",
+                "right": 338.5466766357422
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: OverKill Hill P³™; Glee‑fully Personalizable Tools™; 00 — Glee‑fully Toolbox; 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; AskJamie™; AJ01 — Résumé Representative; AJ02 — Professional Portfolio; AJ03 — Enterprise Sleuth; AJ04 — OKHP³ BrandGuard™; BRG00 — Builders FirstSource; BRG01 — LEGO; BRG02 — Starbucks; BRG03 — Brooks Running; BRG04 — Ping; BRG05 — Costco; BRG06 — Hershey; BRG07 — LVMH; BRG08 — Dollar General",
+          "width": 272,
+          "svgWidth": 240
+        }
+      ]
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "home",
+      "route": "/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-1536.webp",
+              "width": 640,
+              "height": 426
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/arcade/chai-chasers-social-1280.jpg",
+              "width": 1280,
+              "height": 640
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "glee-hero-stripes",
+                "right": 642.3187637329102
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "keyboard opens navigation",
+          "pass": true
+        },
+        {
+          "check": "Escape closes navigation and returns focus",
+          "pass": true
+        },
+        {
+          "check": "search receives focus",
+          "pass": true
+        },
+        {
+          "check": "search focus trap loops within dialog",
+          "pass": true
+        },
+        {
+          "check": "search closes and returns focus",
+          "pass": true
+        },
+        {
+          "check": "visible keyboard focus outline",
+          "pass": true,
+          "evidence": {
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineColor": "rgb(217, 79, 99)",
+            "color": "rgb(97, 58, 31)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-1024.webp",
+              "width": 320,
+              "height": 320
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01c-career-fitness-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01d-letter-composer-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01e-b-link-in-tuner-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01f-career-seeker-background-retro-stripe-square-600.webp",
+              "width": 160,
+              "height": 160
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 642.6117084026337
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "detail",
+      "route": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Neighborly Bazaar — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg",
+              "width": 800,
+              "height": 534
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 642.6556077003479
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "diagram",
+      "route": "/ecosystem/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 643.1152150630951
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: Glee‑fully Toolbox 🧰 (Trunk 🌳); 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; /toolbox/; Open the Toolbox hub; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/05-organized-life/; Open Organized Life; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/07-identity-known/; Open Identity Known",
+          "width": 620,
+          "svgWidth": 588
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 2: 01 — Discovered Careers; 01a — Resume Builder; 01b — Resume Customizer; 01c — Career Fitness; 01d — Letter Composer; 01e — bLinkIn Tuner; 01f — Career Seeker; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/01-discovered-careers/01a-resume-builder/; Open Resume Builder; /toolbox/01-discovered-careers/01b-resume-customizer/; Open Resume Customizer; /toolbox/01-discovered-careers/01c-career-fitness/; Open Career Fitness; /toolbox/01-discovered-careers/01d-letter-composer/; Open Letter Composer; /toolbox/01-discovered-careers/01e-blinkin-tuner/; Open bLinkIn Tuner; /toolbox/01-discovered-careers/01f-career-seeker/; Open Career Seeker",
+          "width": 530.8125,
+          "svgWidth": 506.8125
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 3: 02 — Treasured Finds; 02a — Personal Librarian; 02b — Decor Detective; 02c — Present Hoarder; 02d — Scentinal Journal; 02e — Spirited Journal; 02f — Supply Haus; 02g — Bag Nabbit; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/02-treasured-finds/02a-personal-librarian/; Open Personal Librarian; /toolbox/02-treasured-finds/02b-decor-detective/; Open Decor Detective; /toolbox/02-treasured-finds/02c-present-hoarder/; Open Present Hoarder; /toolbox/02-treasured-finds/02d-scentinal-journal/; Open Scentinal Journal; /toolbox/02-treasured-finds/02e-spirited-journal/; Open Spirited Journal; /toolbox/02-treasured-finds/02f-supply-haus/; Open Supply Haus; /toolbox/02-treasured-finds/02g-bag-nabbit/; Open Bag Nabbit",
+          "width": 530.8125,
+          "svgWidth": 506.8125
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 4: 03 — Tasty Tracker; 03a — Flavor Meister; 03b — Menu Conductor; 03c — Wishful Tastes; 03d — Pantry Shopper; 03e — Palatably Profiled; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/03-tasty-tracker/03a-flavor-meister/; Open Flavor Meister; /toolbox/03-tasty-tracker/03b-menu-conductor/; Open Menu Conductor; /toolbox/03-tasty-tracker/03c-wishful-tastes/; Open Wishful Tastes; /toolbox/03-tasty-tracker/03d-pantry-shopper/; Open Pantry Shopper; /toolbox/03-tasty-tracker/03e-palatably-profiled/; Open Palatably Profiled",
+          "width": 530.8125,
+          "svgWidth": 506.4375
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 5: 04 — Traveler’s Guide; 04a — Journey Diary; 04b — Itinerary Hacker; 04c — Detour Discoverer; 04d — Dreamland Journeys; 04e — Memento Log; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/04-travelers-guide/04a-journey-diary/; Open Journey Diary; /toolbox/04-travelers-guide/04b-itinerary-hacker/; Open Itinerary Hacker; /toolbox/04-travelers-guide/04c-detour-discoverer/; Open Detour Discoverer; /toolbox/04-travelers-guide/04d-dreamland-journeys/; Open Dreamland Journeys; /toolbox/04-travelers-guide/04e-memento-log/; Open Memento Log",
+          "width": 530.8125,
+          "svgWidth": 506.8125
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 6: 05 — Organized Life; 05a — Task Maestro; 05b — Thrifty Spender; 05c — Giftlist Helper; 05d — Scheduling Wizard; 05e — Lifestyle Wallboard; 05f — Neighborly Bazaar; /toolbox/05-organized-life/; Open Organized Life; /toolbox/05-organized-life/05a-task-maestro/; Open Task Maestro; /toolbox/05-organized-life/05b-thrifty-spender/; Open Thrifty Spender; /toolbox/05-organized-life/05c-giftlist-helper/; Open Giftlist Helper; /toolbox/05-organized-life/05d-scheduling-wizard/; Open Scheduling Wizard; /toolbox/05-organized-life/05e-lifestyle-wallboard/; Open Lifestyle Wallboard; /toolbox/05-organized-life/05f-neighborly-bazaar/; Open Neighborly Bazaar",
+          "width": 530.8125,
+          "svgWidth": 506.8125
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 7: 06 — Healthy Bee‑ing; 06a — Care Check; 06b — Calm Keep; 06c — Snappy Count; 06d — Medi Minder; 06e — Moody Log; 06f — Maven Wise; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/06-healthy-bee-ing/06a-care-check/; Open Care Check; /toolbox/06-healthy-bee-ing/06b-calm-keep/; Open Calm Keep; /toolbox/06-healthy-bee-ing/06c-snappy-count/; Open Snappy Count; /toolbox/06-healthy-bee-ing/06d-medi-minder/; Open Medi Minder; /toolbox/06-healthy-bee-ing/06e-moody-log/; Open Moody Log; /toolbox/06-healthy-bee-ing/06f-maven-wise/; Open Maven Wise",
+          "width": 530.8125,
+          "svgWidth": 496.484375
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 8: 07 — Identity Known; 07a — Critter Spotter; 07b — Roost Wrangler; 07c — Sight Seeker; 07d — Snap Decoder; 07e — Motif Muse; 07f — Maker Matcher; 07g — Self Fixer; /toolbox/07-identity-known/; Open Identity Known; /toolbox/07-identity-known/07a-critter-spotter/; Open Critter Spotter; /toolbox/07-identity-known/07b-roost-wrangler/; Open Roost Wrangler; /toolbox/07-identity-known/07c-sight-seeker/; Open Sight Seeker; /toolbox/07-identity-known/07d-snap-decoder/; Open Snap Decoder; /toolbox/07-identity-known/07e-motif-muse/; Open Motif Muse; /toolbox/07-identity-known/07f-maker-matcher/; Open Maker Matcher; /toolbox/07-identity-known/07g-self-fixer/; Open Self Fixer",
+          "width": 530.8125,
+          "svgWidth": 501.109375
+        }
+      ]
+    },
+    {
+      "condition": "200-percent-equivalent-640",
+      "name": "universe",
+      "route": "/universe/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-80.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "askjamie-paper",
+                "right": 657.0137271881104
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: OverKill Hill P³™; Glee‑fully Personalizable Tools™; 00 — Glee‑fully Toolbox; 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; AskJamie™; AJ01 — Résumé Representative; AJ02 — Professional Portfolio; AJ03 — Enterprise Sleuth; AJ04 — OKHP³ BrandGuard™; BRG00 — Builders FirstSource; BRG01 — LEGO; BRG02 — Starbucks; BRG03 — Brooks Running; BRG04 — Ping; BRG05 — Costco; BRG06 — Hershey; BRG07 — LVMH; BRG08 — Dollar General",
+          "width": 592,
+          "svgWidth": 560
+        }
+      ]
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "home",
+      "route": "/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-1536.webp",
+              "width": 1280,
+              "height": 853
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/arcade/chai-chasers-social-1280.jpg",
+              "width": 1280,
+              "height": 640
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "search receives focus",
+          "pass": true
+        },
+        {
+          "check": "search focus trap loops within dialog",
+          "pass": true
+        },
+        {
+          "check": "search closes and returns focus",
+          "pass": true
+        },
+        {
+          "check": "visible keyboard focus outline",
+          "pass": true,
+          "evidence": {
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineColor": "rgb(217, 79, 99)",
+            "color": "rgb(135, 69, 24)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-600.webp",
+              "width": 512,
+              "height": 512
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01c-career-fitness-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01d-letter-composer-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01e-b-link-in-tuner-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01f-career-seeker-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "detail",
+      "route": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Neighborly Bazaar — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg",
+              "width": 800,
+              "height": 534
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "diagram",
+      "route": "/ecosystem/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: Glee‑fully Toolbox 🧰 (Trunk 🌳); 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; /toolbox/; Open the Toolbox hub; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/05-organized-life/; Open Organized Life; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/07-identity-known/; Open Identity Known",
+          "width": 450,
+          "svgWidth": 402
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 2: 01 — Discovered Careers; 01a — Resume Builder; 01b — Resume Customizer; 01c — Career Fitness; 01d — Letter Composer; 01e — bLinkIn Tuner; 01f — Career Seeker; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/01-discovered-careers/01a-resume-builder/; Open Resume Builder; /toolbox/01-discovered-careers/01b-resume-customizer/; Open Resume Customizer; /toolbox/01-discovered-careers/01c-career-fitness/; Open Career Fitness; /toolbox/01-discovered-careers/01d-letter-composer/; Open Letter Composer; /toolbox/01-discovered-careers/01e-blinkin-tuner/; Open bLinkIn Tuner; /toolbox/01-discovered-careers/01f-career-seeker/; Open Career Seeker",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 3: 02 — Treasured Finds; 02a — Personal Librarian; 02b — Decor Detective; 02c — Present Hoarder; 02d — Scentinal Journal; 02e — Spirited Journal; 02f — Supply Haus; 02g — Bag Nabbit; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/02-treasured-finds/02a-personal-librarian/; Open Personal Librarian; /toolbox/02-treasured-finds/02b-decor-detective/; Open Decor Detective; /toolbox/02-treasured-finds/02c-present-hoarder/; Open Present Hoarder; /toolbox/02-treasured-finds/02d-scentinal-journal/; Open Scentinal Journal; /toolbox/02-treasured-finds/02e-spirited-journal/; Open Spirited Journal; /toolbox/02-treasured-finds/02f-supply-haus/; Open Supply Haus; /toolbox/02-treasured-finds/02g-bag-nabbit/; Open Bag Nabbit",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 4: 03 — Tasty Tracker; 03a — Flavor Meister; 03b — Menu Conductor; 03c — Wishful Tastes; 03d — Pantry Shopper; 03e — Palatably Profiled; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/03-tasty-tracker/03a-flavor-meister/; Open Flavor Meister; /toolbox/03-tasty-tracker/03b-menu-conductor/; Open Menu Conductor; /toolbox/03-tasty-tracker/03c-wishful-tastes/; Open Wishful Tastes; /toolbox/03-tasty-tracker/03d-pantry-shopper/; Open Pantry Shopper; /toolbox/03-tasty-tracker/03e-palatably-profiled/; Open Palatably Profiled",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 5: 04 — Traveler’s Guide; 04a — Journey Diary; 04b — Itinerary Hacker; 04c — Detour Discoverer; 04d — Dreamland Journeys; 04e — Memento Log; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/04-travelers-guide/04a-journey-diary/; Open Journey Diary; /toolbox/04-travelers-guide/04b-itinerary-hacker/; Open Itinerary Hacker; /toolbox/04-travelers-guide/04c-detour-discoverer/; Open Detour Discoverer; /toolbox/04-travelers-guide/04d-dreamland-journeys/; Open Dreamland Journeys; /toolbox/04-travelers-guide/04e-memento-log/; Open Memento Log",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 6: 05 — Organized Life; 05a — Task Maestro; 05b — Thrifty Spender; 05c — Giftlist Helper; 05d — Scheduling Wizard; 05e — Lifestyle Wallboard; 05f — Neighborly Bazaar; /toolbox/05-organized-life/; Open Organized Life; /toolbox/05-organized-life/05a-task-maestro/; Open Task Maestro; /toolbox/05-organized-life/05b-thrifty-spender/; Open Thrifty Spender; /toolbox/05-organized-life/05c-giftlist-helper/; Open Giftlist Helper; /toolbox/05-organized-life/05d-scheduling-wizard/; Open Scheduling Wizard; /toolbox/05-organized-life/05e-lifestyle-wallboard/; Open Lifestyle Wallboard; /toolbox/05-organized-life/05f-neighborly-bazaar/; Open Neighborly Bazaar",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 7: 06 — Healthy Bee‑ing; 06a — Care Check; 06b — Calm Keep; 06c — Snappy Count; 06d — Medi Minder; 06e — Moody Log; 06f — Maven Wise; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/06-healthy-bee-ing/06a-care-check/; Open Care Check; /toolbox/06-healthy-bee-ing/06b-calm-keep/; Open Calm Keep; /toolbox/06-healthy-bee-ing/06c-snappy-count/; Open Snappy Count; /toolbox/06-healthy-bee-ing/06d-medi-minder/; Open Medi Minder; /toolbox/06-healthy-bee-ing/06e-moody-log/; Open Moody Log; /toolbox/06-healthy-bee-ing/06f-maven-wise/; Open Maven Wise",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 8: 07 — Identity Known; 07a — Critter Spotter; 07b — Roost Wrangler; 07c — Sight Seeker; 07d — Snap Decoder; 07e — Motif Muse; 07f — Maker Matcher; 07g — Self Fixer; /toolbox/07-identity-known/; Open Identity Known; /toolbox/07-identity-known/07a-critter-spotter/; Open Critter Spotter; /toolbox/07-identity-known/07b-roost-wrangler/; Open Roost Wrangler; /toolbox/07-identity-known/07c-sight-seeker/; Open Sight Seeker; /toolbox/07-identity-known/07d-snap-decoder/; Open Snap Decoder; /toolbox/07-identity-known/07e-motif-muse/; Open Motif Muse; /toolbox/07-identity-known/07f-maker-matcher/; Open Maker Matcher; /toolbox/07-identity-known/07g-self-fixer/; Open Self Fixer",
+          "width": 181,
+          "svgWidth": 152.21875
+        }
+      ]
+    },
+    {
+      "condition": "reduced-motion",
+      "name": "universe",
+      "route": "/universe/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "no long running animation under reduced motion",
+          "pass": true,
+          "evidence": []
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: OverKill Hill P³™; Glee‑fully Personalizable Tools™; 00 — Glee‑fully Toolbox; 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; AskJamie™; AJ01 — Résumé Representative; AJ02 — Professional Portfolio; AJ03 — Enterprise Sleuth; AJ04 — OKHP³ BrandGuard™; BRG00 — Builders FirstSource; BRG01 — LEGO; BRG02 — Starbucks; BRG03 — Brooks Running; BRG04 — Ping; BRG05 — Costco; BRG06 — Hershey; BRG07 — LVMH; BRG08 — Dollar General",
+          "width": 396.9375,
+          "svgWidth": 348.9375
+        }
+      ]
+    },
+    {
+      "condition": "forced-colors",
+      "name": "home",
+      "route": "/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-loop-left-wide-1536.webp",
+              "width": 1280,
+              "height": 853
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/arcade/chai-chasers-social-1280.jpg",
+              "width": 1280,
+              "height": 640
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "glee-hero-stripes",
+                "right": 1281.7961288690567
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "search receives focus",
+          "pass": true
+        },
+        {
+          "check": "search focus trap loops within dialog",
+          "pass": true
+        },
+        {
+          "check": "search closes and returns focus",
+          "pass": true
+        },
+        {
+          "check": "visible keyboard focus outline",
+          "pass": true,
+          "evidence": {
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "outlineColor": "rgb(55, 0, 110)",
+            "color": "rgb(0, 0, 0)",
+            "background": "rgba(255, 255, 255, 0)"
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(55, 0, 110)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "forced-colors",
+      "name": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01-discovered-careers-background-retro-stripe-square-600.webp",
+              "width": 512,
+              "height": 512
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01a-resume-builder-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01b-resume-customizer-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01c-career-fitness-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01d-letter-composer-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01e-b-link-in-tuner-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-gpt-icon-01f-career-seeker-background-retro-stripe-square-300.webp",
+              "width": 300,
+              "height": 300
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 1282.943588256836
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "forced-colors",
+      "name": "detail",
+      "route": "/toolbox/05-organized-life/05f-neighborly-bazaar/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Neighborly Bazaar — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            },
+            {
+              "src": "http://127.0.0.1:51476/assets/img/tool-ettes/05f-neighborly-bazaar-illustration.svg",
+              "width": 800,
+              "height": 534
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 1282.0436792373657
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "forced-colors",
+      "name": "search",
+      "route": "/search/?q=seniority",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": []
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "All (60)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0.18)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "About (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Arcade (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Branch (7)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Contact (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Ecosystem (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Home (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Legal (1)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "condition": "forced-colors",
+      "name": "diagram",
+      "route": "/ecosystem/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "Ecosystem — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 1281.721927165985
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: Glee‑fully Toolbox 🧰 (Trunk 🌳); 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; /toolbox/; Open the Toolbox hub; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/05-organized-life/; Open Organized Life; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/07-identity-known/; Open Identity Known",
+          "width": 450,
+          "svgWidth": 402
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 2: 01 — Discovered Careers; 01a — Resume Builder; 01b — Resume Customizer; 01c — Career Fitness; 01d — Letter Composer; 01e — bLinkIn Tuner; 01f — Career Seeker; /toolbox/01-discovered-careers/; Open Discovered Careers; /toolbox/01-discovered-careers/01a-resume-builder/; Open Resume Builder; /toolbox/01-discovered-careers/01b-resume-customizer/; Open Resume Customizer; /toolbox/01-discovered-careers/01c-career-fitness/; Open Career Fitness; /toolbox/01-discovered-careers/01d-letter-composer/; Open Letter Composer; /toolbox/01-discovered-careers/01e-blinkin-tuner/; Open bLinkIn Tuner; /toolbox/01-discovered-careers/01f-career-seeker/; Open Career Seeker",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 3: 02 — Treasured Finds; 02a — Personal Librarian; 02b — Decor Detective; 02c — Present Hoarder; 02d — Scentinal Journal; 02e — Spirited Journal; 02f — Supply Haus; 02g — Bag Nabbit; /toolbox/02-treasured-finds/; Open Treasured Finds; /toolbox/02-treasured-finds/02a-personal-librarian/; Open Personal Librarian; /toolbox/02-treasured-finds/02b-decor-detective/; Open Decor Detective; /toolbox/02-treasured-finds/02c-present-hoarder/; Open Present Hoarder; /toolbox/02-treasured-finds/02d-scentinal-journal/; Open Scentinal Journal; /toolbox/02-treasured-finds/02e-spirited-journal/; Open Spirited Journal; /toolbox/02-treasured-finds/02f-supply-haus/; Open Supply Haus; /toolbox/02-treasured-finds/02g-bag-nabbit/; Open Bag Nabbit",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 4: 03 — Tasty Tracker; 03a — Flavor Meister; 03b — Menu Conductor; 03c — Wishful Tastes; 03d — Pantry Shopper; 03e — Palatably Profiled; /toolbox/03-tasty-tracker/; Open Tasty Tracker; /toolbox/03-tasty-tracker/03a-flavor-meister/; Open Flavor Meister; /toolbox/03-tasty-tracker/03b-menu-conductor/; Open Menu Conductor; /toolbox/03-tasty-tracker/03c-wishful-tastes/; Open Wishful Tastes; /toolbox/03-tasty-tracker/03d-pantry-shopper/; Open Pantry Shopper; /toolbox/03-tasty-tracker/03e-palatably-profiled/; Open Palatably Profiled",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 5: 04 — Traveler’s Guide; 04a — Journey Diary; 04b — Itinerary Hacker; 04c — Detour Discoverer; 04d — Dreamland Journeys; 04e — Memento Log; /toolbox/04-travelers-guide/; Open Traveler’s Guide; /toolbox/04-travelers-guide/04a-journey-diary/; Open Journey Diary; /toolbox/04-travelers-guide/04b-itinerary-hacker/; Open Itinerary Hacker; /toolbox/04-travelers-guide/04c-detour-discoverer/; Open Detour Discoverer; /toolbox/04-travelers-guide/04d-dreamland-journeys/; Open Dreamland Journeys; /toolbox/04-travelers-guide/04e-memento-log/; Open Memento Log",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 6: 05 — Organized Life; 05a — Task Maestro; 05b — Thrifty Spender; 05c — Giftlist Helper; 05d — Scheduling Wizard; 05e — Lifestyle Wallboard; 05f — Neighborly Bazaar; /toolbox/05-organized-life/; Open Organized Life; /toolbox/05-organized-life/05a-task-maestro/; Open Task Maestro; /toolbox/05-organized-life/05b-thrifty-spender/; Open Thrifty Spender; /toolbox/05-organized-life/05c-giftlist-helper/; Open Giftlist Helper; /toolbox/05-organized-life/05d-scheduling-wizard/; Open Scheduling Wizard; /toolbox/05-organized-life/05e-lifestyle-wallboard/; Open Lifestyle Wallboard; /toolbox/05-organized-life/05f-neighborly-bazaar/; Open Neighborly Bazaar",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 7: 06 — Healthy Bee‑ing; 06a — Care Check; 06b — Calm Keep; 06c — Snappy Count; 06d — Medi Minder; 06e — Moody Log; 06f — Maven Wise; /toolbox/06-healthy-bee-ing/; Open Healthy Bee‑ing; /toolbox/06-healthy-bee-ing/06a-care-check/; Open Care Check; /toolbox/06-healthy-bee-ing/06b-calm-keep/; Open Calm Keep; /toolbox/06-healthy-bee-ing/06c-snappy-count/; Open Snappy Count; /toolbox/06-healthy-bee-ing/06d-medi-minder/; Open Medi Minder; /toolbox/06-healthy-bee-ing/06e-moody-log/; Open Moody Log; /toolbox/06-healthy-bee-ing/06f-maven-wise/; Open Maven Wise",
+          "width": 181,
+          "svgWidth": 152.21875
+        },
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 8: 07 — Identity Known; 07a — Critter Spotter; 07b — Roost Wrangler; 07c — Sight Seeker; 07d — Snap Decoder; 07e — Motif Muse; 07f — Maker Matcher; 07g — Self Fixer; /toolbox/07-identity-known/; Open Identity Known; /toolbox/07-identity-known/07a-critter-spotter/; Open Critter Spotter; /toolbox/07-identity-known/07b-roost-wrangler/; Open Roost Wrangler; /toolbox/07-identity-known/07c-sight-seeker/; Open Sight Seeker; /toolbox/07-identity-known/07d-snap-decoder/; Open Snap Decoder; /toolbox/07-identity-known/07e-motif-muse/; Open Motif Muse; /toolbox/07-identity-known/07f-maker-matcher/; Open Maker Matcher; /toolbox/07-identity-known/07g-self-fixer/; Open Self Fixer",
+          "width": 181,
+          "svgWidth": 152.21875
+        }
+      ]
+    },
+    {
+      "condition": "forced-colors",
+      "name": "universe",
+      "route": "/universe/",
+      "checks": [
+        {
+          "check": "page identity and content",
+          "pass": true,
+          "evidence": {
+            "status": 200,
+            "title": "OKHP³™ Universe — Glee‑fully Personalizable Tools™ 🧰🌳"
+          }
+        },
+        {
+          "check": "all images decode",
+          "pass": true,
+          "evidence": [
+            {
+              "src": "http://127.0.0.1:51476/assets/img/webp/glee-fully-tools-butterfly-waiting-square-40.webp",
+              "width": 40,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "check": "reflow without document overflow",
+          "pass": true,
+          "evidence": {
+            "pixels": 0,
+            "offenders": [
+              {
+                "tag": "DIV",
+                "class": "brand-stripes brand-stripes--glee",
+                "right": 1281.485454916954
+              }
+            ]
+          }
+        },
+        {
+          "check": "skip link moves focus and next Tab into main",
+          "pass": false,
+          "evidence": {
+            "afterSkip": {
+              "hash": "",
+              "active": "A",
+              "activeId": "",
+              "mainFocused": false,
+              "focusInsideMain": false
+            },
+            "nextFocus": {
+              "tag": "A",
+              "href": "/",
+              "insideMain": false
+            }
+          }
+        },
+        {
+          "check": "forced colors active with named controls",
+          "pass": true,
+          "evidence": {
+            "active": true,
+            "buttons": [
+              {
+                "label": "Open search (Ctrl+K)",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              },
+              {
+                "label": "Color scheme: following your device — click to pin light",
+                "color": "rgb(0, 0, 0)",
+                "background": "rgba(255, 255, 255, 0)",
+                "border": "rgb(0, 0, 0)"
+              }
+            ]
+          }
+        },
+        {
+          "check": "no page errors",
+          "pass": true,
+          "evidence": []
+        }
+      ],
+      "errors": [],
+      "diagrams": [
+        {
+          "rendered": "1",
+          "svg": true,
+          "accessibleName": "Diagram 1: OverKill Hill P³™; Glee‑fully Personalizable Tools™; 00 — Glee‑fully Toolbox; 01 — Discovered Careers; 02 — Treasured Finds; 03 — Tasty Tracker; 04 — Traveler’s Guide; 05 — Organized Life; 06 — Healthy Bee‑ing; 07 — Identity Known; AskJamie™; AJ01 — Résumé Representative; AJ02 — Professional Portfolio; AJ03 — Enterprise Sleuth; AJ04 — OKHP³ BrandGuard™; BRG00 — Builders FirstSource; BRG01 — LEGO; BRG02 — Starbucks; BRG03 — Brooks Running; BRG04 — Ping; BRG05 — Costco; BRG06 — Hershey; BRG07 — LVMH; BRG08 — Dollar General",
+          "width": 396.9375,
+          "svgWidth": 348.9375
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "home",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "branch",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "detail",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "search",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "diagram",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reflow-320",
+      "name": "universe",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "home",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "branch",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "detail",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "search",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "diagram",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "200-percent-equivalent-640",
+      "name": "universe",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "home",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "branch",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "detail",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "search",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "diagram",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "reduced-motion",
+      "name": "universe",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "home",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "branch",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "detail",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "search",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "diagram",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    },
+    {
+      "area": "accessibility",
+      "condition": "forced-colors",
+      "name": "universe",
+      "check": "skip link moves focus and next Tab into main",
+      "evidence": {
+        "afterSkip": {
+          "hash": "",
+          "active": "A",
+          "activeId": "",
+          "mainFocused": false,
+          "focusInsideMain": false
+        },
+        "nextFocus": {
+          "tag": "A",
+          "href": "/",
+          "insideMain": false
+        }
+      }
+    }
+  ],
+  "base": "http://127.0.0.1:51476",
+  "finishedAt": "2026-09-05T22:33:19.670Z"
+}

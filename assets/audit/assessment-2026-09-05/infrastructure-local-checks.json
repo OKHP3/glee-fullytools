@@ -1,0 +1,126 @@
+{
+  "captured_at": "2026-09-05T17:01:33.605344+00:00",
+  "head": "5da805785d47f9bc29058b07d2a5467da32a1573",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/build-search-index.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.15,
+      "stdout": "Indexing 60 HTML pages\u2026\nCommitted assets/data/search-index.json is current \u2014 60 pages\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/sync-portfolio-stats.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.086,
+      "stdout": "  pages=60  tool-ettes=42  branches=7  gpts=25  css-lines=7703\n  about/index.html \u2014 already up to date\n  showcase/index.html \u2014 already up to date\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/sync-css-version.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.06,
+      "stdout": "  CSS token -> b60e5d83  (all 63 file(s) already current)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/sync-social-card.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.066,
+      "stdout": "\nSocial-card metadata is current across 62 published pages.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-csp.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.127,
+      "stdout": "CSP policies verified for 63 pages.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate-site.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.319,
+      "stdout": "\nScanned 63 pages\n  issues:   0\n  warnings: 0\n  detail:   assets/audit/validation-report-2026-05-03.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-links.py",
+        "--no-report"
+      ],
+      "exit_code": 0,
+      "seconds": 0.144,
+      "stdout": "Pages scanned:    63\nInternal links:   2690\nExternal links:   1098\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     60  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-accent-contrast.py",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "seconds": 0.261,
+      "stdout": "Accent contrast advisory scan (light + dark mode + branded hover states)\n  HTML files scanned : 72\n  CSS files scanned  : 1\n  Advisories         : 0\n  Info notes         : 0\n  Hover checks       : 8 (0 failures)\n  Report             : assets/audit/accent-contrast-report.json\n\n  Light-mode palette : accent #d35b2d / bg #f6f2ee \u2192 3.55:1\n  Dark-mode palette  : accent #f07585 / surface #241c1a \u2192 6.04:1\n\n  No body-text accent color violations found.\n\nAdvisories are reported without --strict.\nUse --strict to exit 1 on any advisory or hover-state failure.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-glee-dark-coverage.py",
+        "--section",
+        "all",
+        "--require-both"
+      ],
+      "exit_code": 0,
+      "seconds": 0.045,
+      "stdout": "check-glee-dark-coverage: OK \u2014 16 light-surface rule(s) (13 background, 6 border) in the GLEE section all have dark-mode overrides in both forms.\ncheck-glee-dark-coverage: OK \u2014 10 light-surface rule(s) (10 background, 1 border) in the ASKJAMIE section all have dark-mode overrides in both forms.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check-workflow-actions.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.068,
+      "stdout": "GitHub Actions version policy check passed (7 workflow files).\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/resilience-qa.py",
+        "--static-only"
+      ],
+      "exit_code": 0,
+      "seconds": 0.045,
+      "stdout": "Static resilience checks: PASS\nReport: assets/audit/resilience-qa-2026-09-05.json\n",
+      "stderr": ""
+    }
+  ]
+}

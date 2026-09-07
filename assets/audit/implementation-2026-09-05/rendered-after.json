@@ -1,0 +1,124 @@
+{
+  "checkedAt": "2026-09-05T21:01:37.772Z",
+  "base": "http://127.0.0.1:5187",
+  "browser": "Chromium",
+  "results": [
+    {
+      "name": "hero contrast light",
+      "status": "PASS",
+      "evidence": {
+        "eyebrow": "rgb(107, 94, 87)",
+        "heading": "rgb(45, 111, 126)",
+        "background": "rgb(255, 247, 241)",
+        "eyebrowRatio": 5.893957783010411,
+        "headingRatio": 5.377948643478031
+      }
+    },
+    {
+      "name": "hero contrast dark",
+      "status": "PASS",
+      "evidence": {
+        "eyebrow": "rgb(181, 169, 161)",
+        "heading": "rgb(242, 237, 232)",
+        "background": "rgb(42, 39, 36)",
+        "eyebrowRatio": 6.473644920512114,
+        "headingRatio": 12.767110455267575
+      }
+    },
+    {
+      "name": "hero contrast auto-light",
+      "status": "PASS",
+      "evidence": {
+        "eyebrow": "rgb(107, 94, 87)",
+        "heading": "rgb(45, 111, 126)",
+        "background": "rgb(255, 247, 241)",
+        "eyebrowRatio": 5.893957783010411,
+        "headingRatio": 5.377948643478031
+      }
+    },
+    {
+      "name": "hero contrast auto-dark",
+      "status": "PASS",
+      "evidence": {
+        "eyebrow": "rgb(181, 169, 161)",
+        "heading": "rgb(242, 237, 232)",
+        "background": "rgb(42, 39, 36)",
+        "eyebrowRatio": 6.473644920512114,
+        "headingRatio": 12.767110455267575
+      }
+    },
+    {
+      "name": "Neighborly illustration decodes",
+      "status": "PASS",
+      "evidence": [
+        800,
+        534
+      ]
+    },
+    {
+      "name": "Resume Builder route and image recheck 320",
+      "status": "PASS",
+      "evidence": {
+        "width": 320,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 375",
+      "status": "PASS",
+      "evidence": {
+        "width": 375,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 390",
+      "status": "PASS",
+      "evidence": {
+        "width": 390,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 414",
+      "status": "PASS",
+      "evidence": {
+        "width": 414,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 768",
+      "status": "PASS",
+      "evidence": {
+        "width": 768,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 1024",
+      "status": "PASS",
+      "evidence": {
+        "width": 1024,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 1280",
+      "status": "PASS",
+      "evidence": {
+        "width": 1280,
+        "decodedImages": 3
+      }
+    },
+    {
+      "name": "Resume Builder route and image recheck 1440",
+      "status": "PASS",
+      "evidence": {
+        "width": 1440,
+        "decodedImages": 3
+      }
+    }
+  ],
+  "failures": 0
+}

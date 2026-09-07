@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-09-06T02:46:15.886799+00:00",
+  "status": "PASS",
+  "sourceCommit": "547d1c122b774f1aef55b92ee28739aa5d5def9a",
+  "originalRetained": "C:\\Users\\jamie\\.codex\\visualizations\\2026\\09\\05\\01a07294-1521-77f3-bc34-a7176b6e0444\\remaining-program\\catalog-prototype",
+  "archive": "assets/templates/catalog-prototype-2026-09-05",
+  "files": [
+    {
+      "file": "index.html",
+      "sha256": "df14a9f815ee6ad1bc1c8e386612a5c7e4277d2322b60de29111be5ab28d9de4",
+      "matchesOriginal": true
+    },
+    {
+      "file": "prototype.css",
+      "sha256": "35d25f875a4fbefc0f58c248c8ec4d3717161d512f78e8debb48a5b0f5a9ec12",
+      "matchesOriginal": true
+    },
+    {
+      "file": "prototype.js",
+      "sha256": "4921206d25fd71fcb242d40097e365bc47bd8970f5f54ccb86eb43d98932bfe3",
+      "matchesOriginal": true
+    },
+    {
+      "file": "catalog-data.js",
+      "sha256": "8020f0bd5a4b5d5abfd7369de16f5ecf46e44580253993bb8c1947063155ed25",
+      "matchesOriginal": true
+    },
+    {
+      "file": "butterfly.webp",
+      "sha256": "65c9ce0cdca8fa3c1869aa682f7732e76c7c5d01da901f3d11c8c31a20a3b742",
+      "matchesOriginal": true
+    },
+    {
+      "file": "butterfly-room.webp",
+      "sha256": "7ae51fe024c6d628fdeaae10b3d1fabeb0c02e3fdf12b21b858bbff95a1f989c",
+      "matchesOriginal": true
+    }
+  ],
+  "note": "readme.md is the only newly authored archive file; proposal is not adopted. No generators or validator report writers were run.",
+  "publicHtml": 63,
+  "searchEntriesRecomputedReadOnly": 60,
+  "generatedSearchPages": 60,
+  "sitemapUrls": 60,
+  "publicInventoryFiles": 710,
+  "archiveExcludedFromValidatorSearchSitemapAndArtifact": true,
+  "searchIndexSha256": "4166767535f779991a489744a46517863e01af25d27750ed8fdd3732d5d72c62"
+}

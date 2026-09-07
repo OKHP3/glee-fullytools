@@ -1,0 +1,349 @@
+{
+  "count": 38,
+  "corrected": 38,
+  "remaining": [],
+  "entries": [
+    {
+      "id": 1,
+      "path": "about/index.html",
+      "finding": "Description is 191 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Meet Glee and Jamie, and discover how a late-night kitchen question inspired the warm, retro-bright Glee-fully catalog of personalizable GPT ideas.",
+      "reason": "Preserves the Glee/Jamie origin story while describing a catalog rather than promising friendship from every GPT.",
+      "current_length": 147
+    },
+    {
+      "id": 2,
+      "path": "arcade/index.html",
+      "finding": "Title is 74 chars (>70)",
+      "disposition": "corrected",
+      "current_value": "The Arcade: Chai Chasers — Glee-fully Tools",
+      "reason": "Retains Arcade, Chai Chasers, and brand identity without repeated branding.",
+      "current_length": 43
+    },
+    {
+      "id": 3,
+      "path": "arcade/index.html",
+      "finding": "Description is 178 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Meet Joey and Phoebe in Glee-fully Chai Chasers, an original cascading-reels game with iced chai and butterflies. Open the browser game from the Arcade.",
+      "reason": "Keeps the game, characters, and visitor action; avoids an unsupported free-access assertion in the snippet.",
+      "current_length": 152
+    },
+    {
+      "id": 4,
+      "path": "legal/index.html",
+      "finding": "Description is 177 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Read the Glee-fully legal notice: usage terms, AI limitations, privacy disclosures, third-party boundaries, and studio contact information.",
+      "reason": "Names the actual legal topics and provider boundaries instead of repeating three full trademarks.",
+      "current_length": 139
+    },
+    {
+      "id": 5,
+      "path": "persona/index.html",
+      "finding": "Description is 189 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore the intended Glee-fully voice: warm, witty, and retro-bright. Read the persona guide and its limits as a description of external GPT behavior.",
+      "reason": "Describes authored persona intent instead of claiming that this voice powers every external GPT.",
+      "current_length": 150
+    },
+    {
+      "id": 6,
+      "path": "search/index.html",
+      "finding": "Description is 174 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Search the Glee-fully catalog by topic or category. Find branch hubs, Tool-ette descriptions, guides, and publication states.",
+      "reason": "Describes catalog search and publication labels rather than implying every result is an available GPT.",
+      "current_length": 125
+    },
+    {
+      "id": 7,
+      "path": "showcase/index.html",
+      "finding": "Title is 88 chars (>70)",
+      "disposition": "corrected",
+      "current_value": "Showcase — Glee‑fully Personalizable Tools™",
+      "reason": "Keeps Showcase and the suite identity without repeating a case-study subtitle.",
+      "current_length": 43
+    },
+    {
+      "id": 8,
+      "path": "showcase/index.html",
+      "finding": "Description is 184 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore the Glee-fully website case study: catalog structure, static delivery, browser search, design choices, and evidence from repository checks.",
+      "reason": "Names the actual architectural subjects without overclaiming results.",
+      "current_length": 147
+    },
+    {
+      "id": 9,
+      "path": "toolbox/01-discovered-careers/01b-resume-customizer/index.html",
+      "finding": "Description is 211 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Resume Customizer explores tailoring a resume to a job posting: compare requirements, choose evidence, and draft relevant sections. Beta listing.",
+      "reason": "Keeps job-post comparison and resume drafting scope and identifies the beta listing.",
+      "current_length": 145
+    },
+    {
+      "id": 10,
+      "path": "toolbox/01-discovered-careers/01e-blinkin-tuner/index.html",
+      "finding": "Description is 204 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "bLinkIn Tuner explores energizing moments at work, recurring interests, and career experiments. Read the concept; its GPT destination is unavailable.",
+      "reason": "Replaces a LinkedIn-profile interpretation with energizing work moments and the unavailable destination state.",
+      "current_length": 149
+    },
+    {
+      "id": 11,
+      "path": "toolbox/01-discovered-careers/01f-career-seeker/index.html",
+      "finding": "Description is 220 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Career Seeker explores job-search plans, application tracking, and role comparisons. Read the concept; its GPT destination is unavailable.",
+      "reason": "Keeps job-search planning and tracking scope and states the unavailable destination.",
+      "current_length": 138
+    },
+    {
+      "id": 12,
+      "path": "toolbox/01-discovered-careers/index.html",
+      "finding": "Description is 200 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore Discovered Careers: catalog entries for resumes, cover letters, career reflection, and job searches, with each Tool-ette’s publication state.",
+      "reason": "Replaces LinkedIn routing with the actual career reflection catalog scope and state visibility.",
+      "current_length": 149
+    },
+    {
+      "id": 13,
+      "path": "toolbox/02-treasured-finds/02a-personal-librarian/index.html",
+      "finding": "Description is 229 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Personal Librarian explores book inventories, reading progress, and wishlists across print, ebooks, and audio. Read the beta catalog entry.",
+      "reason": "Preserves print/ebook/audio inventory and reading-progress scope; identifies the beta listing.",
+      "current_length": 139
+    },
+    {
+      "id": 14,
+      "path": "toolbox/02-treasured-finds/02b-decor-detective/index.html",
+      "finding": "Description is 220 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Decor Detective explores seasonal decor inventories by room, bin, holiday, and condition. Read the beta catalog entry and proposed workflow.",
+      "reason": "Preserves room/bin/holiday/condition organization and identifies its proposed beta workflow.",
+      "current_length": 140
+    },
+    {
+      "id": 15,
+      "path": "toolbox/02-treasured-finds/02c-present-hoarder/index.html",
+      "finding": "Description is 189 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Present Hoarder explores organizing gifts already bought: recipients, occasions, storage spots, and budgets. Read the beta catalog entry.",
+      "reason": "Preserves purchased-gift/recipient/storage scope and identifies the beta listing.",
+      "current_length": 137
+    },
+    {
+      "id": 16,
+      "path": "toolbox/02-treasured-finds/02d-scentinal-journal/index.html",
+      "finding": "Description is 186 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Scentinal Journal explores fragrance notes and scent preferences. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "reason": "Preserves fragrance-note purpose and states destination unavailable.",
+      "current_length": 142
+    },
+    {
+      "id": 17,
+      "path": "toolbox/02-treasured-finds/02e-spirited-journal/index.html",
+      "finding": "Description is 202 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Spirited Journal explores stories behind treasured possessions and keepsakes. Read the concept; its GPT destination is unavailable.",
+      "reason": "Preserves stories behind possessions rather than suggesting a verified external journal; states unavailable.",
+      "current_length": 131
+    },
+    {
+      "id": 18,
+      "path": "toolbox/02-treasured-finds/02f-supply-haus/index.html",
+      "finding": "Description is 198 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Supply Haus explores craft-supply lists, storage locations, and project materials. Read the beta catalog entry and proposed workflow.",
+      "reason": "Preserves craft supplies, storage, and material scope; identifies beta.",
+      "current_length": 133
+    },
+    {
+      "id": 19,
+      "path": "toolbox/02-treasured-finds/index.html",
+      "finding": "Description is 202 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore Treasured Finds: catalog entries for books, decor, gifts, fragrances, keepsakes, supplies, and bags, with current publication states.",
+      "reason": "Describes the branch as a catalog across its actual collection topics with publication states.",
+      "current_length": 141
+    },
+    {
+      "id": 20,
+      "path": "toolbox/03-tasty-tracker/03b-menu-conductor/index.html",
+      "finding": "Description is 203 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Menu Conductor explores meal plans shaped by your recipes, time, and preferences. Read the concept; its GPT destination is unavailable.",
+      "reason": "Preserves meal-planning inputs and states destination unavailable.",
+      "current_length": 135
+    },
+    {
+      "id": 21,
+      "path": "toolbox/04-travelers-guide/04b-itinerary-hacker/index.html",
+      "finding": "Description is 178 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Itinerary Hacker explores trip routes, activity options, and daily schedules. Read the beta catalog entry and planning workflow.",
+      "reason": "Preserves routes, activities, and daily planning while identifying beta.",
+      "current_length": 128
+    },
+    {
+      "id": 22,
+      "path": "toolbox/04-travelers-guide/04d-dreamland-journeys/index.html",
+      "finding": "Description is 223 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Dreamland Journeys explores travel wishlists and ideas for future adventures. Read the beta catalog entry and proposed workflow.",
+      "reason": "Preserves future-trip inspiration and wishlists while identifying beta.",
+      "current_length": 128
+    },
+    {
+      "id": 23,
+      "path": "toolbox/04-travelers-guide/04e-memento-log/index.html",
+      "finding": "Description is 209 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Memento Log explores travel stories, keepsake notes, and photo captions you can save yourself. Read the beta catalog entry.",
+      "reason": "Preserves travel stories/captions and makes user-owned saving explicit; identifies beta.",
+      "current_length": 123
+    },
+    {
+      "id": 24,
+      "path": "toolbox/05-organized-life/05b-thrifty-spender/index.html",
+      "finding": "Description is 175 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Thrifty Spender explores spending categories, budget notes, and planning questions. Read the beta catalog entry and its limitations.",
+      "reason": "Preserves spending categories and budget questions; identifies beta and limitations.",
+      "current_length": 132
+    },
+    {
+      "id": 25,
+      "path": "toolbox/05-organized-life/05c-giftlist-helper/index.html",
+      "finding": "Description is 182 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Giftlist Helper explores gift ideas, wishlists, recipients, and occasions. Read the beta catalog entry; bring your own notes to each conversation.",
+      "reason": "Preserves gift planning and requires the user to bring their own records; identifies beta.",
+      "current_length": 146
+    },
+    {
+      "id": 26,
+      "path": "toolbox/06-healthy-bee-ing/06a-care-check/index.html",
+      "finding": "Description is 186 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Care Check is an unavailable concept for organizing symptom notes for a health professional. It does not provide verified triage or diagnosis.",
+      "reason": "Removes unsupported triage/diagnosis benefits; describes the unavailable symptom-note concept.",
+      "current_length": 142
+    },
+    {
+      "id": 27,
+      "path": "toolbox/06-healthy-bee-ing/06c-snappy-count/index.html",
+      "finding": "Description is 208 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Snappy Count explores meal notes and rough nutrition estimates, with uncertainty. Read the concept; its GPT destination is unavailable.",
+      "reason": "Preserves meal-note and estimate concepts with uncertainty and unavailable destination.",
+      "current_length": 135
+    },
+    {
+      "id": 28,
+      "path": "toolbox/06-healthy-bee-ing/06e-moody-log/index.html",
+      "finding": "Description is 190 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Moody Log explores mood notes and reflection prompts. Read the beta catalog entry, intended use, and external data-handling boundaries.",
+      "reason": "Preserves mood-reflection purpose, beta state, and external data-handling boundaries.",
+      "current_length": 135
+    },
+    {
+      "id": 29,
+      "path": "toolbox/06-healthy-bee-ing/06f-maven-wise/index.html",
+      "finding": "Description is 173 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Maven Wise explores midlife and hormonal-change notes for reflection or clinician conversations. Read the beta catalog entry and limitations.",
+      "reason": "Preserves midlife/hormonal note-taking purpose and clinician-conversation limits; identifies beta.",
+      "current_length": 141
+    },
+    {
+      "id": 30,
+      "path": "toolbox/06-healthy-bee-ing/index.html",
+      "finding": "Description is 174 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore Healthy Bee-ing: catalog concepts for health notes, medication lists, mood, and habits. Check availability and limitations before using external GPTs.",
+      "reason": "Describes the health branch catalog and requires checking each entry’s availability and limitations.",
+      "current_length": 158
+    },
+    {
+      "id": 31,
+      "path": "toolbox/07-identity-known/07a-critter-spotter/index.html",
+      "finding": "Description is 166 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Critter Spotter explores animal identification from photos or descriptions. Read the beta catalog entry; check identification ideas independently.",
+      "reason": "Preserves animal-identification purpose while identifying beta and independent checking.",
+      "current_length": 146
+    },
+    {
+      "id": 32,
+      "path": "toolbox/07-identity-known/07b-roost-wrangler/index.html",
+      "finding": "Description is 209 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Roost Wrangler explores home, furniture, and design styles through photos and descriptions. Read the beta catalog entry and proposed workflow.",
+      "reason": "Preserves architecture/furniture/design-recognition scope and identifies beta.",
+      "current_length": 142
+    },
+    {
+      "id": 33,
+      "path": "toolbox/07-identity-known/07c-sight-seeker/index.html",
+      "finding": "Description is 175 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Sight Seeker explores scenery, landmark, and sky identification ideas. Read the concept and limitations; its GPT destination is unavailable.",
+      "reason": "Preserves scenery/landmark/sky concepts and states the unavailable destination.",
+      "current_length": 140
+    },
+    {
+      "id": 34,
+      "path": "toolbox/07-identity-known/07d-snap-decoder/index.html",
+      "finding": "Description is 168 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Snap Decoder explores screenshots, quotes, and error messages. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "reason": "Preserves screenshot/quote/error interpretation scope and states unavailable.",
+      "current_length": 139
+    },
+    {
+      "id": 35,
+      "path": "toolbox/07-identity-known/07e-motif-muse/index.html",
+      "finding": "Description is 168 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Motif Muse explores colors, patterns, and visual styles. Read the concept and suggested workflow; its GPT destination is unavailable.",
+      "reason": "Preserves colors/patterns/style-recognition scope and states unavailable.",
+      "current_length": 133
+    },
+    {
+      "id": 36,
+      "path": "toolbox/07-identity-known/07f-maker-matcher/index.html",
+      "finding": "Description is 178 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Maker Matcher explores crafts, materials, and tools. Read the concept and identification limits; its GPT destination is unavailable.",
+      "reason": "Preserves craft/material/tool recognition scope and states unavailable with identification limits.",
+      "current_length": 132
+    },
+    {
+      "id": 37,
+      "path": "toolbox/07-identity-known/index.html",
+      "finding": "Description is 189 chars (>165)",
+      "disposition": "corrected",
+      "current_value": "Explore Identity Known: catalog concepts for recognizing animals, places, objects, styles, and crafts. Check each Tool-ette’s availability and limitations.",
+      "reason": "Aligns the branch with recognition rather than identity journaling, and makes availability/limits visible.",
+      "current_length": 155
+    },
+    {
+      "id": 38,
+      "path": "under-construction.html",
+      "finding": "In-page anchor href=\"#why\" has no matching id",
+      "disposition": "corrected",
+      "current_value": "href=\"/#why\"",
+      "reason": "Changes the local nonexistent #why fragment to the existing homepage section /#why.",
+      "current_length": 12
+    }
+  ]
+}
