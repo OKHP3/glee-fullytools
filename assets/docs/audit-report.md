@@ -1,7 +1,9 @@
 # Glee-fully.tools — Automated Site Audit
 
+**Generated at (UTC):** 2026-09-07T13:59:16.010753Z
+**Run date:** 2026-09-07
 **Pages scanned:** 63  
-**Total issues:** 44
+**Total issues:** 38
 
 ## Sitemap reconciliation
 
@@ -37,11 +39,9 @@
 - Description is 211 chars (>165)
 
 ### `toolbox/01-discovered-careers/01e-blinkin-tuner/index.html`
-- Generic placeholder: `YOUR-` present
 - Description is 204 chars (>165)
 
 ### `toolbox/01-discovered-careers/01f-career-seeker/index.html`
-- Generic placeholder: `YOUR-` present
 - Description is 220 chars (>165)
 
 ### `toolbox/01-discovered-careers/index.html`
@@ -86,9 +86,6 @@
 ### `toolbox/05-organized-life/05c-giftlist-helper/index.html`
 - Description is 182 chars (>165)
 
-### `toolbox/05-organized-life/05d-scheduling-wizard/index.html`
-- Generic placeholder: `YOUR-` present
-
 ### `toolbox/06-healthy-bee-ing/06a-care-check/index.html`
 - Description is 186 chars (>165)
 
@@ -111,18 +108,15 @@
 - Description is 209 chars (>165)
 
 ### `toolbox/07-identity-known/07c-sight-seeker/index.html`
-- Generic placeholder: `YOUR-` present
 - Description is 175 chars (>165)
 
 ### `toolbox/07-identity-known/07d-snap-decoder/index.html`
 - Description is 168 chars (>165)
 
 ### `toolbox/07-identity-known/07e-motif-muse/index.html`
-- Generic placeholder: `YOUR-` present
 - Description is 168 chars (>165)
 
 ### `toolbox/07-identity-known/07f-maker-matcher/index.html`
-- Generic placeholder: `YOUR-` present
 - Description is 178 chars (>165)
 
 ### `toolbox/07-identity-known/index.html`

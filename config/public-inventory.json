@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "site": "https://glee-fully.tools",
+  "html_scope": {
+    "excluded_files": [
+      "404.html",
+      "under-construction.html",
+      "offline.html"
+    ],
+    "excluded_directories": [
+      ".agents",
+      ".cache",
+      ".git",
+      ".local",
+      ".pythonlibs",
+      ".vscode",
+      "attached_assets",
+      "assets/templates",
+      "node_modules",
+      "tools"
+    ]
+  },
+  "catalog": {
+    "toolbox_hub": "^/toolbox/$",
+    "branch": "^/toolbox/[0-9]+-[^/]+/$",
+    "tool_ette": "^/toolbox/[0-9]+-[^/]+/[0-9]+[a-z]-[^/]+/$",
+    "destination_pattern": "https?://(?:chatgpt\\.com|chat\\.openai\\.com)/g/g-[a-z0-9]+",
+    "destination_exclusions": [
+      "/toolbox/02-treasured-finds/02d-scentinal-journal/"
+    ]
+  },
+  "discovery": {
+    "sitemap": true,
+    "search": true,
+    "feed_types": [
+      "branch",
+      "tool-ette"
+    ]
+  },
+  "sitemap": {
+    "lastmod": "2026-09-07",
+    "changefreq": {
+      "home": "weekly",
+      "toolbox_hub": "weekly",
+      "branch": "weekly",
+      "tool-ette": "monthly",
+      "supporting": "monthly"
+    },
+    "priority": {
+      "home": "1.0",
+      "toolbox_hub": "0.9",
+      "branch": "0.8",
+      "tool-ette": "0.7",
+      "supporting": "0.6"
+    }
+  }
+}

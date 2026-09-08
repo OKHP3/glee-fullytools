@@ -1,8 +1,11 @@
 {
+  "engines": {
+    "node": "22.19.0"
+  },
   "dependencies": {
-    "puppeteer": "^25.9.0"
+    "puppeteer": "25.9.0"
   },
   "devDependencies": {
-    "lighthouse": "^13.4.1"
+    "lighthouse": "13.4.1"
   }
 }

@@ -22,6 +22,13 @@ import sys
 import argparse
 from pathlib import Path
 
+import sys
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from public_inventory import is_counted_destination, is_discoverable, load_inventory, page_type
+
 REPO = Path(__file__).parent.parent
 ABOUT    = REPO / "about" / "index.html"
 SHOWCASE = REPO / "showcase" / "index.html"
@@ -36,24 +43,19 @@ def compute_stats() -> dict:
     idx = json.loads(INDEX.read_text(encoding="utf-8"))
     pages_list = idx.get("pages", [])
 
-    real = [
-        p for p in pages_list
-        if "/assets/" not in p["url"]
-        and p["url"] not in ("/404/", "/under-construction/")
-    ]
+    real = [p for p in pages_list if is_discoverable(p["url"], "search")]
+    tool_ettes = [p for p in real if page_type(p["url"]) == "tool-ette"]
+    branches = [p for p in real if page_type(p["url"]) == "branch"]
 
-    tool_ette_pat = re.compile(r"^.*/toolbox/\d+-[^/]+/\d+[a-z]-[^/]+/$")
-    branch_pat    = re.compile(r"^.*/toolbox/\d+-[^/]+/$")
-
-    tool_ettes = [p for p in real if tool_ette_pat.match(p["url"])]
-    branches   = [p for p in real if branch_pat.match(p["url"])]
-
-    import runpy
-    launch_urls = runpy.run_path(str(Path(__file__).with_name("audit-tool-ette-promises.py")))["launch_urls"]
+    destination_pattern = re.compile(
+        load_inventory()["catalog"]["destination_pattern"], re.IGNORECASE
+    )
     gpt_count = 0
-    for f in sorted(REPO.glob("toolbox/*/*/index.html")):
-        html = f.read_text(encoding="utf-8")
-        if launch_urls(html):
+    for page in tool_ettes:
+        path = REPO / page["url"].lstrip("/") / "index.html"
+        if is_counted_destination(page["url"]) and destination_pattern.search(
+            path.read_text(encoding="utf-8")
+        ):
             gpt_count += 1
 
     css_lines = sum(1 for _ in THEME_CSS.open(encoding="utf-8"))
@@ -77,7 +79,8 @@ def build_autogen_block(stats: dict) -> str:
         f"          <p>",
         f"            Glee&#8209;fully isn't just a collection of tools — it's a fully",
         f"            designed system. {p} indexable pages, {t} catalog Tool&#8209;ettes",
-        f"            across {b} branches, {g} non&#8209;placeholder external destinations,",
+        f"            across {b} branches, {g} Tool&#8209;ettes with non&#8209;placeholder",
+        f"            external destinations,",
         f"            a shared design language, and a governance model",
         f"            that keeps it all coherent as it grows. Here's the craft underneath",
         f"            the warmth.",

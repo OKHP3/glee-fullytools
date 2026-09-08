@@ -67,6 +67,32 @@ jobs:
           done
           exit "$failed"
 
+      - name: Capture resilience diagnostics
+        if: always()
+        run: |
+          {
+            echo "=== Python ==="
+            python3 --version || true
+            echo "=== Playwright ==="
+            python3 -m playwright --version || true
+            echo "=== Playwright browser cache ==="
+            find "${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}" \
+              -maxdepth 2 -type f -name 'INSTALLATION_COMPLETE' -print 2>/dev/null || true
+            echo "=== Browser process inventory ==="
+            ps -ef | grep -E 'firefox|webkit|chromium' | grep -v grep || true
+            echo "=== Server log ==="
+            cat /tmp/resilience-server.log 2>/dev/null || true
+          } > /tmp/resilience-qa-diagnostics.txt 2>&1
+
+      - name: Upload resilience diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: resilience-qa-diagnostics
+          path: /tmp/resilience-qa-diagnostics.txt
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Upload resilience report
         if: always()
         uses: actions/upload-artifact@v7

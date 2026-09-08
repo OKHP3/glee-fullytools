@@ -43,7 +43,7 @@ jobs:
         run: python3 scripts/check-workflow-actions.py
 
       - name: Install validator dependency
-        run: python3 -m pip install beautifulsoup4 playwright
+        run: python3 -m pip install -r requirements-qa.txt
 
       - name: Install browsers for browser release gate
         run: playwright install --with-deps chromium firefox webkit
@@ -66,6 +66,11 @@ jobs:
 
       - name: Check generated portfolio statistics
         run: python3 scripts/sync-portfolio-stats.py --check
+
+      - name: Check generated sitemap and feed
+        run: |
+          python3 scripts/generate-sitemap.py --check
+          python3 scripts/generate-feed.py --check
 
       - name: Check CSS cache tokens
         run: python3 scripts/sync-css-version.py --check
@@ -136,6 +141,7 @@ jobs:
         run: |
           python3 scripts/public-artifact.py stage --output "$RUNNER_TEMP/glee-public-site"
           python3 scripts/public-artifact.py verify --output "$RUNNER_TEMP/glee-public-site"
+          python3 scripts/check-pages-artifact.py "$RUNNER_TEMP/glee-public-site"
 
       - name: Upload artifact from validated commit
         uses: actions/upload-artifact@v7

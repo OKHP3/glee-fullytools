@@ -28,7 +28,7 @@ Global invariant checks (outside per-page loop):
     offline.html, and app.js must register the root-scoped worker.
 
 Writes:
-  assets/audit/validation-report-2026-05-03.json   (machine-readable detail)
+  assets/audit/validation-report-YYYY-MM-DD.json   (machine-readable detail)
 
 Exit code:
   0 if no critical defects, 1 otherwise.
@@ -41,6 +41,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -49,9 +50,10 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from csp import all_pages, build_policies, page_class
+from public_inventory import collect_html_files, site_origin
 
 SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
-SITE = "https://glee-fully.tools"
+SITE = site_origin()
 MERMAID_VENDOR_ROOT = ROOT / "assets/vendor/mermaid"
 MERMAID_VENDOR_ENTRY = MERMAID_VENDOR_ROOT / "mermaid.esm.min.mjs"
 MERMAID_VERSION_FILE = MERMAID_VENDOR_ROOT / "VERSION"
@@ -298,10 +300,8 @@ def main() -> int:
     pages = []
     total_issues = 0
     total_warnings = 0
-    for path in sorted(ROOT.rglob("*.html")):
+    for path in collect_html_files(ROOT):
         rel = path.relative_to(ROOT)
-        if any(s in rel.parts for s in SKIP_DIRS):
-            continue
         result = check_page(rel, path.read_text(encoding="utf-8", errors="replace"))
         result["path"] = rel.as_posix()
         pages.append(result)
@@ -310,8 +310,11 @@ def main() -> int:
 
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
-    out = audit_dir / "validation-report-2026-05-03.json"
+    out = audit_dir / f"validation-report-{date.today().isoformat()}.json"
     out.write_text(json.dumps({
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "run_date": date.today().isoformat(),
+        "report_type": "site-validation",
         "scanned": len(pages),
         "total_issues": total_issues,
         "total_warnings": total_warnings,

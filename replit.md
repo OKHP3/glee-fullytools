@@ -253,14 +253,17 @@ python3 scripts/sync-css-version.py
 
 The second index pass captures any stats copy changes. Then run the check-only
 release sequence above and the focused regressions relevant to the change.
-`bash scripts/post-merge.sh` checks committed index, stats, CSS/offline versions,
-CSP, structure and links. It does not regenerate or repair files. Run it only in
-a Bash environment with a working `python3`; use the equivalent Python checks
-directly on Windows when that environment is unavailable.
+`bash scripts/post-merge.sh` checks committed index, stats, discovery artifacts,
+CSP, structure and links. It also idempotently synchronizes CSS, JavaScript, and
+offline-shell cache versions so a merge cannot leave the local checkout with a
+stale cache token. Run it only in a Bash environment with a working `python3`;
+use the equivalent Python checks directly on Windows when that environment is
+unavailable.
 
-`feed.xml` and `icon-map.json` have archived generators and are not routine
-release outputs. Feed/date policy remains deferred under `docs/suite-promise.md`.
-Do not execute the historical commands below against the current site.
+`feed.xml` is a current generated release output. Rebuild it with
+`scripts/generate-feed.py`; do not hand-edit it. `icon-map.json` uses the
+compatibility audit under `scripts/archive/` and is not part of the discovery
+scope contract.
 
 ## Historical validation tooling (2026-05-03, superseded)
 
@@ -279,9 +282,9 @@ python3 scripts/inject-breadcrumb.py  # visible <nav aria-label="Breadcrumb">
 # 2. Index and asset maintenance
 python3 scripts/build-search-index.py    # rebuilds assets/data/search-index.json
 python3 scripts/sync-portfolio-stats.py  # patches About page stat counts from search-index.json
-python3 scripts/audit-assets.py          # rebuilds assets/data/icon-map.json + assets/audit/asset-inventory-*.json
-# feed.xml is checked in; its historical generator is retired under
-# scripts/archive/ and is not part of the active pipeline.
+python3 scripts/archive/audit-assets.py # compatibility audit for icon-map + dated asset inventory
+python3 scripts/generate-sitemap.py     # rebuilds sitemap.xml from the shared inventory
+python3 scripts/generate-feed.py        # rebuilds feed.xml from the shared inventory
 
 # 3. Validators (exit non-zero on regressions; safe to wire into CI)
 python3 scripts/validate-site.py      # every-page metadata + structure checks
@@ -298,9 +301,11 @@ python3 scripts/update-placeholder-dimensions.py  # update img width/height once
 python3 scripts/post-merge.sh                     # auto-run on every task merge (rebuilds index + syncs portfolio stats)
 ```
 
-Validators write machine-readable JSON to `assets/audit/`. The Markdown audit covers
-(`AUDIT_*_2026-05-03.md`) explain the JSON output for humans. Re-running the
-mutators is byte-idempotent — they are safe to re-run on every content edit.
+Validators write machine-readable JSON to `assets/audit/` using a
+`YYYY-MM-DD` run-date suffix. The current human-readable audit is
+`assets/docs/audit-report.md` and includes its UTC generation time and run date;
+older dated reports remain historical evidence. Re-running the mutators is
+byte-idempotent — they are safe to re-run on every content edit.
 
 ## Template library (`assets/templates/`)
 
@@ -371,4 +376,3 @@ Machine-readable JSON outputs live in `assets/audit/` (written by tools on each 
 - **2026-05-02 — Canonical-URL SEO bug fixed.** 6 inner tool pages (`03b-menu-conductor`, `03c-wishful-tastes`, `03d-pantry-shopper`, `06a-care-check`, `06b-calm-keep`, `06c-snappy-count`) had `<link rel="canonical">` pointing to the homepage instead of themselves — discovered by the search-index validator. All 6 corrected to match their `og:url`. Indexer now fails loud if this regression recurs.
 - **2026-05-02 — Spirited Journal page repaired.** Was missing `<!DOCTYPE html>` and `<head>` opening tag (skipped during initial indexing).
 - **2026-04-11 — Replit App Theme exports.** `gleefully-replit-theme.json` + `gleefully-replit-theme-guide.md` covering Foundation, Actions, Forms (focus border `#d35b2d`), Containers (paper-system surfaces), Charts (5 retro-stripe colors).
-

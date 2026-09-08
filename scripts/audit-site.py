@@ -67,10 +67,17 @@ import re
 import subprocess
 import sys
 import urllib.parse
+from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Tuple
 from xml.etree import ElementTree as ET
+
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from public_inventory import collect_html_files
 
 ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache",
@@ -91,12 +98,7 @@ EXPECTED_BG_COLOR = "#f5f0ea"
 
 
 def iter_html_files() -> List[Path]:
-    out: List[Path] = []
-    for p in ROOT.rglob("*.html"):
-        if any(part in EXCLUDE_DIRS for part in p.parts):
-            continue
-        out.append(p)
-    return sorted(out)
+    return collect_html_files(ROOT)
 
 
 class PageParser(HTMLParser):
@@ -513,6 +515,8 @@ def render_report(per_page: Dict[str, List[str]],
     lines = [
         "# Glee-fully.tools — Automated Site Audit",
         "",
+        f"**Generated at (UTC):** {datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')}",
+        f"**Run date:** {date.today().isoformat()}",
         f"**Pages scanned:** {len(per_page)}  ",
         f"**Total issues:** {total_issues}",
         "",

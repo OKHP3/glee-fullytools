@@ -1,0 +1,5 @@
+# Runtime/CI browser and HTML QA dependencies.
+# Update only through a reviewed dependency pull request; see
+# docs/dependency-policy.md.
+beautifulsoup4==4.13.4
+playwright==1.60.0

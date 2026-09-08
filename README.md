@@ -68,10 +68,9 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
 
 ### 🛠 Maintainers' notes
 
-* **Live audit reports:** `FINAL_AUDIT_2026-05-03.md`, plus
-  `AUDIT_PAGE_INVENTORY_*`, `AUDIT_LINKS_*`, `AUDIT_ASSETS_*`,
-  `AUDIT_ACCESSIBILITY_*`, `AUDIT_PERFORMANCE_*` covering every phase of the
-  2026-05-03 pass.
+* **Audit evidence:** dated files under `assets/audit/` and `assets/docs/` are
+  historical records. Current validator and link reports use the run date;
+  never treat an older dated report as current evidence.
 * **Run validators after content edits:**
   ```bash
   python3 scripts/validate-site.py  &&  python3 scripts/check-links.py
@@ -97,15 +96,19 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
 * **Rebuild the search index and asset map after content edits:**
   ```bash
   python3 scripts/build-search-index.py
-  python3 scripts/audit-assets.py
-  # feed.xml is a checked-in artifact; its historical generator is retired
-  # under scripts/archive/ and is not part of the active pipeline.
-  ```
-* **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
-  into `assets/img/`, add its URL to `sitemap.xml`, then run the four
-  mutator scripts in order (`normalize-head` → `activate-icons` → `inject-jsonld`
-  → `inject-breadcrumb`) and the active regenerators above. See `replit.md` for
-  the detailed run order.
+   python3 scripts/archive/audit-assets.py
+   python3 scripts/generate-sitemap.py
+   python3 scripts/generate-feed.py
+   ```
+ * **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
+   into `assets/img/`, place the page inside the shared URL scope in
+   `config/public-inventory.json`, then run the
+   ```bash
+   python3 scripts/build-search-index.py
+   python3 scripts/generate-sitemap.py
+   python3 scripts/generate-feed.py
+   ```
+   Do not hand-edit generated discovery artifacts.
 * **Template library:** `assets/templates/` mirrors the full site hierarchy
   with structural-only clones of every page. Every template preserves nav,
   footer, scripts, CSS, JSON-LD scaffold; every page-specific value is a

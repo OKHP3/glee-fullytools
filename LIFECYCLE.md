@@ -1,7 +1,7 @@
 # Lifecycle — Glee-fully Tools
 
 **Current state:** Active  
-**Last reviewed:** 2026-09-04
+**Last reviewed:** 2026-09-07
 
 ---
 
@@ -40,6 +40,23 @@ criteria are maintained in [`docs/suite-promise.md`](docs/suite-promise.md).
 - GitHub Actions CI validates HTML, links, and sitemap on every push
 - `scripts/validate-site.py` and `scripts/check-links.py` pass with 0 issues
 - `assets/data/search-index.json` indexes all 61 indexable pages
+
+---
+
+## External verification pending
+
+- Google Search Console ownership verification for `glee-fully.tools` is not
+  owner-confirmed.
+- Bing Webmaster Tools ownership verification for `glee-fully.tools` is not
+  owner-confirmed.
+- Submission of `https://glee-fully.tools/sitemap.xml` in both consoles is not
+  owner-confirmed.
+
+Keep these items open until the owner supplies the non-secret dates, result
+labels, and reviewer confirmation described in
+[`docs/discovery-evidence.md`](docs/discovery-evidence.md). Repository validation
+proves crawl readiness only; it does not prove console verification, submission,
+acceptance, or indexing.
 
 ---
 

@@ -21,22 +21,14 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 
+from public_inventory import (
+    collect_html_files,
+    collect_indexable_html_files,
+    site_origin,
+)
+
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {
-    "node_modules",
-    ".local",
-    ".git",
-    "attached_assets",
-    "assets",
-    ".pythonlibs",
-    ".cache",
-    ".agents",
-    ".pr-head",
-    "_replit",
-    "dist",
-    "site-src",
-}
-SITE = "https://glee-fully.tools"
+SITE = site_origin()
 REPORT_DATE = date.today().isoformat()
 
 
@@ -129,10 +121,8 @@ def main(argv=None) -> int:
     broken: list[dict] = []
     style_issues: list[dict] = []
 
-    for path in sorted(ROOT.rglob("*.html")):
+    for path in collect_html_files(ROOT):
         rel = path.relative_to(ROOT)
-        if any(s in rel.parts for s in SKIP_DIRS):
-            continue
         html = path.read_text(encoding="utf-8", errors="replace")
         n_int = n_ext = 0
         for m in re.finditer(r'href=["\']([^"\']+)["\']', html):
@@ -177,10 +167,8 @@ def main(argv=None) -> int:
 
     file_urls = set()
     excluded_from_sitemap: list[dict] = []
-    for p in sorted(ROOT.rglob("index.html")):
+    for p in collect_indexable_html_files(ROOT):
         rel = p.relative_to(ROOT)
-        if any(s in rel.parts for s in SKIP_DIRS):
-            continue
         exclusion = sitemap_exclusion(p)
         if exclusion:
             excluded_from_sitemap.append(exclusion)

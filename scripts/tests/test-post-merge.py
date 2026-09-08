@@ -16,6 +16,9 @@ BASH = str(GIT_BASH) if os.name == "nt" and GIT_BASH.is_file() else shutil.which
 CALLS = [
     "scripts/build-search-index.py --check",
     "scripts/sync-portfolio-stats.py --check",
+    "scripts/generate-sitemap.py --check",
+    "scripts/generate-feed.py --check",
+    "scripts/sync-css-version.py",
     "scripts/sync-css-version.py --check",
     "scripts/check-csp.py",
     "scripts/validate-site.py",
@@ -55,7 +58,7 @@ class PostMergeTests(unittest.TestCase):
                  if line.startswith("CALL|")]
         return result, calls
 
-    def test_success_runs_all_checks_in_order_without_generation(self):
+    def test_success_runs_all_checks_in_order_with_idempotent_version_sync(self):
         result, calls = self.run_hook()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(calls, CALLS)
@@ -83,6 +86,8 @@ class PostMergeTests(unittest.TestCase):
         self.assertNotIn(b"\r", HOOK.read_bytes())
 
     def test_link_check_no_report_preserves_findings_and_disk(self):
+        import sys
+        sys.path.insert(0, str(HOOK.parent))
         spec = importlib.util.spec_from_file_location("links", HOOK.parent / "check-links.py")
         links = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(links)

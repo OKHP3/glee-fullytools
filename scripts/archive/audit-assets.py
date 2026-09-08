@@ -6,7 +6,7 @@ Walks `assets/img/` and cross-references every file against every HTML page
 to determine which images are referenced and which are orphaned.
 
 Outputs:
-  assets/audit/asset-inventory-2026-05-03.json    (full inventory)
+  assets/audit/asset-inventory-YYYY-MM-DD.json    (full inventory)
   assets/data/icon-map.json                 (best-icon mapping per tool)
 
 Usage:
@@ -18,6 +18,7 @@ import json
 import re
 import sys
 from collections import defaultdict
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -99,9 +100,13 @@ def main() -> int:
     # --- Persist -----------------------------------------------------------
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
-    inv_path = audit_dir / "asset-inventory-2026-05-03.json"
+    run_date = date.today().isoformat()
+    generated_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    inv_path = audit_dir / f"asset-inventory-{run_date}.json"
     inv_path.write_text(json.dumps({
-        "generated": "2026-05-03",
+        "generated": run_date,
+        "generated_at": generated_at,
+        "report_type": "asset-inventory",
         "image_root": "assets/img/",
         "total_files": len(inventory),
         "total_referenced": sum(1 for a in inventory if a["referenced"]),
@@ -112,7 +117,8 @@ def main() -> int:
     map_path = ROOT / "assets" / "data" / "icon-map.json"
     map_path.parent.mkdir(parents=True, exist_ok=True)
     map_path.write_text(json.dumps({
-        "generated": "2026-05-03",
+        "generated": run_date,
+        "generated_at": generated_at,
         "doc": "Best GPT icon for each tool/branch prefix. "
                "'primary' is the recommended hero/og:image. "
                "Variants exist for design flexibility.",

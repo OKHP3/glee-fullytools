@@ -25,7 +25,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `csp.py` | active | Canonical CSP policy generation module |
 | `generate-csp.py` | active | Apply CSP policies to every page |
 | `inclusive-accessibility-qa.py` | active | Browser evidence for inclusive keyboard, search, fallback, and constrained-environment journeys |
-| `post-merge.sh` | active | Check-only post-merge integrity hook; run with Bash, never Python |
+| `post-merge.sh` | active | Post-merge integrity hook; checks generated outputs and idempotently repairs cache-version references and the offline shell; run with Bash, never Python |
 | `public-artifact.py` | active | Stage and verify the reviewed public inventory, transferred bytes, and final Pages archive |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
@@ -35,7 +35,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `sync-foundation-files.py` | active, review required | Dry-run foundation inventory; legacy write modes choose by Git touch time and require explicit per-file source/target review before use |
 | `sync-css-version.py` | active | CSS and JavaScript cache-version sync, including the dynamic adapter import and offline shell; run after content generators (has its own test coverage) |
 | `sync-image-alt.py` | active | Image alt-text sync (invoked by `validate-site.py`) |
-| `sync-portfolio-stats.py` | active | Portfolio stats sync; the post-merge hook uses `--check` only |
+| `sync-portfolio-stats.py` | active | Portfolio stats sync; the post-merge hook checks committed stats with `--check` |
 | `sync-social-card.py` | active | Social-card sync (has its own test coverage) |
 | `sync-sparkle-fallback.py` | active | Sparkle fallback sync (invoked by `validate-site.py`) |
 | `validate-site.py` | active | Structural site validation |
@@ -84,7 +84,7 @@ overkill-hill's own retired copy of the same file.
 The following scripts are **retired**. They are preserved for history only
 and must not be run against glee-fullytools: `activate-icons.py`,
 `add-toolbox-to-footer.py`, `convert-gpt-icons-webp.py`,
-`convert-hero-webp.py`, `generate-feed.py`, `inject-breadcrumb.py`,
+`convert-hero-webp.py`, `inject-breadcrumb.py`,
 `inject-hero-picture.py`, `inject-jsonld.py`, `inject-nav-logo-webp.py`,
 `inject-showcase-footer.py`, `inject-showcase-subnav.py`,
 `push-to-github.py`, `release-mtb.py`, `site-audit.py`, and

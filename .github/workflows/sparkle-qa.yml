@@ -31,7 +31,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Python dependencies
-        run: pip install playwright
+        run: python3 -m pip install -r requirements-qa.txt
 
       - name: Install Playwright browsers and system dependencies
         run: playwright install --with-deps chromium

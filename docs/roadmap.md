@@ -4,12 +4,14 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 repository. The authoritative current promise, inventory, publication states,
 and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 
-## Current phase  -  Active growth and refinement
+## Current phase — Active growth and refinement
 
 - Maintain the public catalog and routing hub while new Tool-ettes move through
   live, beta, construction, unavailable, or retired states.
 - Keep the 63-file / 60-indexable-page / 7-branch / 42-Tool-ette / 49-feed-entry
   vocabulary synchronized with the contract.
+- Use [`config/public-inventory.json`](../config/public-inventory.json) as the
+  shared scope contract for generated discovery outputs and release checks.
 - Treat passing static validation as proof of site structure, not proof of
   external GPT availability or behavior.
 
@@ -20,6 +22,19 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
   audit separately. `bash scripts/post-merge.sh` checks committed outputs only.
 - Run real browser QA after rendered changes. `node scripts/responsive-qa.mjs
   --static` is structural lint and does not establish browser behavior.
+- Discovery artifacts: `python3 scripts/generate-sitemap.py` and
+  `python3 scripts/generate-feed.py`
+
+## Completed in this release-evidence pass
+- **Discovery output scope** — search, sitemap, feed, portfolio statistics, and
+  link checks now consume the shared public-inventory contract.
+- **Current run evidence** — validator reports include the run date and UTC
+  generation time; dated reports are historical records rather than current
+  evidence by filename alone.
+- **Pages artifact boundary** — the release workflow excludes maintainer and
+  development content and fails on unexpected artifact paths.
+- **Dependency reproducibility** — Python and npm QA dependencies are pinned,
+  with GitHub Actions and monthly Dependabot update governance.
 
 ## Next
 - **Reviewed release readiness (2026-09-05)**: finish the exact-commit browser,
@@ -28,12 +43,17 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
   Dependency/action pins, host-header delivery, and explicit-source sibling
   promotion are concrete owner choices in that packet; none is applied by a
   successful local check.
-- **Submit sitemap** to Google Search Console and Bing Webmaster Tools.
+- **Owner-controlled discovery setup** — verify the domain and submit
+  `https://glee-fully.tools/sitemap.xml` in Google Search Console and Bing
+  Webmaster Tools, then record non-secret result evidence in
+  [`docs/discovery-evidence.md`](discovery-evidence.md).
 - **HTTP security policy delivery**: review the residual GitHub Pages header
   limitations. Hash-based page CSP is already implemented in `scripts/csp.py`
   and checked by `scripts/check-csp.py`; script `unsafe-inline` is absent.
   `_headers` still requires a compatible host for HTTP response delivery.
-- **Organization JSON-LD `sameAs`** — add social profile URLs.
+- **Organization identity approval** — confirm the seven already-published
+  `sameAs` identities in the same evidence record; do not add new profiles
+  without owner approval.
 
 ## Later
 - Expand toolette showcase with additional case entries

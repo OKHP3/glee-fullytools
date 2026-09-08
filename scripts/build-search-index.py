@@ -26,6 +26,12 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS_DIR = REPO_ROOT / "scripts"
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from public_inventory import collect_indexable_html_files
+
 PROMISE = runpy.run_path(str(REPO_ROOT / "scripts" / "audit-tool-ette-promises.py"))
 BRANCH_LABELS = {
     "01-discovered-careers": "Discovered Careers",
@@ -167,12 +173,8 @@ def clean_text(s: str) -> str:
 
 def derive_url(file_path: Path) -> str:
     """Convert a repo-relative file path to a canonical site URL path."""
-    rel = file_path.relative_to(REPO_ROOT).as_posix()
-    if rel == "index.html":
-        return "/"
-    if rel.endswith("/index.html"):
-        return "/" + rel[: -len("index.html")]
-    return "/" + rel
+    from public_inventory import derive_url as inventory_derive_url
+    return inventory_derive_url(file_path, REPO_ROOT)
 
 
 def derive_section(url: str) -> str:
@@ -216,17 +218,7 @@ def derive_branch(url: str) -> str:
 
 
 def collect_html_files() -> list[Path]:
-    files: list[Path] = []
-    for path in REPO_ROOT.rglob("*.html"):
-        rel_parts = path.relative_to(REPO_ROOT).parts
-        if rel_parts[0] == "assets":
-            continue
-        if any(part in EXCLUDE_DIRS for part in rel_parts):
-            continue
-        if path.name in EXCLUDE_FILES:
-            continue
-        files.append(path)
-    return sorted(files)
+    return collect_indexable_html_files(REPO_ROOT)
 
 
 def trim_text(text: str, max_words: int = 1600) -> str:

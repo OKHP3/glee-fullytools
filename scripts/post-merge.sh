@@ -16,7 +16,12 @@ python3 scripts/build-search-index.py --check
 echo "Post-merge: checking committed portfolio stats..."
 python3 scripts/sync-portfolio-stats.py --check
 
-echo "Post-merge: checking offline shell and CSS versions..."
+echo "Post-merge: checking committed discovery artifacts..."
+python3 scripts/generate-sitemap.py --check
+python3 scripts/generate-feed.py --check
+
+echo "Post-merge: synchronizing CSS, JavaScript, and offline-shell versions..."
+python3 scripts/sync-css-version.py
 python3 scripts/sync-css-version.py --check
 
 echo "Post-merge: checking CSP policies..."
