@@ -1,5 +1,5 @@
 {
-  "scanned": 64,
+  "scanned": 65,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -22,6 +22,11 @@
       "issues": [],
       "warnings": [],
       "path": "contact/index.html"
+    },
+    {
+      "issues": [],
+      "warnings": [],
+      "path": "docs/prototypes/foundry-visitor-journey.html"
     },
     {
       "issues": [],
