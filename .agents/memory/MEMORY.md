@@ -10,3 +10,4 @@
 - [Portfolio destination counts](portfolio-destination-counts.md) — distinguish non-placeholder launch destinations from any ChatGPT href when reporting catalog readiness.
 - [Tool-ette evidence contract](tool-ette-evidence-contract.md) — an HTTP-successful external GPT URL is not behavior, identity, ownership, or safety evidence.
 - [Browser QA environment](browser-qa-environment.md) — Playwright Chromium in this Nix runner needs the shared libgbm setup before importing Playwright.
+- [Local merge history normalization](local-merge-history-normalization.md) — verify reflog and parentage because host sync may replay local commits after a merge.
