@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import importlib.util
 import json
+from datetime import date
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
 
 _SCRIPT = Path(__file__).resolve().parent.parent / "validate-site.py"
+_ROOT = _SCRIPT.parents[1]
 _SPEC = importlib.util.spec_from_file_location("_validate_site", _SCRIPT)
 validate_site = importlib.util.module_from_spec(_SPEC)
 assert _SPEC.loader is not None
@@ -116,6 +120,44 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
                 validate_site.ROOT = original_root
 
         self.assertTrue(any("no '## Organization identities' section" in issue for issue in issues))
+
+    def test_release_validator_command_blocks_unapproved_identity(self):
+        evidence = _ROOT / "docs" / "discovery-evidence.md"
+        report = (
+            _ROOT
+            / "assets"
+            / "audit"
+            / f"validation-report-{date.today().isoformat()}.json"
+        )
+        original_evidence = evidence.read_bytes()
+        original_report = report.read_bytes() if report.exists() else None
+        evidence.write_bytes(
+            original_evidence
+            + b"\n- `https://example.com/unapproved-identity`\n"
+        )
+        try:
+            result = subprocess.run(
+                [sys.executable, str(_SCRIPT)],
+                cwd=_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        finally:
+            evidence.write_bytes(original_evidence)
+            if original_report is None:
+                report.unlink(missing_ok=True)
+            else:
+                report.write_bytes(original_report)
+
+        output = result.stdout + result.stderr
+        self.assertNotEqual(result.returncode, 0, output)
+        self.assertIn(
+            "owner-approved URL(s) missing from homepage sameAs: "
+            "https://example.com/unapproved-identity",
+            output,
+        )
 
 
 if __name__ == "__main__":
