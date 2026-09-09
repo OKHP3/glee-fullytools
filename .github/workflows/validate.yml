@@ -36,6 +36,25 @@ jobs:
       - name: Install dependencies
         run: python3 -m pip install -r requirements-qa.txt
 
+      - name: Install Chromium for color-scheme browser regression
+        run: playwright install --with-deps chromium
+
+      - name: Start local server for color-scheme browser regression
+        run: |
+          python3 scripts/serve-site.py >/tmp/glee-color-scheme-server.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:5000/ >/dev/null; then
+              echo "Server ready."
+              break
+            fi
+            sleep 0.5
+          done
+          curl --silent --fail http://127.0.0.1:5000/ >/dev/null \
+            || { cat /tmp/glee-color-scheme-server.log; exit 1; }
+
+      - name: Prove saved color preferences apply before first paint
+        run: python3 scripts/tests/test-color-scheme-init.py --base-url http://127.0.0.1:5000
+
       - name: Generate current search and universe maps
         run: |
           python3 scripts/build-search-index.py
