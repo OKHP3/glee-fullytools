@@ -71,7 +71,10 @@ jobs:
         run: python3 scripts/check-csp.py
 
       - name: Run template metadata regressions
-        run: python3 -m unittest scripts/tests/test_validate_template_metadata.py
+        run: |
+          python3 -m unittest \
+            scripts/tests/test_validate_template_metadata.py \
+            scripts/tests/test_organization_identity_approval.py
 
       - name: Run publication and offline release regressions
         run: |

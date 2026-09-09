@@ -445,6 +445,16 @@ def main() -> int:
         )
         total_issues += len(css_token_issues)
 
+    # ── Global invariant: approved Organization identities ───────────────────
+    # The homepage's structured-data sameAs list is an owner-approved claim.
+    # Keep it synchronized with the human-readable approval record so a future
+    # identity edit cannot ship without updating its evidence.
+    organization_identity_issues = _check_organization_identity_approval()
+    for msg in organization_identity_issues:
+        print(f"\nOrganization identity approval: {msg}")
+    if organization_identity_issues:
+        total_issues += len(organization_identity_issues)
+
     # ── Global invariant: template image metadata pairs ─────────────────────
     # Templates live under assets/ and are intentionally excluded from the
     # published-page scan above. Keep their social image metadata complete so
@@ -1090,6 +1100,122 @@ def _check_css_token_drift(hashlib_mod) -> list:
                 )
                 break  # one report per file is enough
     return mismatches
+
+
+def _check_organization_identity_approval() -> list:
+    """Return mismatches between homepage Organization sameAs and its approval record.
+
+    The approval record is deliberately kept in docs/discovery-evidence.md so
+    owner confirmation remains readable during review. Its URL bullets are
+    parsed only inside the ``## Organization identities`` section.
+    """
+    homepage = ROOT / "index.html"
+    evidence = ROOT / "docs" / "discovery-evidence.md"
+    if not homepage.exists() and not evidence.exists():
+        # Isolated validator fixtures can omit the repository-level contract.
+        return []
+
+    if not homepage.exists():
+        return ["index.html is missing; cannot verify Organization sameAs"]
+    if not evidence.exists():
+        return ["docs/discovery-evidence.md is missing; cannot verify identity approval"]
+
+    homepage_text = homepage.read_text(encoding="utf-8", errors="replace")
+    jsonld_blocks = re.findall(
+        r'<script\s+type="application/ld\+json">\s*(.*?)\s*</script>',
+        homepage_text,
+        re.DOTALL,
+    )
+    organization_nodes = []
+    for block_number, block in enumerate(jsonld_blocks, start=1):
+        try:
+            data = json.loads(block)
+        except json.JSONDecodeError as exc:
+            # check_page reports malformed JSON-LD separately; avoid treating
+            # an unreadable block as an empty identity list here.
+            return [
+                f"homepage JSON-LD block #{block_number} is not parseable: {exc.msg}"
+            ]
+
+        candidates = data.get("@graph", []) if isinstance(data, dict) else []
+        if not isinstance(candidates, list):
+            candidates = []
+        if isinstance(data, dict) and data.get("@type") == "Organization":
+            candidates.append(data)
+        for node in candidates:
+            if not isinstance(node, dict):
+                continue
+            node_type = node.get("@type", [])
+            types = node_type if isinstance(node_type, list) else [node_type]
+            if "Organization" in types:
+                organization_nodes.append(node)
+
+    if len(organization_nodes) != 1:
+        return [
+            f"homepage JSON-LD contains {len(organization_nodes)} Organization nodes; "
+            "expected exactly one"
+        ]
+
+    issues: list[str] = []
+    published = organization_nodes[0].get("sameAs")
+    if not isinstance(published, list) or not all(
+        isinstance(url, str) and re.fullmatch(r"https?://\S+", url)
+        for url in published
+    ):
+        issues.append("homepage Organization sameAs must be a list of absolute HTTP(S) URLs")
+        published_urls: list[str] = []
+    else:
+        published_urls = published
+
+    evidence_text = evidence.read_text(encoding="utf-8", errors="replace")
+    section_match = re.search(
+        r"(?ms)^##\s+Organization identities\s*$"
+        r"(.*?)(?=^##\s+|\Z)",
+        evidence_text,
+    )
+    if not section_match:
+        return issues + [
+            "docs/discovery-evidence.md has no '## Organization identities' section"
+        ]
+
+    approved_urls = re.findall(
+        r"(?m)^\s*-\s+`([^`]+)`\s*$",
+        section_match.group(1),
+    )
+    if not approved_urls:
+        issues.append(
+            "Organization identities approval section contains no URL bullet list"
+        )
+    invalid_approved = [
+        url for url in approved_urls if not re.fullmatch(r"https?://\S+", url)
+    ]
+    if invalid_approved:
+        issues.append(
+            "approval record contains non-absolute HTTP(S) identity URL(s): "
+            + ", ".join(repr(url) for url in invalid_approved)
+        )
+
+    if len(published_urls) != len(set(published_urls)):
+        issues.append("homepage Organization sameAs contains duplicate URLs")
+    if len(approved_urls) != len(set(approved_urls)):
+        issues.append("approval record contains duplicate identity URLs")
+
+    published_set = set(published_urls)
+    approved_set = set(approved_urls)
+    missing_approval = sorted(published_set - approved_set)
+    unpublished_approval = sorted(approved_set - published_set)
+    if missing_approval:
+        issues.append(
+            "homepage sameAs URL(s) missing from owner approval: "
+            + ", ".join(missing_approval)
+        )
+    if unpublished_approval:
+        issues.append(
+            "owner-approved URL(s) missing from homepage sameAs: "
+            + ", ".join(unpublished_approval)
+        )
+
+    return issues
 
 
 if __name__ == "__main__":
