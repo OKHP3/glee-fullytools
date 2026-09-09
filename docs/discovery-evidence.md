@@ -1,8 +1,8 @@
 # Discovery and ownership evidence
 
-**Review date:** 2026-09-07  
-**Scope:** repository-side discovery configuration and owner-controlled search setup  
-**Status:** repository implementation complete; owner-side console actions pending
+**Review date:** 2026-09-09
+**Scope:** repository-side discovery configuration and owner-controlled search setup
+**Status:** repository implementation complete; owner-side console coverage evidence not supplied
 
 ## Repository-side evidence
 
@@ -22,6 +22,38 @@ python3 scripts/check-links.py
 The repository can prove that the generated search index, sitemap, feed, and
 showcase statistics agree with the checked-in site. It cannot prove that a
 search engine has crawled, accepted, or ranked those URLs.
+
+## Post-submission coverage review
+
+**Review date:** 2026-09-09
+**Reviewer:** repository review; no console account details accessed
+**Coverage scope:** 61 unique sitemap URLs:
+
+- 1 homepage
+- 1 Toolbox hub
+- 7 branch pages
+- 42 Tool-ette pages
+- 10 supporting pages
+
+The repository and public preflight confirm that the intended scope is
+internally consistent: the generated sitemap contains 61 URLs, every sitemap
+URL has a corresponding public file, and the live `robots.txt` and
+`sitemap.xml` each return HTTP 200 from the canonical host. The repository also
+contains one intentional noindex/non-sitemap prototype area at
+`/docs/prototypes/`; this is a local publishing exclusion, not a Search
+Console or Bing coverage result.
+
+| Console | Post-processing coverage report | Included | Excluded / blocked / duplicate / failed | Review result |
+|---|---|---:|---:|---|
+| Google Search Console | Not supplied to this workspace | Unknown | Unknown; no console findings were provided | **BLOCKED** — indexing and sitemap-processing status cannot be confirmed |
+| Bing Webmaster Tools | Not supplied to this workspace | Unknown | Unknown; no console findings were provided | **BLOCKED** — indexing and sitemap-processing status cannot be confirmed |
+
+These `Unknown` values are deliberate. They are not zero counts and must not be
+reported as proof that all 61 URLs are indexed. No owner confirmation,
+reviewer initials, account-identifying screenshot, token, cookie, or credential
+was available for this review. The owner must provide sanitized aggregate
+counts and the review date from both consoles before this section can be
+changed to a confirmed result.
 
 ## Search-console owner actions
 
