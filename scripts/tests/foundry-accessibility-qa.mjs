@@ -218,6 +218,62 @@ async function run() {
         return { interactiveCount: count, checked: evidence.length, skippedUnavailable };
       });
 
+      await check('expanded mobile navigation keyboard focus', async () => {
+        const navToggle = page.locator('.nav-toggle');
+        const primaryNav = page.locator('#navigation');
+        const primaryLinks = page.locator('#navigation > ul > li > a[href]');
+        const submenuLinks = page.locator('#navigation .submenu a[href]');
+        const navLinks = page.locator('#navigation a[href]');
+
+        // Keep the collapsed-state contract explicit: the focus visibility
+        // check above must continue to exclude this inert region.
+        assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
+        assert.equal(await primaryNav.getAttribute('aria-hidden'), 'true');
+        assert.notEqual(await primaryNav.getAttribute('inert'), null);
+
+        await navToggle.focus();
+        await page.keyboard.press('Enter');
+        await page.waitForFunction(() => document.activeElement?.matches('#navigation a[href]'));
+
+        assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
+        assert.equal(await primaryNav.getAttribute('aria-hidden'), 'false');
+        assert.equal(await primaryNav.getAttribute('inert'), null);
+        assert.ok(await primaryLinks.count() > 0, 'expanded navigation has no primary links');
+        assert.ok(await submenuLinks.count() > 0, 'expanded navigation has no submenu links');
+
+        const evidence = [];
+        const count = await navLinks.count();
+        for (let i = 0; i < count; i += 1) {
+          const link = navLinks.nth(i);
+          assert.equal(
+            await link.evaluate(node => node === document.activeElement),
+            true,
+            `navigation link ${i + 1} is not keyboard-reachable`,
+          );
+          const style = await link.evaluate(node => {
+            const computed = getComputedStyle(node);
+            return {
+              name: (node.innerText || node.getAttribute('aria-label') || '').trim().slice(0, 80),
+              outlineStyle: computed.outlineStyle,
+              outlineWidth: computed.outlineWidth,
+              boxShadow: computed.boxShadow,
+            };
+          });
+          assert.ok(
+            style.outlineStyle !== 'none' && style.outlineWidth !== '0px' || style.boxShadow !== 'none',
+            `no visible focus indicator for expanded navigation link ${style.name}`,
+          );
+          evidence.push(style);
+          if (i < count - 1) await page.keyboard.press('Tab');
+        }
+
+        return {
+          primaryLinks: await primaryLinks.count(),
+          submenuLinks: await submenuLinks.count(),
+          checked: evidence,
+        };
+      });
+
       await check('narrow viewport overflow and console health', async () => {
         const metrics = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, innerWidth: innerWidth }));
         assert.ok(metrics.scrollWidth <= metrics.innerWidth + 1, `${metrics.scrollWidth}px document exceeds ${metrics.innerWidth}px viewport`);

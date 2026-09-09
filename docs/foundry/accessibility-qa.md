@@ -37,11 +37,14 @@ The runner asserts:
 2. Heading levels do not skip forward by more than one level.
 3. The four visible `.hero-actions` links have non-empty, expected accessible names.
 4. A FAQ `summary` receives focus, opens with Enter, and closes with Space.
-5. Every keyboard-reachable link, button, and FAQ summary exposes a non-zero
+5. At both narrow viewports, the mobile navigation opens with Enter, clears its
+   collapsed `inert` state, and each primary and submenu link is reached by
+   keyboard Tab navigation with a visible focus indicator.
+6. Every keyboard-reachable link, button, and FAQ summary exposes a non-zero
    visible focus indicator. Controls in unavailable regions—such as the
    intentionally collapsed, `inert` mobile navigation or a closed dialog—are
    reported as excluded rather than treated as reachable controls.
-6. The document does not exceed the viewport width at 320px or 390px, and no page errors occur.
+7. The document does not exceed the viewport width at 320px or 390px, and no page errors occur.
 
 ## Findings and limitations
 
