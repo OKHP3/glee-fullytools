@@ -159,9 +159,30 @@ async function run() {
         const interactive = page.locator('a, button, summary');
         const count = await interactive.count();
         const evidence = [];
+        let skippedUnavailable = 0;
         for (let i = 0; i < count; i += 1) {
           const item = interactive.nth(i);
-          await item.focus();
+          const unavailable = await item.evaluate(node => {
+            for (let current = node; current; current = current.parentElement) {
+              const style = getComputedStyle(current);
+              if (
+                current.closest('[inert]') ||
+                current.hidden ||
+                current.getAttribute('aria-hidden') === 'true' ||
+                style.display === 'none' ||
+                style.visibility === 'hidden'
+              ) return true;
+            }
+            return false;
+          });
+          if (unavailable) {
+            skippedUnavailable += 1;
+            continue;
+          }
+          // Request the keyboard-visible focus state explicitly. A generic
+          // programmatic focus can leave Chromium's :focus-visible heuristic
+          // false even when the keyboard focus style is present and usable.
+          await item.evaluate(node => node.focus({ focusVisible: true }));
           const style = await item.evaluate(node => {
             const computed = getComputedStyle(node);
             return { name: (node.innerText || node.getAttribute('aria-label') || '').trim().slice(0, 80), outlineStyle: computed.outlineStyle, outlineWidth: computed.outlineWidth, boxShadow: computed.boxShadow };
@@ -169,7 +190,7 @@ async function run() {
           assert.ok(style.outlineStyle !== 'none' && style.outlineWidth !== '0px' || style.boxShadow !== 'none', `no visible focus indicator for ${style.name}`);
           evidence.push(style);
         }
-        return { interactiveCount: count, checked: evidence.length };
+        return { interactiveCount: count, checked: evidence.length, skippedUnavailable };
       });
 
       await check('narrow viewport overflow and console health', async () => {

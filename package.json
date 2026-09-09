@@ -6,6 +6,10 @@
     "puppeteer": "25.9.0"
   },
   "devDependencies": {
-    "lighthouse": "13.4.1"
+    "lighthouse": "13.4.1",
+    "playwright": "1.60.0"
+  },
+  "scripts": {
+    "qa:foundry-accessibility": "node scripts/tests/foundry-accessibility-qa.mjs"
   }
 }

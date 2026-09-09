@@ -34,6 +34,18 @@ jobs:
           fi
           echo "Validated release commit: $checked_out_commit"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: npm
+
+      - name: Install Node QA dependencies
+        run: npm ci
+
+      - name: Install Node Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -93,6 +105,9 @@ jobs:
           python3 scripts/check-links.py
           python3 scripts/check-accent-contrast.py --strict
           python3 scripts/check-glee-dark-coverage.py --section all --require-both
+
+      - name: Run FoundRy accessibility evidence
+        run: npm run qa:foundry-accessibility
 
       - name: Run advisory site audit
         continue-on-error: true

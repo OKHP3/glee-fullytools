@@ -28,6 +28,7 @@ GITHUB_API_TIMEOUT_SECONDS = 20
 # A missing action is reported as unsupported rather than silently accepted.
 ACTION_MAJOR_VERSIONS = {
     "actions/checkout": 7,
+    "actions/setup-node": 4,
     "actions/setup-python": 7,
     "actions/upload-artifact": 7,
     "actions/download-artifact": 8,

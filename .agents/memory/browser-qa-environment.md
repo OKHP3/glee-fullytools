@@ -27,3 +27,15 @@ not a browser assertion or site regression.
 **How to apply:** Keep the runner’s missing-engine error explicit, use
 `--static-only` only for fast local checks, and rely on the CI job for the
 three-engine release evidence.
+
+The focused FoundRy accessibility check is a separate Node Playwright gate; the
+existing Python Playwright installation does not satisfy its Node module or
+browser-revision dependency.
+
+**Why:** Treating the two language runtimes as interchangeable previously made
+the focused evidence appear unavailable locally instead of exposing a setup
+requirement.
+
+**How to apply:** Keep the Node package and Chromium install explicit in the
+supported npm/CI command, while leaving the Python browser gates on their own
+pinned dependency boundary.

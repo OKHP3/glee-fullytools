@@ -7,12 +7,15 @@ checks have dependencies. Reproducibility is governed as follows:
   `scripts/check-workflow-actions.py`.
 - Python QA dependencies are exact-pinned in `requirements-qa.txt`; CI installs
   that file rather than an unbounded package name.
-- Puppeteer and Lighthouse are exact-pinned in `package.json` and represented
-  in `package-lock.json`; CI or maintainers use `npm ci` when Node QA is run.
+- Puppeteer, Lighthouse, and the focused FoundRy Node Playwright runner are
+  exact-pinned in `package.json` and represented in `package-lock.json`; CI or
+  maintainers use `npm ci` when Node QA is run.
 - Node itself is pinned to `22.19.0` by `.node-version` and the package
   `engines` field before running npm tooling.
-- Playwright's pinned package version owns the browser revision installed by
-  `playwright install`; browser installation is explicit in browser workflows.
+- The Node Playwright package's pinned version owns the browser revision
+  installed by `npx playwright install`; the Python Playwright dependency
+  continues to own the existing Python browser gates. Browser installation is
+  explicit in browser workflows.
 - Dependabot reviews GitHub Actions, npm, and pip updates monthly. Every update
   remains a reviewed pull request and must pass the normal release checks.
 - An update must change the relevant lock/pin file, run the full applicable QA

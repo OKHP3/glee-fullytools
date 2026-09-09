@@ -43,8 +43,12 @@ On Windows, set `$env:PYTHONUTF8='1'` in PowerShell and use an existing working
 Python 3 interpreter instead of `python3`. `py -3` works only if its registered
 interpreter exists. The September 5 local checks used the installed Codex
 bundled Python when the system launcher pointed to a missing executable.
-Browser runners require an already installed Playwright runtime/browser;
-static-lint fallback is not browser evidence. No install is part of this runbook.
+Python browser runners require the pinned Python Playwright runtime/browser;
+static-lint fallback is not browser evidence. The focused FoundRy Node runner is
+the exception: run `npm ci && npx playwright install chromium && npm run
+qa:foundry-accessibility`. Its Node package and Chromium driver are separate
+from the Python browser gates; a missing dependency is a failed setup, not a
+skipped check.
 
 ## CI Gate (GitHub Actions)
 

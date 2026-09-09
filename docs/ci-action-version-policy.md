@@ -8,6 +8,7 @@ third-party action behavior.
 | Action | Approved major |
 | --- | ---: |
 | `actions/checkout` | `v7` |
+| `actions/setup-node` | `v4` |
 | `actions/setup-python` | `v7` |
 | `actions/upload-artifact` | `v7` |
 | `actions/download-artifact` | `v8` |

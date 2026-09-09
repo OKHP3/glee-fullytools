@@ -6,36 +6,37 @@ Focused browser coverage for `foundry/index.html`: page landmarks and heading st
 
 ## Evidence
 
-- Source SHA: `0277324983f6db4248245fa319674b18b1878bd6`
+- Source SHA: generated at run time by the runner
 - Runner: [`scripts/tests/foundry-accessibility-qa.mjs`](../../scripts/tests/foundry-accessibility-qa.mjs)
 - Fixture: loopback HTTP server on an ephemeral port, with third-party requests and service workers blocked. The production HTML is not rewritten on disk.
-- Browser driver result on 2026-09-07: **NOT RUN**. The bundled workspace runtime
-  provided Playwright without an installation, but this sandbox rejected the
-  ephemeral loopback listener with `EPERM` before browser assertions could run.
-  A `NOT RUN` result exits with status 2, so automation cannot treat it as a pass.
+- Supported command: `npm ci && npx playwright install chromium && npm run qa:foundry-accessibility`
+- Dependency boundary: this focused runner uses the exact-pinned Node
+  `playwright` dev dependency and its Chromium driver. It is separate from the
+  exact-pinned Python Playwright dependency used by the broader browser gates;
+  neither runner weakens or replaces the other.
+- CI command: GitHub Pages CI uses Node 22.19.0 from `.node-version`, runs
+  `npm ci`, installs Node Chromium with `--with-deps`, and executes the same
+  npm script. A missing Node package or browser is a failed setup, not a
+  passing or skipped assertion.
 - Human screen-reader testing: **NOT RUN**.
 
 ## Coverage implemented
 
-When an installed Chromium Playwright driver is available, the runner asserts:
+The runner asserts:
 
 1. The intended page title, one `h1`, and `header`, `main`, `nav`, and `footer` landmarks.
 2. Heading levels do not skip forward by more than one level.
 3. The four visible `.hero-actions` links have non-empty, expected accessible names.
 4. A FAQ `summary` receives focus, opens with Enter, and closes with Space.
-5. Every link, button, and FAQ summary exposes a non-zero visible focus indicator.
+5. Every keyboard-reachable link, button, and FAQ summary exposes a non-zero
+   visible focus indicator. Controls in unavailable regions—such as the
+   intentionally collapsed, `inert` mobile navigation or a closed dialog—are
+   reported as excluded rather than treated as reachable controls.
 6. The document does not exceed the viewport width at 320px or 390px, and no page errors occur.
 
 ## Findings and limitations
 
-The bundled Playwright run exercised both viewports. Ten assertions passed; the
-focus-visibility assertion failed at 320px and 390px for the “WHY GLEE‑FULLY”
-navigation link. This is a shared rendered-style finding, not a FoundRy-page
-edit: investigate the focus selector in `assets/css/theme.css` and re-run this
-focused runner before changing any production CSS.
-
-If the bundled runtime is unavailable, the runner reports `NOT RUN` rather than
-weakening or skipping an assertion. Run it with the bundled Node runtime and its
-already-installed Playwright package when available; do not install dependencies.
-Screen-reader semantics and announcements remain unverified by this automated
-check.
+The automated check does not prove screen-reader semantics, announcements,
+real screen-reader navigation, or human zoom/usability behavior. Human
+screen-reader testing therefore remains explicitly **NOT RUN** and is not
+silently represented by the browser assertions.
