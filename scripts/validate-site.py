@@ -1105,13 +1105,14 @@ def _check_css_token_drift(hashlib_mod) -> list:
 def _check_organization_identity_approval() -> list:
     """Return mismatches between homepage Organization sameAs and its approval record.
 
-    The approval record is deliberately kept in docs/discovery-evidence.md so
-    owner confirmation remains readable during review. Its URL bullets are
-    parsed only inside the ``## Organization identities`` section.
+    The machine-readable approval record lives beside the human-readable
+    discovery evidence so owner confirmation remains readable during review.
+    The documentation must link to the same record that this check loads.
     """
     homepage = ROOT / "index.html"
     evidence = ROOT / "docs" / "discovery-evidence.md"
-    if not homepage.exists() and not evidence.exists():
+    approval_record = ROOT / "docs" / "organization-identity-approval.json"
+    if not homepage.exists() and not evidence.exists() and not approval_record.exists():
         # Isolated validator fixtures can omit the repository-level contract.
         return []
 
@@ -1119,6 +1120,11 @@ def _check_organization_identity_approval() -> list:
         return ["index.html is missing; cannot verify Organization sameAs"]
     if not evidence.exists():
         return ["docs/discovery-evidence.md is missing; cannot verify identity approval"]
+    if not approval_record.exists():
+        return [
+            "docs/organization-identity-approval.json is missing; "
+            "cannot verify identity approval"
+        ]
 
     homepage_text = homepage.read_text(encoding="utf-8", errors="replace")
     jsonld_blocks = re.findall(
@@ -1167,6 +1173,119 @@ def _check_organization_identity_approval() -> list:
     else:
         published_urls = published
 
+    try:
+        approval = json.loads(
+            approval_record.read_text(encoding="utf-8", errors="replace")
+        )
+    except json.JSONDecodeError as exc:
+        return issues + [
+            "docs/organization-identity-approval.json is not valid JSON: "
+            f"{exc.msg}"
+        ]
+
+    schema_issues = []
+    if not isinstance(approval, dict):
+        schema_issues.append("approval record must contain a JSON object")
+    else:
+        expected_keys = {
+            "schema",
+            "record_type",
+            "approval_date",
+            "reviewer_confirmation",
+            "approved_urls",
+        }
+        missing_keys = sorted(expected_keys - approval.keys())
+        unexpected_keys = sorted(approval.keys() - expected_keys)
+        if missing_keys:
+            schema_issues.append(
+                "approval record is missing required field(s): "
+                + ", ".join(missing_keys)
+            )
+        if unexpected_keys:
+            schema_issues.append(
+                "approval record contains unknown field(s): "
+                + ", ".join(unexpected_keys)
+            )
+        if type(approval.get("schema")) is not int or approval.get("schema") != 1:
+            schema_issues.append("approval record schema must be the integer 1")
+        if approval.get("record_type") != "organization-identity-approval":
+            schema_issues.append(
+                "approval record record_type must be "
+                "'organization-identity-approval'"
+            )
+
+        approval_date = approval.get("approval_date")
+        if not isinstance(approval_date, str) or not re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}", approval_date
+        ):
+            schema_issues.append(
+                "approval record approval_date must be an ISO date (YYYY-MM-DD)"
+            )
+        else:
+            try:
+                date.fromisoformat(approval_date)
+            except ValueError:
+                schema_issues.append(
+                    "approval record approval_date must be a valid calendar date"
+                )
+
+        confirmation = approval.get("reviewer_confirmation")
+        if not isinstance(confirmation, dict):
+            schema_issues.append(
+                "approval record reviewer_confirmation must be an object"
+            )
+        else:
+            confirmation_keys = {"status", "statement"}
+            missing_confirmation_keys = sorted(
+                confirmation_keys - confirmation.keys()
+            )
+            unexpected_confirmation_keys = sorted(
+                confirmation.keys() - confirmation_keys
+            )
+            if missing_confirmation_keys:
+                schema_issues.append(
+                    "approval record reviewer_confirmation is missing required "
+                    "field(s): "
+                    + ", ".join(missing_confirmation_keys)
+                )
+            if unexpected_confirmation_keys:
+                schema_issues.append(
+                    "approval record reviewer_confirmation contains unknown "
+                    "field(s): "
+                    + ", ".join(unexpected_confirmation_keys)
+                )
+            if confirmation.get("status") != "confirmed":
+                schema_issues.append(
+                    "approval record reviewer_confirmation.status must be 'confirmed'"
+                )
+            if not isinstance(confirmation.get("statement"), str) or not (
+                confirmation["statement"].strip()
+            ):
+                schema_issues.append(
+                    "approval record reviewer_confirmation.statement must be non-empty"
+                )
+
+        approved_urls = approval.get("approved_urls")
+        if not isinstance(approved_urls, list) or not approved_urls:
+            schema_issues.append(
+                "approval record approved_urls must be a non-empty list"
+            )
+            approved_urls = []
+        invalid_approved = [
+            url
+            for url in approved_urls
+            if not isinstance(url, str) or not re.fullmatch(r"https?://\S+", url)
+        ]
+        if invalid_approved:
+            schema_issues.append(
+                "approval record approved_urls must contain only absolute HTTP(S) URLs"
+            )
+        if not invalid_approved and len(approved_urls) != len(set(approved_urls)):
+            schema_issues.append("approval record approved_urls contains duplicate URLs")
+
+    if schema_issues:
+        return issues + schema_issues
+
     evidence_text = evidence.read_text(encoding="utf-8", errors="replace")
     section_match = re.search(
         r"(?ms)^##\s+Organization identities\s*$"
@@ -1178,14 +1297,18 @@ def _check_organization_identity_approval() -> list:
             "docs/discovery-evidence.md has no '## Organization identities' section"
         ]
 
-    approved_urls = re.findall(
-        r"(?m)^\s*-\s+`([^`]+)`\s*$",
+    if not re.search(
+        r"\[[^\]]+\]\(organization-identity-approval\.json\)",
         section_match.group(1),
-    )
-    if not approved_urls:
+    ):
         issues.append(
-            "Organization identities approval section contains no URL bullet list"
+            "Organization identities documentation must link to "
+            "organization-identity-approval.json"
         )
+
+    approved_urls = approval["approved_urls"]
+    if not approved_urls:
+        issues.append("approval record contains no approved identity URLs")
     invalid_approved = [
         url for url in approved_urls if not re.fullmatch(r"https?://\S+", url)
     ]

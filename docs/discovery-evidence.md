@@ -113,20 +113,11 @@ verification or submission until the owner supplies that evidence.
 
 ## Organization identities
 
-**Approval date:** 2026-09-09<br>
-**Reviewer confirmation:** Owner confirmed all seven identities as official.
-
-The homepage Organization JSON-LD publishes exactly these seven approved identities:
-
-- `https://overkillhill.com/`
-- `https://askjamie.bot/`
-- `https://www.linkedin.com/company/overkillhillp3`
-- `https://facebook.com/OverKillHillP3/`
-- `https://x.com/OverKillHillP3`
-- `https://www.youtube.com/@Glee-fullyTools`
-- `https://ko-fi.com/gleefullypersonalizabletools`
+The approved Organization identity URLs and their non-secret approval metadata
+live in the schema-checked
+[`organization-identity-approval.json`](organization-identity-approval.json)
+record. The homepage Organization JSON-LD must match that record exactly.
 
 These URLs were already present in the public structured data and are retained
-without adding any new social identity. The owner approved the complete list on
-2026-09-09 with no removals or corrections. No private account details are
-recorded here, and no new identity should be added without owner approval.
+without adding any new social identity. No private account details are recorded
+here, and no new identity should be added without owner approval.

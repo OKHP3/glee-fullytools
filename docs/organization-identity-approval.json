@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "record_type": "organization-identity-approval",
+  "approval_date": "2026-09-09",
+  "reviewer_confirmation": {
+    "status": "confirmed",
+    "statement": "Owner confirmed all seven identities as official."
+  },
+  "approved_urls": [
+    "https://overkillhill.com/",
+    "https://askjamie.bot/",
+    "https://www.linkedin.com/company/overkillhillp3",
+    "https://facebook.com/OverKillHillP3/",
+    "https://x.com/OverKillHillP3",
+    "https://www.youtube.com/@Glee-fullyTools",
+    "https://ko-fi.com/gleefullypersonalizabletools"
+  ]
+}

@@ -38,8 +38,20 @@ EVIDENCE_TEMPLATE = """\
 
 ## Organization identities
 
-{urls}
+The approved identities live in the schema-checked
+[approval record](organization-identity-approval.json).
 """
+
+APPROVAL_TEMPLATE = {
+    "schema": 1,
+    "record_type": "organization-identity-approval",
+    "approval_date": "2026-09-09",
+    "reviewer_confirmation": {
+        "status": "confirmed",
+        "statement": "Owner confirmed the identities.",
+    },
+    "approved_urls": [],
+}
 
 
 class OrganizationIdentityApprovalTests(unittest.TestCase):
@@ -54,10 +66,11 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (root / "docs" / "discovery-evidence.md").write_text(
-                EVIDENCE_TEMPLATE.format(
-                    urls="\n".join(f"- `{url}`" for url in approved)
-                ),
-                encoding="utf-8",
+                EVIDENCE_TEMPLATE, encoding="utf-8"
+            )
+            record = {**APPROVAL_TEMPLATE, "approved_urls": approved}
+            (root / "docs" / "organization-identity-approval.json").write_text(
+                json.dumps(record), encoding="utf-8"
             )
 
             original_root = validate_site.ROOT
@@ -98,7 +111,7 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
         self.assertTrue(any("missing from homepage sameAs" in issue for issue in issues))
         self.assertFalse(any("missing from owner approval" in issue for issue in issues))
 
-    def test_missing_approval_section_fails(self):
+    def test_missing_approval_record_fails(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "docs").mkdir()
@@ -109,7 +122,7 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (root / "docs" / "discovery-evidence.md").write_text(
-                "# Evidence\n", encoding="utf-8"
+                EVIDENCE_TEMPLATE, encoding="utf-8"
             )
 
             original_root = validate_site.ROOT
@@ -119,22 +132,82 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
             finally:
                 validate_site.ROOT = original_root
 
-        self.assertTrue(any("no '## Organization identities' section" in issue for issue in issues))
+        self.assertTrue(
+            any("organization-identity-approval.json is missing" in issue for issue in issues)
+        )
+
+    def test_invalid_approval_schema_fails(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "docs").mkdir()
+            (root / "index.html").write_text(
+                ORGANIZATION_TEMPLATE.format(
+                    same_as='["https://example.com/one"]'
+                ),
+                encoding="utf-8",
+            )
+            (root / "docs" / "discovery-evidence.md").write_text(
+                EVIDENCE_TEMPLATE, encoding="utf-8"
+            )
+            record = {**APPROVAL_TEMPLATE, "approved_urls": ["not-a-url"]}
+            (root / "docs" / "organization-identity-approval.json").write_text(
+                json.dumps(record), encoding="utf-8"
+            )
+
+            original_root = validate_site.ROOT
+            validate_site.ROOT = root
+            try:
+                issues = validate_site._check_organization_identity_approval()
+            finally:
+                validate_site.ROOT = original_root
+
+        self.assertTrue(
+            any("approved_urls must contain only absolute HTTP(S) URLs" in issue for issue in issues)
+        )
+
+    def test_documentation_must_link_to_approval_record(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "docs").mkdir()
+            (root / "index.html").write_text(
+                ORGANIZATION_TEMPLATE.format(
+                    same_as='["https://example.com/one"]'
+                ),
+                encoding="utf-8",
+            )
+            (root / "docs" / "discovery-evidence.md").write_text(
+                "# Evidence\n\n## Organization identities\n\nNo link.\n",
+                encoding="utf-8",
+            )
+            record = {**APPROVAL_TEMPLATE, "approved_urls": ["https://example.com/one"]}
+            (root / "docs" / "organization-identity-approval.json").write_text(
+                json.dumps(record), encoding="utf-8"
+            )
+
+            original_root = validate_site.ROOT
+            validate_site.ROOT = root
+            try:
+                issues = validate_site._check_organization_identity_approval()
+            finally:
+                validate_site.ROOT = original_root
+
+        self.assertTrue(
+            any("documentation must link" in issue for issue in issues)
+        )
 
     def test_release_validator_command_blocks_unapproved_identity(self):
-        evidence = _ROOT / "docs" / "discovery-evidence.md"
+        approval_record = _ROOT / "docs" / "organization-identity-approval.json"
         report = (
             _ROOT
             / "assets"
             / "audit"
             / f"validation-report-{date.today().isoformat()}.json"
         )
-        original_evidence = evidence.read_bytes()
+        original_record = approval_record.read_bytes()
         original_report = report.read_bytes() if report.exists() else None
-        evidence.write_bytes(
-            original_evidence
-            + b"\n- `https://example.com/unapproved-identity`\n"
-        )
+        record = json.loads(original_record)
+        record["approved_urls"].append("https://example.com/unapproved-identity")
+        approval_record.write_text(json.dumps(record), encoding="utf-8")
         try:
             result = subprocess.run(
                 [sys.executable, str(_SCRIPT)],
@@ -145,7 +218,7 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
                 check=False,
             )
         finally:
-            evidence.write_bytes(original_evidence)
+            approval_record.write_bytes(original_record)
             if original_report is None:
                 report.unlink(missing_ok=True)
             else:
