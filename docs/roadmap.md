@@ -49,7 +49,10 @@ and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
   [`docs/discovery-evidence.md`](discovery-evidence.md).
 - **HTTP security policy delivery**: review the residual GitHub Pages header
   limitations. Hash-based page CSP is already implemented in `scripts/csp.py`
-  and checked by `scripts/check-csp.py`; script `unsafe-inline` is absent.
+  and checked by `scripts/check-csp.py`; executable inline scripts and event
+  attributes are externalized, and script `unsafe-inline` is absent.
+  JSON-LD/speculation-rules remain the documented declarative inline boundary.
+  See the [September 9 CSP hardening evidence](../assets/audit/release-2026-09-09/csp-hardening.md);
   `_headers` still requires a compatible host for HTTP response delivery.
 - **Organization identity approval** — confirm the seven already-published
   `sameAs` identities in the same evidence record; do not add new profiles

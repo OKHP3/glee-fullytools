@@ -34,7 +34,7 @@
   <head>
     <meta charset="utf-8" />
     <!-- AUTOGEN:COLOR-SCHEME-INIT -->
-    <script>(function(){try{var s=localStorage.getItem('glee-color-scheme');if(s==='dark'||s==='light')document.documentElement.setAttribute('data-color-scheme',s);}catch(e){}})();</script>
+    <script src="/assets/js/color-scheme-init.js?v=20260909"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="language" content="English" />
@@ -167,7 +167,7 @@
           Hit <kbd>Esc</kbd> any time to bail out, <kbd>↵</kbd> to follow.
         </p>
 
-        <form class="glee-search-page__form" role="search" onsubmit="event.preventDefault();">
+        <form class="glee-search-page__form" role="search" action="/search/" method="get">
           <label for="glee-search-page-input" class="sr-only">Search this site</label>
           <svg class="glee-search-page__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <circle cx="11" cy="11" r="7"></circle>

@@ -1231,6 +1231,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (links[activeIdx]) window.location.href = links[activeIdx].getAttribute("href");
       }
     });
+    // Keep search submission in the shared external runtime rather than
+    // requiring an inline onsubmit handler in the page template.
     const form = input.closest("form");
     if (form) form.addEventListener("submit", (event) => { event.preventDefault(); render(); });
   }

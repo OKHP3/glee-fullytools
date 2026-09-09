@@ -50,10 +50,12 @@ a count of published URLs. The public inventory is maintained in
 Every template carries the same:
 
 - Normalized `<head>` with preconnects, prerender guard for GA4, and all metadata groups
-- **Anti-FOSC color-scheme init** — `<!-- AUTOGEN:COLOR-SCHEME-INIT -->` inline `<script>` immediately
-  after `<meta charset="utf-8" />`. Reads `localStorage['glee-color-scheme']` and sets
-  `data-color-scheme` on `<html>` before first paint so visitors with a saved preference
-  never see a flash of the wrong color scheme. **Must not be removed or moved.**
+- **Anti-FOSC color-scheme init** — `<!-- AUTOGEN:COLOR-SCHEME-INIT -->` loads the
+  render-blocking `/assets/js/color-scheme-init.js` immediately after
+  `<meta charset="utf-8" />`. Reads `localStorage['glee-color-scheme']` and sets
+  `data-color-scheme` on `<html>` before first paint so visitors with a saved
+  preference never see a flash of the wrong color scheme, without an inline
+  executable script.
 - Site header with logo, primary nav, submenu, mobile toggle, Today's Sparkle bar
 - Site footer with 3-column grid + footer-bottom copyright
 - `<script src="/assets/js/app.js" defer></script>` (search, nav, overlay, WIP gate, carousel)

@@ -3,12 +3,17 @@
 
 Ported from OverKill Hill P3's scripts/csp.py so all three OKHP3 sites
 (overkillhill.com, askjamie.bot, glee-fully.tools) keep the same CSP
-architecture: script-src is hash-locked from the actual inline scripts on
+architecture: script-src is hash-locked from the actual inline script-like blocks on
 each page; style-src is hash-locked the same way EXCEPT for pages that
 render a live Mermaid diagram, which get a scoped 'unsafe-inline' style
 grant instead, because Mermaid generates its own inline styles and <style>
 blocks at render time in the browser and no build-time hash can ever cover
 that. script-src is identical in rigor across every page class.
+
+Executable inline JavaScript and inline event-handler attributes are not part
+of the site's supported markup. JSON-LD and speculation-rules blocks remain
+declarative data and are the only inline script-like blocks allowed by the
+inventory guard.
 
 Unlike the other two sites, this repo has never had a real, enforced CSP:
 its only prior CSP definition lived in `_headers`, which GitHub Pages does
@@ -32,6 +37,7 @@ META_RE = re.compile(
     r'<meta\s+http-equiv=["\']Content-Security-Policy["\']\s+content=(["\'])(.*?)\1\s*/?>',
     re.IGNORECASE,
 )
+INLINE_DATA_SCRIPT_TYPES = {"application/ld+json", "application/json", "speculationrules"}
 
 
 def page_class(path: Path) -> str:
@@ -82,6 +88,43 @@ def inline_sources(path: Path) -> tuple[set[str], set[str]]:
         for match in re.finditer(r'\bstyle=(["\'])(.*?)\1', source, re.I)
     }
     return script_hashes, style_attr_hashes
+
+
+def tracked_html() -> list[Path]:
+    """Return every tracked HTML file, including development templates."""
+    tracked = subprocess.run(
+        ["git", "ls-files", "*.html"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return sorted(ROOT / name for name in tracked.stdout.splitlines())
+
+
+def inline_markup_violations(path: Path) -> list[str]:
+    """Report executable inline scripts and inline event-handler attributes."""
+    source = path.read_text(encoding="utf-8", errors="replace")
+    violations: list[str] = []
+    for match in re.finditer(
+        r"<script\b([^>]*)>([\s\S]*?)</script\s*>", source, re.IGNORECASE
+    ):
+        attrs, body = match.groups()
+        if re.search(r"\bsrc\s*=", attrs, re.IGNORECASE) or not body.strip():
+            continue
+        type_match = re.search(
+            r"""\btype\s*=\s*["']([^"']+)["']""", attrs, re.IGNORECASE
+        )
+        script_type = type_match.group(1).lower() if type_match else ""
+        if script_type not in INLINE_DATA_SCRIPT_TYPES:
+            line = source[: match.start()].count("\n") + 1
+            violations.append(
+                f"{path.relative_to(ROOT)}:{line}: inline {script_type or 'JavaScript'}"
+            )
+    for match in re.finditer(r"\bon[a-z][a-z0-9_-]*\s*=", source, re.IGNORECASE):
+        line = source[: match.start()].count("\n") + 1
+        violations.append(f"{path.relative_to(ROOT)}:{line}: inline event handler")
+    return violations
 
 
 def all_pages() -> list[Path]:
