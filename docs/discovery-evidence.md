@@ -43,7 +43,10 @@ verification or submission until the owner supplies that evidence.
 
 ## Organization identities
 
-The homepage Organization JSON-LD currently publishes these seven identities:
+**Approval date:** 2026-09-09<br>
+**Reviewer confirmation:** Owner confirmed all seven identities as official.
+
+The homepage Organization JSON-LD publishes exactly these seven approved identities:
 
 - `https://overkillhill.com/`
 - `https://askjamie.bot/`
@@ -54,7 +57,6 @@ The homepage Organization JSON-LD currently publishes these seven identities:
 - `https://ko-fi.com/gleefullypersonalizabletools`
 
 These URLs were already present in the public structured data and are retained
-without adding any new social identity. Repository inspection does not contain
-separate owner approval evidence for them, so their publication is recorded as
-**owner confirmation required**, not as a newly verified fact. Remove or amend
-an identity if the owner says it is not an official property.
+without adding any new social identity. The owner approved the complete list on
+2026-09-09 with no removals or corrections. No private account details are
+recorded here, and no new identity should be added without owner approval.
