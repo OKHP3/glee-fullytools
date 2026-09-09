@@ -19,6 +19,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `check-csp.py` | active | CI guard against CSP drift |
 | `check-glee-dark-coverage.py` | active | Dark-mode coverage check (invoked by `validate-site.py`) |
 | `check-links.py` | active | Internal target and sitemap check; external links are counted, not fetched |
+| `check-search-coverage.py` | active | Compare sanitized Google/Bing coverage scope with the configured sitemap; no credentials required |
 | `check-mtb-version.py` | active | MTB version consistency |
 | `check-public-headers.py` | active | Public `_headers`/CSP header check |
 | `check-workflow-actions.py` | active | Approved action-major-tag policy check; does not enforce immutable SHA pins |

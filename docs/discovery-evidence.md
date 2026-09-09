@@ -17,11 +17,49 @@ python3 scripts/generate-sitemap.py --check
 python3 scripts/generate-feed.py --check
 python3 scripts/sync-portfolio-stats.py --check
 python3 scripts/check-links.py
+python3 scripts/check-search-coverage.py
 ```
 
 The repository can prove that the generated search index, sitemap, feed, and
 showcase statistics agree with the checked-in site. It cannot prove that a
 search engine has crawled, accepted, or ranked those URLs.
+
+## Sanitized coverage record
+
+The following record contains only aggregate, non-secret scope metadata. The
+checker compares the recorded review date and URL-set digest with the current
+`config/public-inventory.json` and `sitemap.xml`; it does not contact either
+search console or require console credentials.
+
+```json
+{
+  "schema": 1,
+  "review_date": "2026-09-09",
+  "scope": {
+    "source": "config/public-inventory.json + sitemap.xml",
+    "url_count": 61,
+    "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+  },
+  "records": {
+    "google-search-console": {
+      "review_date": "2026-09-09",
+      "scope": {
+        "url_count": 61,
+        "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+      },
+      "status": "blocked"
+    },
+    "bing-webmaster-tools": {
+      "review_date": "2026-09-09",
+      "scope": {
+        "url_count": 61,
+        "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+      },
+      "status": "blocked"
+    }
+  }
+}
+```
 
 ## Post-submission coverage review
 
