@@ -4,14 +4,24 @@
 // This intentionally does not replace the site's full validation or viewport suites.
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
-import { extname, resolve, sep } from 'node:path';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { dirname, extname, resolve, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 const ROOT = resolve(import.meta.dirname, '..', '..');
 const require = createRequire(import.meta.url);
 const ROUTE = '/foundry/';
+const OUTPUT_PATH = (() => {
+  const args = process.argv.slice(2);
+  const outputIndex = args.indexOf('--output');
+  if (outputIndex === -1) return null;
+  const output = args[outputIndex + 1];
+  if (!output || output.startsWith('--')) {
+    throw new Error('Usage: foundry-accessibility-qa.mjs [--output <path>]');
+  }
+  return resolve(ROOT, output);
+})();
 const VIEWPORTS = [
   { name: 'narrow-320', width: 320, height: 780 },
   { name: 'narrow-390', width: 390, height: 844 },
@@ -54,8 +64,23 @@ function result(name, status, evidence, error) {
   return { name, status, ...(evidence ? { evidence } : {}), ...(error ? { error } : {}) };
 }
 
-function notRun(report, reason) {
+function summarize(report) {
+  return Object.fromEntries(['PASS', 'FAIL', 'NOT RUN'].map(status => [
+    status,
+    report.checks.filter(check => check.status === status).length,
+  ]));
+}
+
+async function writeReport(report) {
+  if (!OUTPUT_PATH) return;
+  await mkdir(dirname(OUTPUT_PATH), { recursive: true });
+  await writeFile(OUTPUT_PATH, `${JSON.stringify(report, null, 2)}\n`);
+}
+
+async function notRun(report, reason) {
   report.runtime = { status: 'NOT RUN', reason };
+  report.summary = summarize(report);
+  await writeReport(report);
   console.log(JSON.stringify(report, null, 2));
   process.exitCode = 2;
   return report;
@@ -75,7 +100,7 @@ async function run() {
   try {
     playwright = require('playwright');
   } catch (error) {
-    return notRun(report, `Installed Playwright runtime unavailable: ${error.message}`);
+    return await notRun(report, `Installed Playwright runtime unavailable: ${error.message}`);
   }
 
   const server = createServer(serve);
@@ -85,7 +110,7 @@ async function run() {
       server.listen(0, '127.0.0.1', resolveServer);
     });
   } catch (error) {
-    return notRun(report, `Loopback fixture unavailable: ${error.message}`);
+    return await notRun(report, `Loopback fixture unavailable: ${error.message}`);
   }
   const base = `http://127.0.0.1:${server.address().port}`;
   report.baseUrl = base;
@@ -94,7 +119,7 @@ async function run() {
     browser = await playwright.chromium.launch({ headless: true });
   } catch (error) {
     await new Promise(resolveServer => server.close(resolveServer));
-    return notRun(report, `Installed Chromium driver unavailable: ${error.message}`);
+    return await notRun(report, `Installed Chromium driver unavailable: ${error.message}`);
   }
 
   report.runtime = { status: 'RUN', driver: 'Playwright Chromium' };
@@ -207,7 +232,8 @@ async function run() {
     await new Promise(resolveServer => server.close(resolveServer));
   }
 
-  report.summary = Object.fromEntries(['PASS', 'FAIL', 'NOT RUN'].map(status => [status, report.checks.filter(check => check.status === status).length]));
+  report.summary = summarize(report);
+  await writeReport(report);
   console.log(JSON.stringify(report, null, 2));
   if (report.summary.FAIL > 0) process.exitCode = 1;
   return report;

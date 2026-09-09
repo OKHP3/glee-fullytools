@@ -10,6 +10,11 @@ Focused browser coverage for `foundry/index.html`: page landmarks and heading st
 - Runner: [`scripts/tests/foundry-accessibility-qa.mjs`](../../scripts/tests/foundry-accessibility-qa.mjs)
 - Fixture: loopback HTTP server on an ephemeral port, with third-party requests and service workers blocked. The production HTML is not rewritten on disk.
 - Supported command: `npm ci && npx playwright install chromium && npm run qa:foundry-accessibility`
+- Optional report output: append `-- --output path/to/foundry-accessibility.json` to
+  write the same JSON evidence that is printed to stdout. The Pages workflow uses
+  the deterministic path `assets/audit/foundry-accessibility.json` and uploads it
+  as a CI artifact after the focused gate completes, whether that gate passes or
+  fails.
 - Dependency boundary: this focused runner uses the exact-pinned Node
   `playwright` dev dependency and its Chromium driver. It is separate from the
   exact-pinned Python Playwright dependency used by the broader browser gates;
@@ -19,6 +24,10 @@ Focused browser coverage for `foundry/index.html`: page landmarks and heading st
   npm script. A missing Node package or browser is a failed setup, not a
   passing or skipped assertion.
 - Human screen-reader testing: **NOT RUN**.
+
+The JSON report includes both narrow viewport definitions, runtime status,
+`summary` counts for PASS/FAIL/NOT RUN checks, and the explicit human
+screen-reader limitation.
 
 ## Coverage implemented
 

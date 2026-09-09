@@ -107,7 +107,17 @@ jobs:
           python3 scripts/check-glee-dark-coverage.py --section all --require-both
 
       - name: Run FoundRy accessibility evidence
-        run: npm run qa:foundry-accessibility
+        id: foundry_accessibility
+        run: npm run qa:foundry-accessibility -- --output assets/audit/foundry-accessibility.json
+
+      - name: Upload FoundRy accessibility evidence
+        if: ${{ always() && (steps.foundry_accessibility.outcome == 'success' || steps.foundry_accessibility.outcome == 'failure') }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: foundry-accessibility-${{ github.sha }}
+          path: assets/audit/foundry-accessibility.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Run advisory site audit
         continue-on-error: true
