@@ -30,6 +30,37 @@ attributes for normal behavior.
 - `scripts/check-csp.py` now checks generated policy drift and rejects
   executable inline markup or event attributes in tracked HTML.
 
+## Live HTTP response evidence
+
+The approved delivery host for this release is **GitHub Pages**, retaining the
+current `glee-fully.tools` arrangement (owner choice A in the platform release
+decision). No Cloudflare proxy, Cloudflare Pages project, Netlify site, DNS
+cutover, or other header-capable delivery path has been approved.
+
+- **Response URL:** `https://glee-fully.tools/`
+- **Requests:** GET smoke test, with the existing checker now evaluating the
+  actual response rather than reading `_headers`
+- **Observed status:** `200 OK`
+- **Observed server:** `GitHub.com`
+- **Observed response date:** `Wed, 09 Sep 2026 12:10:53 GMT`
+- **Observed `Strict-Transport-Security`:** `max-age=31556952`
+- **Observed `Content-Security-Policy`:** **missing**
+- **Observed `X-Frame-Options`:** **missing**
+- **Observed `X-Content-Type-Options`:** **missing**
+
+Because the CSP header is absent, the live `script-src` check cannot establish
+that `unsafe-inline` is absent, and the expected `script-src-attr 'none'`,
+`frame-src`, `object-src 'none'`, `base-uri`, `form-action`, `manifest-src`,
+and `upgrade-insecure-requests` controls are **not delivered**. The smoke test
+therefore exits nonzero. This is an honest host-delivery limitation, not a
+protection PASS and not evidence that `_headers` was consumed.
+
+**Host-specific exception:** GitHub Pages does not consume repository
+`_headers` files or provide arbitrary response-header configuration. The
+per-page meta CSP remains active, but HTTP-only controls such as response CSP
+and framing headers remain unverified/unavailable until a separately approved
+header-capable delivery path is selected.
+
 ## Validation
 
 The following checks passed after generated CSS/offline fingerprints were
@@ -43,6 +74,7 @@ resynchronized:
   search, offline, service-worker, client behavior, contrast, and branded
   dark-mode checks
 
-GitHub Pages does not consume `_headers`; its delivery remains a separate
-hosting decision documented in
+The live response result above is the current delivery evidence. GitHub Pages
+does not consume `_headers`; its delivery remains a separate hosting decision
+documented in
 [`docs/adr/0004-enforced-csp-headers.md`](../../../docs/adr/0004-enforced-csp-headers.md).

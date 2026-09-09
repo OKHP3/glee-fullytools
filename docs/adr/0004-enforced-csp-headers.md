@@ -3,7 +3,7 @@
 ## Status
 
 Accepted. Hash-based meta CSP is implemented; portable HTTP policy delivery
-remains a separate hosting decision. Current-status clarification: 2026-09-05.
+remains a separate hosting decision. Current-status clarification: 2026-09-09.
 
 ## Date
 
@@ -17,9 +17,12 @@ GitHub Pages does not consume `_headers` files or expose a repository setting fo
 arbitrary response headers. Therefore, the file cannot by itself enforce CSP on
 the current public host.
 
-The public response must be checked separately. The live check on 2026-08-23
-observed HSTS from GitHub Pages, but did not observe CSP, X-Frame-Options, or
-X-Content-Type-Options.
+The public response must be checked separately. The live check on 2026-09-09
+confirmed that GitHub Pages still delivers HSTS but does not deliver CSP,
+X-Frame-Options, or X-Content-Type-Options. The release decision remains to
+retain GitHub Pages; no header-capable proxy or alternate host is approved.
+The response URL and detailed result are recorded in the
+[September 9 CSP hardening evidence](../../assets/audit/release-2026-09-09/csp-hardening.md).
 
 ## Decision Drivers
 
@@ -68,6 +71,10 @@ upgrade-insecure-requests
 - `scripts/csp.py` generates per-page meta policies and the portable `_headers`
   policy. `scripts/check-csp.py` verifies them. Current script policies use
   approved content hashes and do not require `unsafe-inline` or server rendering.
+- `scripts/check-public-headers.py` checks the actual public GET response for
+  required headers and, when CSP is delivered, verifies the stable
+  `script-src`, framing, and resource-control directives. A missing CSP is
+  reported as a delivery finding; it is not treated as a passing policy.
 - Analytics initialization is external and remains opt-in. Vendored Mermaid
   runs from the same origin. Review the generator before adding external origins.
 - GitHub Pages does not consume `_headers`. Meta CSP remains active, while
