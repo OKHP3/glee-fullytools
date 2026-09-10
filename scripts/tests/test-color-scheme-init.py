@@ -12,20 +12,19 @@ point proves the saved preference was applied before the page could render.
 from __future__ import annotations
 
 import argparse
-from dataclasses import dataclass
+from collections import Counter
 import os
+from pathlib import Path
+import sys
 from urllib.parse import urljoin, urlsplit
 
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 
-
-@dataclass
-class AssetTiming:
-    request_seen: bool
-    request_finished_before_domcontentloaded: bool
-    response_end: float | None
-    first_paint: float | None
+from public_inventory import iter_indexable_urls, page_type  # noqa: E402
 
 
 def first_party(url: str, base_url: str) -> bool:
@@ -46,7 +45,25 @@ def load_context(browser, base_url: str, init_script: str):
     return context
 
 
-def check_saved_preference(browser, base_url: str, preference: str) -> AssetTiming:
+def public_routes() -> list[str]:
+    """Return the current browser route set from the public page inventory."""
+    routes = list(iter_indexable_urls())
+    assert routes, "Public page inventory did not provide any browser routes"
+    required_types = {"home", "toolbox_hub", "branch", "tool-ette", "supporting"}
+    present_types = {page_type(route) for route in routes}
+    assert required_types <= present_types, (
+        "Public page inventory is missing a required route type: "
+        f"expected {sorted(required_types)}, got {sorted(present_types)}"
+    )
+    return routes
+
+
+def check_saved_preference(
+    browser,
+    base_url: str,
+    preference: str,
+    routes: list[str],
+) -> dict[str, object]:
     context = load_context(
         browser,
         base_url,
@@ -73,83 +90,95 @@ def check_saved_preference(browser, base_url: str, preference: str) -> AssetTimi
     page.on("domcontentloaded", lambda: events.append(("domcontentloaded", None)))
 
     try:
-        response = page.goto(urljoin(base_url, "/"), wait_until="domcontentloaded")
-        assert response is not None and response.ok, (
-            f"Representative Glee page did not load: "
-            f"{response.status if response else 'no response'}"
-        )
-
-        initial = page.evaluate(
-            """() => ({
-              scheme: document.documentElement.getAttribute('data-color-scheme'),
-              readyState: document.readyState,
-              colorSchemeScript: Boolean(document.querySelector(
-                'head > script[src*="color-scheme-init.js"]'
-              ))
-            })"""
-        )
-        assert initial["scheme"] == preference, (
-            f"Saved {preference} preference was not present at initial DOM "
-            f"assertion: {initial}"
-        )
-        assert initial["colorSchemeScript"], (
-            "Representative page does not load the external color-scheme asset"
-        )
-
-        asset_events = [
-            (kind, index)
-            for index, (kind, _) in enumerate(events)
-            if kind in {"request", "finished"}
-        ]
-        dcl_index = next(
-            index
-            for index, (kind, _) in enumerate(events)
-            if kind == "domcontentloaded"
-        )
-        request_index = next(
-            index for kind, index in asset_events if kind == "request"
-        )
-        finished_index = next(
-            index for kind, index in asset_events if kind == "finished"
-        )
-        assert request_index < dcl_index, (
-            "External color-scheme asset was not requested before "
-            "DOMContentLoaded"
-        )
-        assert finished_index < dcl_index, (
-            "External color-scheme asset did not finish before "
-            "DOMContentLoaded"
-        )
-
-        timing = page.evaluate(
-            """assetPath => {
-              const asset = performance.getEntriesByType('resource')
-                .find(entry => new URL(entry.name).pathname === assetPath);
-              const paints = performance.getEntriesByType('paint');
-              const firstPaint = paints.find(entry => entry.name === 'first-paint');
-              return {
-                responseEnd: asset ? asset.responseEnd : null,
-                firstPaint: firstPaint ? firstPaint.startTime : null
-              };
-            }""",
-            ASSET_PATH,
-        )
-        if timing["firstPaint"] is not None:
-            assert timing["responseEnd"] is not None, (
-                "Color-scheme asset has no resource timing entry despite "
-                "first-paint being available"
+        results: list[dict[str, object]] = []
+        for route in routes:
+            events.clear()
+            response = page.goto(
+                urljoin(base_url, route),
+                wait_until="domcontentloaded",
             )
-            assert timing["responseEnd"] <= timing["firstPaint"], (
-                "Color-scheme asset finished after first-paint: "
-                f"{timing}"
+            assert response is not None and response.ok, (
+                f"{route} did not load with saved {preference} preference: "
+                f"{response.status if response else 'no response'}"
             )
 
-        return AssetTiming(
-            request_seen=True,
-            request_finished_before_domcontentloaded=True,
-            response_end=timing["responseEnd"],
-            first_paint=timing["firstPaint"],
-        )
+            initial = page.evaluate(
+                """() => ({
+                  scheme: document.documentElement.getAttribute('data-color-scheme'),
+                  readyState: document.readyState,
+                  colorSchemeScript: Boolean(document.querySelector(
+                    'head > script[src*="color-scheme-init.js"]'
+                  ))
+                })"""
+            )
+            assert initial["scheme"] == preference, (
+                f"{route} did not apply saved {preference} preference at "
+                f"initial DOM assertion: {initial}"
+            )
+            assert initial["colorSchemeScript"], (
+                f"{route} does not load the external color-scheme asset"
+            )
+
+            asset_events = [
+                (kind, index)
+                for index, (kind, _) in enumerate(events)
+                if kind in {"request", "finished"}
+            ]
+            dcl_index = next(
+                index
+                for index, (kind, _) in enumerate(events)
+                if kind == "domcontentloaded"
+            )
+            request_index = next(
+                index for kind, index in asset_events if kind == "request"
+            )
+            finished_index = next(
+                index for kind, index in asset_events if kind == "finished"
+            )
+            assert request_index < dcl_index, (
+                f"{route}: external color-scheme asset was not requested "
+                "before DOMContentLoaded"
+            )
+            assert finished_index < dcl_index, (
+                f"{route}: external color-scheme asset did not finish "
+                "before DOMContentLoaded"
+            )
+
+            timing = page.evaluate(
+                """assetPath => {
+                  const assets = performance.getEntriesByType('resource')
+                    .filter(entry => new URL(entry.name).pathname === assetPath);
+                  const asset = assets[assets.length - 1];
+                  const paints = performance.getEntriesByType('paint');
+                  const firstPaint = paints.find(entry => entry.name === 'first-paint');
+                  return {
+                    responseEnd: asset ? asset.responseEnd : null,
+                    firstPaint: firstPaint ? firstPaint.startTime : null
+                  };
+                }""",
+                ASSET_PATH,
+            )
+            if timing["firstPaint"] is not None:
+                assert timing["responseEnd"] is not None, (
+                    f"{route}: color-scheme asset has no resource timing "
+                    "entry despite first-paint being available"
+                )
+                assert timing["responseEnd"] <= timing["firstPaint"], (
+                    f"{route}: color-scheme asset finished after first-paint: "
+                    f"{timing}"
+                )
+
+            results.append({
+                "route": route,
+                "page_type": page_type(route),
+                "response_end": timing["responseEnd"],
+                "first_paint": timing["firstPaint"],
+            })
+
+        return {
+            "routes": len(results),
+            "page_types": dict(Counter(result["page_type"] for result in results)),
+        }
     finally:
         context.close()
 
@@ -197,6 +226,7 @@ def main() -> None:
     from playwright.sync_api import sync_playwright
 
     base_url = args.base_url.rstrip("/") + "/"
+    routes = public_routes()
     with sync_playwright() as playwright:
         launch_options = {"headless": True}
         if args.executable_path:
@@ -204,7 +234,9 @@ def main() -> None:
         browser = playwright.chromium.launch(**launch_options)
         try:
             evidence = {
-                preference: check_saved_preference(browser, base_url, preference).__dict__
+                preference: check_saved_preference(
+                    browser, base_url, preference, routes
+                )
                 for preference in ("light", "dark")
             }
             evidence["disabled_storage"] = check_disabled_storage(browser, base_url)
