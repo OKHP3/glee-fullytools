@@ -90,6 +90,9 @@ jobs:
       - name: Check landscape social-card metadata
         run: python3 scripts/sync-social-card.py --check
 
+      - name: Check search coverage scope
+        run: python3 scripts/check-search-coverage.py
+
       - name: Run static release gates
         run: |
           python3 scripts/check-csp.py
