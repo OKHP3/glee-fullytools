@@ -79,6 +79,13 @@ python3 scripts/check-glee-dark-coverage.py --section all --require-both
 python3 scripts/resilience-qa.py --static-only
 ```
 
+`scripts/validate-site.py` writes the dated machine-readable report under
+`assets/audit/`. The current day's report is tracked evidence: if a repeat run
+finds the same pages, findings, and scope, it preserves the existing report
+bytes and `generated_at` timestamp. A changed validation payload receives a
+new UTC `generated_at` value. The Pages workflow uploads the reports produced
+by the validated checkout as a short-lived CI artifact.
+
 The Pages workflow repeats the required checks and performs browser QA before
 building the artifact. The previous reference to an external
 `publishing-trigger-check` command is not an executable prerequisite in this

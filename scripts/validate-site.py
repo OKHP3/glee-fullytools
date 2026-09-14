@@ -30,6 +30,11 @@ Global invariant checks (outside per-page loop):
 Writes:
   assets/audit/validation-report-YYYY-MM-DD.json   (machine-readable detail)
 
+The dated report is tracked evidence, not a per-run log.  When the current
+report's validation payload is unchanged, the existing file (including its
+generated_at timestamp) is preserved byte-for-byte.  A changed payload gets a
+fresh UTC generated_at timestamp.
+
 Exit code:
   0 if no critical defects, 1 otherwise.
 
@@ -73,6 +78,32 @@ COLOR_SCHEME_INIT_EXEMPT = {"404.html", "under-construction.html"}
 # The idempotency marker written by scripts/inject-color-scheme-init.py.
 # Its presence confirms the blocking inline script is in <head>.
 COLOR_SCHEME_INIT_MARKER = "<!-- AUTOGEN:COLOR-SCHEME-INIT -->"
+
+
+def _write_validation_report(out: Path, report: dict) -> bool:
+    """Write report evidence only when its validation payload has changed."""
+    serialized = json.dumps(report, indent=2, ensure_ascii=False)
+    try:
+        existing = json.loads(out.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        existing = None
+
+    if (
+        isinstance(existing, dict)
+        and isinstance(existing.get("generated_at"), str)
+        and existing["generated_at"].endswith("Z")
+    ):
+        existing_payload = {
+            key: value for key, value in existing.items() if key != "generated_at"
+        }
+        report_payload = {
+            key: value for key, value in report.items() if key != "generated_at"
+        }
+        if existing_payload == report_payload:
+            return False
+
+    out.write_text(serialized, encoding="utf-8")
+    return True
 
 
 def expected_canonical(rel: Path) -> str:
@@ -308,10 +339,20 @@ def main() -> int:
         total_issues += len(result["issues"])
         total_warnings += len(result["warnings"])
 
+    # ── Global invariant: approved Organization identities ───────────────────
+    # The homepage's structured-data sameAs list is an owner-approved claim.
+    # Keep it synchronized with the human-readable approval record so a future
+    # identity edit cannot ship without updating its evidence.
+    organization_identity_issues = _check_organization_identity_approval()
+    for msg in organization_identity_issues:
+        print(f"\nOrganization identity approval: {msg}")
+    if organization_identity_issues:
+        total_issues += len(organization_identity_issues)
+
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
     out = audit_dir / f"validation-report-{date.today().isoformat()}.json"
-    out.write_text(json.dumps({
+    report = {
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "run_date": date.today().isoformat(),
         "report_type": "site-validation",
@@ -319,7 +360,9 @@ def main() -> int:
         "total_issues": total_issues,
         "total_warnings": total_warnings,
         "pages": pages,
-    }, indent=2, ensure_ascii=False), encoding="utf-8")
+        "organization_identity_issues": organization_identity_issues,
+    }
+    _write_validation_report(out, report)
 
     # Human-readable summary
     print(f"\nScanned {len(pages)} pages")
@@ -444,16 +487,6 @@ def main() -> int:
             "generated HTML token refresh before release."
         )
         total_issues += len(css_token_issues)
-
-    # ── Global invariant: approved Organization identities ───────────────────
-    # The homepage's structured-data sameAs list is an owner-approved claim.
-    # Keep it synchronized with the human-readable approval record so a future
-    # identity edit cannot ship without updating its evidence.
-    organization_identity_issues = _check_organization_identity_approval()
-    for msg in organization_identity_issues:
-        print(f"\nOrganization identity approval: {msg}")
-    if organization_identity_issues:
-        total_issues += len(organization_identity_issues)
 
     # ── Global invariant: template image metadata pairs ─────────────────────
     # Templates live under assets/ and are intentionally excluded from the

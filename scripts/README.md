@@ -21,13 +21,16 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `check-links.py` | active | Internal target and sitemap check; external links are counted, not fetched |
 | `check-search-coverage.py` | active | Compare sanitized Google/Bing coverage scope with the configured sitemap; no credentials required |
 | `check-mtb-version.py` | active | MTB version consistency |
+| `check-pages-artifact.py` | active | Verify the staged Pages artifact against the reviewed public inventory; gates the deploy job in `.github/workflows/pages.yml` |
 | `check-public-headers.py` | active | Public `_headers`/CSP header check |
+| `check-stack-conformance.py` | active | Check the ADR-0007 local baseline; CI runs safety regressions; `--fix` preserves tracked evidence and the index |
 | `check-workflow-actions.py` | active | Approved action-major-tag policy check; does not enforce immutable SHA pins |
 | `csp.py` | active | Canonical CSP policy generation module |
 | `generate-csp.py` | active | Apply CSP policies to every page |
 | `inclusive-accessibility-qa.py` | active | Browser evidence for inclusive keyboard, search, fallback, and constrained-environment journeys |
 | `post-merge.sh` | active | Post-merge integrity hook; checks generated outputs and idempotently repairs cache-version references and the offline shell; run with Bash, never Python |
 | `public-artifact.py` | active | Stage and verify the reviewed public inventory, transferred bytes, and final Pages archive |
+| `public_inventory.py` | active | Public inventory model imported by `check-pages-artifact.py` and `public-artifact.py`; not run directly |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
 | `resilience-qa.py` | active | Installability, offline lifecycle, cross-browser, crawler, and third-party failure acceptance checks |

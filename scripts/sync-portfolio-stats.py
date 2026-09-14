@@ -18,7 +18,6 @@ Run order: after build-search-index.py (so the index is fresh).
 
 import json
 import re
-import sys
 import argparse
 from pathlib import Path
 
@@ -51,11 +50,20 @@ def compute_stats() -> dict:
         load_inventory()["catalog"]["destination_pattern"], re.IGNORECASE
     )
     gpt_count = 0
+    chatgpt_link_re = re.compile(
+        r'href=["\']https://(?:chatgpt\.com|chat\.openai\.com)/g/g-[a-z0-9]+',
+        re.IGNORECASE,
+    )
     for page in tool_ettes:
         path = REPO / page["url"].lstrip("/") / "index.html"
-        if is_counted_destination(page["url"]) and destination_pattern.search(
-            path.read_text(encoding="utf-8")
-        ):
+        source = path.read_text(encoding="utf-8")
+        primary_cta = next(
+            (tag for tag in re.findall(r"<a\b[^>]*>", source, re.IGNORECASE)
+             if chatgpt_link_re.search(tag)),
+            "",
+        )
+        if (is_counted_destination(page["url"])
+                and destination_pattern.search(primary_cta)):
             gpt_count += 1
 
     css_lines = sum(1 for _ in THEME_CSS.open(encoding="utf-8"))

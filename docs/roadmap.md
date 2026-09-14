@@ -4,7 +4,7 @@ This roadmap outlines the near-term public direction for the **Glee-fully Tools*
 repository. The authoritative current promise, inventory, publication states,
 and completion criteria are in [`docs/suite-promise.md`](suite-promise.md).
 
-## Current phase — Active growth and refinement
+## Current phase - Active growth and refinement
 
 - Maintain the public catalog and routing hub while new Tool-ettes move through
   live, beta, construction, unavailable, or retired states.

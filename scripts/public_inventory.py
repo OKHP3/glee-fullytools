@@ -134,6 +134,7 @@ def expected_public_top_level() -> set[str]:
         "assets",
         "contact",
         "ecosystem",
+        "foundry",
         "favicon.ico",
         "feed.xml",
         "humans.txt",

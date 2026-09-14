@@ -80,6 +80,7 @@ class SyncCssVersionTests(unittest.TestCase):
             css = root / "assets" / "css" / "theme.css"
             app = root / "assets" / "js" / "app.js"
             enhancements = root / "assets" / "js" / "glee-site-enhancements.js"
+            bootstrap = root / "assets" / "js" / "color-scheme-init.js"
             page = root / "about" / "index.html"
             worker = root / "sw.js"
             css.parent.mkdir(parents=True)
@@ -89,8 +90,10 @@ class SyncCssVersionTests(unittest.TestCase):
             css.write_text("body {}\n", encoding="utf-8")
             app.write_bytes(b"console.log('app');\r\n")
             enhancements.write_bytes(b"console.log('enhance');\r\n")
+            bootstrap.write_bytes(b"console.log('theme');\r\n")
             app.write_bytes(b'const moduleUrl = "/assets/js/glee-site-enhancements.js";\r\n')
             page.write_text(
+                '<script src="/assets/js/color-scheme-init.js?v=old"></script>\n'
                 '<script src="/assets/js/app.js?v=stale&mode=test#keep"></script>\n'
                 '<script src="https://cdn.example/assets/js/app.js?v=foreign"></script>\n'
                 '<script src="/assets/js/glee-site-enhancements.js#keep"></script>\n',
@@ -99,7 +102,7 @@ class SyncCssVersionTests(unittest.TestCase):
             worker.write_text(
                 'const CACHE_NAME = "glee-fully-shell-v1";\n'
                 'const PRECACHE_URLS = ["/", "/assets/js/app.js?v=3", '
-                '"/assets/js/glee-site-enhancements.js"];\n',
+                '"/assets/js/glee-site-enhancements.js", "/assets/js/color-scheme-init.js?v=old"];\n',
                 encoding="utf-8",
             )
 
@@ -140,6 +143,8 @@ class SyncCssVersionTests(unittest.TestCase):
                     f'/assets/js/glee-site-enhancements.js?v={tokens["glee-site-enhancements"]}',
                     worker_text,
                 )
+                self.assertIn(f'color-scheme-init.js?v={tokens["color-scheme-init"]}', rewritten)
+                self.assertIn(f'color-scheme-init.js?v={tokens["color-scheme-init"]}', worker_text)
                 stable_worker = worker.read_bytes()
                 stable_page = page.read_bytes()
                 stable_app = app.read_bytes()
@@ -147,6 +152,59 @@ class SyncCssVersionTests(unittest.TestCase):
                 self.assertEqual(worker.read_bytes(), stable_worker)
                 self.assertEqual(page.read_bytes(), stable_page)
                 self.assertEqual(app.read_bytes(), stable_app)
+            finally:
+                _MODULE.REPO = old_repo
+                _MODULE.THEME_CSS = old_theme
+
+
+    def test_search_index_url_changes_when_an_old_worker_has_unversioned_index(self) -> None:
+        """A new index must use a new cache key for returning visitors."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            css = root / "assets" / "css" / "theme.css"
+            app = root / "assets" / "js" / "app.js"
+            page = root / "index.html"
+            worker = root / "sw.js"
+            index = root / "assets" / "data" / "search-index.json"
+            css.parent.mkdir(parents=True)
+            app.parent.mkdir(parents=True)
+            index.parent.mkdir(parents=True)
+            css.write_text("body {}\n", encoding="utf-8")
+            app.write_text('const INDEX_URL = "/assets/data/search-index.json?mode=test#keep";\n', encoding="utf-8")
+            page.write_text("<script src=\"/assets/js/app.js?v=old&mode=test#keep\"></script>\n", encoding="utf-8")
+            index.write_text('{"pages":[{"url":"/foundry/"}]}\n', encoding="utf-8")
+            worker.write_text(
+                'const CACHE_NAME = "glee-fully-shell-v1";\n'
+                'const PRECACHE_URLS = ["/assets/data/search-index.json"];\n',
+                encoding="utf-8",
+            )
+
+            old_repo = _MODULE.REPO
+            old_theme = _MODULE.THEME_CSS
+            try:
+                _MODULE.REPO = root
+                _MODULE.THEME_CSS = css
+                self.assertEqual(self.run_main()[0], 0)
+                token = _MODULE.normalized_hash(index)
+                app_text = app.read_text(encoding="utf-8")
+                page_text = page.read_text(encoding="utf-8")
+                worker_text = worker.read_text(encoding="utf-8")
+                self.assertIn(f"search-index.json?mode=test&v={token}#keep", app_text)
+                self.assertIn(f"app.js?v={_MODULE.normalized_hash(app)}&mode=test#keep", page_text)
+                self.assertIn(f"search-index.json?v={token}", worker_text)
+
+                stable = (app.read_bytes(), page.read_bytes(), worker.read_bytes())
+                self.assertEqual(self.run_main("--check")[0], 0)
+                self.assertEqual((app.read_bytes(), page.read_bytes(), worker.read_bytes()), stable)
+
+                index.write_text('{"pages":[{"url":"/foundry/"},{"url":"/new-page/"}]}\n', encoding="utf-8")
+                self.assertEqual(self.run_main()[0], 0)
+                new_token = _MODULE.normalized_hash(index)
+                self.assertNotEqual(token, new_token)
+                self.assertIn(f"search-index.json?mode=test&v={new_token}#keep", app.read_text(encoding="utf-8"))
+                self.assertIn(f"app.js?v={_MODULE.normalized_hash(app)}&mode=test#keep", page.read_text(encoding="utf-8"))
+                self.assertIn(f"search-index.json?v={new_token}", worker.read_text(encoding="utf-8"))
+                self.assertEqual(self.run_main("--check")[0], 0)
             finally:
                 _MODULE.REPO = old_repo
                 _MODULE.THEME_CSS = old_theme

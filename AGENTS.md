@@ -85,8 +85,10 @@ dates and counts.
   no-cache headers. `.replit` uses the same port and deploys the repository root
   as a static site. `CNAME` identifies `glee-fully.tools` as the site origin.
 - GitHub Actions runs the Python validation workflow on pushes and pull requests
-  to `main`. A separate workflow runs Playwright viewport QA when HTML, CSS, or
-  JavaScript changes.
+  to `main`. A separate workflow runs Playwright viewport QA on every push and pull
+  request to `main`. It deliberately carries no path filter, because the check
+  is required by branch protection and path filters would leave
+  dependency-only pull requests permanently blocked.
 
 The September 7, 2026 FoundRy feature-page addition brings the current tree to
 64 production HTML files and 61 indexable pages. `/foundry/` introduces the
@@ -617,10 +619,10 @@ Script categories (last updated 2026-08-23; describes what each script does, by 
   `check-public-headers.py`, `check-workflow-actions.py`, `check-csp.py`,
   `check-search-coverage.py`;
   `responsive-qa.mjs` (Node/Playwright read-only QA runner);
-  `post-merge.sh` (read-only integrity check after merges)
+  `post-merge.sh` (integrity check and cache-version synchronization after merges; may update generated cache tokens)
 - **Index / feed / report builders** (regenerate data or output files):
-  `build-search-index.py`; the checked-in `feed.xml` has a historical generator
-  under `scripts/archive/` and is not part of the active pipeline;
+  `build-search-index.py`, `generate-sitemap.py`, and `generate-feed.py` are
+  active deterministic release-artifact generators;
   `generate-illustrations.py`, `generate-templates.py`, `extract-templates.py`
   are archived reference tools.
 - **Idempotent mutators** (safe to re-run; AUTOGEN-marker or presence-check-driven):
@@ -681,9 +683,9 @@ baseline -- update it here when the inventory changes materially.
 | `assets/img/webp/` | 270 WebP files | Fully populated; hero images and all GPT icon variants at 150/300/512/600/1024w |
 | `assets/js/` | `app.js` (40 KB), `mermaid-init.js` | `sparkle-loader.js` removed 2026-05-28; logic merged into `app.js` |
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
-| `docs/` | `adr/` subfolder with 5 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
+| `docs/` | `adr/` subfolder with 7 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADRs added 2026-08-03; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->33<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-09-09; `sync-universe-map.py` generates the public map after indexing. See `scripts/README.md` for active/archive classification. |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->34<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-09-09; `sync-universe-map.py` generates the public map after indexing. See `scripts/README.md` for active/archive classification. |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette

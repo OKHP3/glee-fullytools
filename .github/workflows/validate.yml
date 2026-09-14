@@ -25,6 +25,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Verify stack checker safety and repository baseline
+        run: |
+          python3 -m unittest scripts.tests.test_stack_conformance
+          python3 scripts/check-stack-conformance.py
+
       - name: Check GitHub Actions versions
         run: python3 scripts/check-workflow-actions.py
 
@@ -54,6 +59,9 @@ jobs:
 
       - name: Prove saved color preferences apply before first paint
         run: python3 scripts/tests/test-color-scheme-init.py --base-url http://127.0.0.1:5000
+
+      - name: Run link and audit regression tests
+        run: python3 -m unittest scripts.tests.test_audit_site scripts.tests.test_check_links_fragments
 
       - name: Generate current search and universe maps
         run: |
@@ -89,11 +97,12 @@ jobs:
       - name: Check generated CSP policies
         run: python3 scripts/check-csp.py
 
-      - name: Run template metadata regressions
+      - name: Run validation and template metadata regressions
         run: |
           python3 -m unittest \
             scripts/tests/test_validate_template_metadata.py \
-            scripts/tests/test_organization_identity_approval.py
+            scripts/tests/test_organization_identity_approval.py \
+            scripts/tests/test_validation_report.py
 
       - name: Run publication and offline release regressions
         run: |
@@ -107,11 +116,17 @@ jobs:
       - name: Run client behavior regressions
         run: node scripts/tests/test-client-regressions.cjs
 
+      - name: Run FoundRy page and relationship regressions
+        run: |
+          python3 scripts/tests/test-foundry-page.py
+          python3 scripts/tests/test-foundry-universe-links.py
+
       - name: Run CLS session-window regressions
         run: node --test scripts/tests/test-cls-session-window.cjs
 
       - name: Run discovery, publication, asset, and artifact regressions
         run: |
+          python3 -m unittest scripts.tests.test_public_inventory
           python3 scripts/tests/test-visitor-truth.py
           python3 scripts/tests/test_content_claims.py
           python3 scripts/tests/test-search-index.py
@@ -132,7 +147,7 @@ jobs:
       - name: Run accent contrast fixture regressions
         run: python3 -m unittest scripts/tests/test_check_accent_contrast.py
 
-      - name: Run site validator
+      - name: Run site validator and preserve unchanged audit evidence
         run: python3 scripts/validate-site.py
 
       - name: Run link checker

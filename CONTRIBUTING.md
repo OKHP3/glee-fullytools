@@ -31,9 +31,14 @@ reserved for an owner-approved emergency. The required checks, code-owner
 coverage, Dependabot cadence, and current GitHub branch-protection status are
 recorded in [`docs/release-governance.md`](docs/release-governance.md).
 
-Until the owner-side `main` protection rule is enabled, CODEOWNERS provides
-review routing but does not prevent direct pushes. Do not describe the Pages
-deployment as approval-protected before that setting is verified.
+GitHub requires a pull request and the required checks before `main` can move.
+After enabling shared hooks with `git config core.hooksPath .githooks`, the
+local pre-push hook also blocks direct pushes from GitHub Desktop, Git GUI,
+and the command line. GitHub protection applies regardless of local hook setup. If work was already committed on local `main`, preserve it by
+creating a feature branch at that commit and push that branch for review.
+Merge the PR using a merge commit, then switch back to `main` and update with
+`git pull --ff-only origin main`. This retains the original local commits and
+returns the checkout to the canonical branch without resetting or force-pushing.
 
 ## Validation before you commit
 

@@ -77,10 +77,11 @@ def fetch_headers(url: str, timeout: float) -> dict[str, str]:
         headers={"User-Agent": "Glee-fully-Pages-Header-Smoke/1"},
     )
     try:
-        response = urlopen(request, timeout=timeout)
+        with urlopen(request, timeout=timeout) as response:
+            return {key.lower(): value for key, value in response.headers.items()}
     except HTTPError as exc:
-        return {key.lower(): value for key, value in exc.headers.items()}
-    return {key.lower(): value for key, value in response.headers.items()}
+        with exc:
+            return {key.lower(): value for key, value in exc.headers.items()}
 
 
 def main() -> int:

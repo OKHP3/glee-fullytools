@@ -20,6 +20,7 @@ import sys
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 from public_inventory import (
     collect_html_files,
@@ -59,29 +60,76 @@ class PageIndexingMeta(HTMLParser):
                 self.redirect_target = match.group(1).strip("'\" ")
 
 
+class PageLinks(HTMLParser):
+    """Collect real links and fragment targets from HTML markup."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.hrefs: list[str] = []
+        self.fragments: set[str] = set()
+
+    def handle_starttag(self, tag: str, attrs_list) -> None:
+        attrs = {key.lower(): (value or "") for key, value in attrs_list}
+        if "href" in attrs:
+            self.hrefs.append(attrs["href"])
+        if "id" in attrs:
+            self.fragments.add(attrs["id"])
+        if tag.lower() == "a" and "name" in attrs:
+            self.fragments.add(attrs["name"])
+
+
 def is_external(href: str) -> bool:
-    return href.startswith((
-        "http://", "https://", "mailto:", "tel:",
-        "javascript:", "data:", "#"
-    ))
+    parsed = urlsplit(href)
+    return bool(parsed.scheme or parsed.netloc)
 
 
-def resolves(href: str, source_dir: Path) -> bool:
+def fragment_is_checkable(fragment: str) -> bool:
+    """Return whether a browser fragment identifies an HTML target."""
+    return bool(fragment and fragment.lower() != "top" and not fragment.startswith(":~:"))
+
+
+def resolve_target(href: str, source_dir: Path) -> Path | None:
     """Does this internal href resolve to a real file or dir/index.html?"""
-    clean = href.split("#")[0].split("?")[0]
+    clean = unquote(urlsplit(href).path)
     if not clean:
-        return True
+        return source_dir / "index.html"
     if clean.startswith("/"):
         target = ROOT / clean.lstrip("/")
     else:
         target = (source_dir / clean).resolve()
     if target.is_file():
-        return True
+        return target
     if target.is_dir() and (target / "index.html").is_file():
-        return True
+        return target / "index.html"
     if (Path(str(target).rstrip("/")) / "index.html").is_file():
+        return Path(str(target).rstrip("/")) / "index.html"
+    return None
+
+
+def resolves(href: str, source_path: Path, page_fragments: set[str],
+             fragment_cache: dict[Path, set[str]] | None = None) -> bool:
+    """Check the file route and, when present, its exact fragment target."""
+    parsed = urlsplit(href)
+    target = source_path if not parsed.path else resolve_target(href, source_path.parent)
+    if target is None:
+        return False
+    fragment = unquote(parsed.fragment).split(":~:", 1)[0]
+    if not fragment_is_checkable(fragment):
         return True
-    return False
+    if target.suffix.lower() not in {".html", ".htm"}:
+        return True
+    if target == source_path:
+        fragments = page_fragments
+    else:
+        if fragment_cache is not None and target in fragment_cache:
+            fragments = fragment_cache[target]
+        else:
+            target_parser = PageLinks()
+            target_parser.feed(target.read_text(encoding="utf-8", errors="replace"))
+            fragments = target_parser.fragments
+            if fragment_cache is not None:
+                fragment_cache[target] = fragments
+    return fragment in fragments
 
 
 def route_for_index(path: Path) -> str:
@@ -120,21 +168,23 @@ def main(argv=None) -> int:
     all_external = 0
     broken: list[dict] = []
     style_issues: list[dict] = []
+    fragment_cache: dict[Path, set[str]] = {}
 
     for path in collect_html_files(ROOT):
         rel = path.relative_to(ROOT)
         html = path.read_text(encoding="utf-8", errors="replace")
+        link_parser = PageLinks()
+        link_parser.feed(html)
         n_int = n_ext = 0
-        for m in re.finditer(r'href=["\']([^"\']+)["\']', html):
-            href = m.group(1)
+        for href in link_parser.hrefs:
             if is_external(href):
                 n_ext += 1
                 continue
             n_int += 1
-            if not resolves(href, path.parent):
+            if not resolves(href, path, link_parser.fragments, fragment_cache):
                 broken.append({"page": rel.as_posix(), "href": href})
             # style: directory URLs ought to end in trailing /
-            clean = href.split("#")[0].split("?")[0]
+            clean = urlsplit(href).path
             if (clean and not clean.endswith(("/", ".html", ".png", ".jpg",
                                                ".jpeg", ".svg", ".gif",
                                                ".webp", ".ico", ".pdf",

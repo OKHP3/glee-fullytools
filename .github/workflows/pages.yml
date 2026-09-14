@@ -102,6 +102,7 @@ jobs:
           python3 scripts/tests/test_public_artifact.py
           python3 scripts/tests/test_svg_assets.py
           python3 scripts/tests/test_offline_validation.py
+          python3 scripts/tests/test_validation_report.py
           node --test scripts/tests/test-sw-resilience.cjs
           node scripts/tests/test-sw-bootstrap.cjs
           python3 scripts/validate-site.py

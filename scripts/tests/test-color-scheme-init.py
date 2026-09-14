@@ -20,6 +20,7 @@ from urllib.parse import urljoin, urlsplit
 
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
+UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
@@ -56,6 +57,21 @@ def public_routes() -> list[str]:
         f"expected {sorted(required_types)}, got {sorted(present_types)}"
     )
     return routes
+
+
+def browser_routes() -> list[str]:
+    """Return indexable routes plus approved non-indexable utility pages."""
+    routes = public_routes()
+    utility_routes_in_inventory = sorted(set(routes) & set(UTILITY_ROUTES))
+    assert not utility_routes_in_inventory, (
+        "Fallback/offline routes must remain outside the public inventory: "
+        f"{utility_routes_in_inventory}"
+    )
+    return [*routes, *UTILITY_ROUTES]
+
+
+def route_type(route: str) -> str:
+    return "utility" if route in UTILITY_ROUTES else page_type(route)
 
 
 def check_saved_preference(
@@ -170,7 +186,7 @@ def check_saved_preference(
 
             results.append({
                 "route": route,
-                "page_type": page_type(route),
+                "page_type": route_type(route),
                 "response_end": timing["responseEnd"],
                 "first_paint": timing["firstPaint"],
             })
@@ -226,7 +242,7 @@ def main() -> None:
     from playwright.sync_api import sync_playwright
 
     base_url = args.base_url.rstrip("/") + "/"
-    routes = public_routes()
+    routes = browser_routes()
     with sync_playwright() as playwright:
         launch_options = {"headless": True}
         if args.executable_path:

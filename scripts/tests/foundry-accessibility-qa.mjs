@@ -181,41 +181,99 @@ async function run() {
       });
 
       await check('focus visibility', async () => {
-        const interactive = page.locator('a, button, summary');
-        const count = await interactive.count();
-        const evidence = [];
-        let skippedUnavailable = 0;
-        for (let i = 0; i < count; i += 1) {
-          const item = interactive.nth(i);
-          const unavailable = await item.evaluate(node => {
-            for (let current = node; current; current = current.parentElement) {
-              const style = getComputedStyle(current);
-              if (
-                current.closest('[inert]') ||
-                current.hidden ||
-                current.getAttribute('aria-hidden') === 'true' ||
-                style.display === 'none' ||
-                style.visibility === 'hidden'
-              ) return true;
+        const selector = 'a[href], button, summary';
+        const inspect = async () => page.evaluate(selector => {
+          const nodes = [...document.querySelectorAll(selector)];
+          const node = document.activeElement;
+          const style = getComputedStyle(node);
+          return {
+            key: nodes.indexOf(node),
+            name: (node.textContent || node.getAttribute('aria-label') || node.tagName).trim().slice(0, 80),
+            outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth,
+            boxShadow: style.boxShadow,
+          };
+        }, selector);
+        const assertIndicator = evidence => assert.ok(
+          (evidence.outlineStyle !== 'none' && evidence.outlineWidth !== '0px') || evidence.boxShadow !== 'none',
+          `no visible focus indicator for ${evidence.name}`,
+        );
+        const cycle = async state => {
+          const expected = await page.locator(selector).evaluateAll(nodes => nodes.flatMap((node, key) => {
+            const style = getComputedStyle(node);
+            return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
+              style.visibility === 'visible' && [...node.getClientRects()].some(rect => rect.width && rect.height) ? [key] : [];
+          }));
+          assert.ok(expected.length > 0, `${state}: no keyboard candidates`);
+          const first = await inspect();
+          assert.ok(expected.includes(first.key), `${state}: initial focus is not an eligible control`);
+          const seen = new Set();
+          let completed = false;
+          // One document cycle, with room for the browser's own focus stop.
+          for (let step = 0; step <= expected.length + 2; step += 1) {
+            const current = await inspect();
+            if (step > 0 && current.key === first.key) { completed = true; break; }
+            if (current.key >= 0) {
+              assert.ok(expected.includes(current.key), `${state}: reached an ineligible control`);
+              assertIndicator(current);
+              seen.add(current.key);
             }
-            return false;
-          });
-          if (unavailable) {
-            skippedUnavailable += 1;
-            continue;
+            await page.keyboard.press('Tab');
           }
-          // Request the keyboard-visible focus state explicitly. A generic
-          // programmatic focus can leave Chromium's :focus-visible heuristic
-          // false even when the keyboard focus style is present and usable.
-          await item.evaluate(node => node.focus({ focusVisible: true }));
-          const style = await item.evaluate(node => {
-            const computed = getComputedStyle(node);
-            return { name: (node.innerText || node.getAttribute('aria-label') || '').trim().slice(0, 80), outlineStyle: computed.outlineStyle, outlineWidth: computed.outlineWidth, boxShadow: computed.boxShadow };
+          assert.ok(completed, `${state}: keyboard navigation did not complete a cycle`);
+          assert.deepEqual([...seen].sort((a, b) => a - b), expected.sort((a, b) => a - b), `${state}: keyboard controls were missed`);
+          return { state, expected: expected.length, checked: seen.size };
+        };
+
+        await page.evaluate(() => { history.scrollRestoration = 'manual'; });
+        await page.reload({ waitUntil: 'load' });
+        await page.waitForFunction(() => [...document.styleSheets].every(sheet => {
+          try {
+            return sheet.cssRules !== null;
+          } catch {
+            return true;
+          }
+        }));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+        await page.waitForFunction(() => scrollY === 0);
+        await page.keyboard.press('Tab');
+        const skip = page.locator('.skip-to-content');
+        assert.equal(await skip.evaluate(node => node === document.activeElement), true, 'skip link is not the first keyboard target');
+        assertIndicator(await inspect());
+        await page.waitForFunction(() => {
+          const rect = document.querySelector('.skip-to-content').getBoundingClientRect();
+          return rect.y >= 0 && rect.y < innerHeight;
+        });
+        const box = await skip.boundingBox();
+        assert.ok(box && box.x >= 0 && box.y >= 0 && box.x < viewport.width && box.y < viewport.height, 'focused skip link is off screen');
+
+        // Negative control changes only the loopback browser fixture, never source.
+        const priorStyle = await skip.getAttribute('style');
+        try {
+          await skip.evaluate(node => {
+            node.style.setProperty('outline', 'none', 'important');
+            node.style.setProperty('box-shadow', 'none', 'important');
           });
-          assert.ok(style.outlineStyle !== 'none' && style.outlineWidth !== '0px' || style.boxShadow !== 'none', `no visible focus indicator for ${style.name}`);
-          evidence.push(style);
+          const suppressed = await inspect();
+          assert.throws(() => assertIndicator(suppressed), /no visible focus indicator/, 'negative fixture was not detected');
+        } finally {
+          await skip.evaluate((node, prior) => prior === null ? node.removeAttribute('style') : node.setAttribute('style', prior), priorStyle);
         }
-        return { interactiveCount: count, checked: evidence.length, skippedUnavailable };
+        assertIndicator(await inspect());
+        const navToggle = page.locator('.nav-toggle');
+        assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
+        const closed = await cycle('menu closed');
+        await navToggle.click();
+        await page.waitForFunction(() => document.querySelector('#navigation a') === document.activeElement);
+        assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
+        // Establish keyboard modality after the pointer opens the menu.
+        await page.keyboard.press('Tab');
+        const open = await cycle('menu open');
+        assert.ok(open.checked > closed.checked, 'opening the menu added no keyboard targets');
+        await page.keyboard.press('Escape');
+        assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
+        assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
+        assertIndicator(await inspect());
+        return { closed, open, negativeControl: 'detected missing indicator' };
       });
 
       await check('expanded mobile navigation keyboard focus', async () => {

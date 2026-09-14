@@ -1245,7 +1245,7 @@ def main() -> int:
             "surface": DARK_MODE["surface"],
             "accent_colors": DARK_MODE["accent_hex"],
             "worst_contrast": round(_worst_accent_dark()[0], 2),
-            "source": str(theme_css) if theme_css.exists() else "defaults",
+            "source": theme_css.as_posix() if theme_css.exists() else "defaults",
         },
         "rule": (
             "var(--color-accent) must not be used as the sole color signal for "

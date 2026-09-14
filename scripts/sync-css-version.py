@@ -37,10 +37,14 @@ SKIP_DIRS = {
 # Capture group 1 = the existing token (anything up to the next quote/space).
 CSS_REF_RE = re.compile(r"(theme\.css\?v=)([^\"' >]+)")
 JS_REF_RE = re.compile(
-    r"(?<![A-Za-z0-9._/-])(?P<prefix>(?:/)?assets/js/(?P<asset>app|glee-site-enhancements|universe-map)\.js)"
+    r"(?<![A-Za-z0-9._/-])(?P<prefix>(?:/)?assets/js/(?P<asset>app|glee-site-enhancements|universe-map|color-scheme-init)\.js)"
     r"(?P<query>\?[^\"' >#]*)?(?P<fragment>#[^\"' >]*)?"
 )
+SEARCH_INDEX_REF_RE = re.compile(
+    r"(?P<prefix>(?:/)?assets/data/search-index\.json)(?P<query>\?[^\"' >#]*)?(?P<fragment>#[^\"' >]*)?"
+)
 JS_ASSETS = {
+    "color-scheme-init": "assets/js/color-scheme-init.js",
     "app": "assets/js/app.js",
     "universe-map": "assets/js/universe-map.js",
     "glee-site-enhancements": "assets/js/glee-site-enhancements.js",
@@ -100,6 +104,16 @@ def rewrite_javascript_refs(source: str, tokens: dict[str, str]) -> str:
     return JS_REF_RE.sub(replace, source)
 
 
+def rewrite_search_index_refs(source: str, token: str) -> str:
+    """Version the English search index so old service workers cannot win."""
+    def replace(match: re.Match[str]) -> str:
+        return match.group("prefix") + update_version_query(
+            match.group("query"), token, match.group("fragment") or ""
+        )
+
+    return SEARCH_INDEX_REF_RE.sub(replace, source)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -114,6 +128,8 @@ def main() -> int:
         return 1
 
     token = css_hash(THEME_CSS)
+    search_index = REPO / "assets" / "data" / "search-index.json"
+    search_index_token = normalized_hash(search_index) if search_index.exists() else None
     js_tokens: dict[str, str] = {}
     app_path = REPO / JS_ASSETS["app"]
     enhancement_path = REPO / JS_ASSETS["glee-site-enhancements"]
@@ -128,6 +144,8 @@ def main() -> int:
             if "glee-site-enhancements" in js_tokens
             else app_source
         )
+        if search_index_token:
+            app_patched = rewrite_search_index_refs(app_patched, search_index_token)
         if app_patched != app_source:
             stale = True
             if args.check:
@@ -156,6 +174,8 @@ def main() -> int:
         src = path.read_text(encoding="utf-8", errors="replace")
         patched = CSS_REF_RE.sub(replacement, src)
         patched = rewrite_javascript_refs(patched, js_tokens)
+        if search_index_token:
+            patched = rewrite_search_index_refs(patched, search_index_token)
         if patched == src:
             unchanged += 1
         else:
@@ -176,6 +196,8 @@ def main() -> int:
         source = worker.read_text(encoding="utf-8")
         patched = CSS_REF_RE.sub(replacement, source)
         patched = rewrite_javascript_refs(patched, js_tokens)
+        if search_index_token:
+            patched = rewrite_search_index_refs(patched, search_index_token)
         entries = re.search(r"const PRECACHE_URLS\s*=\s*\[(.*?)\];", patched, re.S)
         if not entries:
             print("ERROR: service-worker precache list is missing")

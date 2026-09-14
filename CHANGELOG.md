@@ -11,8 +11,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   vision, public-vs-external boundary, inventory vocabulary, Tool-ette
   publication states, owner decisions, and phase completion criteria.
 - Reconciled public and maintainer language around active growth and refinement:
-  63 production HTML files, 60 indexable pages, 7 branches, 42 Tool-ettes, and
+  64 production HTML files, 61 indexable pages, 7 branches, 42 Tool-ettes, and
   49 branch/Tool-ette feed entries are now distinct terms.
+- Added `docs/adr/0007-canonical-okhp3-site-stack.md` and
+  `scripts/check-stack-conformance.py`, enforcing this repository's existing
+  stack baseline in CI while preserving optional tooling, operating guidance,
+  archives, and audit records. Checker failures cannot report success;
+  automatic repairs preserve the Git index. Cross-site migration remains proposed.
 
 ---
 

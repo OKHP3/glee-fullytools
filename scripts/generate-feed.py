@@ -68,7 +68,7 @@ def main() -> int:
         print("Committed feed.xml is current")
         return 0
     OUTPUT.write_text(rendered, encoding="utf-8")
-    print(f"Wrote feed.xml — {rendered.count('<entry>')} entries")
+    print(f"Wrote feed.xml - {rendered.count('<entry>')} entries")
     return 0
 
 

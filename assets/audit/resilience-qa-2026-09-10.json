@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-10",
+  "base_url": "http://localhost:5000",
+  "contract": "docs/resilience.md",
+  "static_checks": [
+    {
+      "kind": "core",
+      "route": "/",
+      "file": "index.html",
+      "ok": true,
+      "title": "Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Welcome to Glee‑fully",
+      "issues": []
+    },
+    {
+      "kind": "branch",
+      "route": "/toolbox/01-discovered-careers/",
+      "file": "toolbox/01-discovered-careers/index.html",
+      "ok": true,
+      "title": "Discovered Careers — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Glee‑fully Discovered Careers",
+      "issues": []
+    },
+    {
+      "kind": "tool-ette",
+      "route": "/toolbox/01-discovered-careers/01a-resume-builder/",
+      "file": "toolbox/01-discovered-careers/01a-resume-builder/index.html",
+      "ok": true,
+      "title": "Resume Builder — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Glee‑fully Resume Builder",
+      "issues": []
+    },
+    {
+      "kind": "search",
+      "route": "/search/",
+      "file": "search/index.html",
+      "ok": true,
+      "title": "Search — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "Search the Glee‑fully Toolbox",
+      "issues": []
+    },
+    {
+      "kind": "utility",
+      "route": "/404.html",
+      "file": "404.html",
+      "ok": true,
+      "title": "Page not found — Glee‑fully Personalizable Tools™ 🧰🌳",
+      "h1": "This page isn’t in the toolbox (yet).",
+      "issues": []
+    },
+    {
+      "kind": "utility",
+      "route": "/offline.html",
+      "file": "offline.html",
+      "ok": true,
+      "title": "Offline — Glee‑fully Personalizable Tools™",
+      "h1": "You’re offline for a moment.",
+      "issues": []
+    },
+    {
+      "kind": "installability",
+      "route": "/site.webmanifest",
+      "ok": true,
+      "manifest": {
+        "name": "Glee-fully Personalizable Tools™",
+        "short_name": "Glee-fully",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone"
+      },
+      "icon_count": 7,
+      "service_worker_cache": "glee-fully-shell-v6684944798102027392",
+      "precache_count": 12
+    }
+  ],
+  "browser_checks": [],
+  "lifecycle_check": null,
+  "failures": [],
+  "ok": true,
+  "mode": "static-only",
+  "failure_count": 0
+}

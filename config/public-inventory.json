@@ -15,7 +15,8 @@
       ".pythonlibs",
       ".vscode",
       "attached_assets",
-      "assets/templates",
+      "assets",
+      "docs",
       "node_modules",
       "tools"
     ]

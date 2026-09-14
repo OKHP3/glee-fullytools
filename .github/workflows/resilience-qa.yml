@@ -79,7 +79,7 @@ jobs:
             find "${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}" \
               -maxdepth 2 -type f -name 'INSTALLATION_COMPLETE' -print 2>/dev/null || true
             echo "=== Browser process inventory ==="
-            ps -ef | grep -E 'firefox|webkit|chromium' | grep -v grep || true
+              ps -eo pid=,comm= | grep -E 'firefox|webkit|chromium' || true
             echo "=== Server log ==="
             cat /tmp/resilience-server.log 2>/dev/null || true
           } > /tmp/resilience-qa-diagnostics.txt 2>&1

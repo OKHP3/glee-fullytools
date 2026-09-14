@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-09-07T23:29:35.549358Z",
+  "generated_at": "2026-09-07T14:04:15.528518Z",
   "run_date": "2026-09-07",
   "report_type": "site-validation",
-  "scanned": 64,
+  "scanned": 63,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -30,11 +30,6 @@
       "issues": [],
       "warnings": [],
       "path": "ecosystem/index.html"
-    },
-    {
-      "issues": [],
-      "warnings": [],
-      "path": "foundry/index.html"
     },
     {
       "issues": [],

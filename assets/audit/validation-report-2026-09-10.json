@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-09-10T17:07:57.907922Z",
+  "generated_at": "2026-09-10T21:56:49.604022Z",
   "run_date": "2026-09-10",
   "report_type": "site-validation",
-  "scanned": 65,
+  "scanned": 64,
   "total_issues": 0,
   "total_warnings": 0,
   "pages": [
@@ -25,11 +25,6 @@
       "issues": [],
       "warnings": [],
       "path": "contact/index.html"
-    },
-    {
-      "issues": [],
-      "warnings": [],
-      "path": "docs/prototypes/foundry-visitor-journey.html"
     },
     {
       "issues": [],
@@ -331,5 +326,6 @@
       "warnings": [],
       "path": "universe/index.html"
     }
-  ]
+  ],
+  "organization_identity_issues": []
 }

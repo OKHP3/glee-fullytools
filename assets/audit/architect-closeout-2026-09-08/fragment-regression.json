@@ -1,0 +1,13 @@
+{
+  "base": "89d5bef70e959065a9bc195481d6b755013b173e",
+  "candidate": "78134df4a7b03b3b800f6137285cab4839cf53ae",
+  "scenario": "Existing HTML target with missing fragment and otherwise valid sitemap",
+  "before": {
+    "exit_code": 0,
+    "stdout": "Pages scanned:    1\nInternal links:   1\nExternal links:   0\nBroken links:     0\nStyle issues:     0\nSitemap URLs:     1  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n"
+  },
+  "after": {
+    "exit_code": 1,
+    "stdout": "Pages scanned:    1\nInternal links:   1\nExternal links:   0\nBroken links:     1\n  ! index.html: index.html#missing\nStyle issues:     0\nSitemap URLs:     1  (file pages without sitemap: 0, sitemap entries without files: 0)\nNoindex exclusions: 0\n"
+  }
+}

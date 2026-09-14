@@ -248,7 +248,7 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
             )
         )
         removed_url = approval_record["approved_urls"][0]
-        homepage_text = original_homepage.decode("utf-8")
+        homepage_text = original_homepage.decode("utf-8").replace("\r\n", "\n")
         identity_line = f'            "{removed_url}",\n'
         self.assertIn(identity_line, homepage_text)
         homepage.write_text(
@@ -264,6 +264,7 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
                 timeout=120,
                 check=False,
             )
+            failure_report = json.loads(report.read_text(encoding="utf-8"))
         finally:
             homepage.write_bytes(original_homepage)
             if original_report is None:
@@ -271,6 +272,8 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
             else:
                 report.write_bytes(original_report)
 
+        self.assertGreater(failure_report["total_issues"], 0)
+        self.assertTrue(any(removed_url in issue for issue in failure_report["organization_identity_issues"]))
         output = result.stdout + result.stderr
         self.assertNotEqual(result.returncode, 0, output)
         self.assertIn(

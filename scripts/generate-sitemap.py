@@ -59,7 +59,7 @@ def main() -> int:
         print(f"Committed sitemap.xml is current")
         return 0
     OUTPUT.write_text(rendered, encoding="utf-8")
-    print(f"Wrote sitemap.xml — {rendered.count('<url>')} URLs")
+    print(f"Wrote sitemap.xml - {rendered.count('<url>')} URLs")
     return 0
 
 
