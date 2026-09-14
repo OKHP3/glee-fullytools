@@ -43,6 +43,7 @@ Usage:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -327,7 +328,19 @@ def validate_jsonld_graph(data: dict, block: int = 1) -> tuple[list, list]:
                 )
 
     return issues, warnings
-def main() -> int:
+def _validated_commit(value: str | None) -> str | None:
+    """Normalize a full Git SHA or reject ambiguous provenance."""
+    if value is None:
+        return None
+    commit = value.strip().lower()
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise argparse.ArgumentTypeError(
+            "commit must be the full 40-character hexadecimal Git SHA"
+        )
+    return commit
+
+
+def main(validated_commit: str | None = None) -> int:
     pages = []
     global_issues = []
     global_warnings = []
@@ -546,6 +559,7 @@ def main() -> int:
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "run_date": date.today().isoformat(),
         "report_type": "site-validation",
+        "provenance": {"validated_commit": validated_commit},
         "scanned": len(pages),
         "total_issues": total_issues,
         "total_warnings": total_warnings,
@@ -563,6 +577,19 @@ def main() -> int:
     print(f"  detail:   {out.relative_to(ROOT)}")
 
     return 1 if total_issues else 0
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--commit",
+        type=_validated_commit,
+        help=(
+            "full Git SHA for the checkout being validated; release workflows "
+            "must provide this so uploaded evidence is independently traceable"
+        ),
+    )
+    return parser.parse_args()
 
 
 def _check_mermaid_version_pin() -> list:
@@ -1404,4 +1431,5 @@ def _check_organization_identity_approval() -> list:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    args = _parse_args()
+    sys.exit(main(validated_commit=args.commit))

@@ -104,9 +104,10 @@ jobs:
           python3 scripts/tests/test_svg_assets.py
           python3 scripts/tests/test_offline_validation.py
           python3 scripts/tests/test_validation_report.py
+          python3 scripts/tests/test_pages_validation_evidence.py
           node --test scripts/tests/test-sw-resilience.cjs
           node scripts/tests/test-sw-bootstrap.cjs
-          python3 scripts/validate-site.py
+          python3 scripts/validate-site.py --commit "${{ github.sha }}"
           python3 scripts/check-links.py
           python3 scripts/check-accent-contrast.py --strict
           python3 scripts/check-glee-dark-coverage.py --section all --require-both
@@ -127,6 +128,34 @@ jobs:
       - name: Run advisory site audit
         continue-on-error: true
         run: python3 scripts/audit-site.py --quiet
+
+      - name: Verify validation report provenance
+        id: validation_provenance
+        if: always()
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import timezone, datetime
+          from pathlib import Path
+
+          report_path = Path("assets/audit") / (
+              f"validation-report-{datetime.now(timezone.utc).date().isoformat()}.json"
+          )
+          if not report_path.is_file():
+              raise SystemExit(f"Missing validation report: {report_path}")
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          actual = report.get("provenance", {}).get("validated_commit")
+          expected = os.environ["EXPECTED_COMMIT"].lower()
+          if actual != expected:
+              raise SystemExit(
+                  f"{report_path}: validated commit {actual!r} does not match "
+                  f"workflow commit {expected!r}"
+              )
+          print(f"Verified {report_path} was produced from {actual}")
+          PY
 
       - name: Start local server for browser release gate
         run: |
@@ -183,14 +212,43 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Stage complete validation evidence
+        id: validation_staging
+        if: ${{ always() && steps.validation_provenance.outcome == 'success' }}
+        env:
+          VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
+        run: |
+          python3 - <<'PY'
+          import os
+          import shutil
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          artifact_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
+          audit_dir = artifact_dir / "assets" / "audit"
+          shutil.copytree("assets/audit", audit_dir)
+
+          current_report = (
+              f"validation-report-"
+              f"{datetime.now(timezone.utc).date().isoformat()}.json"
+          )
+          for report in audit_dir.glob("validation-report-*.json"):
+              if report.name != current_report:
+                  report.unlink()
+
+          audit_summary = Path("assets/docs/audit-report.md")
+          if audit_summary.is_file():
+              destination = artifact_dir / audit_summary
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(audit_summary, destination)
+          PY
+
       - name: Upload validation reports
-        if: always()
+        if: ${{ always() && steps.validation_provenance.outcome == 'success' && steps.validation_staging.outcome == 'success' }}
         uses: actions/upload-artifact@v7
         with:
           name: pages-validation-${{ github.sha }}
-          path: |
-            assets/audit/
-            assets/docs/audit-report.md
+          path: ${{ runner.temp }}/pages-validation
           if-no-files-found: warn
           retention-days: 14
 

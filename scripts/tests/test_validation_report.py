@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import argparse
 from contextlib import ExitStack
 from pathlib import Path
 import tempfile
@@ -19,6 +20,15 @@ _SPEC.loader.exec_module(validate_site)
 
 
 class ValidationReportTests(unittest.TestCase):
+    def test_commit_sha_is_normalized_and_rejects_ambiguous_values(self):
+        commit = "ABCDEF0123456789ABCDEF0123456789ABCDEF01"
+        self.assertEqual(
+            validate_site._validated_commit(commit),
+            commit.lower(),
+        )
+        with self.assertRaises(argparse.ArgumentTypeError):
+            validate_site._validated_commit("abcdef0")
+
     def test_global_failure_is_saved_in_final_report(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -55,7 +65,12 @@ class ValidationReportTests(unittest.TestCase):
             with ExitStack() as stack:
                 for patch in patches:
                     stack.enter_context(patch)
-                self.assertEqual(validate_site.main(), 1)
+                self.assertEqual(
+                    validate_site.main(
+                        validated_commit="abcdef0123456789abcdef0123456789abcdef01"
+                    ),
+                    1,
+                )
 
             report_path = next((root / "assets" / "audit").glob("validation-report-*.json"))
             report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -66,6 +81,10 @@ class ValidationReportTests(unittest.TestCase):
                 ["CSS-lines drift: fixture global failure"],
             )
             self.assertEqual(report["global_warnings"], [])
+            self.assertEqual(
+                report["provenance"]["validated_commit"],
+                "abcdef0123456789abcdef0123456789abcdef01",
+            )
 
     def test_unchanged_payload_preserves_report_bytes_and_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:

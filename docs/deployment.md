@@ -81,10 +81,21 @@ python3 scripts/resilience-qa.py --static-only
 
 `scripts/validate-site.py` writes the dated machine-readable report under
 `assets/audit/`. The current day's report is tracked evidence: if a repeat run
-finds the same pages, findings, and scope, it preserves the existing report
-bytes and `generated_at` timestamp. A changed validation payload receives a
-new UTC `generated_at` value. The Pages workflow uploads the reports produced
-by the validated checkout as a short-lived CI artifact.
+finds the same pages, findings, scope, and commit provenance, it preserves the
+existing report bytes and `generated_at` timestamp. A changed validation
+payload receives a new UTC `generated_at` value. The Pages workflow passes the
+full event SHA with `--commit`, verifies that the report's
+`provenance.validated_commit` value exactly matches `${{ github.sha }}`, and
+only then stages the current dated report with the other audit outputs and
+uploads them as a short-lived CI artifact. Older dated site-validation reports
+from the checkout are excluded so they cannot be mistaken for evidence produced
+by the current release.
+
+To review downloaded evidence outside the workflow UI, compare three values:
+the 40-character SHA in the `pages-validation-<sha>` artifact name, the JSON
+report's `provenance.validated_commit`, and the release commit shown by GitHub.
+All three must match exactly. A missing, abbreviated, or different value means
+the report must not be accepted as evidence for that release.
 
 The Pages workflow repeats the required checks and performs browser QA before
 building the artifact. The previous reference to an external
