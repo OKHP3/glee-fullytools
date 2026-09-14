@@ -96,6 +96,7 @@ jobs:
       - name: Run static release gates
         run: |
           python3 scripts/check-csp.py
+          python3 scripts/tests/test_pages_search_coverage_gate.py
           python3 scripts/tests/test-visitor-truth.py
           python3 scripts/tests/test_content_claims.py
           python3 scripts/tests/test-search-index.py

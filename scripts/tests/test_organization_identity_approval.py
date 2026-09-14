@@ -281,6 +281,52 @@ class OrganizationIdentityApprovalTests(unittest.TestCase):
             output,
         )
 
+    def test_release_validator_command_blocks_duplicate_homepage_identity(self):
+        homepage = _ROOT / "index.html"
+        report = (
+            _ROOT
+            / "assets"
+            / "audit"
+            / f"validation-report-{date.today().isoformat()}.json"
+        )
+        original_homepage = homepage.read_bytes()
+        original_report = report.read_bytes() if report.exists() else None
+        approval_record = json.loads(
+            (_ROOT / "docs" / "organization-identity-approval.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        duplicated_url = approval_record["approved_urls"][0]
+        homepage_text = original_homepage.decode("utf-8").replace("\r\n", "\n")
+        identity_line = f'            "{duplicated_url}",\n'
+        self.assertIn(identity_line, homepage_text)
+        homepage.write_text(
+            homepage_text.replace(identity_line, identity_line * 2, 1),
+            encoding="utf-8",
+        )
+        try:
+            result = subprocess.run(
+                [sys.executable, str(_SCRIPT)],
+                cwd=_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        finally:
+            homepage.write_bytes(original_homepage)
+            if original_report is None:
+                report.unlink(missing_ok=True)
+            else:
+                report.write_bytes(original_report)
+
+        output = result.stdout + result.stderr
+        self.assertNotEqual(result.returncode, 0, output)
+        self.assertIn(
+            "homepage Organization sameAs contains duplicate URLs",
+            output,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

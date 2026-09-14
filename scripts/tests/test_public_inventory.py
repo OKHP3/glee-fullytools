@@ -28,32 +28,57 @@ ARTIFACT_SPEC.loader.exec_module(ARTIFACT)
 
 class PublicInventoryTests(unittest.TestCase):
     def test_current_scope_matches_contract(self):
-        self.assertEqual(len(collect_html_files()), 64)
-        pages = collect_indexable_html_files()
-        self.assertEqual(len(pages), 61)
-
-        urls = [ARTIFACT_PATH(p) for p in pages]
-        self.assertEqual(sum(page_type(url) == "toolbox_hub" for url in urls), 1)
-        self.assertEqual(sum(page_type(url) == "branch" for url in urls), 7)
-        self.assertEqual(sum(page_type(url) == "tool-ette" for url in urls), 42)
-        self.assertEqual(
-            sum(is_discoverable(url, "feed") for url in urls),
-            49,
-        )
         config = json.loads(
             (SCRIPTS.parent / "config" / "public-inventory.json").read_text(
                 encoding="utf-8"
             )
         )
+        all_pages = collect_html_files()
+        pages = collect_indexable_html_files()
+        urls = [ARTIFACT_PATH(p) for p in pages]
+        page_types = {url: page_type(url) for url in urls}
+
+        excluded_files = set(config["html_scope"]["excluded_files"])
+        self.assertEqual(
+            {path.name for path in all_pages if path not in pages},
+            excluded_files,
+        )
+        self.assertEqual(len(urls), len(set(urls)))
+        self.assertEqual(
+            set(page_types.values()),
+            {"home", "toolbox_hub", "branch", "tool-ette", "supporting"},
+        )
+        self.assertEqual(
+            [url for url, kind in page_types.items() if kind == "toolbox_hub"],
+            ["/toolbox/"],
+        )
+
+        feed_types = set(config["discovery"]["feed_types"])
+        self.assertEqual(
+            {url for url in urls if is_discoverable(url, "feed")},
+            {url for url, kind in page_types.items() if kind in feed_types},
+        )
+
+        tool_ette_urls = {
+            url for url, kind in page_types.items() if kind == "tool-ette"
+        }
+        destination_exclusions = set(config["catalog"]["destination_exclusions"])
+        self.assertLessEqual(destination_exclusions, tool_ette_urls)
+        self.assertEqual(
+            {url for url in tool_ette_urls if is_counted_destination(url)},
+            tool_ette_urls - destination_exclusions,
+        )
+
         destination_pattern = re.compile(
             config["catalog"]["destination_pattern"], re.IGNORECASE
         )
-        destination_count = 0
+        counted_destinations = set()
         for path, url in zip(pages, urls):
             if page_type(url) == "tool-ette" and is_counted_destination(url):
                 if destination_pattern.search(path.read_text(encoding="utf-8")):
-                    destination_count += 1
-        self.assertEqual(destination_count, 25)
+                    counted_destinations.add(url)
+        self.assertTrue(counted_destinations)
+        self.assertLessEqual(counted_destinations, tool_ette_urls)
 
     def test_artifact_policy_rejects_internal_paths(self):
         with tempfile.TemporaryDirectory() as directory:

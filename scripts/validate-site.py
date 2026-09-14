@@ -329,6 +329,8 @@ def validate_jsonld_graph(data: dict, block: int = 1) -> tuple[list, list]:
     return issues, warnings
 def main() -> int:
     pages = []
+    global_issues = []
+    global_warnings = []
     total_issues = 0
     total_warnings = 0
     for path in collect_html_files(ROOT):
@@ -348,27 +350,10 @@ def main() -> int:
         print(f"\nOrganization identity approval: {msg}")
     if organization_identity_issues:
         total_issues += len(organization_identity_issues)
-
-    audit_dir = ROOT / "assets" / "audit"
-    audit_dir.mkdir(exist_ok=True)
-    out = audit_dir / f"validation-report-{date.today().isoformat()}.json"
-    report = {
-        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "run_date": date.today().isoformat(),
-        "report_type": "site-validation",
-        "scanned": len(pages),
-        "total_issues": total_issues,
-        "total_warnings": total_warnings,
-        "pages": pages,
-        "organization_identity_issues": organization_identity_issues,
-    }
-    _write_validation_report(out, report)
-
-    # Human-readable summary
-    print(f"\nScanned {len(pages)} pages")
-    print(f"  issues:   {total_issues}")
-    print(f"  warnings: {total_warnings}")
-    print(f"  detail:   {out.relative_to(ROOT)}")
+        global_issues.extend(
+            f"Organization identity approval: {msg}"
+            for msg in organization_identity_issues
+        )
 
     if total_issues:
         print("\nPages with issues:")
@@ -388,6 +373,7 @@ def main() -> int:
         print(f"\nCSS-lines drift: {css_drift_issue}")
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
         total_issues += 1
+        global_issues.append(f"CSS-lines drift: {css_drift_issue}")
 
     # ── Global invariant: showcase STAT markers (pages / tool-ettes / etc.) ─
     # showcase/index.html embeds live counts via <!-- STAT:X --> markers.
@@ -400,6 +386,7 @@ def main() -> int:
     if stat_drift_issues:
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
         total_issues += len(stat_drift_issues)
+        global_issues.extend(f"STAT marker drift: {msg}" for msg in stat_drift_issues)
 
     # ── Global invariant: docs/adr/ index sync ────────────────────────────
     # Every *.md file in docs/adr/ (except README.md and template.md) must be
@@ -410,6 +397,7 @@ def main() -> int:
         print(f"\nADR index drift: {adr_drift_issue}")
         print("  Fix: update docs/adr/README.md index table and AGENTS.md section 2.2.1")
         total_warnings += 1
+        global_warnings.append(f"ADR index drift: {adr_drift_issue}")
 
     # ── Global invariant: scripts/*.py count vs AGENTS.md classification table ─
     # When a new .py script is added to scripts/ it must be classified in the
@@ -421,6 +409,7 @@ def main() -> int:
         print(f"\nscripts/ count drift: {scripts_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->")
         total_issues += 1
+        global_issues.append(f"scripts/ count drift: {scripts_drift}")
 
     # ── Global invariant: scripts/*.mjs + *.sh count vs AGENTS.md ────────────
     # When a new non-Python runner is added to scripts/ it must be classified
@@ -431,6 +420,7 @@ def main() -> int:
         print(f"\nscripts/ non-Python count drift: {scripts_non_py_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-OTHER -->")
         total_issues += 1
+        global_issues.append(f"scripts/ non-Python count drift: {scripts_non_py_drift}")
 
     # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
     # For every tool page whose og:image is a local .svg, the alt text must be
@@ -444,6 +434,7 @@ def main() -> int:
     if alt_mismatches:
         print("  Fix: python3 scripts/sync-image-alt.py")
         total_issues += len(alt_mismatches)
+        global_issues.extend(f"og:image:alt drift: {msg}" for msg in alt_mismatches)
 
     # ── Global invariant: sparkle fallback sync ───────────────────────────────
     # Every HTML page carries a static <a data-sparkle-link> fallback built from
@@ -456,6 +447,7 @@ def main() -> int:
     if sparkle_mismatches:
         print("  Fix: python3 scripts/sync-sparkle-fallback.py")
         total_issues += len(sparkle_mismatches)
+        global_issues.extend(f"Sparkle drift: {msg}" for msg in sparkle_mismatches)
 
     # ── Global invariant: branded dark-mode coverage ──────────────────────────
     # Every hardcoded light-hex surface in the GLEE and ASKJAMIE sections of
@@ -472,6 +464,9 @@ def main() -> int:
             "@media (prefers-color-scheme: dark) override in the branded section"
         )
         total_issues += len(glee_dark_issues)
+        global_issues.extend(
+            f"Glee dark-mode coverage: {msg}" for msg in glee_dark_issues
+        )
 
     # ── Global invariant: CSS cache-buster token drift ────────────────────────
     # Every HTML page must reference theme.css with the current SHA-256 token so
@@ -487,6 +482,7 @@ def main() -> int:
             "generated HTML token refresh before release."
         )
         total_issues += len(css_token_issues)
+        global_issues.extend(f"CSS token drift: {msg}" for msg in css_token_issues)
 
     # ── Global invariant: template image metadata pairs ─────────────────────
     # Templates live under assets/ and are intentionally excluded from the
@@ -497,6 +493,9 @@ def main() -> int:
         print(f"\nTemplate metadata: {msg}")
     if template_metadata_issues:
         total_issues += len(template_metadata_issues)
+        global_issues.extend(
+            f"Template metadata: {msg}" for msg in template_metadata_issues
+        )
 
     # ── Global invariant: offline shell integrity ────────────────────────────
     # Keep the installable shell intentional and same-origin. Third-party
@@ -506,6 +505,7 @@ def main() -> int:
         print(f"\nOffline shell: {msg}")
     if pwa_issues:
         total_issues += len(pwa_issues)
+        global_issues.extend(f"Offline shell: {msg}" for msg in pwa_issues)
 
     # ── Global invariant: Mermaid VERSION pin consistency ───────────────────
     # assets/vendor/mermaid/VERSION must exist, be a plain semver string, and
@@ -518,6 +518,9 @@ def main() -> int:
         print(f"\nMermaid VERSION pin: {msg}")
     if mermaid_version_issues:
         total_issues += len(mermaid_version_issues)
+        global_issues.extend(
+            f"Mermaid VERSION pin: {msg}" for msg in mermaid_version_issues
+        )
 
     # ── Global invariant: Mermaid / CSP class alignment ──────────────────────
     # Mermaid renders inline style="..." attributes and <style> blocks at
@@ -532,6 +535,32 @@ def main() -> int:
         print(f"\nMermaid/CSP alignment: {msg}")
     if mermaid_csp_warnings:
         total_warnings += len(mermaid_csp_warnings)
+        global_warnings.extend(
+            f"Mermaid/CSP alignment: {msg}" for msg in mermaid_csp_warnings
+        )
+
+    audit_dir = ROOT / "assets" / "audit"
+    audit_dir.mkdir(exist_ok=True)
+    out = audit_dir / f"validation-report-{date.today().isoformat()}.json"
+    report = {
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "run_date": date.today().isoformat(),
+        "report_type": "site-validation",
+        "scanned": len(pages),
+        "total_issues": total_issues,
+        "total_warnings": total_warnings,
+        "pages": pages,
+        "global_issues": global_issues,
+        "global_warnings": global_warnings,
+        "organization_identity_issues": organization_identity_issues,
+    }
+    _write_validation_report(out, report)
+
+    # Human-readable summary
+    print(f"\nScanned {len(pages)} pages")
+    print(f"  issues:   {total_issues}")
+    print(f"  warnings: {total_warnings}")
+    print(f"  detail:   {out.relative_to(ROOT)}")
 
     return 1 if total_issues else 0
 

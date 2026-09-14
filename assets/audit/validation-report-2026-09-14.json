@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T04:41:33.601038Z",
+  "generated_at": "2026-09-14T04:57:34.802652Z",
   "run_date": "2026-09-14",
   "report_type": "site-validation",
   "scanned": 64,
@@ -327,5 +327,7 @@
       "path": "universe/index.html"
     }
   ],
+  "global_issues": [],
+  "global_warnings": [],
   "organization_identity_issues": []
 }
