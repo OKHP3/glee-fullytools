@@ -54,6 +54,18 @@ jobs:
       - name: Run resilient web behavior acceptance checks
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
 
+      - name: Run color-scheme bootstrap regression in all installed engines
+        run: |
+          failed=0
+          for browser in chromium firefox webkit; do
+            python3 scripts/tests/test-color-scheme-init.py \
+              --base-url http://localhost:5000 \
+              --browser "$browser" \
+              --output "assets/audit/color-scheme-init-$browser.json" \
+              || failed=1
+          done
+          exit "$failed"
+
       - name: Verify generated maps in all installed engines
         run: python3 scripts/tests/test-universe-browser.py
 
@@ -101,5 +113,6 @@ jobs:
           path: |
             assets/audit/resilience-qa-*.json
             assets/audit/browser-acceptance-*.json
+            assets/audit/color-scheme-init-*.json
           if-no-files-found: error
           retention-days: 30

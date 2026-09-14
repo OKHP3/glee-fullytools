@@ -58,7 +58,11 @@ jobs:
             || { cat /tmp/glee-color-scheme-server.log; exit 1; }
 
       - name: Prove saved color preferences apply before first paint
-        run: python3 scripts/tests/test-color-scheme-init.py --base-url http://127.0.0.1:5000
+        run: |
+          python3 scripts/tests/test-color-scheme-init.py \
+            --base-url http://127.0.0.1:5000 \
+            --browser chromium \
+            --output assets/audit/color-scheme-init-chromium.json
 
       - name: Run link and audit regression tests
         run: python3 -m unittest scripts.tests.test_audit_site scripts.tests.test_check_links_fragments
