@@ -3,7 +3,7 @@
 
 Run against the local site server:
     python3 scripts/tests/test-color-scheme-init.py \
-        --base-url http://127.0.0.1:5000
+        --base-url http://127.0.0.1:5000 --browser chromium
 
 The test deliberately waits only for DOMContentLoaded.  The color-scheme
 script is a parser-blocking head script, so the initial DOM assertion at that
@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from datetime import datetime, timezone
+import json
 import os
 from pathlib import Path
 import sys
@@ -32,18 +34,119 @@ def first_party(url: str, base_url: str) -> bool:
     return urlsplit(url).netloc == urlsplit(base_url).netloc
 
 
+def adapt_local_http_navigation(
+    route,
+    base_url: str,
+) -> bool:
+    """Remove only loopback CSP transport upgrades for WebKit's local fixture."""
+    base = urlsplit(base_url)
+    request = route.request
+    target = urlsplit(request.url)
+    local_http = base.scheme == "http" and base.hostname in {"localhost", "127.0.0.1"}
+    if not (
+        local_http
+        and request.is_navigation_request()
+        and target.scheme == base.scheme
+        and target.netloc == base.netloc
+    ):
+        return False
+
+    response = route.fetch()
+    content_type = response.headers.get("content-type", "")
+    if "text/html" not in content_type:
+        route.fulfill(response=response)
+        return True
+    route.fulfill(
+        response=response,
+        body=response.text().replace("; upgrade-insecure-requests", ""),
+    )
+    return True
+
+
 def load_context(browser, base_url: str, init_script: str):
     context = browser.new_context(service_workers="block")
     context.add_init_script(init_script)
-    context.route(
-        "**/*",
-        lambda route: (
+
+    def route_request(route):
+        if adapt_local_http_navigation(route, base_url):
+            return
+        if first_party(route.request.url, base_url):
             route.continue_()
-            if first_party(route.request.url, base_url)
-            else route.abort()
-        ),
-    )
+        else:
+            route.abort()
+
+    context.route("**/*", route_request)
     return context
+
+
+def bootstrap_events(events: list[tuple[str, str | None]], route: str) -> dict[str, object]:
+    """Prove the external bootstrap completed before DOMContentLoaded."""
+    asset_events = [
+        (kind, index)
+        for index, (kind, _) in enumerate(events)
+        if kind in {"request", "finished"}
+    ]
+    try:
+        dcl_index = next(
+            index
+            for index, (kind, _) in enumerate(events)
+            if kind == "domcontentloaded"
+        )
+        request_index = next(
+            index for kind, index in asset_events if kind == "request"
+        )
+        finished_index = next(
+            index for kind, index in asset_events if kind == "finished"
+        )
+    except StopIteration as error:
+        raise AssertionError(
+            f"{route}: incomplete color-scheme bootstrap event trace: {events}"
+        ) from error
+
+    assert request_index < dcl_index, (
+        f"{route}: external color-scheme asset was not requested "
+        "before DOMContentLoaded"
+    )
+    assert finished_index < dcl_index, (
+        f"{route}: external color-scheme asset did not finish "
+        "before DOMContentLoaded"
+    )
+    return {
+        "event_order": [kind for kind, _ in events],
+        "asset_request_index": request_index,
+        "asset_finished_index": finished_index,
+        "domcontentloaded_index": dcl_index,
+    }
+
+
+def paint_timing(page) -> dict[str, float | None]:
+    """Capture the browser's resource and first-paint timing evidence."""
+    return page.evaluate(
+        """assetPath => {
+          const assets = performance.getEntriesByType('resource')
+            .filter(entry => new URL(entry.name).pathname === assetPath);
+          const asset = assets[assets.length - 1];
+          const paints = performance.getEntriesByType('paint');
+          const firstPaint = paints.find(entry => entry.name === 'first-paint');
+          return {
+            asset_response_end: asset ? asset.responseEnd : null,
+            first_paint: firstPaint ? firstPaint.startTime : null
+          };
+        }""",
+        ASSET_PATH,
+    )
+
+
+def assert_paint_order(route: str, timing: dict[str, float | None]) -> None:
+    """Require the bootstrap resource to finish before first paint when exposed."""
+    if timing["first_paint"] is not None:
+        assert timing["asset_response_end"] is not None, (
+            f"{route}: color-scheme asset has no resource timing entry "
+            "despite first-paint being available"
+        )
+        assert timing["asset_response_end"] <= timing["first_paint"], (
+            f"{route}: color-scheme asset finished after first-paint: {timing}"
+        )
 
 
 def public_routes() -> list[str]:
@@ -135,65 +238,23 @@ def check_saved_preference(
                 f"{route} does not load the external color-scheme asset"
             )
 
-            asset_events = [
-                (kind, index)
-                for index, (kind, _) in enumerate(events)
-                if kind in {"request", "finished"}
-            ]
-            dcl_index = next(
-                index
-                for index, (kind, _) in enumerate(events)
-                if kind == "domcontentloaded"
-            )
-            request_index = next(
-                index for kind, index in asset_events if kind == "request"
-            )
-            finished_index = next(
-                index for kind, index in asset_events if kind == "finished"
-            )
-            assert request_index < dcl_index, (
-                f"{route}: external color-scheme asset was not requested "
-                "before DOMContentLoaded"
-            )
-            assert finished_index < dcl_index, (
-                f"{route}: external color-scheme asset did not finish "
-                "before DOMContentLoaded"
-            )
-
-            timing = page.evaluate(
-                """assetPath => {
-                  const assets = performance.getEntriesByType('resource')
-                    .filter(entry => new URL(entry.name).pathname === assetPath);
-                  const asset = assets[assets.length - 1];
-                  const paints = performance.getEntriesByType('paint');
-                  const firstPaint = paints.find(entry => entry.name === 'first-paint');
-                  return {
-                    responseEnd: asset ? asset.responseEnd : null,
-                    firstPaint: firstPaint ? firstPaint.startTime : null
-                  };
-                }""",
-                ASSET_PATH,
-            )
-            if timing["firstPaint"] is not None:
-                assert timing["responseEnd"] is not None, (
-                    f"{route}: color-scheme asset has no resource timing "
-                    "entry despite first-paint being available"
-                )
-                assert timing["responseEnd"] <= timing["firstPaint"], (
-                    f"{route}: color-scheme asset finished after first-paint: "
-                    f"{timing}"
-                )
+            event_evidence = bootstrap_events(events, route)
+            page.wait_for_load_state("load")
+            timing = paint_timing(page)
+            assert_paint_order(route, timing)
 
             results.append({
                 "route": route,
                 "page_type": route_type(route),
-                "response_end": timing["responseEnd"],
-                "first_paint": timing["firstPaint"],
+                "initial_dom": initial,
+                "bootstrap_events": event_evidence,
+                "timing": timing,
             })
 
         return {
             "routes": len(results),
             "page_types": dict(Counter(result["page_type"] for result in results)),
+            "route_evidence": results,
         }
     finally:
         context.close()
@@ -209,7 +270,25 @@ def check_disabled_storage(browser, base_url: str) -> dict[str, object]:
         });""",
     )
     page = context.new_page()
+    events: list[tuple[str, str | None]] = []
     page_errors: list[str] = []
+    page.on(
+        "request",
+        lambda request: (
+            events.append(("request", request.url))
+            if urlsplit(request.url).path == ASSET_PATH
+            else None
+        ),
+    )
+    page.on(
+        "requestfinished",
+        lambda request: (
+            events.append(("finished", request.url))
+            if urlsplit(request.url).path == ASSET_PATH
+            else None
+        ),
+    )
+    page.on("domcontentloaded", lambda: events.append(("domcontentloaded", None)))
     page.on("pageerror", lambda error: page_errors.append(str(error)))
     try:
         response = page.goto(urljoin(base_url, "/"), wait_until="domcontentloaded")
@@ -224,44 +303,95 @@ def check_disabled_storage(browser, base_url: str) -> dict[str, object]:
             "Glee color control did not remain usable with disabled storage"
         )
         assert not page_errors, f"Page errors with disabled storage: {page_errors}"
-        return {"h1_visible": True, "color_toggle_visible": True}
+        initial = page.evaluate(
+            """() => ({
+              scheme: document.documentElement.getAttribute('data-color-scheme'),
+              readyState: document.readyState,
+              colorSchemeScript: Boolean(document.querySelector(
+                'head > script[src*="color-scheme-init.js"]'
+              ))
+            })"""
+        )
+        event_evidence = bootstrap_events(events, "/")
+        page.wait_for_load_state("load")
+        timing = paint_timing(page)
+        assert_paint_order("/", timing)
+        return {
+            "h1_visible": True,
+            "color_toggle_visible": True,
+            "initial_dom": initial,
+            "bootstrap_events": event_evidence,
+            "timing": timing,
+        }
     finally:
         context.close()
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://127.0.0.1:5000")
+    parser.add_argument(
+        "--browser",
+        choices=("chromium", "firefox", "webkit"),
+        default="chromium",
+        help="Playwright engine to exercise.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="Optional JSON evidence report path.",
+    )
     parser.add_argument(
         "--executable-path",
         default=os.environ.get("PLAYWRIGHT_EXECUTABLE_PATH"),
-        help="Optional Chromium binary path for local runners.",
+        help="Optional browser binary path for local runners.",
     )
     args = parser.parse_args()
 
-    from playwright.sync_api import sync_playwright
-
     base_url = args.base_url.rstrip("/") + "/"
-    routes = browser_routes()
-    with sync_playwright() as playwright:
-        launch_options = {"headless": True}
-        if args.executable_path:
-            launch_options["executable_path"] = args.executable_path
-        browser = playwright.chromium.launch(**launch_options)
-        try:
-            evidence = {
-                preference: check_saved_preference(
-                    browser, base_url, preference, routes
-                )
-                for preference in ("light", "dark")
-            }
-            evidence["disabled_storage"] = check_disabled_storage(browser, base_url)
-        finally:
-            browser.close()
+    report: dict[str, object] = {
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "base_url": base_url,
+        "browser": args.browser,
+        "cases": {},
+    }
+    try:
+        from playwright.sync_api import sync_playwright
 
-    print("Color-scheme bootstrap browser regression passed.")
-    for name, result in evidence.items():
-        print(f"  {name}: {result}")
+        routes = browser_routes()
+        report["route_count"] = len(routes)
+        with sync_playwright() as playwright:
+            launch_options = {"headless": True}
+            if args.executable_path:
+                launch_options["executable_path"] = args.executable_path
+            browser = getattr(playwright, args.browser).launch(**launch_options)
+            try:
+                evidence = {
+                    preference: check_saved_preference(
+                        browser, base_url, preference, routes
+                    )
+                    for preference in ("light", "dark")
+                }
+                evidence["disabled_storage"] = check_disabled_storage(
+                    browser, base_url
+                )
+            finally:
+                browser.close()
+        report["cases"] = evidence
+        report["status"] = "PASS"
+    except Exception as error:
+        report["status"] = "FAIL"
+        report["error"] = str(error)
+
+    text = json.dumps(report, indent=2, ensure_ascii=False)
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    if report["status"] == "PASS":
+        print("Color-scheme bootstrap browser regression passed.")
+        return
+    raise SystemExit(1)
 
 
 if __name__ == "__main__":
