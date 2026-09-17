@@ -143,7 +143,9 @@ for (const route of ['/foundry/', '/foundry/index.html']) {
 
 test('cold offline shell serves the exact theme bootstrap requested by HTML', async () => {
   const html = require('node:fs').readFileSync(require('node:path').join(__dirname, '../../index.html'), 'utf8');
-  const bootstrapUrl = html.match(/src="([^"]*color-scheme-init\.js[^"]*)"/)[1];
+  const bootstrapMatch = html.match(/src="([^"]*color-scheme-init\.js[^"]*)"/);
+  assert.ok(bootstrapMatch, 'index.html must reference color-scheme-init.js');
+  const bootstrapUrl = bootstrapMatch[1];
   const worker = harness();
   await worker.lifecycle('install');
   worker.options.offline = true;

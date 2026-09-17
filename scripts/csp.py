@@ -107,7 +107,7 @@ def inline_markup_violations(path: Path) -> list[str]:
     source = path.read_text(encoding="utf-8", errors="replace")
     violations: list[str] = []
     for match in re.finditer(
-        r"<script\b([^>]*)>([\s\S]*?)</script\s*>", source, re.IGNORECASE
+        r"<script\b([^>]*)>([\s\S]*?)</script(?:\s[^>]*)?>", source, re.IGNORECASE
     ):
         attrs, body = match.groups()
         if re.search(r"\bsrc\s*=", attrs, re.IGNORECASE) or not body.strip():

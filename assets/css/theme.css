@@ -1159,14 +1159,21 @@ html[data-theme="light"] body:not(.glee-main):not(.askjamie-main) .hero-subline 
 /* ===== SCROLL REVEAL ===================================================== */
 
 .reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Content never waits on JavaScript. Only a delivered intersection starts
+   this finite animation; a missing or failed controller leaves it readable. */
+@media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
+  .reveal-on-scroll.is-visible.is-reveal-animate {
+    animation: scroll-reveal-in 0.5s ease;
+  }
+}
+
+@keyframes scroll-reveal-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Chat mock layout – shared structure, brand-specific colors layered on top */
@@ -2273,6 +2280,127 @@ body.construction-dismissed .construction-overlay,
   font-size: 0.8rem; color: var(--color-muted, #6b7280);
   margin-top: 0.5rem; font-style: italic; padding-left: 0.5rem;
 }
+/* Story-only framing: the full creature leads, not the decorative backdrop. */
+#murderbird {
+  min-height: 0;
+  isolation: isolate;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+#murderbird .hero-inner {
+  width: 100%;
+  padding: clamp(2rem, 4vw, 3.5rem) 1.5rem;
+}
+
+#murderbird .hero-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 3vw, 3rem);
+  align-items: center;
+}
+
+#murderbird .hero-visual {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 0 0 auto;
+}
+
+#murderbird .hero-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+#murderbird .hero-blueprint-bg {
+  z-index: 0;
+  opacity: 0.2;
+}
+
+#murderbird .brand-stripes {
+  z-index: 0;
+  opacity: 0.08;
+  animation: none;
+}
+
+#murderbird .hero-blueprint-bg::before,
+#murderbird .hero-blueprint-bg::after {
+  animation: none;
+}
+
+#murderbird h1,
+#murderbird .hero-tagline {
+  color: var(--color-fg);
+}
+
+#murderbird h1 {
+  font-size: clamp(2.05rem, 3.6vw, 3rem);
+}
+
+#murderbird .story-brand-name {
+  white-space: nowrap;
+}
+
+#murderbird .hero-eyebrow,
+#murderbird .hero-eyebrow a {
+  color: var(--color-muted);
+}
+
+#murderbird .btn-quiet {
+  color: var(--color-fg);
+  background: var(--color-surface);
+  border-color: var(--color-muted);
+}
+
+#murderbird a:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+@media (max-width: 1024px) {
+  #murderbird .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #murderbird .hero-visual {
+    max-width: none;
+    margin: 0;
+  }
+}
+
+#the-maker .murderbird-scene,
+#the-mechanic .murderbird-scene,
+#the-water .murderbird-scene,
+#the-builder .murderbird-scene,
+#the-sentinel .murderbird-scene {
+  width: 100%;
+  margin: 2rem 0;
+  scroll-margin-top: 12rem;
+}
+
+#the-maker .murderbird-scene img,
+#the-mechanic .murderbird-scene img,
+#the-water .murderbird-scene img,
+#the-builder .murderbird-scene img,
+#the-builder .murderbird-scene video,
+#the-sentinel .murderbird-scene img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+#the-maker .murderbird-scene figcaption,
+#the-mechanic .murderbird-scene figcaption,
+#the-water .murderbird-scene figcaption,
+#the-builder .murderbird-scene figcaption,
+#the-sentinel .murderbird-scene figcaption {
+  margin-top: 0.75rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .murderbird-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 3rem; align-items: start; margin: 2rem 0;
@@ -3652,6 +3780,20 @@ body:not(.glee-main):not(.askjamie-main) h3 {
 }
 
 /* For Home hero title (“Precision · Protocol · Promptcraft”) */
+/* A14 Option B: editorial project cards keep context visible while one clear
+   action carries each card forward. */
+.home-selected-work .project-card {
+  border-top: 3px solid var(--okh-orange);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.home-selected-work .project-card > p:last-child { margin-top: auto; }
+.home-selected-work .project-card .btn-primary { display: inline-flex; }
+@media (max-width: 600px) {
+  .home-selected-work .grid { grid-template-columns: 1fr; }
+  .home-selected-work .project-card { min-height: 0; }
+}
 body:not(.glee-main):not(.askjamie-main) .hero h1 {
   font-size: clamp(2.4rem, 3.6vw, 3.0rem);  /* Slightly smaller for readability */
   letter-spacing: 0.08em;     /* Further breathing room between letters */
@@ -7822,4 +7964,29 @@ html[data-color-scheme="dark"] .glee-search-page__form, html[data-color-scheme="
   visibility: hidden;
   font-size: 0;
   min-height: 2rem;
+}
+
+/* Selected A14 editorial presentation: preserve the existing brand and card depth. */
+.a14-editorial-hero h1 { max-width: 17ch; }
+.a14-editorial-hero .hero-visual img { max-height: 380px; width: auto; max-width: 100%; object-fit: contain; }
+[data-status-presentation="disclosure"] ~ section .project-card,
+section[data-status-presentation="disclosure"] .project-card { border-top: 2px solid var(--okh-orange); }
+[data-project-status-disclosure] { margin: .6rem 0 1rem; }
+[data-project-status-brief] { font-size: .9rem; line-height: 1.5; }
+[data-project-status-disclosure] summary, .home-more-from-forge > details > summary { cursor: pointer; min-height: 44px; padding: .65rem 0; }
+[data-project-status-disclosure] summary:focus-visible, .home-more-from-forge summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.home-more-from-forge .hero-forge-card { max-width: none; }
+@media (max-width: 600px) {
+  .a14-editorial-hero .container { padding-left: 16px; padding-right: 16px; }
+  .a14-editorial-hero .hero-visual img { max-height: 260px; }
+  .a14-editorial-hero h1 { font-size: 1.9rem; }
+  .home-selected-work { padding-left: 16px; padding-right: 16px; }
+}
+
+.a14-editorial-hero { min-height: 0; }
+.a14-editorial-hero .hero-inner { padding-top: 2rem; padding-bottom: 2rem; }
+@media (max-width: 600px) {
+ body:not(.glee-main):not(.askjamie-main) .a14-editorial-hero h1 { font-size: 1.9rem; }
+ .a14-editorial-hero .hero-inner { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+ .a14-editorial-hero .hero-grid { gap: .75rem; }
 }

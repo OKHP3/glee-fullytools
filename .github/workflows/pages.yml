@@ -138,23 +138,20 @@ jobs:
           python3 - <<'PY'
           import json
           import os
-          from datetime import timezone, datetime
           from pathlib import Path
 
-          report_path = Path("assets/audit") / (
-              f"validation-report-{datetime.now(timezone.utc).date().isoformat()}.json"
-          )
-          if not report_path.is_file():
-              raise SystemExit(f"Missing validation report: {report_path}")
-          report = json.loads(report_path.read_text(encoding="utf-8"))
-          actual = report.get("provenance", {}).get("validated_commit")
           expected = os.environ["EXPECTED_COMMIT"].lower()
-          if actual != expected:
-              raise SystemExit(
-                  f"{report_path}: validated commit {actual!r} does not match "
-                  f"workflow commit {expected!r}"
-              )
-          print(f"Verified {report_path} was produced from {actual}")
+          matches = []
+          for path in Path("assets/audit").glob("validation-report-*.json"):
+              report = json.loads(path.read_text(encoding="utf-8"))
+              if report.get("provenance", {}).get("validated_commit") == expected:
+                  matches.append(path)
+          if len(matches) != 1:
+              raise SystemExit(f"Expected one validation report for {expected}, got {len(matches)}")
+          report_path = matches[0]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"report_name={report_path.name}\n")
+          print(f"Verified {report_path} was produced from {expected}")
           PY
 
       - name: Start local server for browser release gate
@@ -214,24 +211,21 @@ jobs:
 
       - name: Stage complete validation evidence
         id: validation_staging
-        if: ${{ always() && steps.validation_provenance.outcome == 'success' }}
+        if: ${{ success() && steps.validation_provenance.outcome == 'success' }}
         env:
           VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
+          VALIDATION_REPORT_NAME: ${{ steps.validation_provenance.outputs.report_name }}
         run: |
           python3 - <<'PY'
           import os
           import shutil
-          from datetime import datetime, timezone
           from pathlib import Path
 
           artifact_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
           audit_dir = artifact_dir / "assets" / "audit"
           shutil.copytree("assets/audit", audit_dir)
 
-          current_report = (
-              f"validation-report-"
-              f"{datetime.now(timezone.utc).date().isoformat()}.json"
-          )
+          current_report = os.environ["VALIDATION_REPORT_NAME"]
           for report in audit_dir.glob("validation-report-*.json"):
               if report.name != current_report:
                   report.unlink()

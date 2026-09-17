@@ -366,30 +366,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Scroll reveal
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
+  // Optional scroll animation. Visibility never depends on this controller.
+  let revealObserver;
+  try {
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+        typeof window.IntersectionObserver === "function") {
+      const revealEls = document.querySelectorAll(".reveal-on-scroll");
+      revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
 
-  if (!prefersReducedMotion && "IntersectionObserver" in window) {
-    const revealEls = document.querySelectorAll(".reveal-on-scroll");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    revealEls.forEach((el) => observer.observe(el));
-  } else {
-    document
-      .querySelectorAll(".reveal-on-scroll")
-      .forEach((el) => el.classList.add("is-visible"));
+      revealEls.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const startsInViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+        if (startsInViewport) {
+          el.classList.add("is-visible");
+        } else {
+          el.classList.add("is-reveal-animate");
+        }
+        revealObserver.observe(el);
+      });
+    } else {
+      document.querySelectorAll(".reveal-on-scroll").forEach((el) => el.classList.add("is-visible"));
+    }
+  } catch (error) {
+    // An unavailable enhancement must not interrupt anchors or other controls.
+    revealObserver?.disconnect();
+    document.querySelectorAll(".reveal-on-scroll").forEach((el) => el.classList.add("is-visible"));
   }
 
   // Smooth scroll for internal anchors
@@ -610,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
 // Consolidated from search.js (2026-05-03). All 26 production pages load this.
-// Index: versioned search-index.json  Styles: inlined into theme.css (2026-05-04)
+// Index: /assets/data/search-index.json?v=4f5e4e56  Styles: inlined into theme.css (2026-05-04)
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
   "use strict";
@@ -620,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // English catalog until their publication gate explicitly promotes them.
   const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
-  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json?v=da80a5d5";
+  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json?v=4f5e4e56";
   const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
   const isGlee = () => document.body.classList.contains("glee-main");
@@ -795,13 +806,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return html + escapeHtml(original.slice(offset));
   }
 
+  function categoryLabel(category) {
+    const labels = {
+      Home: "Home",
+      Brand: "Brand",
+      Project: "Project",
+      About: "About",
+      Projects: "Projects",
+      Contact: "Contact",
+      Page: "Page",
+    };
+    return labels[category] || category;
+  }
+
   // ----- result rendering -----
   function renderResultHtml(result, tokens) {
     const e = result.entry;
     const snip = snippetFor(e, tokens, 220);
     return (
       '<div class="okh-search-result-meta">' +
-        '<span class="okh-search-result-cat">'  + escapeHtml(e.category || "Page") + "</span>" +
+        '<span class="okh-search-result-cat">'  + escapeHtml(categoryLabel(e.category || "Page")) + "</span>" +
         (e.branch_label ? '<span>' + escapeHtml(e.branch_label) + '</span>' : "") +
         (e.publication_state ? '<span class="okh-search-result-state">' + escapeHtml({live: "Live catalog entry", beta: "Beta", unavailable: "Unavailable"}[e.publication_state] || e.publication_state) + '</span>' : "") +
         '<span class="okh-search-result-url">'  + escapeHtml(e.url) + "</span>" +
@@ -826,18 +850,18 @@ document.addEventListener("DOMContentLoaded", () => {
             '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
           "</svg>" +
           '<input type="search" class="okh-search-input" autocomplete="off" spellcheck="false" ' +
-            'placeholder="' + escapeHtml(searchCopy().placeholder) + '" aria-label="Search" />' +
-          '<button type="button" class="okh-search-close" aria-label="Close search">Esc</button>' +
+            'placeholder="' + escapeHtml(searchCopy().placeholder) + '" aria-label="' + "Search" + '" />' +
+          '<button type="button" class="okh-search-close" aria-label="' + "Close search" + '">' + "Esc" + '</button>' +
         "</div>" +
-        '<div class="okh-search-results" role="list" aria-label="Search results"></div>' +
+        '<div class="okh-search-results" role="list" aria-label="' + "Search results" + '"></div>' +
         '<div class="okh-search-status sr-only" role="status" aria-live="polite" aria-atomic="true"></div>' +
         '<div class="okh-search-footer">' +
           '<div class="okh-search-keys">' +
-            "<span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>" +
-            "<span><kbd>↵</kbd> open</span>" +
-            "<span><kbd>Esc</kbd> close</span>" +
+            "<span><kbd>↑</kbd><kbd>↓</kbd> " + "navigate" + "</span>" +
+            "<span><kbd>↵</kbd> " + "open" + "</span>" +
+            "<span><kbd>" + "Esc" + "</kbd> " + "close" + "</span>" +
           "</div>" +
-          '<a href="/search/">Open full search →</a>' +
+          '<a href="/search/">' + "Open full search →" + '</a>' +
         "</div>" +
       "</div>"
     );
@@ -856,6 +880,57 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  // Results remain ordinary links. Keyboard selection moves real focus so
+  // assistive technology announces the destination and native Enter/Tab work.
+  function initResultNavigation(input, list) {
+    const links = () => Array.from(list.querySelectorAll(".okh-search-result"));
+    function setActive(index) {
+      const results = links();
+      if (!results.length) return;
+      const activeIndex = Math.max(0, Math.min(index, results.length - 1));
+      results.forEach((link, position) => {
+        if (position === activeIndex) link.setAttribute("data-active", "true");
+        else link.removeAttribute("data-active");
+      });
+    }
+    function focusResult(index) {
+      const results = links();
+      if (!results.length) return;
+      if (index < 0) { input.focus(); return; }
+      setActive(index);
+      results[Math.min(index, results.length - 1)].focus();
+    }
+    input.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const current = links().findIndex(link => link.getAttribute("data-active") === "true");
+        focusResult(Math.max(0, current + (event.key === "ArrowDown" ? 1 : -1)));
+      } else if (event.key === "Enter" && links().length) {
+        event.preventDefault();
+        (links().find(link => link.getAttribute("data-active") === "true") || links()[0]).click();
+      }
+    });
+    list.addEventListener("focusin", event => {
+      links().forEach(link => {
+        if (link === event.target) link.setAttribute("data-active", "true");
+        else link.removeAttribute("data-active");
+      });
+    });
+    list.addEventListener("keydown", event => {
+      const index = links().indexOf(event.target);
+      if (index < 0 || (event.key !== "ArrowDown" && event.key !== "ArrowUp")) return;
+      event.preventDefault();
+      focusResult(index + (event.key === "ArrowDown" ? 1 : -1));
+    });
+  }
+
+  function markFirstResult(list) {
+    const first = list.querySelector(".okh-search-result");
+    if (first && !list.querySelector('[data-active="true"]')) {
+      first.setAttribute("data-active", "true");
+    }
+  }
+
   function initOverlay() {
     const overlay = buildOverlay();
     if (!overlay) return;
@@ -865,26 +940,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeBtn = overlay.querySelector(".okh-search-close");
 
     let entries        = [];
-    let activeIdx      = 0;
     let currentResults = [];
     let lastTokens     = [];
     let lastFocus      = null;
     let focusTimer     = null;
+    let indexState     = "loading";
+
+    function showLoading() {
+      indexState = "loading";
+      list.innerHTML = '<p class="okh-search-loading">' + "Loading search index…" + '</p>';
+      status.textContent = "Loading search index…";
+    }
 
     function setLoadError(error) {
+      indexState = "error";
       list.innerHTML =
         '<div class="okh-search-noresults okh-search-noresults--error">' +
-          "<p>Search could not load the index.</p>" +
-          '<button type="button" class="okh-search-retry">Retry search index</button>' +
+          "<p>" + "Search could not load the index." + "</p>" +
+          '<button type="button" class="okh-search-retry">' + "Retry search index" + '</button>' +
         "</div>";
       status.textContent = "Search index failed to load.";
       console.warn("[okh-search] overlay index load failed:", error);
       list.querySelector(".okh-search-retry").addEventListener("click", () => {
-        list.innerHTML = '<p class="okh-search-loading">Loading search index…</p>';
+        showLoading();
         loadIndex(true).then((d) => {
           entries = d;
-          if (input.value.trim()) render();
-          else renderEmpty();
+          indexState = "ready";
+          render();
         }).catch(setLoadError);
       });
     }
@@ -901,10 +983,11 @@ document.addEventListener("DOMContentLoaded", () => {
       lastFocus = opener || document.activeElement;
       overlay.dataset.open = "true";
       document.documentElement.style.overflow = "hidden";
+      showLoading();
       loadIndex().then((d) => {
         entries = d;
-        if (input.value.trim()) render();
-        else renderEmpty();
+        indexState = "ready";
+        render();
       }).catch(setLoadError);
       focusTimer = setTimeout(() => {
         if (overlay.dataset.open === "true") input.focus();
@@ -931,28 +1014,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
     }
-    function setActive(i) {
-      const links = list.querySelectorAll(".okh-search-result");
-      activeIdx = Math.max(0, Math.min(i, links.length - 1));
-      links.forEach((el, idx) => {
-        if (idx === activeIdx) {
-          el.setAttribute("data-active", "true");
-          el.scrollIntoView({ block: "nearest" });
-        } else {
-          el.removeAttribute("data-active");
-        }
-      });
-    }
     function render() {
       const q = input.value.trim();
       overlay.querySelector(".okh-search-footer a").href = "/search/" + (q ? "?q=" + encodeURIComponent(q) : "");
+      if (indexState !== "ready") return;
+      if (!entries.length) {
+        list.innerHTML = '<p class="okh-search-empty">' + "No indexed pages are available." + '</p>';
+        status.textContent = "No indexed pages are available.";
+        return;
+      }
       if (!q) { renderEmpty(); currentResults = []; lastTokens = []; return; }
       lastTokens     = tokenize(q);
       currentResults = search(entries, q, 12);
       if (!currentResults.length) {
         list.innerHTML =
-          '<div class="okh-search-noresults"><p>No matches for <strong>' +
-          escapeHtml(q) + "</strong>.</p><p>Try " + searchCopy().suggestions.map(escapeHtml).join(", ") + ".</p></div>";
+          '<div class="okh-search-noresults"><p>' + "No matches for " + '<strong>' +
+          escapeHtml(q) + "</strong>.</p><p>" + "Try " + searchCopy().suggestions.map(escapeHtml).join(", ") + ".</p></div>";
         status.textContent = "No search results for " + q + ".";
         return;
       }
@@ -961,20 +1038,14 @@ document.addEventListener("DOMContentLoaded", () => {
           escapeHtml(r.entry.url) + '">' + renderResultHtml(r, lastTokens) +
         "</a></div>"
       )).join("");
+      markFirstResult(list);
       status.textContent = currentResults.length +
-        (currentResults.length === 1 ? " result" : " results") +
-        " found for " + q + ".";
-      setActive(0);
+        (currentResults.length === 1
+          ? " result found for "
+          : " results found for ") + q + ".";
     }
     input.addEventListener("input", render);
-    input.addEventListener("keydown", (ev) => {
-      if (ev.key === "ArrowDown")  { ev.preventDefault(); setActive(activeIdx + 1); }
-      else if (ev.key === "ArrowUp") { ev.preventDefault(); setActive(activeIdx - 1); }
-      else if (ev.key === "Enter") {
-        const links = list.querySelectorAll(".okh-search-result");
-        if (links[activeIdx]) { ev.preventDefault(); window.location.href = links[activeIdx].getAttribute("href"); }
-      }
-    });
+    initResultNavigation(input, list);
     closeBtn.addEventListener("click", close);
     overlay.addEventListener("click", (ev) => { if (ev.target === overlay) close(); });
 
@@ -1023,7 +1094,7 @@ document.addEventListener("DOMContentLoaded", () => {
         'stroke="currentColor" stroke-width="2" aria-hidden="true">' +
         '<circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />' +
       "</svg>" +
-      '<span class="okh-search-label">Search</span>' +
+      '<span class="okh-search-label">' + "Search" + '</span>' +
       '<kbd>' + shortcut + '</kbd>'
     );
     btn.addEventListener("click", (e) => { e.preventDefault(); openFn(btn); });
@@ -1053,7 +1124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let entries        = [];
     let activeCategory = "all";
     let indexLoadError = null;
-    let activeIdx = 0;
+    let indexLoaded = false;
     let editingQuery = false;
     const listMarkup = (html) => list.tagName === "UL" ? "<li>" + html + "</li>" : html;
 
@@ -1062,9 +1133,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (error) {
         list.innerHTML = listMarkup(
           '<div class="okh-search-noresults okh-search-noresults--error">' +
-            "<p>Search could not load the index.</p>" +
-            "<p>Check your connection, then try again.</p>" +
-            '<button type="button" class="okh-search-retry">Retry search index</button>' +
+            "<p>" + "Search could not load the index." + "</p>" +
+            "<p>" + "Check your connection, then try again." + "</p>" +
+            '<button type="button" class="okh-search-retry">' + "Retry search index" + '</button>' +
           "</div>");
         list.querySelector(".okh-search-retry").addEventListener("click", () => initialize(true));
         if (stats) stats.textContent = "Search index failed to load.";
@@ -1110,15 +1181,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const historyMode = options && options.historyMode === "push" ? "push" : "replace";
       const q = input.value.trim();
       writeQueryToURL(q, activeCategory, historyMode === "replace");
+      if (indexLoadError) {
+        setIndexLoadError(indexLoadError);
+        return;
+      }
+      if (!indexLoaded) {
+        list.innerHTML = "";
+        if (stats) stats.textContent = "Loading index…";
+        return;
+      }
+      if (!entries.length) {
+        list.innerHTML = listMarkup('<p class="okh-search-empty">' + "No indexed pages are available." + '</p>');
+        if (stats) stats.textContent = "No indexed pages are available.";
+        return;
+      }
       if (!q && !isGlee()) {
         list.innerHTML = "";
         if (stats) stats.textContent = entries.length
           ? "Type to search " + entries.length + " indexed entries." + scopeNotice
           : "Loading index…" + scopeNotice;
-        return;
-      }
-      if (indexLoadError) {
-        setIndexLoadError(indexLoadError);
         return;
       }
       const tokens = tokenize(q);
@@ -1127,7 +1208,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .slice(0, 60).map((entry) => ({ entry }));
       if (!results.length) {
         list.innerHTML = listMarkup(
-          '<div class="search-empty-state"><p>No matches for <strong>' +
+          '<div class="search-empty-state"><p>' + "No matches for " + '<strong>' +
           escapeHtml(q) + "</strong>" +
           (activeCategory !== "all" ? ' in <em>' + escapeHtml(activeCategory) + "</em>" : "") +
           ".</p></div>");
@@ -1142,20 +1223,7 @@ document.addEventListener("DOMContentLoaded", () => {
           renderResultHtml(r, tokens) +
         "</a>")
       )).join("");
-      setActive(0, false);
-    }
-
-    function setActive(index, scroll) {
-      const links = list.querySelectorAll(".okh-search-result");
-      activeIdx = Math.max(0, Math.min(index, links.length - 1));
-      links.forEach((link, position) => {
-        if (position === activeIdx) link.setAttribute("data-active", "true");
-        else link.removeAttribute("data-active");
-      });
-      if (scroll && links[activeIdx]) {
-        links[activeIdx].scrollIntoView({ block: "nearest" });
-        if (stats) stats.textContent = "Selected: " + links[activeIdx].querySelector("h3").textContent;
-      }
+      markFirstResult(list);
     }
 
     function buildCategoryChips() {
@@ -1199,9 +1267,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function initialize(retry) {
+      indexLoadError = null;
+      indexLoaded = false;
+      list.innerHTML = "";
       if (stats) stats.textContent = "Loading index…";
       loadIndex(retry).then((d) => {
         indexLoadError = null;
+        indexLoaded = true;
         entries = d;
         const initial = readQueryFromURL();
         input.value = initial.q;
@@ -1221,18 +1293,7 @@ document.addEventListener("DOMContentLoaded", () => {
       editingQuery = true;
     });
     input.addEventListener("change", () => { editingQuery = false; });
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-        event.preventDefault();
-        setActive(activeIdx + (event.key === "ArrowDown" ? 1 : -1), true);
-      } else if (event.key === "Enter") {
-        event.preventDefault();
-        const links = list.querySelectorAll(".okh-search-result");
-        if (links[activeIdx]) window.location.href = links[activeIdx].getAttribute("href");
-      }
-    });
-    // Keep search submission in the shared external runtime rather than
-    // requiring an inline onsubmit handler in the page template.
+    initResultNavigation(input, list);
     const form = input.closest("form");
     if (form) form.addEventListener("submit", (event) => { event.preventDefault(); render(); });
   }
