@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // No-op on pages without `.construction-overlay`.
   const constructionOverlay = document.querySelector(".construction-overlay");
 
-  if (constructionOverlay) {
+  if (constructionOverlay && !document.querySelector(".glee-transition-dialog")) {
     constructionOverlay.setAttribute("role", "dialog");
     constructionOverlay.setAttribute("aria-modal", "true");
     constructionOverlay.setAttribute("aria-label", "Work-in-progress page notice");
@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
 // Consolidated from search.js (2026-05-03). All 26 production pages load this.
-// Index: /assets/data/search-index.json?v=4f5e4e56  Styles: inlined into theme.css (2026-05-04)
+// Index: /assets/data/search-index.json?v=c3b99077  Styles: inlined into theme.css (2026-05-04)
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
   "use strict";
@@ -631,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // English catalog until their publication gate explicitly promotes them.
   const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
-  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json?v=4f5e4e56";
+  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json?v=c3b99077";
   const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
   const isGlee = () => document.body.classList.contains("glee-main");
@@ -1302,7 +1302,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadBrandModule() {
     const body = document.body;
     const moduleUrl = body.classList.contains("glee-main")
-      ? "/assets/js/glee-site-enhancements.js?v=ebfa263e"
+      ? "/assets/js/glee-site-enhancements.js?v=c5b68314"
       : body.classList.contains("askjamie-main")
         ? "/assets/js/askjamie-analytics.js"
         : null;
