@@ -8002,7 +8002,7 @@ section[data-status-presentation="disclosure"] .project-card { border-top: 2px s
   border-inline-start: 4px solid var(--color-accent);
   border-radius: var(--radius-lg, 1.25rem);
 }
-.glee-main .glee-transition-notice h2 { font-size: clamp(1.3rem, 3vw, 1.8rem); margin-block: .4rem .75rem; }
+.glee-main .glee-transition-title { font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 700; margin-block: .4rem .75rem; }
 .glee-main .glee-transition-notice p { max-width: 85ch; }
 .glee-main .glee-transition-detail { font-size: .95rem; }
 .glee-main .glee-transition-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; margin-top: 1rem; }

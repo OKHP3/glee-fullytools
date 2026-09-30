@@ -39,7 +39,7 @@ def synchronize(source: str, url: str) -> str:
     if affected:
         notice = f'''<aside class="glee-transition-notice container" aria-labelledby="transition-notice-title">
   <p class="eyebrow">Platform transition underway</p>
-  <h2 id="transition-notice-title">The ideas are staying. The platform is changing.</h2>
+  <p id="transition-notice-title" class="glee-transition-title">The ideas are staying. The platform is changing.</p>
   <p>{context}OpenAI has scheduled Custom GPT retirement for December 11, 2026. I am actively working to preserve and replatform these concepts as reusable Agent Skills and plugins.</p>
   <p class="glee-transition-detail">A catalog listing or an existing GPT link does not mean a replacement is ready. Each replacement will be reviewed and tested before its new destination is shared.</p>
   <div class="glee-transition-actions"><a href="/next-chapter/">Read about the next chapter</a><button type="button" class="glee-transition-reopen" data-transition-open hidden>Show transition notice</button></div>
