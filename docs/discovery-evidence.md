@@ -1,6 +1,6 @@
 # Discovery and ownership evidence
 
-**Review date:** 2026-09-09
+**Review date:** 2026-09-29
 **Scope:** repository-side discovery configuration and owner-controlled search setup
 **Status:** repository implementation complete; owner-side console coverage evidence not supplied
 
@@ -34,26 +34,26 @@ search console or require console credentials.
 ```json
 {
   "schema": 1,
-  "review_date": "2026-09-09",
+  "review_date": "2026-09-29",
   "scope": {
     "source": "config/public-inventory.json + sitemap.xml",
-    "url_count": 61,
-    "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+    "url_count": 62,
+    "url_sha256": "7f58d18a72916f32058e11fa4d5f7c0dab48a3f8d2e76f23bf41bd1493773290"
   },
   "records": {
     "google-search-console": {
-      "review_date": "2026-09-09",
+      "review_date": "2026-09-29",
       "scope": {
-        "url_count": 61,
-        "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+        "url_count": 62,
+        "url_sha256": "7f58d18a72916f32058e11fa4d5f7c0dab48a3f8d2e76f23bf41bd1493773290"
       },
       "status": "blocked"
     },
     "bing-webmaster-tools": {
-      "review_date": "2026-09-09",
+      "review_date": "2026-09-29",
       "scope": {
-        "url_count": 61,
-        "url_sha256": "148f0e51a086db089c6ce79dc50a01409e0e074ed00e66c2adb634f546dbc6f4"
+        "url_count": 62,
+        "url_sha256": "7f58d18a72916f32058e11fa4d5f7c0dab48a3f8d2e76f23bf41bd1493773290"
       },
       "status": "blocked"
     }
@@ -61,7 +61,14 @@ search console or require console credentials.
 }
 ```
 
-## Post-submission coverage review
+## Current repository scope
+
+The September 29 transition update adds `/next-chapter/`, bringing the local
+sitemap to 62 URLs. The aggregate scope record above reflects that local review.
+Both console statuses remain blocked and their actual indexing counts remain
+unknown. No new console verification, submission or crawl result is claimed.
+
+## Historical post-submission coverage review (September 9)
 
 **Review date:** 2026-09-09
 **Reviewer:** repository review; no console account details accessed
