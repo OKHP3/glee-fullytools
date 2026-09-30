@@ -15,6 +15,12 @@ spec.loader.exec_module(sync)
 
 
 class TransitionNoticeTests(unittest.TestCase):
+    def test_transition_remains_reachable_in_every_indexed_footer(self):
+        for page in collect_indexable_html_files(ROOT):
+            source = page.read_text(encoding="utf-8")
+            with self.subTest(page=page):
+                self.assertIn('href="/next-chapter/"', source[source.index('<footer'):])
+
     def test_all_catalog_entries_have_static_and_modal_disclosures(self):
         catalog = [p for p in collect_indexable_html_files(ROOT) if derive_url(p, ROOT).startswith("/toolbox/")]
         self.assertEqual(len(catalog), 50)

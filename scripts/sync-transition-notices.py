@@ -61,13 +61,18 @@ def synchronize(source: str, url: str) -> str:
         source = replace_block(source, "GPT-TRANSITION-DIALOG", dialog, "</main>")
     footer = '<li><a href="/next-chapter/">Our next chapter</a></li>'
     # Keep the disclosure reachable from every indexed page, including Arcade and Search.
-    footer_section = source[source.index('<footer'):]
+    footer_start = source.index('<footer')
+    old_link = source.find('<!-- AUTOGEN:GPT-TRANSITION-LINK -->')
+    if 0 <= old_link < footer_start:
+        source = re.sub(r'\n?<!-- AUTOGEN:GPT-TRANSITION-LINK -->.*?<!-- /AUTOGEN:GPT-TRANSITION-LINK -->', '', source, flags=re.S)
+        footer_start = source.index('<footer')
+    footer_section = source[footer_start:]
     search_link = re.search(r'<li>\s*<a\b[^>]*href="/?search/"[^>]*>.*?</a>\s*</li>', footer_section, re.S)
     if not search_link:
         search_link = re.search(r'<li>\s*<a\b[^>]*>.*?</a>\s*</li>', footer_section, re.S)
     if not search_link:
         raise ValueError(f"Missing footer navigation: {url}")
-    source = replace_block(source, "GPT-TRANSITION-LINK", footer, search_link[0])
+    source = source[:footer_start] + replace_block(footer_section, "GPT-TRANSITION-LINK", footer, search_link[0])
     source = source.replace("Smart design made human - a joyful suite of custom GPT Tools built with heart.",
                             "Smart design made human. Personalizable tools built with heart, growing beyond Custom GPTs.")
     source = source.replace("Smart design made human \u2014 a joyful suite of custom GPT Tools built with heart.",
