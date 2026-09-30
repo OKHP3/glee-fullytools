@@ -40,6 +40,7 @@ class PublicArtifactTests(unittest.TestCase):
         artifact.stage(self.source, self.output, {"commit": COMMIT})
 
     def test_only_reviewed_public_inventory_is_staged(self):
+        self.write("next-chapter/index.html", '<h1>Our next chapter</h1>')
         for private in ["README.md", "assets/templates/template--homepage.html",
                         "brand-styles/profiles/glee-fully.yaml", "assets/data/private.json",
                         "assets/downloads/.gitkeep", "assets/js/.secret.js"]:
@@ -47,6 +48,7 @@ class PublicArtifactTests(unittest.TestCase):
         self.stage()
         self.assertTrue((self.output / ".well-known/security.txt").is_file())
         self.assertTrue((self.output / ".nojekyll").is_file())
+        self.assertTrue((self.output / "next-chapter/index.html").is_file())
         self.assertFalse((self.output / "assets/templates").exists())
         self.assertFalse((self.output / "assets/data/private.json").exists())
         artifact.verify(self.source, self.output, COMMIT)
