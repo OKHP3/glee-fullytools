@@ -201,6 +201,8 @@ def main() -> int:
         page = context.new_page()
         page.goto(args.base + "/", wait_until="domcontentloaded")
         page.wait_for_timeout(250)
+        if page.locator(".glee-transition-dialog[open]").count():
+            page.locator("[data-transition-close]").click()
         page.locator(".nav-toggle").focus()
         page.keyboard.press("Enter")
         opened = page.evaluate(
@@ -237,6 +239,8 @@ def main() -> int:
         page = context.new_page()
         page.goto(args.base + "/", wait_until="domcontentloaded")
         page.wait_for_timeout(250)
+        if page.locator(".glee-transition-dialog[open]").count():
+            page.locator("[data-transition-close]").click()
         page.locator(".okh-search-trigger").focus()
         page.keyboard.press("Control+K")
         page.locator(".okh-search-input").fill("résumé")
@@ -267,37 +271,37 @@ def main() -> int:
         ), search_result)
         context.close()
 
-        # Construction gate: initial focus, forward/reverse focus trap, Escape,
-        # and hidden/focus recovery after dismissal.
+        # Transition gate: direct entry focus, native modal isolation, Escape,
+        # and explicit reopening after session acknowledgment.
         context = browser.new_context(viewport={"width": 375, "height": 812})
         page = context.new_page()
         page.goto(args.base + ROUTES["construction"], wait_until="domcontentloaded")
-        page.wait_for_timeout(250)
+        page.locator(".glee-transition-dialog[open]").wait_for()
         initial_focus = page.evaluate(
-            "() => document.activeElement?.matches('[data-wip-dismiss]')"
+            "() => document.activeElement?.matches('[data-transition-close]')"
         )
-        page.keyboard.press("Tab")
-        forward_focus = page.evaluate(
-            "() => document.activeElement?.matches('[data-wip-dismiss]')"
-        )
-        page.keyboard.down("Shift")
-        page.keyboard.press("Tab")
-        page.keyboard.up("Shift")
-        reverse_focus = page.evaluate(
-            "() => document.activeElement?.matches('[data-wip-dismiss]')"
-        )
+        focus_stays_modal = True
+        for key in ["Tab", "Tab", "Shift+Tab", "Shift+Tab"]:
+            page.keyboard.press(key)
+            focus_stays_modal = focus_stays_modal and page.evaluate(
+                "() => document.querySelector('.glee-transition-dialog').contains(document.activeElement) "
+                "|| document.activeElement === document.body"
+            )
         page.keyboard.press("Escape")
-        gate_dismissed = page.evaluate(
-            "() => document.querySelector('.construction-overlay').hasAttribute('hidden') "
-            "&& document.activeElement === document.querySelector('#main')"
+        dismissed = page.evaluate(
+            "() => !document.querySelector('.glee-transition-dialog').open "
+            "&& getComputedStyle(document.querySelector('.construction-overlay')).display === 'none'"
         )
-        record(results, "construction gate: focus trap and dismissal recovery", (
-            initial_focus and forward_focus and reverse_focus and gate_dismissed
+        page.locator("[data-transition-open]").click()
+        reopened = page.locator(".glee-transition-dialog[open]").count() == 1
+        page.locator("[data-transition-close]").click()
+        record(results, "transition gate: modal focus, Escape, reopening and dismissal", (
+            initial_focus and focus_stays_modal and dismissed and reopened
         ), {
             "initial_focus": initial_focus,
-            "forward_focus": forward_focus,
-            "reverse_focus": reverse_focus,
-            "hidden_and_main_focused": gate_dismissed,
+            "focus_stays_modal": focus_stays_modal,
+            "dismissed_without_old_gate": dismissed,
+            "reopened": reopened,
         })
         context.close()
 
@@ -367,6 +371,8 @@ def main() -> int:
         page.on("pageerror", lambda error: storage_errors.append(str(error)))
         page.goto(args.base + "/", wait_until="domcontentloaded")
         page.wait_for_timeout(250)
+        if page.locator(".glee-transition-dialog[open]").count():
+            page.locator("[data-transition-close]").click()
         page.locator(".glee-color-toggle").click()
         storage_ready = page.evaluate(
             "() => Boolean(document.querySelector('.okh-search-trigger') "
