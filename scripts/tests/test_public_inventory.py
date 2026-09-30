@@ -121,3 +121,11 @@ class PublicInventoryTests(unittest.TestCase):
                 "<!doctype html>", encoding="utf-8"
             )
             self.assertEqual(ARTIFACT.check_artifact(root), [])
+
+    def test_artifact_policy_accepts_transition_section(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
+            (root / "next-chapter").mkdir()
+            (root / "next-chapter" / "index.html").write_text("<!doctype html>", encoding="utf-8")
+            self.assertEqual(ARTIFACT.check_artifact(root), [])
