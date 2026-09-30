@@ -102,6 +102,8 @@ def run_checks(browser, expect, args) -> list[dict]:
         assert page.title().strip(), f"Blank page title: {route}"
         wait_for_page_condition(page, "Boolean(window.gleeAnalytics)")
         page.wait_for_load_state("networkidle")
+        if page.locator(".glee-transition-dialog[open]").count():
+            page.locator("[data-transition-close]").click()
 
     def check(name, action, **context_options):
         context = browser.new_context(service_workers="block", reduced_motion="reduce",
@@ -176,7 +178,8 @@ def run_checks(browser, expect, args) -> list[dict]:
         assert response.ok, f"Search JSON returned {response.status}"
         data = response.json()
         entries = data["pages"]
-        assert len(entries) == 61, f"Expected 61 public entries, got {len(entries)}"
+        assert len(entries) == 62, f"Expected 62 public entries, got {len(entries)}"
+        assert any(entry["url"] == "/next-chapter/" for entry in entries), "Transition page is missing from search"
         assert any(entry["url"] == "/foundry/" for entry in entries), "FoundRy is missing from search"
         assert len({entry["url"] for entry in entries}) == len(entries)
         assert all(entry.get("category") for entry in entries), "Missing useful categories"
