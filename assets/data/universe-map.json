@@ -5,8 +5,8 @@
   "sources": [
     {
       "origin": "https://glee-fully.tools",
-      "sha256": "4f5e4e5652df07777a040ab7d0538d532d0c6e73ab602f47978940b55fd08b49",
-      "records": 61
+      "sha256": "c3b9907778b6c76339e137be64f701ceea82d31adc6aec50555146ac2b4541e8",
+      "records": 62
     }
   ],
   "nodes": [
@@ -14,7 +14,7 @@
       "id": "https://glee-fully.tools/",
       "url": "https://glee-fully.tools/",
       "title": "Glee-fully Personalizable Tools™ 🧰🌳",
-      "description": "Glee-fully Personalizable Tools™ — a joyful retro toolbox of Custom GPTs that turn everyday life into something beautifully organized and deeply personal.",
+      "description": "Glee-fully personalizable tools for life, work and wonder, evolving from Custom GPTs into Agent Skills and plugins.",
       "origin": "https://glee-fully.tools",
       "status": "Published page",
       "indexed": true,
@@ -75,6 +75,16 @@
       "url": "https://glee-fully.tools/legal/",
       "title": "Legal Notice & Usage Disclaimer — Glee-fully Personalizable Tools™ 🧰🌳",
       "description": "Read the Glee-fully legal notice: usage terms, AI limitations, privacy disclosures, third-party boundaries, and studio contact information.",
+      "origin": "https://glee-fully.tools",
+      "status": "Published page",
+      "indexed": true,
+      "parent": "https://glee-fully.tools/"
+    },
+    {
+      "id": "https://glee-fully.tools/next-chapter/",
+      "url": "https://glee-fully.tools/next-chapter/",
+      "title": "Our Next Chapter | Glee-fully Personalizable Tools",
+      "description": "Glee-fully is preparing for Custom GPT retirement on December 11, 2026, preserving useful ideas and developing reusable Agent Skills and plugins.",
       "origin": "https://glee-fully.tools",
       "status": "Published page",
       "indexed": true,
@@ -634,6 +644,7 @@
         "https://glee-fully.tools/ecosystem/",
         "https://glee-fully.tools/foundry/",
         "https://glee-fully.tools/legal/",
+        "https://glee-fully.tools/next-chapter/",
         "https://glee-fully.tools/persona/",
         "https://glee-fully.tools/search/",
         "https://glee-fully.tools/showcase/",
