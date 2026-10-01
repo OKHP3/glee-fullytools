@@ -304,9 +304,43 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  verify-validation-evidence:
+    name: Verify uploaded Pages validation evidence
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download validation reports for this commit
+        uses: actions/download-artifact@v8
+        with:
+          name: pages-validation-${{ github.sha }}
+          path: ${{ runner.temp }}/pages-validation
+
+      - name: Verify downloaded browser theme reports
+        env:
+          VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          audit_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"]) / "assets" / "audit"
+          expected = (
+              "color-scheme-init-chromium.json",
+              "color-scheme-init-firefox.json",
+              "color-scheme-init-webkit.json",
+          )
+          missing = [name for name in expected if not (audit_dir / name).is_file()]
+          if missing:
+              raise SystemExit(
+                  "Downloaded Pages validation artifact is missing browser theme reports: "
+                  + ", ".join(missing)
+              )
+          print("Verified all three browser theme reports in the downloaded Pages validation artifact.")
+          PY
+
   deploy:
     name: Deploy validated Pages artifact
-    needs: validate
+    needs: [validate, verify-validation-evidence]
     runs-on: ubuntu-latest
     permissions:
       contents: read
