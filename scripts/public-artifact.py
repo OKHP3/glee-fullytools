@@ -26,7 +26,7 @@ ROOT_FILES = {
     "CNAME", ".nojekyll", "favicon.ico", "robots.txt", "humans.txt", "llms.txt",
     "sitemap.xml", "feed.xml", "site.webmanifest", "sw.js", "_headers",
 }
-PAGE_DIRS = {"about", "arcade", "contact", "ecosystem", "foundry", "legal", "persona",
+PAGE_DIRS = {"about", "arcade", "contact", "ecosystem", "foundry", "legal", "next-chapter", "persona",
              "search", "showcase", "toolbox", "universe"}
 DATA_FILES = {"search-index.json", "sparkle.json", "icon-map.json", "universe-map.json"}
 IMAGE_EXTENSIONS = {".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".avif"}

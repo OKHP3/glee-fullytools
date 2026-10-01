@@ -13,6 +13,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `audit-site.py` | active | Site audit |
 | `audit-tool-ette-promises.py` | active | Check all 42 Tool-ette pages for a description, unique identity, publication signal, and primary CTA state |
 | `build-search-index.py` | active | Rebuild the generated search index, then refresh the universe map |
+| `sync-transition-notices.py` | active | Synchronize the Custom GPT transition disclosures and footer route; `--check` detects stale output without writing |
 | `sync-universe-map.py` | active | Generate the owned universe page block and public coverage/provenance JSON using the installed skill; `--check` is read-only |
 | `check-accent-contrast.py` | active | Accent contrast check (has its own test coverage) |
 | `check-catalog-claims.py` | active | Check all 42 Tool-ette pages for unsupported capability, availability, and platform-boundary claims; covered by `tests/test_content_claims.py` in CI |

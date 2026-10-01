@@ -1,6 +1,6 @@
 # Glee-fully Personalizable Tools™
 
-Welcome to **Glee-fully Personalizable Tools™** — the joyful studio of custom GPTs that make everyday life feel lighter, smarter, and more personal.  
+Welcome to **Glee-fully Personalizable Tools™** - a joyful studio of personalizable tools for everyday life, work and wonder, evolving beyond its original Custom GPT platform.
 We believe creativity thrives when structure and delight work together, so we built a platform that does both.
 
 ### 🌟 Overview
@@ -26,11 +26,14 @@ Every element is crafted to be modular, charming, and useful — a mix of retro 
 
 ### 🌱 Current phase
 
-Glee-fully Tools is in **active growth and refinement**. The public site is a
-catalog and routing hub, not a claim that every externally hosted GPT is
-finished: 1 Tool-ette is live, 24 are beta, and 17 are unavailable while their
-launch destinations are completed or owner-confirmed. The authoritative
-inventory, state definitions, and completion contract live in
+Glee-fully Tools is in an **active platform transition**. OpenAI has scheduled
+Custom GPT retirement for December 11, 2026. The owner is preserving and
+replatforming the original concepts into reusable Agent Skills and plugins.
+See the [public transition page](https://glee-fully.tools/next-chapter/).
+
+The catalog preserves 42 Tool-ettes. Its original 1 live, 24 beta and 17
+unavailable labels describe the GPT catalog, not replacement readiness.
+The authoritative inventory and completion contract live in
 [`docs/suite-promise.md`](docs/suite-promise.md).
 
 ### 💡 Why We Exist
@@ -41,8 +44,8 @@ Our suite shows that structure can be playful, creativity can be systematic, and
 
 ### 📚 Public inventory
 
-- **64** production HTML files, including utility and fallback pages
-- **61** indexable public pages in the sitemap and search index
+- **65** production HTML files, including utility and fallback pages
+- **62** indexable public pages in the sitemap and search index
 - **1** Toolbox hub, **7** branch hubs, and **42** Tool-ette pages
 - **49** Atom feed entries for the branch and Tool-ette catalog
 
