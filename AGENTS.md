@@ -691,7 +691,7 @@ baseline -- update it here when the inventory changes materially.
 | `assets/templates/` | 10 templates + `INDEX.md` | Toolbox-specific types: `template--hub-branch.html`, `template--hub-toolbox.html`, `template--tool-detail.html` |
 | `docs/` | `adr/` subfolder with 8 ADRs + `README.md` + `template.md`, `roadmap.md`, and `threat-model.md`; `.gitkeep` | ADR-0008 adds recurring technology-version review on 2026-09-18; planning and security documents live here |
 | `docs/archive/` | `.gitkeep` only | Add archived sprint docs here |
-| `scripts/` | <!-- STAT:SCRIPTS-PY -->36<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-09-18; `technology-versions.py` inventories versions and checks publisher releases; `sync-universe-map.py` generates the public map after indexing. See `scripts/README.md` for active/archive classification. |
+| `scripts/` | <!-- STAT:SCRIPTS-PY -->37<!-- /STAT:SCRIPTS-PY --> active Python scripts + <!-- STAT:SCRIPTS-OTHER -->2<!-- /STAT:SCRIPTS-OTHER --> non-Python runners (`responsive-qa.mjs`, `post-merge.sh`); 47 reference-only/retired Python scripts moved to `scripts/archive/` | Updated 2026-10-01; `check_foundry_accessibility_report.py` validates the FoundRy evidence contract; `technology-versions.py` inventories versions and checks publisher releases; `sync-universe-map.py` generates the public map after indexing. See `scripts/README.md` for active/archive classification. |
 
 **Glee-fully-specific sub-folders under `assets/img/`:**
 - `assets/img/tool-ettes/` -- per-tool-ette hero images (one image per tool-ette

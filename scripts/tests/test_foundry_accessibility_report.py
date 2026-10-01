@@ -112,11 +112,23 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
                     errors,
                 )
 
-    def test_summary_counts_must_match_check_statuses(self):
+    def test_runtime_run_requires_driver_and_loopback_url(self):
         report = valid_report()
-        report["summary"]["PASS"] += 1
+        report["runtime"] = {"status": "RUN"}
+        report["baseUrl"] = "https://example.com"
         errors = validate_report(report)
-        self.assertTrue(any("summary PASS count" in error for error in errors))
+        self.assertTrue(any("runtime RUN status requires a driver" in error for error in errors))
+        self.assertTrue(any("runtime RUN status requires the loopback baseUrl" in error for error in errors))
+
+    def test_summary_counts_must_match_check_statuses(self):
+        for status in STATUSES:
+            with self.subTest(status=status):
+                report = valid_report()
+                report["summary"][status] += 1
+                errors = validate_report(report)
+                self.assertTrue(
+                    any(f"summary {status} count" in error for error in errors)
+                )
 
     def test_summary_counts_must_be_integer_values(self):
         report = valid_report()
@@ -146,6 +158,14 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
         errors = validate_report(report)
         self.assertTrue(
             any("human screen-reader testing was not run" in error for error in errors)
+        )
+
+    def test_check_names_require_a_nonempty_viewport_label(self):
+        report = valid_report()
+        report["checks"][0]["name"] = "narrow-320: "
+        errors = validate_report(report)
+        self.assertTrue(
+            any("check name has no recognized narrow viewport" in error for error in errors)
         )
 
     def test_invalid_json_report_is_rejected(self):
@@ -187,6 +207,8 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             contract,
         )
         self.assertIn("always()", upload)
+        self.assertIn("steps.foundry_accessibility.outcome == 'success'", upload)
+        self.assertIn("steps.foundry_accessibility.outcome == 'failure'", upload)
         self.assertIn("if-no-files-found: error", upload)
 
 

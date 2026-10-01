@@ -107,8 +107,12 @@ def validate_report(report: object) -> list[str]:
             errors.append(f"check name is duplicated: {name}")
         else:
             seen_names.add(name)
-            viewport, separator, _ = name.partition(": ")
-            if not separator or viewport not in expected_viewport_names:
+            viewport, separator, label = name.partition(": ")
+            if (
+                not separator
+                or not label.strip()
+                or viewport not in expected_viewport_names
+            ):
                 errors.append(f"check name has no recognized narrow viewport: {name}")
             else:
                 checked_viewports.add(viewport)
