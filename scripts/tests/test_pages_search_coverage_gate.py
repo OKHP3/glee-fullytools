@@ -132,7 +132,7 @@ def assert_search_coverage_release_gate(workflow: str) -> None:
             "run before publication"
         )
 
-    validate_job = workflow[validate_start:deploy_start]
+    validate_job = _job_block(workflow, "validate")
     gate_position = validate_job.find(SEARCH_GATE)
     if gate_position < 0:
         raise AssertionError(
@@ -185,6 +185,29 @@ class PagesSearchCoverageGateTests(unittest.TestCase):
         first_check = DISCOVERY_CHECKS[0]
         changed = changed.replace(first_check, f"{SEARCH_GATE}\n          {first_check}", 1)
         with self.assertRaisesRegex(AssertionError, "moved before generated discovery"):
+            assert_search_coverage_release_gate(changed)
+
+    def test_gate_moved_to_evidence_job_is_rejected(self):
+        changed = self.workflow.replace(SEARCH_GATE, "echo gate moved", 1)
+        evidence_start, evidence_end = _job_bounds(
+            changed,
+            "verify-validation-evidence",
+        )
+        evidence_job = changed[evidence_start:evidence_end]
+        steps_marker = "    steps:\n"
+        self.assertIn(steps_marker, evidence_job)
+        evidence_job = evidence_job.replace(
+            steps_marker,
+            steps_marker
+            + f"      - name: Check search coverage scope\n"
+            + f"        run: {SEARCH_GATE}\n",
+            1,
+        )
+        changed = changed[:evidence_start] + evidence_job + changed[evidence_end:]
+        with self.assertRaisesRegex(
+            AssertionError,
+            "moved outside the validate job",
+        ):
             assert_search_coverage_release_gate(changed)
 
     def test_deploy_accepts_scalar_dependency(self):
