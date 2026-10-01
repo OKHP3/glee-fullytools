@@ -1,24 +1,29 @@
 #!/usr/bin/env python3
 """Contract tests for FoundRy accessibility evidence and its Pages gate."""
+import importlib.util
 from copy import deepcopy
 import json
 from pathlib import Path
-import sys
 import tempfile
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
-sys.path.insert(0, str(ROOT / "scripts"))
-
-from check_foundry_accessibility_report import (  # noqa: E402
-    EXPECTED_VIEWPORTS,
-    SCREEN_READER_LIMITATION,
-    STATUSES,
-    validate_file,
-    validate_report,
+CHECKER_PATH = ROOT / "scripts" / "check-foundry-accessibility-report.py"
+CHECKER_SPEC = importlib.util.spec_from_file_location(
+    "foundry_accessibility_report_checker", CHECKER_PATH
 )
+if CHECKER_SPEC is None or CHECKER_SPEC.loader is None:
+    raise ImportError(f"Could not load report checker at {CHECKER_PATH}")
+CHECKER = importlib.util.module_from_spec(CHECKER_SPEC)
+CHECKER_SPEC.loader.exec_module(CHECKER)
+
+EXPECTED_VIEWPORTS = CHECKER.EXPECTED_VIEWPORTS
+SCREEN_READER_LIMITATION = CHECKER.SCREEN_READER_LIMITATION
+STATUSES = CHECKER.STATUSES
+validate_file = CHECKER.validate_file
+validate_report = CHECKER.validate_report
 
 
 def valid_report() -> dict:
@@ -177,6 +182,8 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
 
     def test_pages_runs_contract_after_existing_gate_without_weakening_it(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
+        dependencies = step_block(workflow, "Install Node QA dependencies")
+        browser_install = step_block(workflow, "Install Node Playwright Chromium")
         browser = step_block(workflow, "Run FoundRy accessibility evidence")
         contract = step_block(workflow, "Verify FoundRy accessibility report contract")
         upload = step_block(workflow, "Upload FoundRy accessibility evidence")
@@ -184,13 +191,16 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
         browser_position = workflow.index(browser)
         contract_position = workflow.index(contract)
         upload_position = workflow.index(upload)
+        self.assertLess(workflow.index(dependencies), browser_position)
+        self.assertLess(workflow.index(browser_install), browser_position)
         self.assertLess(browser_position, contract_position)
         self.assertLess(contract_position, upload_position)
 
+        self.assertIn("run: npm ci", dependencies)
+        self.assertIn("run: npx playwright install --with-deps chromium", browser_install)
         self.assertIn("id: foundry_accessibility", browser)
         self.assertIn(
-            "run: npm run qa:foundry-accessibility -- --output "
-            "assets/audit/foundry-accessibility.json",
+            'run: npm run qa:foundry-accessibility -- --output "$RUNNER_TEMP/foundry-accessibility.json"',
             browser,
         )
         self.assertNotIn("continue-on-error", browser)
@@ -198,18 +208,22 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
         self.assertIn("steps.foundry_accessibility.outcome == 'success'", contract)
         self.assertIn("steps.foundry_accessibility.outcome == 'failure'", contract)
         self.assertIn(
-            "python3 scripts/tests/test_foundry_accessibility_report.py",
+            "python3 scripts/tests/test-foundry-accessibility-report.py",
             contract,
         )
         self.assertIn(
-            "python3 scripts/check_foundry_accessibility_report.py "
-            "assets/audit/foundry-accessibility.json",
+            'python3 scripts/check-foundry-accessibility-report.py "$RUNNER_TEMP/foundry-accessibility.json"',
             contract,
         )
         self.assertIn("always()", upload)
         self.assertIn("steps.foundry_accessibility.outcome == 'success'", upload)
         self.assertIn("steps.foundry_accessibility.outcome == 'failure'", upload)
+        self.assertIn(
+            "path: ${{ runner.temp }}/foundry-accessibility.json",
+            upload,
+        )
         self.assertIn("if-no-files-found: error", upload)
+        self.assertNotIn("assets/audit/foundry-accessibility.json", workflow)
 
 
 if __name__ == "__main__":
