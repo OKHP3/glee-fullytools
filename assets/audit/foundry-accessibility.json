@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-10-01T21:35:29.925Z",
+  "sourceSha": "89c10560443a1ab4800935c020357417693dfbcc",
+  "route": "/foundry/",
+  "viewports": [
+    {
+      "name": "narrow-320",
+      "width": 320,
+      "height": 780
+    },
+    {
+      "name": "narrow-390",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": [],
+  "limitations": [
+    "Human screen-reader testing was not run."
+  ],
+  "runtime": {
+    "status": "NOT RUN",
+    "reason": "Installed Playwright runtime unavailable: Cannot find module 'playwright'\nRequire stack:\n- /home/runner/workspace/scripts/tests/foundry-accessibility-qa.mjs"
+  },
+  "summary": {
+    "PASS": 0,
+    "FAIL": 0,
+    "NOT RUN": 0
+  }
+}

@@ -116,6 +116,12 @@ jobs:
         id: foundry_accessibility
         run: npm run qa:foundry-accessibility -- --output assets/audit/foundry-accessibility.json
 
+      - name: Verify FoundRy accessibility report contract
+        if: ${{ always() && (steps.foundry_accessibility.outcome == 'success' || steps.foundry_accessibility.outcome == 'failure') }}
+        run: |
+          python3 scripts/tests/test_foundry_accessibility_report.py
+          python3 scripts/check_foundry_accessibility_report.py assets/audit/foundry-accessibility.json
+
       - name: Upload FoundRy accessibility evidence
         if: ${{ always() && (steps.foundry_accessibility.outcome == 'success' || steps.foundry_accessibility.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
