@@ -16,6 +16,9 @@ PROVENANCE_STEP = "- name: Verify validation report provenance"
 STAGING_STEP = "- name: Stage complete validation evidence"
 UPLOAD_STEP = "- name: Upload validation reports"
 THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
+POST_UPLOAD_JOB = "  verify-validation-evidence:"
+POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
+DEPLOY_JOB = "  deploy:"
 LATE_EVIDENCE_STEPS = (
     "- name: Run browser responsive and asset QA",
     "- name: Run visitor, privacy, and rendered contrast acceptance",
@@ -95,6 +98,59 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         )
 
 
+def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
+    """Require a release-level check of the uploaded validation artifact."""
+    post_upload_position = workflow.find(POST_UPLOAD_JOB)
+    verify_step_position = workflow.find(POST_UPLOAD_VERIFY_STEP)
+    deploy_position = workflow.find(DEPLOY_JOB)
+    if min(post_upload_position, verify_step_position, deploy_position) < 0:
+        raise AssertionError(
+            "Pages workflow must download and verify the validation artifact in a separate job"
+        )
+    if not post_upload_position < verify_step_position < deploy_position:
+        raise AssertionError(
+            "Downloaded validation evidence must be checked before the deploy job"
+        )
+
+    job_block = workflow[post_upload_position:deploy_position]
+    if "    needs: validate" not in job_block:
+        raise AssertionError(
+            "Uploaded validation evidence check must run after the release validation job"
+        )
+    download_position = job_block.find("uses: actions/download-artifact@v8")
+    if download_position < 0 or download_position > job_block.find(POST_UPLOAD_VERIFY_STEP):
+        raise AssertionError(
+            "Uploaded validation evidence must be downloaded before checking its reports"
+        )
+    download_block = job_block[download_position:].split("\n      - name:", 1)[0]
+    if "name: pages-validation-${{ github.sha }}" not in download_block:
+        raise AssertionError(
+            "Uploaded validation evidence check must download this commit's artifact"
+        )
+
+    verify_block = job_block[job_block.find(POST_UPLOAD_VERIFY_STEP):]
+    expected_reports = (
+        "color-scheme-init-chromium.json",
+        "color-scheme-init-firefox.json",
+        "color-scheme-init-webkit.json",
+    )
+    missing_names = [name for name in expected_reports if name not in verify_block]
+    if missing_names or "missing" not in verify_block:
+        raise AssertionError(
+            "Downloaded validation artifact check must fail when any browser theme report is absent"
+        )
+
+    deploy_block = workflow[deploy_position:]
+    deploy_needs = deploy_block.split("\n    runs-on:", 1)[0]
+    if (
+        "needs: [validate, verify-validation-evidence]" not in deploy_needs
+        or "needs: validate" in deploy_needs
+    ):
+        raise AssertionError(
+            "Pages deployment must wait for the separate uploaded-evidence check"
+        )
+
+
 class PagesValidationEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -102,6 +158,64 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_complete_commit_linked_evidence_is_staged_before_upload(self):
         assert_validation_evidence_contract(self.workflow)
+
+    def test_uploaded_validation_artifact_is_checked_before_deployment(self):
+        assert_uploaded_theme_evidence_contract(self.workflow)
+
+    def test_downloaded_artifact_check_fails_for_each_missing_browser_report(self):
+        job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        expected_reports = (
+            "color-scheme-init-chromium.json",
+            "color-scheme-init-firefox.json",
+            "color-scheme-init-webkit.json",
+        )
+        for missing_name in expected_reports:
+            with self.subTest(missing=missing_name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                for report_name in expected_reports:
+                    if report_name != missing_name:
+                        (audit / report_name).write_text("{}", encoding="utf-8")
+                env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
+                result = subprocess.run(
+                    [sys.executable, "-c", code],
+                    cwd=root,
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(missing_name, result.stderr)
+
+    def test_downloaded_artifact_check_accepts_all_browser_reports(self):
+        job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser in ("chromium", "firefox", "webkit"):
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    "{}", encoding="utf-8"
+                )
+            env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Verified all three browser theme reports", result.stdout)
 
     def test_early_staging_has_clear_failure(self):
         changed = self.workflow.replace(
