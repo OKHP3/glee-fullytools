@@ -1,6 +1,7 @@
 """Contract tests for the search-coverage gate in the Pages workflow."""
 
 from pathlib import Path
+import re
 import unittest
 
 
@@ -14,6 +15,105 @@ DISCOVERY_CHECKS = (
     "python3 scripts/generate-feed.py --check",
 )
 DEPLOY_ACTION = "uses: actions/deploy-pages@"
+JOB_HEADER = re.compile(r"(?m)^  (?P<name>[A-Za-z0-9_-]+):[ \t]*(?:#.*)?$")
+NEEDS_LINE = re.compile(r"(?m)^    needs:[ \t]*(?P<value>.*)$")
+DEPENDENCY_NAME = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def _job_bounds(workflow: str, job_name: str) -> tuple[int, int]:
+    """Find one top-level job block without parsing unrelated workflow YAML."""
+    jobs_header = re.search(r"(?m)^jobs:[ \t]*$", workflow)
+    if jobs_header is None:
+        raise AssertionError("Pages workflow has no top-level jobs section")
+
+    job_headers = list(JOB_HEADER.finditer(workflow, jobs_header.end()))
+    for index, header in enumerate(job_headers):
+        if header.group("name") == job_name:
+            end = (
+                job_headers[index + 1].start()
+                if index + 1 < len(job_headers)
+                else len(workflow)
+            )
+            return header.start(), end
+    raise AssertionError(f"Pages workflow is missing the {job_name!r} job")
+
+
+def _job_block(workflow: str, job_name: str) -> str:
+    start, end = _job_bounds(workflow, job_name)
+    return workflow[start:end]
+
+
+def _dependency_name(value: str) -> str:
+    """Parse one simple YAML job identifier, optionally quoted."""
+    value = value.strip()
+    if (
+        len(value) >= 2
+        and value[0] in {"'", '"'}
+        and value[-1] == value[0]
+    ):
+        value = value[1:-1]
+    if not DEPENDENCY_NAME.fullmatch(value):
+        raise AssertionError(
+            f"Deploy job has unsupported needs dependency syntax: {value!r}"
+        )
+    return value
+
+
+def _parse_dependency_list(value: str) -> list[str]:
+    """Parse a scalar or an inline YAML list of job identifiers."""
+    value = value.split("#", 1)[0].strip()
+    if value.startswith("["):
+        if not value.endswith("]"):
+            raise AssertionError("Deploy job has an incomplete needs list")
+        body = value[1:-1].strip()
+        if not body:
+            return []
+        return [_dependency_name(item) for item in body.split(",")]
+    if not value:
+        raise AssertionError("Deploy job has an empty needs dependency")
+    return [_dependency_name(value)]
+
+
+def _job_needs(workflow: str, job_name: str) -> list[str]:
+    """Read only scalar, flow-list, and block-list job dependency syntax."""
+    block = _job_block(workflow, job_name)
+    match = NEEDS_LINE.search(block)
+    if match is None:
+        raise AssertionError(f"The {job_name} job must declare needs dependencies")
+
+    value = match.group("value").split("#", 1)[0].strip()
+    if value:
+        return _parse_dependency_list(value)
+
+    dependencies = []
+    for line in block[match.end():].splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        item = re.fullmatch(r" {6}-[ \t]*(.*?)[ \t]*(?:#.*)?", line)
+        if item:
+            dependencies.append(_dependency_name(item.group(1)))
+        elif re.match(r"^ {4}\S", line):
+            break
+        elif not line.startswith("      "):
+            break
+        else:
+            raise AssertionError("Deploy job has unsupported block-list needs syntax")
+    return dependencies
+
+
+def _replace_deploy_needs(workflow: str, replacement: str) -> str:
+    """Mutate only the deploy job's direct needs line for contract tests."""
+    start, end = _job_bounds(workflow, "deploy")
+    block = workflow[start:end]
+    match = NEEDS_LINE.search(block)
+    if match is None:
+        raise AssertionError("Deploy job has no needs line to mutate")
+    changed_block = (
+        block[:match.start()]
+        + f"    needs: {replacement}"
+        + block[match.end():]
+    )
+    return workflow[:start] + changed_block + workflow[end:]
 
 
 def assert_search_coverage_release_gate(workflow: str) -> None:
@@ -52,10 +152,10 @@ def assert_search_coverage_release_gate(workflow: str) -> None:
                 f"check: {check}"
             )
 
-    deploy_job = workflow[deploy_start:]
-    if "needs: validate" not in deploy_job:
+    deploy_needs = _job_needs(workflow, "deploy")
+    if "validate" not in deploy_needs:
         raise AssertionError(
-            "Deploy job must need validate so search coverage can block publication"
+            "Deploy job must directly need validate so search coverage can block publication"
         )
     deploy_position = workflow.find(DEPLOY_ACTION, deploy_start)
     if deploy_position < 0:
@@ -87,10 +187,45 @@ class PagesSearchCoverageGateTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "moved before generated discovery"):
             assert_search_coverage_release_gate(changed)
 
+    def test_deploy_accepts_scalar_dependency(self):
+        changed = _replace_deploy_needs(self.workflow, "validate")
+        assert_search_coverage_release_gate(changed)
+
+    def test_deploy_accepts_flow_list_dependencies(self):
+        changed = _replace_deploy_needs(
+            self.workflow,
+            "[validate, verify-validation-evidence]",
+        )
+        assert_search_coverage_release_gate(changed)
+
+    def test_deploy_accepts_block_list_dependencies(self):
+        changed = _replace_deploy_needs(
+            self.workflow,
+            "\n      - validate\n      - verify-validation-evidence",
+        )
+        assert_search_coverage_release_gate(changed)
+
     def test_deploy_bypass_has_clear_failure(self):
-        changed = self.workflow.replace("needs: validate", "needs: []", 1)
-        with self.assertRaisesRegex(AssertionError, "must need validate"):
+        changed = _replace_deploy_needs(
+            self.workflow,
+            "[verify-validation-evidence]",
+        )
+        self.assertIn("needs: validate", _job_block(changed, "verify-validation-evidence"))
+        with self.assertRaisesRegex(AssertionError, "must directly need validate"):
             assert_search_coverage_release_gate(changed)
+
+    def test_deploy_rejects_lookalike_validate_dependencies(self):
+        for lookalike in ("validate-job", "not-validate"):
+            with self.subTest(dependency=lookalike):
+                changed = _replace_deploy_needs(
+                    self.workflow,
+                    f"[{lookalike}, verify-validation-evidence]",
+                )
+                with self.assertRaisesRegex(
+                    AssertionError,
+                    "must directly need validate",
+                ):
+                    assert_search_coverage_release_gate(changed)
 
 
 if __name__ == "__main__":
