@@ -1,14 +1,20 @@
 ---
-name: Local merge history normalization
-description: Replit may replay a local merge linearly after a protected-branch synchronization
+name: Local Git checkpoint safety
+description: Replit may normalize merges or checkpoint file edits into branch refs
 ---
 
-After a local merge of a divergent `main` into the checkout, verify the reflog and
-final parentage rather than assuming the merge commit remains. The environment may
-normalize the result into local commits replayed on top of `origin/main`.
+After local merges or file edits, inspect the reflog and decorated graph rather
+than assuming branch refs moved only through explicit Git commands. The
+environment may normalize local history or checkpoint edits into a commit on
+the active branch, including generated validation outputs. A managed backup ref
+may point to the same commit.
 
-**Why:** A successful merge command can be followed by host synchronization that
-changes local-only commit SHAs without changing the remote or discarding the work.
+**Why:** Treating an automatically-created commit as a clean feature commit can
+push generated reports or misstate the relationship to the verified base.
 
-**How to apply:** Preserve a recovery ref, inspect `git reflog` and `git log --graph`,
-then report the final `HEAD`/remote relationship and any generated commits.
+**How to apply:** Before staging or pushing, inspect `git status`, `git reflog`,
+and `git log --graph --decorate`, then compare against the verified base. Keep
+unexpected history and managed recovery refs intact. When generated outputs
+entered an automatic commit, retain useful validation evidence and use an
+additive cleanup commit rather than rewriting history when history must be
+preserved.
