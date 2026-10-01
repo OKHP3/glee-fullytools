@@ -107,6 +107,9 @@ jobs:
       - name: Check generated CSP policies
         run: python3 scripts/check-csp.py
 
+      - name: Check public-header CSP rules offline
+        run: python3 scripts/tests/test-check-public-headers.py
+
       - name: Run validation and template metadata regressions
         run: |
           python3 -m unittest \
