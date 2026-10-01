@@ -104,7 +104,7 @@ jobs:
           python3 scripts/tests/test_svg_assets.py
           python3 scripts/tests/test_offline_validation.py
           python3 scripts/tests/test_validation_report.py
-          python3 scripts/tests/test_pages_validation_evidence.py
+          python3 scripts/tests/test-pages-validation-evidence.py
           node --test scripts/tests/test-sw-resilience.cjs
           node scripts/tests/test-sw-bootstrap.cjs
           python3 scripts/validate-site.py --commit "${{ github.sha }}"
