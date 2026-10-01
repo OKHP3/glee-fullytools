@@ -15,15 +15,21 @@ WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
 PROVENANCE_STEP = "- name: Verify validation report provenance"
 STAGING_STEP = "- name: Stage complete validation evidence"
 UPLOAD_STEP = "- name: Upload validation reports"
+THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
 LATE_EVIDENCE_STEPS = (
     "- name: Run browser responsive and asset QA",
     "- name: Run visitor, privacy, and rendered contrast acceptance",
     "- name: Run resilient web behavior QA",
+    "- name: Run color-scheme bootstrap regression in all installed engines",
+    "- name: Verify browser-specific theme evidence",
 )
 PROVENANCE_GATE = "steps.validation_provenance.outcome == 'success'"
 STAGING_GATE = "steps.validation_staging.outcome == 'success'"
+THEME_GATE = "steps.theme_evidence.outcome == 'success'"
 HISTORICAL_FILTER = 'audit_dir.glob("validation-report-*.json")'
 COMPLETE_AUDIT_COPY = 'shutil.copytree("assets/audit", audit_dir)'
+THEME_BROWSER_LOOP = "for browser in chromium firefox webkit; do"
+THEME_REPORT_PATTERN = "color-scheme-init-$browser.json"
 
 
 def assert_validation_evidence_contract(workflow: str) -> None:
@@ -69,6 +75,25 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             "and complete evidence staging"
         )
 
+    theme_position = positions[THEME_VERIFY_STEP]
+    theme_block = workflow[theme_position:staging_position]
+    if "Browser-specific color-scheme evidence is incomplete" not in theme_block:
+        raise AssertionError(
+            "Release evidence must fail clearly when browser-specific theme evidence is incomplete"
+        )
+    if THEME_BROWSER_LOOP not in workflow or THEME_REPORT_PATTERN not in workflow:
+        raise AssertionError(
+            "Release workflow must retain color-scheme reports for chromium, firefox, and webkit"
+        )
+    if "light" not in theme_block or "dark" not in theme_block or "disabled_storage" not in theme_block:
+        raise AssertionError(
+            "Browser-specific theme evidence must include light, dark, and disabled-storage cases"
+        )
+    if THEME_GATE not in staging_block:
+        raise AssertionError(
+            "Complete evidence staging must require successful browser-specific theme verification"
+        )
+
 
 class PagesValidationEvidenceTests(unittest.TestCase):
     @classmethod
@@ -102,6 +127,44 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         changed = self.workflow.replace("if: ${{ success() &&", "if: ${{ always() &&")
         with self.assertRaisesRegex(AssertionError, "successful preceding gates"):
             assert_validation_evidence_contract(changed)
+
+    def test_missing_browser_theme_report_has_clear_failure(self):
+        block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser in ("chromium", "firefox"):
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(
+                        {
+                            "browser": browser,
+                            "status": "PASS",
+                            "cases": {
+                                "light": {},
+                                "dark": {},
+                                "disabled_storage": {},
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "missing: color-scheme-init-webkit.json",
+                result.stderr,
+            )
 
     def test_provenance_uses_commit_not_the_current_calendar_date(self):
         block = self.workflow.split(PROVENANCE_STEP, 1)[1].split("\n      - name:", 1)[0]

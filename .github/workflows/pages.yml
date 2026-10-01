@@ -35,7 +35,7 @@ jobs:
           echo "Validated release commit: $checked_out_commit"
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.node-version'
           cache: npm
@@ -181,6 +181,64 @@ jobs:
       - name: Run resilient web behavior QA
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
 
+      - name: Run color-scheme bootstrap regression in all installed engines
+        run: |
+          failed=0
+          for browser in chromium firefox webkit; do
+            python3 scripts/tests/test-color-scheme-init.py \
+              --base-url http://localhost:5000 \
+              --browser "$browser" \
+              --output "assets/audit/color-scheme-init-$browser.json" \
+              || failed=1
+          done
+          exit "$failed"
+
+      - name: Verify browser-specific theme evidence
+        id: theme_evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          audit_dir = Path("assets/audit")
+          expected = ("chromium", "firefox", "webkit")
+          missing = []
+          invalid = []
+          for browser in expected:
+              path = audit_dir / f"color-scheme-init-{browser}.json"
+              if not path.is_file():
+                  missing.append(path.name)
+                  continue
+              try:
+                  report = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError) as error:
+                  invalid.append(f"{path.name}: cannot parse JSON ({error})")
+                  continue
+              if report.get("browser") != browser:
+                  invalid.append(
+                      f"{path.name}: browser={report.get('browser')!r}, expected {browser!r}"
+                  )
+              if report.get("status") != "PASS":
+                  invalid.append(f"{path.name}: status={report.get('status')!r}, expected 'PASS'")
+              cases = report.get("cases")
+              if not isinstance(cases, dict) or not {"light", "dark", "disabled_storage"} <= cases.keys():
+                  invalid.append(
+                      f"{path.name}: expected light, dark, and disabled_storage cases"
+                  )
+
+          if missing or invalid:
+              details = []
+              if missing:
+                  details.append("missing: " + ", ".join(missing))
+              if invalid:
+                  details.append("invalid: " + "; ".join(invalid))
+              raise SystemExit(
+                  "Browser-specific color-scheme evidence is incomplete; "
+                  + " | ".join(details)
+              )
+          print("Verified browser-specific color-scheme evidence for chromium, firefox, and webkit.")
+          PY
+
       - name: Verify custom domain and required public files
         run: |
           test -s CNAME
@@ -211,7 +269,7 @@ jobs:
 
       - name: Stage complete validation evidence
         id: validation_staging
-        if: ${{ success() && steps.validation_provenance.outcome == 'success' }}
+        if: ${{ success() && steps.validation_provenance.outcome == 'success' && steps.theme_evidence.outcome == 'success' }}
         env:
           VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
           VALIDATION_REPORT_NAME: ${{ steps.validation_provenance.outputs.report_name }}

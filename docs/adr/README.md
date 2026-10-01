@@ -18,6 +18,7 @@ close to when a decision is made and updated only to change status — never to 
 | [0005](0005-python-build-tooling.md) | Python-Based Build and Maintenance Tooling | Accepted | 2025-01-01 |
 | [0006](0006-privacy-first-third-party-boundaries.md) | Privacy-first Third-party Boundaries | Accepted | 2026-09-04 |
 | [0007](0007-canonical-okhp3-site-stack.md) | Safe Stack Conformance for Glee-fully Tools | Accepted | 2026-09-12 |
+| [0008](0008-manifest-owned-dependency-versions.md) | Manifest-owned Dependency Versions and Recurring Release Review | Accepted locally; activation pending | 2026-09-18 |
 
 ---
 

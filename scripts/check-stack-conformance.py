@@ -46,27 +46,15 @@ from pathlib import Path
 
 NODE_VERSION = "22.19.0"
 
-# Exact pins, matching docs/dependency-policy.md in the reference repo.
-NPM_REQUIRED = {
-    "playwright": "1.60.0",
-    "lighthouse": "13.4.1",
-    "puppeteer": "25.10.0",
-}
+# Package manifests own exact versions; duplicate literals blocked Dependabot.
+# ADR 0008 retains required tools and checks manifest/lock agreement instead.
+NPM_REQUIRED = ("playwright", "lighthouse", "puppeteer")
+EXACT_RELEASE = re.compile(r"\d+\.\d+\.\d+$")
 
 NPM_FORBIDDEN = ()  # Existing optional QA packages are retained.
 
 # Universal Python QA pin: all three sites parse HTML from Python.
-PIP_REQUIRED = {
-    "beautifulsoup4": "4.15.0",
-}
-
-# Pinned only where the repo actually uses it: Pillow where an image pipeline
-# exists, python-playwright where Python (not Node) drives the browser. Never
-# added by this checker; if present it must match.
-PIP_IF_PRESENT = {
-    "Pillow": "12.3.0",
-    "playwright": "1.60.0",
-}
+PIP_REQUIRED = ("beautifulsoup4", "playwright")
 
 DEPLOY_ACTION = "actions/deploy-pages@v5"
 
@@ -239,14 +227,24 @@ def check_npm_deps(root: Path, rep: Report):
     if not present:
         rep.ok("NPM_FORBIDDEN", "no forbidden browser-automation packages")
 
-    for name, want in NPM_REQUIRED.items():
-        got = declared.get(name)
-        if got is None:
-            rep.fail("NPM_REQUIRED", "%s is not declared (expected %s)" % (name, want))
-        elif got != want:
-            rep.fail("NPM_REQUIRED", "%s is %r, expected %r" % (name, got, want))
+    for name in NPM_REQUIRED:
+        if name not in declared:
+            rep.fail("NPM_REQUIRED", "%s is not declared" % name)
+    lock = read_json(root / "package-lock.json")
+    if lock is None:
+        rep.fail("NPM_LOCK", "package-lock.json is missing or invalid")
+        return
+    packages = lock.get("packages", {})
+    for field in ("dependencies", "devDependencies"):
+        if (pkg.get(field) or {}) != (packages.get("", {}).get(field) or {}):
+            rep.fail("NPM_LOCK", "%s differs between package.json and lock root" % field)
+    for name, pin in declared.items():
+        if not isinstance(pin, str) or not EXACT_RELEASE.fullmatch(pin):
+            rep.fail("NPM_PIN", "%s requires an exact stable X.Y.Z pin" % name)
+        elif packages.get("node_modules/" + name, {}).get("version") != pin:
+            rep.fail("NPM_LOCK", "%s lock entry does not match %s" % (name, pin))
         else:
-            rep.ok("NPM_REQUIRED", "%s pinned at %s" % (name, want))
+            rep.ok("NPM_PIN", "%s pinned and locked at %s" % (name, pin))
 
 
 def check_pip_deps(root: Path, rep: Report):
@@ -257,26 +255,23 @@ def check_pip_deps(root: Path, rep: Report):
     pins = {}
     for line in raw.splitlines():
         line = line.split("#", 1)[0].strip()
-        if "==" in line:
-            name, _, version = line.partition("==")
-            pins[name.strip().lower()] = version.strip()
-    for name, want in PIP_REQUIRED.items():
+        if not line:
+            continue
+        match = re.fullmatch(r"([A-Za-z0-9_.-]+)==(\d+\.\d+\.\d+)", line)
+        if not match:
+            rep.fail("PIP_PIN", "Python requirement must be an exact stable pin: %s" % line)
+            continue
+        name, pin = match.groups()
+        normalized = name.lower().replace("_", "-")
+        if normalized in pins:
+            rep.fail("PIP_PIN", "Duplicate Python requirement: %s" % name)
+        pins[normalized] = pin
+    for name in PIP_REQUIRED:
         got = pins.get(name.lower())
         if got is None:
-            rep.fail("PIP_REQUIRED", "%s is not pinned (expected %s)" % (name, want))
-        elif got != want:
-            rep.fail("PIP_REQUIRED", "%s==%s, expected %s" % (name, got, want))
+            rep.fail("PIP_REQUIRED", "%s is not exact-pinned" % name)
         else:
-            rep.ok("PIP_REQUIRED", "%s==%s" % (name, want))
-
-    for name, want in PIP_IF_PRESENT.items():
-        got = pins.get(name.lower())
-        if got is None:
-            continue  # not needed by this repo; the checker never adds it
-        if got != want:
-            rep.fail("PIP_IF_PRESENT", "%s==%s, expected %s" % (name, got, want))
-        else:
-            rep.ok("PIP_IF_PRESENT", "%s==%s" % (name, want))
+            rep.ok("PIP_REQUIRED", "%s==%s" % (name, got))
 
 
 def check_dev_server(root: Path, rep: Report):

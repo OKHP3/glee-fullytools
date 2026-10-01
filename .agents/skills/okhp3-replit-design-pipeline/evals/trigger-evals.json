@@ -2,26 +2,26 @@
   "skill_name": "okhp3-replit-design-pipeline",
   "skill_version": "1.0.0",
   "phase": 8,
-  "description_evaluated": "The complete Replit design iteration loop as a single coherent workflow  -  extract → sandbox → variant → graduate. Use when redesigning, improving, or creating variants of any UI component or page. Covers the \"extract first, never approximate\" rule, DESIGN subagent brief anatomy, variant labelling conventions on canvas, and the graduation decision gate. Activate for \"redesign\", \"improve this component\", \"show me options\", \"create variants\", \"put on canvas\", \"graduate this mockup\", \"design alternatives\", or any request that implies iterating on UI  -  whether the component exists already or is being built from scratch.",
+  "description_evaluated": "The complete Replit design iteration loop as a single coherent workflow — extract → sandbox → variant → graduate. Use when redesigning, improving, or creating variants of any UI component or page. Covers the \"extract first, never approximate\" rule, DESIGN subagent brief anatomy, variant labelling conventions on canvas, and the graduation decision gate. Activate for \"redesign\", \"improve this component\", \"show me options\", \"create variants\", \"put on canvas\", \"graduate this mockup\", \"design alternatives\", or any request that implies iterating on UI — whether the component exists already or is being built from scratch.",
   "evaluator": "independent trigger subagent",
   "queries": [
     {
       "query": "Redesign the existing checkout card and show me three options",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "Explicit 'redesign' + 'show me options'  -  core trigger phrases; iterating on existing UI. In scope."
+      "rationale": "Explicit 'redesign' + 'show me options' — core trigger phrases; iterating on existing UI. In scope."
     },
     {
       "query": "Create distinct variants of a new onboarding page on the canvas",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "'create variants' + 'on the canvas' + net-new page  -  description explicitly covers 'built from scratch'. In scope."
+      "rationale": "'create variants' + 'on the canvas' + net-new page — description explicitly covers 'built from scratch'. In scope."
     },
     {
       "query": "Put the current header on canvas as a baseline before improving it",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "'put on canvas' + 'improving'  -  matches extract/sandbox stage and improve trigger. In scope."
+      "rationale": "'put on canvas' + 'improving' — matches extract/sandbox stage and improve trigger. In scope."
     },
     {
       "query": "I like variant B; integrate that mockup into the app",
@@ -33,7 +33,7 @@
       "query": "Show me alternative design directions for this dashboard",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "'design alternatives' / 'show me options' equivalent  -  iterating on UI. In scope."
+      "rationale": "'design alternatives' / 'show me options' equivalent — iterating on UI. In scope."
     },
     {
       "query": "Improve this existing component without approximating its current styles",
@@ -51,10 +51,10 @@
       "query": "Graduate the approved editorial mockup",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "'graduate this mockup'  -  explicit graduation gate trigger. In scope."
+      "rationale": "'graduate this mockup' — explicit graduation gate trigger. In scope."
     },
     {
-      "query": "The graduated component needs another major redesign - iterate again",
+      "query": "The graduated component needs another major redesign—iterate again",
       "should_trigger": true,
       "triggered": true,
       "rationale": "'redesign' + re-entering the loop. In scope."
@@ -63,7 +63,7 @@
       "query": "Should this UI be extracted first or built from scratch in the sandbox?",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "Directly asks about extract-first rule and sandbox  -  core decision. In scope."
+      "rationale": "Directly asks about extract-first rule and sandbox — core decision. In scope."
     },
     {
       "query": "Change the button text color from grey to black",
@@ -105,7 +105,7 @@
       "query": "Debug the users API returning 500",
       "should_trigger": false,
       "triggered": false,
-      "rationale": "Backend debugging  -  unrelated to UI iteration. Out of scope."
+      "rationale": "Backend debugging — unrelated to UI iteration. Out of scope."
     },
     {
       "query": "Generate a logo image for the product",

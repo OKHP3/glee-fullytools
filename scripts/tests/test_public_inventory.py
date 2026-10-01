@@ -14,6 +14,7 @@ if str(SCRIPTS) not in sys.path:
 from public_inventory import (  # noqa: E402
     collect_html_files,
     collect_indexable_html_files,
+    derive_url,
     is_counted_destination,
     is_discoverable,
     page_type,
@@ -35,7 +36,7 @@ class PublicInventoryTests(unittest.TestCase):
         )
         all_pages = collect_html_files()
         pages = collect_indexable_html_files()
-        urls = [ARTIFACT_PATH(p) for p in pages]
+        urls = [derive_url(path) for path in pages]
         page_types = {url: page_type(url) for url in urls}
 
         excluded_files = set(config["html_scope"]["excluded_files"])
@@ -80,6 +81,19 @@ class PublicInventoryTests(unittest.TestCase):
         self.assertTrue(counted_destinations)
         self.assertLessEqual(counted_destinations, tool_ette_urls)
 
+    def test_derive_url_covers_public_html_shapes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertEqual(derive_url(root / "index.html", root), "/")
+            self.assertEqual(
+                derive_url(root / "toolbox" / "index.html", root),
+                "/toolbox/",
+            )
+            self.assertEqual(
+                derive_url(root / "under-construction.html", root),
+                "/under-construction.html",
+            )
+
     def test_artifact_policy_rejects_internal_paths(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -108,9 +122,10 @@ class PublicInventoryTests(unittest.TestCase):
             )
             self.assertEqual(ARTIFACT.check_artifact(root), [])
 
-
-def ARTIFACT_PATH(path: Path) -> str:
-    rel = path.relative_to(SCRIPTS.parent)
-    if rel.as_posix() == "index.html":
-        return "/"
-    return "/" + rel.parent.as_posix() + "/"
+    def test_artifact_policy_accepts_transition_section(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
+            (root / "next-chapter").mkdir()
+            (root / "next-chapter" / "index.html").write_text("<!doctype html>", encoding="utf-8")
+            self.assertEqual(ARTIFACT.check_artifact(root), [])

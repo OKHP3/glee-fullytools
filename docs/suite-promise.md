@@ -1,19 +1,27 @@
 # Glee-fully Tools  -  Suite Promise
 
 **Status:** Current contract  
-**Last reviewed:** 2026-09-04; page inventory refreshed 2026-09-07<br>
+**Last reviewed:** 2026-09-29<br>
 **Owner:** Project owner  
-**Current phase:** Active growth and refinement
+**Current phase:** Active platform transition
 
 This document is the source of truth for what Glee-fully Tools promises, what
 the public site actually owns, how the catalog is counted, and what complete
 means for this project. Other documents may provide shorter summaries, but
 their vision, phase, and inventory language must agree with this contract.
 
+## Custom GPT platform transition
+
+OpenAI's [retirement and migration FAQ](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq), checked September 29, 2026, schedules standard Custom GPT retirement for December 11, 2026. Qualified Enterprise deferrals are workspace-specific.
+
+The owner is actively preserving and replatforming concepts as reusable Agent Skills and plugins. The [public next chapter page](/next-chapter/) explains this direction. The homepage and catalog direct-entry modal is dismissible once per browser-tab session. All 50 catalog pages and nine supporting pages retain static disclosures without JavaScript. Every indexed page links to the transition page.
+
+The original publication register remains historical catalog state. It does not certify skill or plugin readiness. A replacement needs separately recorded review, tests and access verification before a new launch destination is announced. Legacy GPT links remain unchanged during this notice release; their external availability is unverified.
+
 ## The promise
 
 **Glee-fully Tools is a warm, structured public catalog and routing hub for a
-growing family of domain-focused Custom GPT experiences.** It helps visitors
+family of personalizable tools evolving from its original Custom GPT experiences.** It helps visitors
 find a fitting helper for life, work, or wonder through a playful
 trunk-to-branch-to-tool-ette system, clear descriptions, honest publication
 states, and a consistent human-centered design language.
@@ -81,20 +89,20 @@ The status terms below are deliberately conservative:
 | Make the public hub practically accessible and inclusive | Partially met | Static checks cover landmarks, labels, focus, alt text, reduced motion, and tap-target patterns. Manual assistive-technology and live-browser confirmation remain separate work. |
 | Remain useful when network conditions are imperfect | Partially met | `sw.js` provides a same-origin offline shell and fallback page; `docs/resilience.md` and the CI `resilience-qa` reports define and exercise representative online, offline, reconnect, browser, crawler, and blocked-dependency behavior. External GPTs, fonts, analytics, Ko-fi, and other third-party services remain intentionally outside that cache boundary. |
 | Explain privacy and third-party boundaries plainly | Partially met | The Legal page and cache policy describe limitations and third-party services. Production privacy behavior and trust evidence still require dedicated review. |
-| Be discoverable and publishable as a static site | Partially met | 61 indexable URLs, structured metadata, sitemap, feed, robots policy, GitHub Pages workflows, and validators are present. Owner-side live smoke testing and search-engine submission are not proven by this repository alone. |
+| Be discoverable and publishable as a static site | Partially met | 62 indexable URLs, structured metadata, sitemap, feed, robots policy, GitHub Pages workflows, and validators are present. Owner-side live smoke testing and search-engine submission are not proven by this repository alone. |
 | Stay maintainable as the suite grows | Met | `AGENTS.md`, `replit.md`, idempotent maintenance scripts, generated-file rules, CI validation, and the template library provide operating guardrails. |
 | Define “complete” without implying perfection | Met | The completion contract below separates a complete public catalog from finished external GPT behavior and future owner choices. |
 
 ## Public inventory vocabulary
 
-Counts include the FoundRy feature-page addition on 2026-09-07. A count is only
+Counts include the next-chapter transition page added on 2026-09-29. A count is only
 meaningful with its inclusion rule and owning source.
 
 | Term | Count | Inclusion rule | Source of truth |
 |---|---:|---|---|
-| Production HTML files | 64 | Validator-scoped HTML outside `assets/`, `.agents/`, `.local/`, dependencies, and other excluded directories. Includes the 404, offline, and holding pages. | `scripts/validate-site.py` |
-| Indexable public pages | 61 | The 61 public content URLs indexed by the site's search builder and listed in the sitemap. Excludes 404, offline, and holding pages. | `assets/data/search-index.json` and `sitemap.xml` |
-| Supporting public pages | 11 | Homepage, Search, About, Contact, Legal, Persona, Ecosystem, Universe, Showcase, Arcade, and FoundRy. | Search index section labels |
+| Production HTML files | 65 | Validator-scoped HTML outside `assets/`, `.agents/`, `.local/`, dependencies, and other excluded directories. Includes the 404, offline, and holding pages. | `scripts/validate-site.py` |
+| Indexable public pages | 62 | The 62 public content URLs indexed by the site's search builder and listed in the sitemap. Excludes 404, offline, and holding pages. | `assets/data/search-index.json` and `sitemap.xml` |
+| Supporting public pages | 12 | Homepage, Search, About, Contact, Legal, Persona, Ecosystem, Universe, Showcase, Arcade, FoundRy, and Our Next Chapter. | Search index section labels |
 | Toolbox hub | 1 | The top-level `/toolbox/` trunk page. | `toolbox/index.html` |
 | Branch hubs | 7 | One public category page for each numbered branch. | `toolbox/*/index.html` |
 | Tool-ettes | 42 | One authored leaf page for each catalog Tool-ette under a branch. | `toolbox/*/*/index.html` |

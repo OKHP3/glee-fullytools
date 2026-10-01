@@ -28,7 +28,7 @@ GITHUB_API_TIMEOUT_SECONDS = 20
 # A missing action is reported as unsupported rather than silently accepted.
 ACTION_MAJOR_VERSIONS = {
     "actions/checkout": 7,
-    "actions/setup-node": 4,
+    "actions/setup-node": 7,
     "actions/setup-python": 7,
     "actions/upload-artifact": 7,
     "actions/download-artifact": 8,
@@ -39,7 +39,7 @@ ACTION_MAJOR_VERSIONS = {
 }
 
 USES_PATTERN = re.compile(
-    r"^\s*uses:\s*(?P<action>[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)@(?P<ref>\S+)"
+    r"^\s*(?:-\s*)?uses:\s*(?P<action>[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)@(?P<ref>\S+)"
 )
 MAJOR_PATTERN = re.compile(r"^v(?P<major>[0-9]+)(?:\b|$)", re.IGNORECASE)
 

@@ -42,7 +42,7 @@
           "evidence": "Response says names are hints, not verdicts."
         },
         {
-          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR'  -  treating them as distinct, not interchangeable.",
+          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR' — treating them as distinct, not interchangeable.",
           "passed": true,
           "evidence": "Response enumerates and separates all three facts."
         },
@@ -80,7 +80,7 @@
           "evidence": "Response calls naming a hint, not a verdict."
         },
         {
-          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR'  -  treating them as distinct, not interchangeable.",
+          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR' — treating them as distinct, not interchangeable.",
           "passed": false,
           "evidence": "Closed and merged PR states are conflated; abandonment is absent."
         },
@@ -184,7 +184,7 @@
       },
       "expectations": [
         {
-          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head  -  never local-first or both at once.",
+          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head — never local-first or both at once.",
           "passed": true,
           "evidence": "Response gives the exact remote-first order after SHA verification."
         },
@@ -222,7 +222,7 @@
       },
       "expectations": [
         {
-          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head  -  never local-first or both at once.",
+          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head — never local-first or both at once.",
           "passed": false,
           "evidence": "Remote delete is listed before local delete, but the exact expected head SHA is not recorded and re-verified."
         },

@@ -1,6 +1,6 @@
 # Glee-fully Personalizable Tools™
 
-Welcome to **Glee-fully Personalizable Tools™** — the joyful studio of custom GPTs that make everyday life feel lighter, smarter, and more personal.  
+Welcome to **Glee-fully Personalizable Tools™** - a joyful studio of personalizable tools for everyday life, work and wonder, evolving beyond its original Custom GPT platform.
 We believe creativity thrives when structure and delight work together, so we built a platform that does both.
 
 ### 🌟 Overview
@@ -26,11 +26,14 @@ Every element is crafted to be modular, charming, and useful — a mix of retro 
 
 ### 🌱 Current phase
 
-Glee-fully Tools is in **active growth and refinement**. The public site is a
-catalog and routing hub, not a claim that every externally hosted GPT is
-finished: 1 Tool-ette is live, 24 are beta, and 17 are unavailable while their
-launch destinations are completed or owner-confirmed. The authoritative
-inventory, state definitions, and completion contract live in
+Glee-fully Tools is in an **active platform transition**. OpenAI has scheduled
+Custom GPT retirement for December 11, 2026. The owner is preserving and
+replatforming the original concepts into reusable Agent Skills and plugins.
+See the [public transition page](https://glee-fully.tools/next-chapter/).
+
+The catalog preserves 42 Tool-ettes. Its original 1 live, 24 beta and 17
+unavailable labels describe the GPT catalog, not replacement readiness.
+The authoritative inventory and completion contract live in
 [`docs/suite-promise.md`](docs/suite-promise.md).
 
 ### 💡 Why We Exist
@@ -41,8 +44,8 @@ Our suite shows that structure can be playful, creativity can be systematic, and
 
 ### 📚 Public inventory
 
-- **64** production HTML files, including utility and fallback pages
-- **61** indexable public pages in the sitemap and search index
+- **65** production HTML files, including utility and fallback pages
+- **62** indexable public pages in the sitemap and search index
 - **1** Toolbox hub, **7** branch hubs, and **42** Tool-ette pages
 - **49** Atom feed entries for the branch and Tool-ette catalog
 
@@ -68,6 +71,10 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
 
 ### 🛠 Maintainers' notes
 
+* **Technology updates:** the [inventory and upgrade plan](docs/technology-update-plan.md)
+  covers runtime, QA, platform, and dependency versions. The [version register](docs/technology-version-register.md)
+  includes all npm lock entries and publisher release evidence. Weekly Dependabot
+  PRs and Technology Version Review keep update candidates visible after merge.
 * **Audit evidence:** dated files under `assets/audit/` and `assets/docs/` are
   historical records. Current validator and link reports use the run date;
   never treat an older dated report as current evidence.
@@ -78,7 +85,7 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
   Exit 0 = safe to publish.
 * **Mermaid runtime:** the `ecosystem/` and `universe/` diagrams run on
   Mermaid, vendored locally at `assets/vendor/mermaid/` (not loaded from a
-  CDN). `assets/vendor/mermaid/VERSION` pins the exact release; a daily
+  CDN). `assets/vendor/mermaid/VERSION` pins the exact release, currently 12.0.0; a daily
   `mermaid-version-watch` GitHub Action compares it against the latest npm
   release and opens/updates a tracking issue when the vendored copy falls
   behind -- re-vendoring is a deliberate, reviewed step, never automatic.
@@ -88,7 +95,7 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
   Every page's CSP is now enforced via a per-page <meta> tag
   (`scripts/generate-csp.py`) -- previously only defined, unenforced, in
   `_headers`, which GitHub Pages does not serve.
- * **Privacy boundary:** optional Google Analytics is off by default and can be
+* **Privacy boundary:** optional Google Analytics is off by default and can be
    enabled or withdrawn from [`legal/`](legal/). Google Fonts remains a
    documented brand dependency; Ko-fi is outbound navigation only. The
    complete request, storage, embed, and offline-cache inventory is in
@@ -100,7 +107,7 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
    python3 scripts/generate-sitemap.py
    python3 scripts/generate-feed.py
    ```
- * **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
+* **Add a new tool-ette page:** drop the new `Glee-fullyTools-GPTIcon-…` PNG
    into `assets/img/`, place the page inside the shared URL scope in
    `config/public-inventory.json`, then run the
    ```bash

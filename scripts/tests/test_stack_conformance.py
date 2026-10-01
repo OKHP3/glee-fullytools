@@ -95,19 +95,33 @@ class StackSafetyTests(unittest.TestCase):
             checker.check_required_files(root, report)
             self.assertTrue(any(f["message"] == "replit.md is missing" for f in report.failures))
 
-    def test_retained_puppeteer_must_keep_approved_pin(self):
+    def test_reviewed_updates_pass_but_missing_floating_or_unlocked_dependencies_fail(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for version in (None, "0.0.0", "25.10.0"):
-                deps = dict(checker.NPM_REQUIRED)
-                if version is None:
+            for pin, locked, valid in ((None, None, False), ("^25.11.0", "25.11.0", False),
+                                       ("25.11.0", "25.10.0", False), ("25.11.0", "25.11.0", True)):
+                deps = {"playwright": "1.63.0", "lighthouse": "13.5.0", "puppeteer": pin}
+                if pin is None:
                     del deps["puppeteer"]
-                else:
-                    deps["puppeteer"] = version
                 (root / "package.json").write_text(json.dumps({"devDependencies": deps}))
+                packages = {"": {"devDependencies": deps}, **{f"node_modules/{name}": {"version": v} for name, v in deps.items()}}
+                if locked:
+                    packages["node_modules/puppeteer"]["version"] = locked
+                (root / "package-lock.json").write_text(json.dumps({"packages": packages}))
                 report = checker.Report([])
                 checker.check_npm_deps(root, report)
-                self.assertEqual(bool(report.failures), version != "25.10.0")
+                self.assertEqual(not bool(report.failures), valid, (pin, report.public()))
+
+    def test_python_updates_accept_exact_pins_and_reject_ranges(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for content, valid in (("beautifulsoup4==4.16.0\nplaywright==1.63.0\n", True),
+                                   ("beautifulsoup4>=4.15.0\nplaywright==1.63.0\n", False),
+                                   ("beautifulsoup4==4.15.0\nplaywright==1.64.0rc1\n", False)):
+                (root / "requirements-qa.txt").write_text(content)
+                report = checker.Report([])
+                checker.check_pip_deps(root, report)
+                self.assertEqual(not bool(report.failures), valid, report.public())
 
 
 if __name__ == "__main__":

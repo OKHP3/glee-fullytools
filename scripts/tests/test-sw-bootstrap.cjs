@@ -11,7 +11,7 @@ for (const readyState of ['loading', 'interactive', 'complete']) {
   const context = {
     localStorage: { getItem: () => null },
     fetch: async () => ({ ok: false }),
-    document: { readyState, querySelectorAll: () => [] },
+    document: { readyState, querySelector: () => null, querySelectorAll: () => [] },
     navigator: { serviceWorker: { register: (url, options) => {
       registrations.push({ url, scope: options.scope });
       return Promise.resolve({});

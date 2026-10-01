@@ -5,7 +5,7 @@
     {
       "id": 1,
       "name": "branch-pr-classification",
-      "prompt": "My Repl has a pile of old branches  -  a couple of subrepl-* ones, an agent/fix-login, and some human-named feature branches. I want to auto-nuke anything that looks Replit-generated and is old. Walk me through how you'd decide what's safe to delete vs keep.",
+      "prompt": "My Repl has a pile of old branches — a couple of subrepl-* ones, an agent/fix-login, and some human-named feature branches. I want to auto-nuke anything that looks Replit-generated and is old. Walk me through how you'd decide what's safe to delete vs keep.",
       "expectations": [
         {
           "id": 1,
@@ -17,7 +17,7 @@
         },
         {
           "id": 3,
-          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR'  -  treating them as distinct, not interchangeable."
+          "text": "Response distinguishes three separate facts before deletion: 'merged into origin/main', 'closed pull request', and 'abandoned with no PR' — treating them as distinct, not interchangeable."
         },
         {
           "id": 4,
@@ -55,7 +55,7 @@
       "expectations": [
         {
           "id": 1,
-          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head  -  never local-first or both at once."
+          "text": "Response deletes the remote branch FIRST, then the local tracking branch (remote-first ordering), and only after re-verifying the exact expected head — never local-first or both at once."
         },
         {
           "id": 2,

@@ -1,0 +1,1584 @@
+{
+  "retrieved_at": "2026-09-19T04:17:38.690340+00:00",
+  "source_commit": "b0fcafb16a070a99c33c947b77ea6edfdf0c158d",
+  "technologies": [
+    {
+      "name": "@formatjs/ecma402-abstract",
+      "kind": "npm",
+      "current": "2.3.6",
+      "evidence": "package-lock.json: node_modules/@formatjs/ecma402-abstract",
+      "source": "https://registry.npmjs.org/%40formatjs%2Fecma402-abstract/latest",
+      "scope": "transitive",
+      "latest_stable": "3.2.0",
+      "status": "update"
+    },
+    {
+      "name": "@formatjs/fast-memoize",
+      "kind": "npm",
+      "current": "2.2.7",
+      "evidence": "package-lock.json: node_modules/@formatjs/fast-memoize",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ffast-memoize/latest",
+      "scope": "transitive",
+      "latest_stable": "3.1.7",
+      "status": "update"
+    },
+    {
+      "name": "@formatjs/icu-messageformat-parser",
+      "kind": "npm",
+      "current": "2.11.4",
+      "evidence": "package-lock.json: node_modules/@formatjs/icu-messageformat-parser",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ficu-messageformat-parser/latest",
+      "scope": "transitive",
+      "latest_stable": "3.5.19",
+      "status": "update"
+    },
+    {
+      "name": "@formatjs/icu-skeleton-parser",
+      "kind": "npm",
+      "current": "1.8.16",
+      "evidence": "package-lock.json: node_modules/@formatjs/icu-skeleton-parser",
+      "source": "https://registry.npmjs.org/%40formatjs%2Ficu-skeleton-parser/latest",
+      "scope": "transitive",
+      "latest_stable": "2.1.12",
+      "status": "update"
+    },
+    {
+      "name": "@formatjs/intl-localematcher",
+      "kind": "npm",
+      "current": "0.6.2",
+      "evidence": "package-lock.json: node_modules/@formatjs/intl-localematcher",
+      "source": "https://registry.npmjs.org/%40formatjs%2Fintl-localematcher/latest",
+      "scope": "transitive",
+      "latest_stable": "0.9.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/api",
+      "kind": "npm",
+      "current": "1.9.1",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/api",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fapi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=8.0.0"
+      },
+      "latest_stable": "1.9.1",
+      "status": "current"
+    },
+    {
+      "name": "@opentelemetry/api-logs",
+      "kind": "npm",
+      "current": "0.220.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/api-logs",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fapi-logs/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=8.0.0"
+      },
+      "latest_stable": "0.222.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/core",
+      "kind": "npm",
+      "current": "2.10.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/core",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fcore/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "latest_stable": "2.11.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/instrumentation",
+      "kind": "npm",
+      "current": "0.220.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/instrumentation",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Finstrumentation/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "latest_stable": "0.222.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/resources",
+      "kind": "npm",
+      "current": "2.10.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/resources",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fresources/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "latest_stable": "2.11.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/sdk-trace",
+      "kind": "npm",
+      "current": "2.10.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/sdk-trace",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsdk-trace/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "latest_stable": "2.11.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/sdk-trace-base",
+      "kind": "npm",
+      "current": "2.10.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/sdk-trace-base",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsdk-trace-base/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^18.19.0 || >=20.6.0"
+      },
+      "latest_stable": "2.11.0",
+      "status": "update"
+    },
+    {
+      "name": "@opentelemetry/semantic-conventions",
+      "kind": "npm",
+      "current": "1.43.0",
+      "evidence": "package-lock.json: node_modules/@opentelemetry/semantic-conventions",
+      "source": "https://registry.npmjs.org/%40opentelemetry%2Fsemantic-conventions/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=14"
+      },
+      "latest_stable": "1.43.0",
+      "status": "current"
+    },
+    {
+      "name": "@paulirish/trace_engine",
+      "kind": "npm",
+      "current": "0.0.65",
+      "evidence": "package-lock.json: node_modules/@paulirish/trace_engine",
+      "source": "https://registry.npmjs.org/%40paulirish%2Ftrace_engine/latest",
+      "scope": "transitive",
+      "latest_stable": "0.0.65",
+      "status": "current"
+    },
+    {
+      "name": "@puppeteer/browsers",
+      "kind": "npm",
+      "current": "3.2.2",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers",
+      "source": "https://registry.npmjs.org/%40puppeteer%2Fbrowsers/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=22.12.0"
+      },
+      "latest_stable": "3.2.2",
+      "status": "current"
+    },
+    {
+      "name": "ansi-regex",
+      "kind": "npm",
+      "current": "6.3.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/ansi-regex",
+      "source": "https://registry.npmjs.org/ansi-regex/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "6.3.0",
+      "status": "current"
+    },
+    {
+      "name": "ansi-styles",
+      "kind": "npm",
+      "current": "6.2.3",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/ansi-styles",
+      "source": "https://registry.npmjs.org/ansi-styles/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=22"
+      },
+      "latest_stable": "7.0.0",
+      "status": "update"
+    },
+    {
+      "name": "cliui",
+      "kind": "npm",
+      "current": "9.0.1",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/cliui",
+      "source": "https://registry.npmjs.org/cliui/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "9.0.1",
+      "status": "current"
+    },
+    {
+      "name": "string-width",
+      "kind": "npm",
+      "current": "7.2.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/cliui/node_modules/string-width",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "8.2.2",
+      "status": "update"
+    },
+    {
+      "name": "emoji-regex",
+      "kind": "npm",
+      "current": "10.6.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/emoji-regex",
+      "source": "https://registry.npmjs.org/emoji-regex/latest",
+      "scope": "transitive",
+      "latest_stable": "11.0.0",
+      "status": "update"
+    },
+    {
+      "name": "string-width",
+      "kind": "npm",
+      "current": "8.2.2",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/string-width",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "8.2.2",
+      "status": "current"
+    },
+    {
+      "name": "strip-ansi",
+      "kind": "npm",
+      "current": "7.2.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/strip-ansi",
+      "source": "https://registry.npmjs.org/strip-ansi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "7.2.0",
+      "status": "current"
+    },
+    {
+      "name": "wrap-ansi",
+      "kind": "npm",
+      "current": "9.0.2",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/wrap-ansi",
+      "source": "https://registry.npmjs.org/wrap-ansi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "10.0.1",
+      "status": "update"
+    },
+    {
+      "name": "string-width",
+      "kind": "npm",
+      "current": "7.2.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/wrap-ansi/node_modules/string-width",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "8.2.2",
+      "status": "update"
+    },
+    {
+      "name": "yargs",
+      "kind": "npm",
+      "current": "18.1.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/yargs",
+      "source": "https://registry.npmjs.org/yargs/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "latest_stable": "18.1.0",
+      "status": "current"
+    },
+    {
+      "name": "yargs-parser",
+      "kind": "npm",
+      "current": "22.0.0",
+      "evidence": "package-lock.json: node_modules/@puppeteer/browsers/node_modules/yargs-parser",
+      "source": "https://registry.npmjs.org/yargs-parser/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "latest_stable": "22.0.0",
+      "status": "current"
+    },
+    {
+      "name": "@sentry/conventions",
+      "kind": "npm",
+      "current": "0.16.0",
+      "evidence": "package-lock.json: node_modules/@sentry/conventions",
+      "source": "https://registry.npmjs.org/%40sentry%2Fconventions/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=14"
+      },
+      "latest_stable": "0.23.0",
+      "status": "update"
+    },
+    {
+      "name": "@sentry/core",
+      "kind": "npm",
+      "current": "10.72.0",
+      "evidence": "package-lock.json: node_modules/@sentry/core",
+      "source": "https://registry.npmjs.org/%40sentry%2Fcore/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "10.75.0",
+      "status": "update"
+    },
+    {
+      "name": "@sentry/node",
+      "kind": "npm",
+      "current": "10.72.0",
+      "evidence": "package-lock.json: node_modules/@sentry/node",
+      "source": "https://registry.npmjs.org/%40sentry%2Fnode/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "10.75.0",
+      "status": "update"
+    },
+    {
+      "name": "@sentry/node-core",
+      "kind": "npm",
+      "current": "10.72.0",
+      "evidence": "package-lock.json: node_modules/@sentry/node-core",
+      "source": "https://registry.npmjs.org/%40sentry%2Fnode-core/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "10.75.0",
+      "status": "update"
+    },
+    {
+      "name": "@sentry/opentelemetry",
+      "kind": "npm",
+      "current": "10.72.0",
+      "evidence": "package-lock.json: node_modules/@sentry/opentelemetry",
+      "source": "https://registry.npmjs.org/%40sentry%2Fopentelemetry/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "10.75.0",
+      "status": "update"
+    },
+    {
+      "name": "@sentry/server-utils",
+      "kind": "npm",
+      "current": "10.72.0",
+      "evidence": "package-lock.json: node_modules/@sentry/server-utils",
+      "source": "https://registry.npmjs.org/%40sentry%2Fserver-utils/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "10.75.0",
+      "status": "update"
+    },
+    {
+      "name": "@types/node",
+      "kind": "npm",
+      "current": "25.9.1",
+      "evidence": "package-lock.json: node_modules/@types/node",
+      "source": "https://registry.npmjs.org/%40types%2Fnode/latest",
+      "scope": "transitive",
+      "latest_stable": "26.6.2",
+      "status": "update"
+    },
+    {
+      "name": "ansi-colors",
+      "kind": "npm",
+      "current": "4.1.3",
+      "evidence": "package-lock.json: node_modules/ansi-colors",
+      "source": "https://registry.npmjs.org/ansi-colors/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=6"
+      },
+      "latest_stable": "4.1.3",
+      "status": "current"
+    },
+    {
+      "name": "ansi-regex",
+      "kind": "npm",
+      "current": "5.0.1",
+      "evidence": "package-lock.json: node_modules/ansi-regex",
+      "source": "https://registry.npmjs.org/ansi-regex/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "6.3.0",
+      "status": "update"
+    },
+    {
+      "name": "ansi-styles",
+      "kind": "npm",
+      "current": "4.3.0",
+      "evidence": "package-lock.json: node_modules/ansi-styles",
+      "source": "https://registry.npmjs.org/ansi-styles/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=22"
+      },
+      "latest_stable": "7.0.0",
+      "status": "update"
+    },
+    {
+      "name": "atomically",
+      "kind": "npm",
+      "current": "2.1.1",
+      "evidence": "package-lock.json: node_modules/atomically",
+      "source": "https://registry.npmjs.org/atomically/latest",
+      "scope": "transitive",
+      "latest_stable": "2.1.1",
+      "status": "current"
+    },
+    {
+      "name": "axe-core",
+      "kind": "npm",
+      "current": "4.13.0",
+      "evidence": "package-lock.json: node_modules/axe-core",
+      "source": "https://registry.npmjs.org/axe-core/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=4"
+      },
+      "latest_stable": "4.13.0",
+      "status": "current"
+    },
+    {
+      "name": "chrome-launcher",
+      "kind": "npm",
+      "current": "1.2.1",
+      "evidence": "package-lock.json: node_modules/chrome-launcher",
+      "source": "https://registry.npmjs.org/chrome-launcher/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12.13.0"
+      },
+      "latest_stable": "1.2.1",
+      "status": "current"
+    },
+    {
+      "name": "chromium-bidi",
+      "kind": "npm",
+      "current": "17.0.2",
+      "evidence": "package-lock.json: node_modules/chromium-bidi",
+      "source": "https://registry.npmjs.org/chromium-bidi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20.19.0 <22.0.0 || >=22.12.0"
+      },
+      "latest_stable": "17.0.2",
+      "status": "current"
+    },
+    {
+      "name": "cjs-module-lexer",
+      "kind": "npm",
+      "current": "2.2.1",
+      "evidence": "package-lock.json: node_modules/cjs-module-lexer",
+      "source": "https://registry.npmjs.org/cjs-module-lexer/latest",
+      "scope": "transitive",
+      "latest_stable": "2.2.1",
+      "status": "current"
+    },
+    {
+      "name": "cliui",
+      "kind": "npm",
+      "current": "8.0.1",
+      "evidence": "package-lock.json: node_modules/cliui",
+      "source": "https://registry.npmjs.org/cliui/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "9.0.1",
+      "status": "update"
+    },
+    {
+      "name": "color-convert",
+      "kind": "npm",
+      "current": "2.0.1",
+      "evidence": "package-lock.json: node_modules/color-convert",
+      "source": "https://registry.npmjs.org/color-convert/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=14.6"
+      },
+      "latest_stable": "3.1.3",
+      "status": "update"
+    },
+    {
+      "name": "color-name",
+      "kind": "npm",
+      "current": "1.1.4",
+      "evidence": "package-lock.json: node_modules/color-name",
+      "source": "https://registry.npmjs.org/color-name/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12.20"
+      },
+      "latest_stable": "2.1.1",
+      "status": "update"
+    },
+    {
+      "name": "configstore",
+      "kind": "npm",
+      "current": "7.1.0",
+      "evidence": "package-lock.json: node_modules/configstore",
+      "source": "https://registry.npmjs.org/configstore/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "8.0.0",
+      "status": "update"
+    },
+    {
+      "name": "csp_evaluator",
+      "kind": "npm",
+      "current": "1.1.8",
+      "evidence": "package-lock.json: node_modules/csp_evaluator",
+      "source": "https://registry.npmjs.org/csp_evaluator/latest",
+      "scope": "transitive",
+      "latest_stable": "1.1.8",
+      "status": "current"
+    },
+    {
+      "name": "debug",
+      "kind": "npm",
+      "current": "4.4.3",
+      "evidence": "package-lock.json: node_modules/debug",
+      "source": "https://registry.npmjs.org/debug/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=6.0"
+      },
+      "latest_stable": "4.4.3",
+      "status": "current"
+    },
+    {
+      "name": "decimal.js",
+      "kind": "npm",
+      "current": "10.6.0",
+      "evidence": "package-lock.json: node_modules/decimal.js",
+      "source": "https://registry.npmjs.org/decimal.js/latest",
+      "scope": "transitive",
+      "latest_stable": "10.6.0",
+      "status": "current"
+    },
+    {
+      "name": "define-lazy-prop",
+      "kind": "npm",
+      "current": "2.0.0",
+      "evidence": "package-lock.json: node_modules/define-lazy-prop",
+      "source": "https://registry.npmjs.org/define-lazy-prop/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "3.0.0",
+      "status": "update"
+    },
+    {
+      "name": "devtools-protocol",
+      "kind": "npm",
+      "current": "0.0.1663043",
+      "evidence": "package-lock.json: node_modules/devtools-protocol",
+      "source": "https://registry.npmjs.org/devtools-protocol/latest",
+      "scope": "transitive",
+      "latest_stable": "0.0.1700460",
+      "status": "update"
+    },
+    {
+      "name": "dot-prop",
+      "kind": "npm",
+      "current": "9.0.0",
+      "evidence": "package-lock.json: node_modules/dot-prop",
+      "source": "https://registry.npmjs.org/dot-prop/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "10.2.0",
+      "status": "update"
+    },
+    {
+      "name": "emoji-regex",
+      "kind": "npm",
+      "current": "8.0.0",
+      "evidence": "package-lock.json: node_modules/emoji-regex",
+      "source": "https://registry.npmjs.org/emoji-regex/latest",
+      "scope": "transitive",
+      "latest_stable": "11.0.0",
+      "status": "update"
+    },
+    {
+      "name": "enquirer",
+      "kind": "npm",
+      "current": "2.4.1",
+      "evidence": "package-lock.json: node_modules/enquirer",
+      "source": "https://registry.npmjs.org/enquirer/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=8.6"
+      },
+      "latest_stable": "2.4.1",
+      "status": "current"
+    },
+    {
+      "name": "es-module-lexer",
+      "kind": "npm",
+      "current": "2.3.2",
+      "evidence": "package-lock.json: node_modules/es-module-lexer",
+      "source": "https://registry.npmjs.org/es-module-lexer/latest",
+      "scope": "transitive",
+      "latest_stable": "3.0.2",
+      "status": "update"
+    },
+    {
+      "name": "escalade",
+      "kind": "npm",
+      "current": "3.2.0",
+      "evidence": "package-lock.json: node_modules/escalade",
+      "source": "https://registry.npmjs.org/escalade/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=6"
+      },
+      "latest_stable": "3.2.0",
+      "status": "current"
+    },
+    {
+      "name": "escape-string-regexp",
+      "kind": "npm",
+      "current": "4.0.0",
+      "evidence": "package-lock.json: node_modules/escape-string-regexp",
+      "source": "https://registry.npmjs.org/escape-string-regexp/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "5.0.0",
+      "status": "update"
+    },
+    {
+      "name": "fsevents",
+      "kind": "npm",
+      "current": "2.3.2",
+      "evidence": "package-lock.json: node_modules/fsevents",
+      "source": "https://registry.npmjs.org/fsevents/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+      },
+      "latest_stable": "2.3.3",
+      "status": "update"
+    },
+    {
+      "name": "get-caller-file",
+      "kind": "npm",
+      "current": "2.0.5",
+      "evidence": "package-lock.json: node_modules/get-caller-file",
+      "source": "https://registry.npmjs.org/get-caller-file/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "6.* || 8.* || >= 10.*"
+      },
+      "latest_stable": "2.0.5",
+      "status": "current"
+    },
+    {
+      "name": "get-east-asian-width",
+      "kind": "npm",
+      "current": "1.6.0",
+      "evidence": "package-lock.json: node_modules/get-east-asian-width",
+      "source": "https://registry.npmjs.org/get-east-asian-width/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "1.7.0",
+      "status": "update"
+    },
+    {
+      "name": "graceful-fs",
+      "kind": "npm",
+      "current": "4.2.11",
+      "evidence": "package-lock.json: node_modules/graceful-fs",
+      "source": "https://registry.npmjs.org/graceful-fs/latest",
+      "scope": "transitive",
+      "latest_stable": "4.2.11",
+      "status": "current"
+    },
+    {
+      "name": "http-link-header",
+      "kind": "npm",
+      "current": "1.1.3",
+      "evidence": "package-lock.json: node_modules/http-link-header",
+      "source": "https://registry.npmjs.org/http-link-header/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=6.0.0"
+      },
+      "latest_stable": "1.1.4",
+      "status": "update"
+    },
+    {
+      "name": "image-ssim",
+      "kind": "npm",
+      "current": "0.2.0",
+      "evidence": "package-lock.json: node_modules/image-ssim",
+      "source": "https://registry.npmjs.org/image-ssim/latest",
+      "scope": "transitive",
+      "latest_stable": "0.2.0",
+      "status": "current"
+    },
+    {
+      "name": "import-in-the-middle",
+      "kind": "npm",
+      "current": "3.3.3",
+      "evidence": "package-lock.json: node_modules/import-in-the-middle",
+      "source": "https://registry.npmjs.org/import-in-the-middle/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "3.5.1",
+      "status": "update"
+    },
+    {
+      "name": "intl-messageformat",
+      "kind": "npm",
+      "current": "10.7.18",
+      "evidence": "package-lock.json: node_modules/intl-messageformat",
+      "source": "https://registry.npmjs.org/intl-messageformat/latest",
+      "scope": "transitive",
+      "latest_stable": "12.1.1",
+      "status": "update"
+    },
+    {
+      "name": "is-docker",
+      "kind": "npm",
+      "current": "2.2.1",
+      "evidence": "package-lock.json: node_modules/is-docker",
+      "source": "https://registry.npmjs.org/is-docker/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "4.0.0",
+      "status": "update"
+    },
+    {
+      "name": "is-fullwidth-code-point",
+      "kind": "npm",
+      "current": "3.0.0",
+      "evidence": "package-lock.json: node_modules/is-fullwidth-code-point",
+      "source": "https://registry.npmjs.org/is-fullwidth-code-point/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18"
+      },
+      "latest_stable": "5.1.0",
+      "status": "update"
+    },
+    {
+      "name": "is-wsl",
+      "kind": "npm",
+      "current": "2.2.0",
+      "evidence": "package-lock.json: node_modules/is-wsl",
+      "source": "https://registry.npmjs.org/is-wsl/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=16"
+      },
+      "latest_stable": "3.1.1",
+      "status": "update"
+    },
+    {
+      "name": "jpeg-js",
+      "kind": "npm",
+      "current": "0.4.4",
+      "evidence": "package-lock.json: node_modules/jpeg-js",
+      "source": "https://registry.npmjs.org/jpeg-js/latest",
+      "scope": "transitive",
+      "latest_stable": "0.4.4",
+      "status": "current"
+    },
+    {
+      "name": "js-library-detector",
+      "kind": "npm",
+      "current": "6.7.0",
+      "evidence": "package-lock.json: node_modules/js-library-detector",
+      "source": "https://registry.npmjs.org/js-library-detector/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "6.7.0",
+      "status": "current"
+    },
+    {
+      "name": "legacy-javascript",
+      "kind": "npm",
+      "current": "0.0.1",
+      "evidence": "package-lock.json: node_modules/legacy-javascript",
+      "source": "https://registry.npmjs.org/legacy-javascript/latest",
+      "scope": "transitive",
+      "latest_stable": "0.0.1",
+      "status": "current"
+    },
+    {
+      "name": "lighthouse",
+      "kind": "npm",
+      "current": "13.4.1",
+      "evidence": "package-lock.json: node_modules/lighthouse",
+      "source": "https://registry.npmjs.org/lighthouse/latest",
+      "scope": "direct",
+      "latest_engines": {
+        "node": ">=22.19"
+      },
+      "latest_stable": "13.5.0",
+      "status": "update"
+    },
+    {
+      "name": "lighthouse-logger",
+      "kind": "npm",
+      "current": "2.0.2",
+      "evidence": "package-lock.json: node_modules/lighthouse-logger",
+      "source": "https://registry.npmjs.org/lighthouse-logger/latest",
+      "scope": "transitive",
+      "latest_stable": "2.0.2",
+      "status": "current"
+    },
+    {
+      "name": "lighthouse-stack-packs",
+      "kind": "npm",
+      "current": "1.12.3",
+      "evidence": "package-lock.json: node_modules/lighthouse-stack-packs",
+      "source": "https://registry.npmjs.org/lighthouse-stack-packs/latest",
+      "scope": "transitive",
+      "latest_stable": "1.12.3",
+      "status": "current"
+    },
+    {
+      "name": "ws",
+      "kind": "npm",
+      "current": "7.5.11",
+      "evidence": "package-lock.json: node_modules/lighthouse/node_modules/ws",
+      "source": "https://registry.npmjs.org/ws/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=10.0.0"
+      },
+      "latest_stable": "8.21.3",
+      "status": "update"
+    },
+    {
+      "name": "lilconfig",
+      "kind": "npm",
+      "current": "3.1.3",
+      "evidence": "package-lock.json: node_modules/lilconfig",
+      "source": "https://registry.npmjs.org/lilconfig/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=14"
+      },
+      "latest_stable": "3.1.3",
+      "status": "current"
+    },
+    {
+      "name": "lodash-es",
+      "kind": "npm",
+      "current": "4.18.1",
+      "evidence": "package-lock.json: node_modules/lodash-es",
+      "source": "https://registry.npmjs.org/lodash-es/latest",
+      "scope": "transitive",
+      "latest_stable": "4.18.1",
+      "status": "current"
+    },
+    {
+      "name": "lookup-closest-locale",
+      "kind": "npm",
+      "current": "6.2.0",
+      "evidence": "package-lock.json: node_modules/lookup-closest-locale",
+      "source": "https://registry.npmjs.org/lookup-closest-locale/latest",
+      "scope": "transitive",
+      "latest_stable": "6.2.0",
+      "status": "current"
+    },
+    {
+      "name": "marky",
+      "kind": "npm",
+      "current": "1.3.0",
+      "evidence": "package-lock.json: node_modules/marky",
+      "source": "https://registry.npmjs.org/marky/latest",
+      "scope": "transitive",
+      "latest_stable": "1.3.0",
+      "status": "current"
+    },
+    {
+      "name": "mitt",
+      "kind": "npm",
+      "current": "3.0.1",
+      "evidence": "package-lock.json: node_modules/mitt",
+      "source": "https://registry.npmjs.org/mitt/latest",
+      "scope": "transitive",
+      "latest_stable": "3.0.1",
+      "status": "current"
+    },
+    {
+      "name": "modern-tar",
+      "kind": "npm",
+      "current": "0.8.4",
+      "evidence": "package-lock.json: node_modules/modern-tar",
+      "source": "https://registry.npmjs.org/modern-tar/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=18.0.0"
+      },
+      "latest_stable": "0.8.5",
+      "status": "update"
+    },
+    {
+      "name": "module-details-from-path",
+      "kind": "npm",
+      "current": "1.0.4",
+      "evidence": "package-lock.json: node_modules/module-details-from-path",
+      "source": "https://registry.npmjs.org/module-details-from-path/latest",
+      "scope": "transitive",
+      "latest_stable": "1.0.4",
+      "status": "current"
+    },
+    {
+      "name": "ms",
+      "kind": "npm",
+      "current": "2.1.3",
+      "evidence": "package-lock.json: node_modules/ms",
+      "source": "https://registry.npmjs.org/ms/latest",
+      "scope": "transitive",
+      "latest_stable": "2.1.3",
+      "status": "current"
+    },
+    {
+      "name": "open",
+      "kind": "npm",
+      "current": "8.4.2",
+      "evidence": "package-lock.json: node_modules/open",
+      "source": "https://registry.npmjs.org/open/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "11.0.4",
+      "status": "update"
+    },
+    {
+      "name": "playwright",
+      "kind": "npm",
+      "current": "1.60.0",
+      "evidence": "package-lock.json: node_modules/playwright",
+      "source": "https://registry.npmjs.org/playwright/latest",
+      "scope": "direct",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "1.63.0",
+      "status": "update"
+    },
+    {
+      "name": "playwright-core",
+      "kind": "npm",
+      "current": "1.60.0",
+      "evidence": "package-lock.json: node_modules/playwright-core",
+      "source": "https://registry.npmjs.org/playwright-core/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "1.63.0",
+      "status": "update"
+    },
+    {
+      "name": "puppeteer",
+      "kind": "npm",
+      "current": "25.10.0",
+      "evidence": "package-lock.json: node_modules/puppeteer",
+      "source": "https://registry.npmjs.org/puppeteer/latest",
+      "scope": "direct",
+      "latest_engines": {
+        "node": ">=22.12.0"
+      },
+      "latest_stable": "25.11.0",
+      "status": "update"
+    },
+    {
+      "name": "puppeteer-core",
+      "kind": "npm",
+      "current": "25.10.0",
+      "evidence": "package-lock.json: node_modules/puppeteer-core",
+      "source": "https://registry.npmjs.org/puppeteer-core/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=22.12.0"
+      },
+      "latest_stable": "25.11.0",
+      "status": "update"
+    },
+    {
+      "name": "devtools-protocol",
+      "kind": "npm",
+      "current": "0.0.1666840",
+      "evidence": "package-lock.json: node_modules/puppeteer-core/node_modules/devtools-protocol",
+      "source": "https://registry.npmjs.org/devtools-protocol/latest",
+      "scope": "transitive",
+      "latest_stable": "0.0.1700460",
+      "status": "update"
+    },
+    {
+      "name": "devtools-protocol",
+      "kind": "npm",
+      "current": "0.0.1666840",
+      "evidence": "package-lock.json: node_modules/puppeteer/node_modules/devtools-protocol",
+      "source": "https://registry.npmjs.org/devtools-protocol/latest",
+      "scope": "transitive",
+      "latest_stable": "0.0.1700460",
+      "status": "update"
+    },
+    {
+      "name": "require-directory",
+      "kind": "npm",
+      "current": "2.1.1",
+      "evidence": "package-lock.json: node_modules/require-directory",
+      "source": "https://registry.npmjs.org/require-directory/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=0.10.0"
+      },
+      "latest_stable": "2.1.1",
+      "status": "current"
+    },
+    {
+      "name": "require-in-the-middle",
+      "kind": "npm",
+      "current": "8.0.1",
+      "evidence": "package-lock.json: node_modules/require-in-the-middle",
+      "source": "https://registry.npmjs.org/require-in-the-middle/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=9.3.0 || >=8.10.0 <9.0.0"
+      },
+      "latest_stable": "8.0.1",
+      "status": "current"
+    },
+    {
+      "name": "robots-parser",
+      "kind": "npm",
+      "current": "3.0.1",
+      "evidence": "package-lock.json: node_modules/robots-parser",
+      "source": "https://registry.npmjs.org/robots-parser/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=10.0.0"
+      },
+      "latest_stable": "3.0.1",
+      "status": "current"
+    },
+    {
+      "name": "speedline-core",
+      "kind": "npm",
+      "current": "1.4.3",
+      "evidence": "package-lock.json: node_modules/speedline-core",
+      "source": "https://registry.npmjs.org/speedline-core/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=8.0"
+      },
+      "latest_stable": "1.4.3",
+      "status": "current"
+    },
+    {
+      "name": "string-width",
+      "kind": "npm",
+      "current": "4.2.3",
+      "evidence": "package-lock.json: node_modules/string-width",
+      "source": "https://registry.npmjs.org/string-width/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "8.2.2",
+      "status": "update"
+    },
+    {
+      "name": "strip-ansi",
+      "kind": "npm",
+      "current": "6.0.1",
+      "evidence": "package-lock.json: node_modules/strip-ansi",
+      "source": "https://registry.npmjs.org/strip-ansi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "7.2.0",
+      "status": "update"
+    },
+    {
+      "name": "stubborn-fs",
+      "kind": "npm",
+      "current": "2.0.0",
+      "evidence": "package-lock.json: node_modules/stubborn-fs",
+      "source": "https://registry.npmjs.org/stubborn-fs/latest",
+      "scope": "transitive",
+      "latest_stable": "2.0.0",
+      "status": "current"
+    },
+    {
+      "name": "stubborn-utils",
+      "kind": "npm",
+      "current": "1.0.2",
+      "evidence": "package-lock.json: node_modules/stubborn-utils",
+      "source": "https://registry.npmjs.org/stubborn-utils/latest",
+      "scope": "transitive",
+      "latest_stable": "1.0.2",
+      "status": "current"
+    },
+    {
+      "name": "third-party-web",
+      "kind": "npm",
+      "current": "0.29.2",
+      "evidence": "package-lock.json: node_modules/third-party-web",
+      "source": "https://registry.npmjs.org/third-party-web/latest",
+      "scope": "transitive",
+      "latest_stable": "0.30.0",
+      "status": "update"
+    },
+    {
+      "name": "tldts-core",
+      "kind": "npm",
+      "current": "7.4.11",
+      "evidence": "package-lock.json: node_modules/tldts-core",
+      "source": "https://registry.npmjs.org/tldts-core/latest",
+      "scope": "transitive",
+      "latest_stable": "7.4.13",
+      "status": "update"
+    },
+    {
+      "name": "tldts-icann",
+      "kind": "npm",
+      "current": "7.4.11",
+      "evidence": "package-lock.json: node_modules/tldts-icann",
+      "source": "https://registry.npmjs.org/tldts-icann/latest",
+      "scope": "transitive",
+      "latest_stable": "7.4.13",
+      "status": "update"
+    },
+    {
+      "name": "tslib",
+      "kind": "npm",
+      "current": "2.8.1",
+      "evidence": "package-lock.json: node_modules/tslib",
+      "source": "https://registry.npmjs.org/tslib/latest",
+      "scope": "transitive",
+      "latest_stable": "2.8.1",
+      "status": "current"
+    },
+    {
+      "name": "type-fest",
+      "kind": "npm",
+      "current": "4.41.0",
+      "evidence": "package-lock.json: node_modules/type-fest",
+      "source": "https://registry.npmjs.org/type-fest/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "5.10.0",
+      "status": "update"
+    },
+    {
+      "name": "typed-query-selector",
+      "kind": "npm",
+      "current": "2.12.2",
+      "evidence": "package-lock.json: node_modules/typed-query-selector",
+      "source": "https://registry.npmjs.org/typed-query-selector/latest",
+      "scope": "transitive",
+      "latest_stable": "2.12.2",
+      "status": "current"
+    },
+    {
+      "name": "undici-types",
+      "kind": "npm",
+      "current": "7.24.6",
+      "evidence": "package-lock.json: node_modules/undici-types",
+      "source": "https://registry.npmjs.org/undici-types/latest",
+      "scope": "transitive",
+      "latest_stable": "8.10.2",
+      "status": "update"
+    },
+    {
+      "name": "web-features",
+      "kind": "npm",
+      "current": "3.36.0",
+      "evidence": "package-lock.json: node_modules/web-features",
+      "source": "https://registry.npmjs.org/web-features/latest",
+      "scope": "transitive",
+      "latest_stable": "3.39.0",
+      "status": "update"
+    },
+    {
+      "name": "webdriver-bidi-protocol",
+      "kind": "npm",
+      "current": "0.4.3",
+      "evidence": "package-lock.json: node_modules/webdriver-bidi-protocol",
+      "source": "https://registry.npmjs.org/webdriver-bidi-protocol/latest",
+      "scope": "transitive",
+      "latest_stable": "1.0.1",
+      "status": "update"
+    },
+    {
+      "name": "when-exit",
+      "kind": "npm",
+      "current": "2.1.5",
+      "evidence": "package-lock.json: node_modules/when-exit",
+      "source": "https://registry.npmjs.org/when-exit/latest",
+      "scope": "transitive",
+      "latest_stable": "2.1.5",
+      "status": "current"
+    },
+    {
+      "name": "wrap-ansi",
+      "kind": "npm",
+      "current": "7.0.0",
+      "evidence": "package-lock.json: node_modules/wrap-ansi",
+      "source": "https://registry.npmjs.org/wrap-ansi/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=20"
+      },
+      "latest_stable": "10.0.1",
+      "status": "update"
+    },
+    {
+      "name": "ws",
+      "kind": "npm",
+      "current": "8.21.3",
+      "evidence": "package-lock.json: node_modules/ws",
+      "source": "https://registry.npmjs.org/ws/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=10.0.0"
+      },
+      "latest_stable": "8.21.3",
+      "status": "current"
+    },
+    {
+      "name": "xdg-basedir",
+      "kind": "npm",
+      "current": "5.1.0",
+      "evidence": "package-lock.json: node_modules/xdg-basedir",
+      "source": "https://registry.npmjs.org/xdg-basedir/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=12"
+      },
+      "latest_stable": "5.1.0",
+      "status": "current"
+    },
+    {
+      "name": "y18n",
+      "kind": "npm",
+      "current": "5.0.8",
+      "evidence": "package-lock.json: node_modules/y18n",
+      "source": "https://registry.npmjs.org/y18n/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": ">=10"
+      },
+      "latest_stable": "5.0.8",
+      "status": "current"
+    },
+    {
+      "name": "yargs",
+      "kind": "npm",
+      "current": "17.7.2",
+      "evidence": "package-lock.json: node_modules/yargs",
+      "source": "https://registry.npmjs.org/yargs/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "latest_stable": "18.1.0",
+      "status": "update"
+    },
+    {
+      "name": "yargs-parser",
+      "kind": "npm",
+      "current": "21.1.1",
+      "evidence": "package-lock.json: node_modules/yargs-parser",
+      "source": "https://registry.npmjs.org/yargs-parser/latest",
+      "scope": "transitive",
+      "latest_engines": {
+        "node": "^20.19.0 || ^22.12.0 || >=23"
+      },
+      "latest_stable": "22.0.0",
+      "status": "update"
+    },
+    {
+      "name": "zod",
+      "kind": "npm",
+      "current": "3.25.76",
+      "evidence": "package-lock.json: node_modules/zod",
+      "source": "https://registry.npmjs.org/zod/latest",
+      "scope": "transitive",
+      "latest_stable": "4.6.5",
+      "status": "update"
+    },
+    {
+      "name": "beautifulsoup4",
+      "kind": "pypi",
+      "current": "4.15.0",
+      "evidence": "requirements-qa.txt",
+      "source": "https://pypi.org/pypi/beautifulsoup4/json",
+      "scope": "direct",
+      "latest_stable": "4.15.0",
+      "status": "current"
+    },
+    {
+      "name": "playwright",
+      "kind": "pypi",
+      "current": "1.60.0",
+      "evidence": "requirements-qa.txt",
+      "source": "https://pypi.org/pypi/playwright/json",
+      "scope": "direct",
+      "latest_stable": "1.63.0",
+      "status": "update"
+    },
+    {
+      "name": "soupsieve",
+      "kind": "pypi",
+      "current": "not locked",
+      "evidence": "requirements-qa.txt has no transitive lock",
+      "source": "https://pypi.org/pypi/soupsieve/json",
+      "scope": "transitive-unlocked",
+      "latest_stable": "2.9.2",
+      "status": "unresolved-current"
+    },
+    {
+      "name": "typing-extensions",
+      "kind": "pypi",
+      "current": "not locked",
+      "evidence": "requirements-qa.txt has no transitive lock",
+      "source": "https://pypi.org/pypi/typing-extensions/json",
+      "scope": "transitive-unlocked",
+      "latest_stable": "4.16.0",
+      "status": "unresolved-current"
+    },
+    {
+      "name": "pyee",
+      "kind": "pypi",
+      "current": "not locked",
+      "evidence": "requirements-qa.txt has no transitive lock",
+      "source": "https://pypi.org/pypi/pyee/json",
+      "scope": "transitive-unlocked",
+      "latest_stable": "14.0.0",
+      "status": "unresolved-current"
+    },
+    {
+      "name": "greenlet",
+      "kind": "pypi",
+      "current": "not locked",
+      "evidence": "requirements-qa.txt has no transitive lock",
+      "source": "https://pypi.org/pypi/greenlet/json",
+      "scope": "transitive-unlocked",
+      "latest_stable": "3.5.6",
+      "status": "unresolved-current"
+    },
+    {
+      "name": "Node.js",
+      "kind": "node",
+      "current": "22.19.0",
+      "evidence": ".node-version; package.json engines",
+      "source": "https://nodejs.org/dist/index.json",
+      "scope": "direct",
+      "latest_lts": "24.21.0",
+      "update_target": "24.21.0",
+      "latest_same_major": "22.23.2",
+      "latest_stable": "26.9.0",
+      "status": "update"
+    },
+    {
+      "name": "npm bundled with pinned Node",
+      "kind": "npm-bundled",
+      "current": "10.9.3",
+      "evidence": ".node-version; no packageManager pin",
+      "source": "https://registry.npmjs.org/npm/latest",
+      "scope": "direct",
+      "latest_engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+      },
+      "latest_stable": "12.0.2",
+      "status": "update"
+    },
+    {
+      "name": "actions/checkout",
+      "kind": "action",
+      "current": "v7",
+      "evidence": ".github/workflows/i18n-page-sync.yml; .github/workflows/mermaid-version-watch.yml; .github/workflows/pages.yml; .github/workflows/resilience-qa.yml; .github/workflows/sparkle-qa.yml; .github/workflows/technology-versions.yml; .github/workflows/validate.yml; .github/workflows/viewport-qa.yml",
+      "source": "https://api.github.com/repos/actions/checkout/releases/latest",
+      "scope": "direct",
+      "latest_stable": "7.0.1",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/configure-pages",
+      "kind": "action",
+      "current": "v6",
+      "evidence": ".github/workflows/pages.yml",
+      "source": "https://api.github.com/repos/actions/configure-pages/releases/latest",
+      "scope": "direct",
+      "latest_stable": "6.0.0",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/deploy-pages",
+      "kind": "action",
+      "current": "v5",
+      "evidence": ".github/workflows/pages.yml",
+      "source": "https://api.github.com/repos/actions/deploy-pages/releases/latest",
+      "scope": "direct",
+      "latest_stable": "5.0.1",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/download-artifact",
+      "kind": "action",
+      "current": "v8",
+      "evidence": ".github/workflows/pages.yml",
+      "source": "https://api.github.com/repos/actions/download-artifact/releases/latest",
+      "scope": "direct",
+      "latest_stable": "8.0.1",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/github-script",
+      "kind": "action",
+      "current": "v9",
+      "evidence": ".github/workflows/mermaid-version-watch.yml",
+      "source": "https://api.github.com/repos/actions/github-script/releases/latest",
+      "scope": "direct",
+      "latest_stable": "9.0.0",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/setup-node",
+      "kind": "action",
+      "current": "v4",
+      "evidence": ".github/workflows/pages.yml; .github/workflows/validate.yml",
+      "source": "https://api.github.com/repos/actions/setup-node/releases/latest",
+      "scope": "direct",
+      "latest_stable": "7.0.0",
+      "status": "newer-line"
+    },
+    {
+      "name": "actions/setup-python",
+      "kind": "action",
+      "current": "v7",
+      "evidence": ".github/workflows/i18n-page-sync.yml; .github/workflows/pages.yml; .github/workflows/resilience-qa.yml; .github/workflows/sparkle-qa.yml; .github/workflows/validate.yml; .github/workflows/viewport-qa.yml",
+      "source": "https://api.github.com/repos/actions/setup-python/releases/latest",
+      "scope": "direct",
+      "latest_stable": "7.0.0",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/upload-artifact",
+      "kind": "action",
+      "current": "v7",
+      "evidence": ".github/workflows/pages.yml; .github/workflows/resilience-qa.yml; .github/workflows/technology-versions.yml; .github/workflows/viewport-qa.yml",
+      "source": "https://api.github.com/repos/actions/upload-artifact/releases/latest",
+      "scope": "direct",
+      "latest_stable": "7.0.1",
+      "status": "floating-selector"
+    },
+    {
+      "name": "actions/upload-pages-artifact",
+      "kind": "action",
+      "current": "v5",
+      "evidence": ".github/workflows/pages.yml",
+      "source": "https://api.github.com/repos/actions/upload-pages-artifact/releases/latest",
+      "scope": "direct",
+      "latest_stable": "5.0.0",
+      "status": "floating-selector"
+    },
+    {
+      "name": "Python CI",
+      "kind": "python",
+      "current": "3.11",
+      "evidence": ".github/workflows/i18n-page-sync.yml; .github/workflows/pages.yml; .github/workflows/resilience-qa.yml; .github/workflows/sparkle-qa.yml; .github/workflows/validate.yml; .github/workflows/viewport-qa.yml",
+      "source": "https://www.python.org/downloads/",
+      "scope": "direct",
+      "latest_stable": "3.14.7",
+      "status": "newer-line"
+    },
+    {
+      "name": "Replit nodejs",
+      "kind": "node",
+      "current": "20",
+      "evidence": ".replit module selector; remote patch unknown",
+      "source": "https://nodejs.org/dist/index.json",
+      "scope": "direct",
+      "latest_lts": "24.21.0",
+      "update_target": "24.21.0",
+      "latest_same_major": "20.20.2",
+      "latest_stable": "26.9.0",
+      "status": "newer-line"
+    },
+    {
+      "name": "Replit python",
+      "kind": "python",
+      "current": "3.11",
+      "evidence": ".replit module selector; remote patch unknown",
+      "source": "https://www.python.org/downloads/",
+      "scope": "direct",
+      "latest_stable": "3.14.7",
+      "status": "newer-line"
+    },
+    {
+      "name": "Mermaid",
+      "kind": "npm",
+      "current": "12.0.0",
+      "evidence": "assets/vendor/mermaid/VERSION",
+      "source": "https://registry.npmjs.org/mermaid/latest",
+      "scope": "vendored",
+      "latest_engines": {
+        "node": ">=22.12.0"
+      },
+      "latest_stable": "12.0.0",
+      "status": "current"
+    }
+  ]
+}

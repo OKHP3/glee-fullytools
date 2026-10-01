@@ -28,6 +28,9 @@ jobs:
       - name: Verify stack checker safety and repository baseline
         run: |
           python3 -m unittest scripts.tests.test_stack_conformance
+          python3 scripts/tests/test-technology-versions.py
+          python3 -m unittest scripts.tests.test_check_workflow_actions
+          python3 -m unittest scripts.tests.test_validate_search_coverage_gate
           python3 scripts/check-stack-conformance.py
 
       - name: Check GitHub Actions versions
@@ -104,6 +107,9 @@ jobs:
       - name: Check generated CSP policies
         run: python3 scripts/check-csp.py
 
+      - name: Check public-header CSP rules offline
+        run: python3 -m unittest scripts.tests.test_check_public_headers
+
       - name: Run validation and template metadata regressions
         run: |
           python3 -m unittest \
@@ -177,6 +183,33 @@ jobs:
 
       - name: Check branded dark-mode coverage
         run: python3 scripts/check-glee-dark-coverage.py --section all --require-both
+
+  node-qa:
+    name: Validate Node dependency updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up the declared Node runtime
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.node-version'
+          cache: npm
+
+      - name: Install the exact lockfile
+        run: npm ci
+
+      - name: Check optional QA tools load
+        run: |
+          node --input-type=module -e "await import('puppeteer'); await import('lighthouse');"
+          npm exec --no -- lighthouse --version
+
+      - name: Install matching browser and test the FoundRy page
+        run: |
+          npx playwright install --with-deps chromium
+          npm run qa:foundry-accessibility
 
   review-action-versions:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

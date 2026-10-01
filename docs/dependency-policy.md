@@ -16,11 +16,20 @@ checks have dependencies. Reproducibility is governed as follows:
   installed by `npx playwright install`; the Python Playwright dependency
   continues to own the existing Python browser gates. Browser installation is
   explicit in browser workflows.
-- Dependabot reviews GitHub Actions, npm, and pip updates monthly. Every update
+- Dependabot reviews GitHub Actions, npm, and pip updates weekly on Monday. Every update
   remains a reviewed pull request and must pass the normal release checks.
 - An update must change the relevant lock/pin file, run the full applicable QA
   suite, and record any intentional compatibility decision in the pull
   request. No floating dependency may be introduced as a convenience.
+- Package manifests own dependency versions. The stack checker validates exact
+  stable pins and npm lock agreement rather than a duplicate version list.
+  Node and GitHub Action major changes still require coordinated policy edits.
+- Site Validation installs and exercises Node QA dependencies on pull requests,
+  alongside the existing Python/browser gates.
+- The weekly Technology Version Review reports newer stable runtime, package,
+  action, and Mermaid releases. It never edits pins or merges a PR. See the
+  [inventory and upgrade plan](technology-update-plan.md) and
+  [generated version register](technology-version-register.md).
 
 Current update path:
 
@@ -31,5 +40,5 @@ python3 scripts/check-workflow-actions.py
 ```
 
 The exact versions are policy, not a claim that dependencies never need
-updating. Security and browser compatibility updates should use the monthly
+updating. Security and browser compatibility updates should use the weekly
 review or an earlier reviewed update when risk warrants it.

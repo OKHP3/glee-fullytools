@@ -141,6 +141,7 @@ def expected_public_top_level() -> set[str]:
         "index.html",
         "legal",
         "llms.txt",
+        "next-chapter",
         "offline.html",
         "persona",
         "robots.txt",

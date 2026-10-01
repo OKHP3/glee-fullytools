@@ -2,14 +2,14 @@
   "skill_name": "okhp3-replit-canvas-board",
   "skill_version": "1.0.0",
   "phase": 8,
-  "description_evaluated": "Plan and build a structured multi-frame Replit canvas presentation board  -  hero rows, labeled zones, iframe lifecycle (building→live), coordinate layouts, and focusCanvasShapes for audience navigation. Use when organising the canvas for a designathon, showcase, or any multi-frame review. Also activate for \"arrange the frames\", \"set up the board\", \"label the zones\", \"focus the viewport\", or any canvas layout that needs deliberate spatial planning rather than ad-hoc placement.",
+  "description_evaluated": "Plan and build a structured multi-frame Replit canvas presentation board — hero rows, labeled zones, iframe lifecycle (building→live), coordinate layouts, and focusCanvasShapes for audience navigation. Use when organising the canvas for a designathon, showcase, or any multi-frame review. Also activate for \"arrange the frames\", \"set up the board\", \"label the zones\", \"focus the viewport\", or any canvas layout that needs deliberate spatial planning rather than ad-hoc placement.",
   "evaluator": "independent trigger subagent",
   "queries": [
     {
       "query": "Arrange the existing canvas frames into labeled zones for a reviewer",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "Matches 'arrange the frames' and 'label the zones' for a multi-frame review  -  squarely within described intent."
+      "rationale": "Matches 'arrange the frames' and 'label the zones' for a multi-frame review — squarely within described intent."
     },
     {
       "query": "Turn this Replit canvas into a presentation board for judges",
@@ -39,7 +39,7 @@
       "query": "Organize these scattered mockups into a multi-frame review layout",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "Multi-frame review layout with deliberate organization vs ad-hoc placement  -  directly in scope."
+      "rationale": "Multi-frame review layout with deliberate organization vs ad-hoc placement — directly in scope."
     },
     {
       "query": "Create numbered section labels above each canvas zone",
@@ -63,7 +63,7 @@
       "query": "After arranging all frames, focus the audience on the complete board",
       "should_trigger": true,
       "triggered": true,
-      "rationale": "Arranging frames plus focusCanvasShapes for audience navigation  -  both explicitly described."
+      "rationale": "Arranging frames plus focusCanvasShapes for audience navigation — both explicitly described."
     },
     {
       "query": "Build a single React pricing card and preview it on canvas",
@@ -81,7 +81,7 @@
       "query": "Change one canvas text shape from grey to blue",
       "should_trigger": false,
       "triggered": false,
-      "rationale": "Editing a single shape's color  -  not multi-frame layout planning. Shares 'canvas' keyword only."
+      "rationale": "Editing a single shape's color — not multi-frame layout planning. Shares 'canvas' keyword only."
     },
     {
       "query": "Graduate the approved mockup into the production app",
@@ -105,7 +105,7 @@
       "query": "Put one screenshot in an empty spot on the canvas",
       "should_trigger": false,
       "triggered": false,
-      "rationale": "Single ad-hoc placement of one item  -  the opposite of the described deliberate multi-frame planning."
+      "rationale": "Single ad-hoc placement of one item — the opposite of the described deliberate multi-frame planning."
     },
     {
       "query": "Create an architecture diagram with canvas shapes",

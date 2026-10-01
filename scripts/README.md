@@ -13,6 +13,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `audit-site.py` | active | Site audit |
 | `audit-tool-ette-promises.py` | active | Check all 42 Tool-ette pages for a description, unique identity, publication signal, and primary CTA state |
 | `build-search-index.py` | active | Rebuild the generated search index, then refresh the universe map |
+| `sync-transition-notices.py` | active | Synchronize the Custom GPT transition disclosures and footer route; `--check` detects stale output without writing |
 | `sync-universe-map.py` | active | Generate the owned universe page block and public coverage/provenance JSON using the installed skill; `--check` is read-only |
 | `check-accent-contrast.py` | active | Accent contrast check (has its own test coverage) |
 | `check-catalog-claims.py` | active | Check all 42 Tool-ette pages for unsupported capability, availability, and platform-boundary claims; covered by `tests/test_content_claims.py` in CI |
@@ -25,6 +26,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `check-public-headers.py` | active | Public `_headers`/CSP header check |
 | `check-stack-conformance.py` | active | Check the ADR-0007 local baseline; CI runs safety regressions; `--fix` preserves tracked evidence and the index |
 | `check-workflow-actions.py` | active | Approved action-major-tag policy check; does not enforce immutable SHA pins |
+| `technology-versions.py` | active | Inventory manifests and query stable publisher releases; writes Markdown/JSON reports without installing or updating dependencies |
 | `csp.py` | active | Canonical CSP policy generation module |
 | `generate-csp.py` | active | Apply CSP policies to every page |
 | `inclusive-accessibility-qa.py` | active | Browser evidence for inclusive keyboard, search, fallback, and constrained-environment journeys |

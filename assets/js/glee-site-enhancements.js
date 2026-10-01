@@ -1,5 +1,32 @@
 // Glee-specific behavior intentionally kept outside the shared foundation runtime.
 (function () {
+  const transitionDialog = document.querySelector(".glee-transition-dialog");
+  if (transitionDialog && typeof transitionDialog.showModal === "function") {
+    const transitionKey = "glee-gpt-transition-2026-09";
+    let acknowledged = false;
+    try { acknowledged = sessionStorage.getItem(transitionKey) === "acknowledged"; } catch (_) {}
+    const rememberTransition = () => {
+      acknowledged = true;
+      try { sessionStorage.setItem(transitionKey, "acknowledged"); } catch (_) {}
+    };
+    const showTransition = () => {
+      if (!transitionDialog.open) transitionDialog.showModal();
+    };
+    document.querySelectorAll("[data-transition-open]").forEach((button) => {
+      button.hidden = false;
+      button.addEventListener("click", showTransition);
+    });
+    transitionDialog.querySelector("[data-transition-close]").addEventListener("click", () => transitionDialog.close());
+    transitionDialog.addEventListener("close", rememberTransition);
+    transitionDialog.querySelector("a").addEventListener("click", rememberTransition);
+    const autoShowTransition = () => {
+      if (transitionDialog.dataset.transitionAuto === "true" && !acknowledged) showTransition();
+    };
+    // Do not open dialogs while speculative navigation is still prerendering.
+    if (document.prerendering) document.addEventListener("prerenderingchange", autoShowTransition, { once: true });
+    else autoShowTransition();
+  }
+
   const measurementId = "G-89W66VMGPB";
   const consentKey = "glee-analytics-consent";
 

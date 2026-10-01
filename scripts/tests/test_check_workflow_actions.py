@@ -20,14 +20,17 @@ class WorkflowActionVersionTests(unittest.TestCase):
 
     def test_approved_actions_pass(self) -> None:
         errors = self.check(
-            """
+            f"""
             steps:
-              - uses: actions/checkout@v4
-              - uses: actions/setup-python@v5
-              - uses: actions/upload-artifact@v4
+              - uses: actions/checkout@v{check_workflow_actions.ACTION_MAJOR_VERSIONS['actions/checkout']}
+              - uses: actions/setup-python@v{check_workflow_actions.ACTION_MAJOR_VERSIONS['actions/setup-python']}
+              - uses: actions/upload-artifact@v{check_workflow_actions.ACTION_MAJOR_VERSIONS['actions/upload-artifact']}
             """
         )
         self.assertEqual(errors, [])
+
+    def test_inline_step_rejects_unapproved_major(self) -> None:
+        self.assertEqual(len(self.check("  - uses: actions/checkout@v1\n")), 1)
 
     def test_wrong_major_is_reported_with_location(self) -> None:
         approved_major = check_workflow_actions.ACTION_MAJOR_VERSIONS["actions/checkout"]

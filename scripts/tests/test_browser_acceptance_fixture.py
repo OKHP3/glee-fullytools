@@ -1,6 +1,44 @@
 import unittest
+import importlib.util
+from pathlib import Path
 
 from scripts.tests.test_browser_acceptance import adapt_local_http_navigation
+
+spec = importlib.util.spec_from_file_location(
+    "color_scheme_test", Path(__file__).with_name("test-color-scheme-init.py")
+)
+color_scheme_test = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(color_scheme_test)
+
+
+class BootstrapEventIsolationTests(unittest.TestCase):
+    def test_initial_blank_document_is_not_the_navigation_boundary(self):
+        events = [
+            ("domcontentloaded", "about:blank"),
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "http://localhost:5000/about/"),
+        ]
+        result = color_scheme_test.bootstrap_events(events, "/about/")
+        self.assertEqual(result["domcontentloaded_index"], 3)
+
+    def test_actual_late_bootstrap_still_fails(self):
+        events = [
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "http://localhost:5000/about/"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+        ]
+        with self.assertRaisesRegex(AssertionError, "did not finish"):
+            color_scheme_test.bootstrap_events(events, "/about/")
+
+    def test_missing_target_navigation_still_fails(self):
+        events = [
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "about:blank"),
+        ]
+        with self.assertRaisesRegex(AssertionError, "incomplete"):
+            color_scheme_test.bootstrap_events(events, "/about/")
 
 
 class LocalHttpNavigationFixtureTests(unittest.TestCase):

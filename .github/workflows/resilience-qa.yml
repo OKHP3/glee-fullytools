@@ -27,7 +27,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Playwright
-        run: pip install playwright
+        run: python3 -m pip install -r requirements-qa.txt
 
       - name: Install browser engines and system dependencies
         run: playwright install --with-deps chromium firefox webkit
@@ -65,6 +65,62 @@ jobs:
               || failed=1
           done
           exit "$failed"
+
+      - name: Verify comparable first-paint evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          audit_dir = Path("assets/audit")
+          expected_browsers = ("chromium", "firefox", "webkit")
+          allowed_statuses = {
+              "observed",
+              "unsupported",
+              "unavailable_after_load",
+          }
+          invalid = []
+          for browser in expected_browsers:
+              path = audit_dir / f"color-scheme-init-{browser}.json"
+              try:
+                  report = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError) as error:
+                  invalid.append(f"{path.name}: cannot parse JSON ({error})")
+                  continue
+              if report.get("browser") != browser:
+                  invalid.append(
+                      f"{path.name}: browser={report.get('browser')!r}, "
+                      f"expected {browser!r}"
+                  )
+              if report.get("status") != "PASS":
+                  invalid.append(
+                      f"{path.name}: status={report.get('status')!r}, expected 'PASS'"
+                  )
+              cases = report.get("cases")
+              if not isinstance(cases, dict):
+                  invalid.append(f"{path.name}: cases must be an object")
+                  continue
+              for case_name, case in cases.items():
+                  for route_evidence in case.get("route_evidence", []):
+                      timing = route_evidence.get("timing", {})
+                      status = timing.get("first_paint_status")
+                      if status not in allowed_statuses:
+                          invalid.append(
+                              f"{path.name}: {case_name}/"
+                              f"{route_evidence.get('route')}: "
+                              f"invalid first_paint_status={status!r}"
+                          )
+
+          if invalid:
+              raise SystemExit(
+                  "First-paint evidence is incomplete or not comparable: "
+                  + "; ".join(invalid)
+              )
+          print(
+              "Verified first-paint evidence status values for chromium, "
+              "firefox, and webkit."
+          )
+          PY
 
       - name: Verify generated maps in all installed engines
         run: python3 scripts/tests/test-universe-browser.py

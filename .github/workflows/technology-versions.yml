@@ -1,0 +1,53 @@
+name: Technology Version Review
+
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: technology-version-review
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Test version selection and failure reporting
+        run: python3 scripts/tests/test-technology-versions.py
+
+      - name: Refresh all version evidence
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        # Newer releases and incomplete source checks make the run actionable.
+        # This workflow cannot write code, merge a PR, or deploy the site.
+        run: >-
+          python3 scripts/technology-versions.py
+          --json "${{ runner.temp }}/technology-versions.json"
+          --markdown "${{ runner.temp }}/technology-versions.md"
+          --fail-on-updates
+
+      - name: Show inventory in the run summary
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/technology-versions.md" ]; then
+            cat "$RUNNER_TEMP/technology-versions.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Retain source-backed version evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: technology-version-review
+          path: |
+            ${{ runner.temp }}/technology-versions.json
+            ${{ runner.temp }}/technology-versions.md
+          if-no-files-found: error
+          retention-days: 30

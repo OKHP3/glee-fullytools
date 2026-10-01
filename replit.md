@@ -14,7 +14,7 @@ available. The authoritative promise and inventory contract is
   ASKJAMIE, and CROSS-BRAND sections. Glee-fully pages use the coral and cream
   brand contract documented in `AGENTS.md`.
 - **Fonts:** Google Fonts (Fredoka, Open Sans, Poppins, and DM Sans)
-- **Dependencies:** Mermaid v11 is vendored locally. Google Fonts is external;
+- **Dependencies:** Mermaid v12.0.0 is vendored locally. Google Fonts is external;
   Google Analytics G-89W66VMGPB loads only after opt-in. Ko-fi is an outbound
   link. Optional local Node metadata exists for
   Lighthouse and Puppeteer, but the site does not run on Node or a bundler.
@@ -25,7 +25,7 @@ available. The authoritative promise and inventory contract is
 - `index.html` — Main landing page with JSON-LD WebSite+Organization schema
 - `assets/css/theme.css` — Central stylesheet, organized into scope-grouped sections: GLOBAL → OVERKILL → GLEE → ASKJAMIE → CROSS-BRAND. Each scope has a boxed banner. Current counts come from the source and generated portfolio statistics; historical scope-map counts below retain their original dates.
 - `assets/js/app.js` — Shared JS: progress bar, theme toggle, mobile nav, sticky-TOC module, and the full search engine (search.js merged into app.js 2026-05-04). Exposes `window.GleeSearch` for debugging.
-- `assets/js/mermaid-init.js` — External Mermaid v11 init (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
+- `assets/js/mermaid-init.js`: Local initializer importing vendored Mermaid v12.0.0 (used by ecosystem + universe pages). Both pages also carry a single `.mermaid-referral` credit linking to the paid-referral URL `https://mermaidchart.cello.so/UhVlNtC2MlS` in Mermaid hot-pink `#FF3670`. `scripts/validate-site.py` enforces a one-instance-per-Mermaid-page invariant so this credit can never silently be dropped.
 - `assets/img/` — Branded butterfly and GPT icons
 - `sw.js` — Root-scoped service worker with a versioned, same-origin offline shell and `/offline.html` fallback
 - `toolbox/`  -  Central hub with 1 Toolbox page, 7 thematic branches, and 42
@@ -51,6 +51,24 @@ from the Python browser gates; a missing dependency is a failed setup, not a
 skipped check.
 
 ## CI Gate (GitHub Actions)
+
+### Protected-main synchronization
+
+GitHub `main` is the canonical release branch and requires a pull request.
+The local pre-push hook also blocks direct pushes to `main`. New Replit work
+must start on a named branch, be pushed to that branch, and pass the required
+checks in a pull request before merging. A clean working tree can still have
+unpublished commits; inspect `git rev-list --left-right --count HEAD...origin/main`
+after `git fetch origin`.
+
+After the pull request merges, use `git switch main` and
+`git merge --ff-only origin/main` in each clean checkout after fetching.
+If a fast-forward fails, preserve the local tip and inspect the divergence;
+do not repeatedly pull, reset `main`, or force-push. Preserve commit ancestry
+when reconciling commits already made on Replit `main`, so both checkouts can
+fast-forward after the integration PR. Refresh Replit's Git panel separately
+from the Shell; a working Shell transport does not prove the Replit Git
+Providers connector is authenticated.
 
 `.github/workflows/validate.yml` runs on every push and pull request to `main`:
 
@@ -186,6 +204,10 @@ All 59 HTML pages have been fully audited and updated:
 | Inline style= attributes | ✅ Extracted to utility classes (.mt-075, .mt-1–.mt-4) |
 
 ## Cross-site Sync Notes (overkillhill.com reference)
+
+Historical notes from the April 2026 alignment. Mermaid v11 references here
+describe that earlier state; the current local runtime is pinned by
+`assets/vendor/mermaid/VERSION`.
 
 - CSS utility classes appended to `theme.css` (`.mermaid foreignObject` fix, `.text-amber`, `.link-amber`, `.diagram-*`, `.section-subtitle`, `.council-*`, `.mt-*` spacing helpers)
 - Twitter handle: `@OverKillHillP3` used as site-wide `twitter:site` and `twitter:creator`

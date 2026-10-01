@@ -96,7 +96,7 @@ If remote-tracking refs may be stale, run `git fetch --all` separately and
 inspect its result. Do **not** add `--prune`: pruning before classification
 destroys evidence about stale remote branches.
 
-> **NON-NEGOTIABLE  -  NO EARLY PRUNING:** Never run `git fetch --all --prune`,
+> **NON-NEGOTIABLE — NO EARLY PRUNING:** Never run `git fetch --all --prune`,
 > `git fetch --prune`, or `git remote prune` until **every** stale remote branch
 > has been classified. Refresh refs without pruning during discovery.
 
@@ -159,22 +159,22 @@ Use this exact report shape:
 
 ```markdown
 ## Branches & PRs
-- KEEP: <branch>  -  <evidence>
-- MERGE: <branch>  -  <PR and check evidence>
-- DELETE: <branch>  -  <merged or owner-confirmed abandonment evidence>
-- REVIEW: <branch>  -  <unknown fact and smallest next check>
+- KEEP: <branch> — <evidence>
+- MERGE: <branch> — <PR and check evidence>
+- DELETE: <branch> — <merged or owner-confirmed abandonment evidence>
+- REVIEW: <branch> — <unknown fact and smallest next check>
 
 ## A. DELETE
-- <path>  -  <why it is verified disposable>
+- <path> — <why it is verified disposable>
 
 ## B. GITIGNORE-AND-UNTRACK
-- <path>  -  <why it is generated but currently tracked>
+- <path> — <why it is generated but currently tracked>
 
 ## C. TRIAGE-THEN-DELETE
-- <path>  -  <what must be inspected first>
+- <path> — <what must be inspected first>
 
 ## D. RENAME
-- <old> → <new>  -  <rule, import/link impact, validation>
+- <old> → <new> — <rule, import/link impact, validation>
 ```
 
 Stop. General approval of "the cleanup" is not approval of every destructive
@@ -182,7 +182,24 @@ line; obtain an exact go/no-go for each merge, delete, and rename.
 
 ### 6. Execute approved items in small batches
 
-Before each branch operation, refresh and verify the expected head SHA.
+Before each branch operation, run the bundled pre-delete check with the exact
+branch and SHA recorded in the approved plan:
+
+```bash
+python3 .agents/skills/okhp3-replit-repl-janitor/scripts/audit-repo.py \
+  --root . \
+  --check-delete \
+  --branch '<branch>' \
+  --reviewed-head '<reviewed SHA>'
+```
+
+The JSON result records both `reviewed_head` and the freshly read
+`current_head`. If the bucket is `review`, stop, record the hold, and run no
+deletion command. Only a `delete` result may be executed, and its
+`deletion_commands` must be run in the emitted order. The sequence is
+remote-first (`git push origin --delete <branch>`) and local second
+(`git branch -d <branch>`). The check is read-only and never executes either
+command.
 
 For an approved merge:
 
@@ -244,15 +261,15 @@ Return:
 
 ## Resources
 
-- `scripts/audit-repo.py`  -  deterministic, no-fetch-by-default JSON audit of
+- `scripts/audit-repo.py` — deterministic, no-fetch-by-default JSON audit of
   branches, naming violations, and nested detritus.
-- `references/naming-conventions.md`  -  portable kebab-case policy and structural
+- `references/naming-conventions.md` — portable kebab-case policy and structural
   exceptions.
-- `references/foundry-architecture.md`  -  Phase 1 intent, scope, and brand
+- `references/foundry-architecture.md` — Phase 1 intent, scope, and brand
   decision for this renamed skill.
-- `evals/evals.json`  -  three live-evaluation prompts with four anchored
+- `evals/evals.json` — three live-evaluation prompts with four anchored
   expectations each.
-- `benchmarks/benchmark.json`  -  version-matched Foundry evidence after live
+- `benchmarks/benchmark.json` — version-matched Foundry evidence after live
   execution.
 
 ---
