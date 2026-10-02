@@ -20,13 +20,15 @@ CHECKER = importlib.util.module_from_spec(CHECKER_SPEC)
 CHECKER_SPEC.loader.exec_module(CHECKER)
 
 EXPECTED_VIEWPORTS = CHECKER.EXPECTED_VIEWPORTS
+EXPECTED_ENGINES = CHECKER.EXPECTED_ENGINES
+ENGINE_LABELS = CHECKER.ENGINE_LABELS
 SCREEN_READER_LIMITATION = CHECKER.SCREEN_READER_LIMITATION
 STATUSES = CHECKER.STATUSES
 validate_file = CHECKER.validate_file
 validate_report = CHECKER.validate_report
 
 
-def valid_report() -> dict:
+def valid_report(engine: str = "chromium") -> dict:
     checks = [
         {
             "name": "narrow-320: page identity and landmarks",
@@ -47,9 +49,10 @@ def valid_report() -> dict:
         "generatedAt": "2026-10-01T18:00:00.000Z",
         "sourceSha": "a" * 40,
         "route": "/foundry/",
+        "engine": engine,
         "viewports": deepcopy(EXPECTED_VIEWPORTS),
         "baseUrl": "http://127.0.0.1:38471",
-        "runtime": {"status": "RUN", "driver": "Playwright Chromium"},
+        "runtime": {"status": "RUN", "driver": f"Playwright {ENGINE_LABELS[engine]}"},
         "checks": checks,
         "summary": {
             status: sum(check["status"] == status for check in checks)
@@ -72,16 +75,61 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
     def test_complete_report_contract_is_accepted(self):
         self.assertEqual(validate_report(valid_report()), [])
 
-    def test_not_run_report_is_valid_with_reason_and_zero_counts(self):
+    def test_each_supported_engine_has_a_distinct_valid_report(self):
+        self.assertEqual(EXPECTED_ENGINES, ("chromium", "firefox", "webkit"))
+        for engine in EXPECTED_ENGINES:
+            with self.subTest(engine=engine):
+                self.assertEqual(
+                    validate_report(valid_report(engine), expected_engine=engine),
+                    [],
+                )
+
+    def test_missing_unsupported_or_mismatched_engine_is_rejected(self):
         report = valid_report()
-        report.pop("baseUrl")
-        report["runtime"] = {
-            "status": "NOT RUN",
-            "reason": "Installed Chromium driver unavailable",
-        }
-        report["checks"] = []
-        report["summary"] = {status: 0 for status in STATUSES}
-        self.assertEqual(validate_report(report), [])
+        report.pop("engine")
+        self.assertTrue(
+            any("engine must be chromium, firefox, or webkit" in error
+                for error in validate_report(report))
+        )
+
+        report = valid_report()
+        report["engine"] = "edge"
+        self.assertTrue(
+            any("engine must be chromium, firefox, or webkit" in error
+                for error in validate_report(report))
+        )
+
+        errors = validate_report(valid_report("chromium"), expected_engine="firefox")
+        self.assertTrue(
+            any("does not match requested engine 'firefox'" in error for error in errors),
+            errors,
+        )
+
+    def test_runtime_driver_must_match_engine_tag(self):
+        report = valid_report("webkit")
+        report["runtime"]["driver"] = "Playwright Firefox"
+        errors = validate_report(report)
+        self.assertTrue(
+            any("runtime driver 'Playwright Firefox' does not match engine 'webkit'" in error
+                for error in errors),
+            errors,
+        )
+
+    def test_not_run_report_is_valid_with_reason_and_zero_counts(self):
+        for engine in EXPECTED_ENGINES:
+            with self.subTest(engine=engine):
+                report = valid_report(engine)
+                report.pop("baseUrl")
+                report["runtime"] = {
+                    "status": "NOT RUN",
+                    "reason": f"Installed {ENGINE_LABELS[engine]} driver unavailable",
+                }
+                report["checks"] = []
+                report["summary"] = {status: 0 for status in STATUSES}
+                self.assertEqual(
+                    validate_report(report, expected_engine=engine),
+                    [],
+                )
 
     def test_both_narrow_viewport_records_are_required(self):
         report = valid_report()
@@ -180,50 +228,65 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             errors = validate_file(path)
         self.assertTrue(any("report is invalid JSON" in error for error in errors))
 
-    def test_pages_runs_contract_after_existing_gate_without_weakening_it(self):
+    def test_pages_runs_each_engine_after_blocking_gate_and_retains_reports(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         dependencies = step_block(workflow, "Install Node QA dependencies")
-        browser_install = step_block(workflow, "Install Node Playwright Chromium")
-        browser = step_block(workflow, "Run FoundRy accessibility evidence")
-        contract = step_block(workflow, "Verify FoundRy accessibility report contract")
+        browser_install = step_block(workflow, "Install Node Playwright engines")
+        browser = step_block(
+            workflow,
+            "Run FoundRy accessibility evidence in Chromium, Firefox, and WebKit",
+        )
+        contract = step_block(workflow, "Verify FoundRy accessibility report contracts")
         upload = step_block(workflow, "Upload FoundRy accessibility evidence")
 
         browser_position = workflow.index(browser)
+        install_position = workflow.index(browser_install)
         contract_position = workflow.index(contract)
         upload_position = workflow.index(upload)
-        self.assertLess(workflow.index(dependencies), browser_position)
-        self.assertLess(workflow.index(browser_install), browser_position)
+        self.assertLess(workflow.index(dependencies), install_position)
+        self.assertLess(install_position, browser_position)
         self.assertLess(browser_position, contract_position)
         self.assertLess(contract_position, upload_position)
 
         self.assertIn("run: npm ci", dependencies)
-        self.assertIn("run: npx playwright install --with-deps chromium", browser_install)
-        self.assertIn("id: foundry_accessibility", browser)
         self.assertIn(
-            'run: npm run qa:foundry-accessibility -- --output "$RUNNER_TEMP/foundry-accessibility.json"',
-            browser,
+            "run: npx playwright install chromium firefox webkit",
+            browser_install,
         )
+        self.assertIn("id: foundry_accessibility", browser)
+        self.assertIn("for engine in chromium firefox webkit; do", browser)
+        normalized_browser = " ".join(browser.replace("\\", "").split())
+        self.assertIn(
+            'npm run qa:foundry-accessibility -- --engine "$engine" '
+            '--output "$RUNNER_TEMP/foundry-accessibility-${engine}.json"',
+            normalized_browser,
+        )
+        self.assertIn('exit "$failed"', browser)
         self.assertNotIn("continue-on-error", browser)
         self.assertIn("always()", contract)
         self.assertIn("steps.foundry_accessibility.outcome == 'success'", contract)
         self.assertIn("steps.foundry_accessibility.outcome == 'failure'", contract)
+        self.assertIn("for engine in chromium firefox webkit; do", contract)
         self.assertIn(
             "python3 scripts/tests/test-foundry-accessibility-report.py",
             contract,
         )
+        normalized_contract = " ".join(contract.replace("\\", "").split())
         self.assertIn(
-            'python3 scripts/check-foundry-accessibility-report.py "$RUNNER_TEMP/foundry-accessibility.json"',
-            contract,
+            'python3 scripts/check-foundry-accessibility-report.py --engine "$engine" '
+            '"$RUNNER_TEMP/foundry-accessibility-${engine}.json"',
+            normalized_contract,
         )
+        self.assertIn('exit "$failed"', contract)
         self.assertIn("always()", upload)
         self.assertIn("steps.foundry_accessibility.outcome == 'success'", upload)
         self.assertIn("steps.foundry_accessibility.outcome == 'failure'", upload)
         self.assertIn(
-            "path: ${{ runner.temp }}/foundry-accessibility.json",
+            "path: ${{ runner.temp }}/foundry-accessibility-*.json",
             upload,
         )
         self.assertIn("if-no-files-found: error", upload)
-        self.assertNotIn("assets/audit/foundry-accessibility.json", workflow)
+        self.assertNotIn("assets/audit/foundry-accessibility-", workflow)
 
 
 if __name__ == "__main__":
