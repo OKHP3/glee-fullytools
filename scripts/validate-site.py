@@ -56,7 +56,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from csp import all_pages, build_policies, page_class
-from public_inventory import collect_html_files, site_origin
+from public_inventory import collect_html_files, derive_url, site_origin
 
 SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
 SITE = site_origin()
@@ -108,12 +108,7 @@ def _write_validation_report(out: Path, report: dict) -> bool:
 
 
 def expected_canonical(rel: Path) -> str:
-    parts = rel.parts
-    if rel.name == "index.html":
-        if len(parts) == 1:
-            return f"{SITE}/"
-        return f"{SITE}/{'/'.join(parts[:-1])}/"
-    return f"{SITE}/{rel.as_posix()}"
+    return SITE + derive_url(ROOT / rel, ROOT)
 
 
 def check_page(rel: Path, html: str) -> dict:
