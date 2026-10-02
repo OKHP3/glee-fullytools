@@ -20,6 +20,61 @@ _SPEC.loader.exec_module(validate_site)
 
 
 class ValidationReportTests(unittest.TestCase):
+    def test_all_global_checks_preserve_details_counts_and_exit_status(self):
+        # Scalar checks report one finding; list checks must retain every item.
+        checks = {
+            "_check_organization_identity_approval": ("Organization identity approval", False, []),
+            "_check_css_lines_drift": ("CSS-lines drift", False, None),
+            "_check_stat_markers_drift": ("STAT marker drift", False, []),
+            "_check_adr_index_sync": ("ADR index drift", True, None),
+            "_check_scripts_py_drift": ("scripts/ count drift", False, None),
+            "_check_scripts_non_py_drift": ("scripts/ non-Python count drift", False, None),
+            "_check_og_image_alt_drift": ("og:image:alt drift", False, []),
+            "_check_sparkle_drift": ("Sparkle drift", False, []),
+            "_check_glee_dark_coverage": ("Glee dark-mode coverage", False, []),
+            "_check_css_token_drift": ("CSS token drift", False, []),
+            "_check_template_metadata": ("Template metadata", False, []),
+            "_check_offline_shell": ("Offline shell", False, []),
+            "_check_mermaid_version_pin": ("Mermaid VERSION pin", False, []),
+            "_check_mermaid_csp_alignment": ("Mermaid/CSP alignment", True, []),
+        }
+        for scenario in ("clean", "warnings", "all"):
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "assets").mkdir()
+                expected_issues = []
+                expected_warnings = []
+                identity_issues = []
+                with ExitStack() as stack:
+                    stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                    stack.enter_context(
+                        mock.patch.object(validate_site, "collect_html_files", return_value=[])
+                    )
+                    stack.enter_context(mock.patch("builtins.print"))
+                    for name, (prefix, warning, clean) in checks.items():
+                        value = clean
+                        if scenario == "all" or (scenario == "warnings" and warning):
+                            messages = ["first finding", "second finding"] if clean == [] else ["finding"]
+                            value = messages if clean == [] else messages[0]
+                            expected = expected_warnings if warning else expected_issues
+                            expected.extend(f"{prefix}: {msg}" for msg in messages)
+                        if name == "_check_organization_identity_approval":
+                            identity_issues = value
+                        stack.enter_context(
+                            mock.patch.object(validate_site, name, return_value=value)
+                        )
+                    self.assertEqual(validate_site.main(), int(bool(expected_issues)))
+
+                report_path = next((root / "assets" / "audit").glob("validation-report-*.json"))
+                report = json.loads(report_path.read_text(encoding="utf-8"))
+                self.assertEqual(report["global_issues"], expected_issues)
+                self.assertEqual(report["global_warnings"], expected_warnings)
+                self.assertEqual(report["total_issues"], len(expected_issues))
+                self.assertEqual(report["total_warnings"], len(expected_warnings))
+                # This compatibility field mirrors issues, not additional findings.
+                self.assertEqual(report["organization_identity_issues"], identity_issues)
+                self.assertEqual(report["pages"], [])
+
     def test_commit_sha_is_normalized_and_rejects_ambiguous_values(self):
         commit = "ABCDEF0123456789ABCDEF0123456789ABCDEF01"
         self.assertEqual(
