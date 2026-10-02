@@ -54,6 +54,7 @@ const { engine: ENGINE, outputPath: OUTPUT_PATH } = parseArgs(process.argv.slice
 const VIEWPORTS = [
   { name: 'narrow-320', width: 320, height: 780 },
   { name: 'narrow-390', width: 390, height: 844 },
+  { name: 'tablet-768', width: 768, height: 1024 },
 ];
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'application/javascript',
@@ -213,15 +214,157 @@ async function run() {
         return { summaries: await page.locator('details summary').count(), toggled: true };
       });
 
+      if (viewport.name === 'tablet-768') {
+        await check('compact navigation mode and menu visibility', async () => {
+          const navToggle = page.locator('.nav-toggle');
+          const inspectNavigation = () => page.evaluate(() => {
+            const header = document.querySelector('.site-header');
+            const toggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('#navigation');
+            const toggleStyle = getComputedStyle(toggle);
+            const navStyle = getComputedStyle(nav);
+            const toggleRect = toggle.getBoundingClientRect();
+            const navRect = nav.getBoundingClientRect();
+            const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+              const style = getComputedStyle(link);
+              const rect = link.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility === 'visible' &&
+                rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+            }).length;
+            return {
+              compactMediaQueryMatches: matchMedia('(max-width: 768px)').matches,
+              toggleDisplay: toggleStyle.display,
+              toggleVisible: toggleStyle.display !== 'none' &&
+                toggleRect.width > 0 && toggleRect.height > 0 &&
+                toggleRect.right > 0 && toggleRect.left < innerWidth &&
+                toggleRect.bottom > 0 && toggleRect.top < innerHeight,
+              navPosition: navStyle.position,
+              navTransform: navStyle.transform,
+              panelIntersectsViewport: navRect.width > 0 && navRect.height > 0 &&
+                navRect.right > 0 && navRect.left < innerWidth &&
+                navRect.bottom > 0 && navRect.top < innerHeight,
+              visibleLinks,
+              navOpen: header.classList.contains('nav-open'),
+              expanded: toggle.getAttribute('aria-expanded'),
+              ariaHidden: nav.getAttribute('aria-hidden'),
+              inert: nav.hasAttribute('inert'),
+              focusRestored: document.activeElement === toggle,
+            };
+          });
+
+          const closed = await inspectNavigation();
+          assert.equal(closed.compactMediaQueryMatches, true, '768px no longer matches the compact-navigation media query');
+          assert.equal(closed.toggleVisible, true, 'compact navigation toggle is not visible at 768px');
+          assert.equal(closed.navPosition, 'fixed', 'compact menu is not using the current fixed-position CSS mode');
+          assert.notEqual(closed.navTransform, 'none', 'closed compact menu has no off-canvas transform');
+          assert.equal(closed.visibleLinks, 0, 'closed compact menu has visible links in the viewport');
+          assert.equal(closed.navOpen, false);
+          assert.equal(closed.expanded, 'false');
+          assert.equal(closed.ariaHidden, 'true');
+          assert.equal(closed.inert, true);
+
+          try {
+            await navToggle.click();
+            await page.waitForFunction(() => {
+              const header = document.querySelector('.site-header');
+              const nav = document.querySelector('#navigation');
+              if (!header?.classList.contains('nav-open') || !nav) return false;
+              const transform = getComputedStyle(nav).transform;
+              const matrix2d = transform.match(/^matrix\(([^)]+)\)$/);
+              const matrix3d = transform.match(/^matrix3d\(([^)]+)\)$/);
+              let translateY = transform === 'none' ? 0 : Number.NaN;
+              if (matrix2d) {
+                const values = matrix2d[1].split(',').map(Number);
+                if (values.length === 6) translateY = values[5];
+              } else if (matrix3d) {
+                const values = matrix3d[1].split(',').map(Number);
+                if (values.length === 16) translateY = values[13];
+              }
+              const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+                const style = getComputedStyle(link);
+                const rect = link.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility === 'visible' &&
+                  rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                  rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+              }).length;
+              return Number.isFinite(translateY) && Math.abs(translateY) < 0.5 &&
+                nav.getAttribute('aria-hidden') === 'false' &&
+                !nav.hasAttribute('inert') && visibleLinks > 0;
+            }, null, { timeout: 5000 });
+            const open = await inspectNavigation();
+            assert.equal(open.compactMediaQueryMatches, true);
+            assert.equal(open.toggleVisible, true);
+            assert.equal(open.navPosition, 'fixed');
+            assert.equal(open.navOpen, true);
+            assert.equal(open.expanded, 'true');
+            assert.equal(open.ariaHidden, 'false');
+            assert.equal(open.inert, false);
+            assert.equal(open.panelIntersectsViewport, true, 'opened compact menu is not visible in the viewport');
+            assert.ok(open.visibleLinks > 0, 'opened compact menu has no visible links');
+            assert.notEqual(open.navTransform, closed.navTransform, 'opening the toggle did not change the CSS menu transform');
+
+            await page.keyboard.press('Escape');
+            await page.waitForFunction(closedTransform => {
+              const toggle = document.querySelector('.nav-toggle');
+              const nav = document.querySelector('#navigation');
+              if (!toggle || !nav) return false;
+              const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+                const style = getComputedStyle(link);
+                const rect = link.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility === 'visible' &&
+                  rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                  rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+              }).length;
+              return toggle?.getAttribute('aria-expanded') === 'false' &&
+                document.activeElement === toggle &&
+                nav.getAttribute('aria-hidden') === 'true' &&
+                nav.hasAttribute('inert') &&
+                getComputedStyle(nav).transform === closedTransform &&
+                visibleLinks === 0;
+            }, closed.navTransform, { timeout: 5000 });
+            const afterEscape = await inspectNavigation();
+            assert.equal(afterEscape.navOpen, false);
+            assert.equal(afterEscape.expanded, 'false');
+            assert.equal(afterEscape.ariaHidden, 'true');
+            assert.equal(afterEscape.inert, true);
+            assert.equal(afterEscape.visibleLinks, 0);
+            assert.equal(afterEscape.focusRestored, true, 'Escape did not restore focus to the toggle');
+            return { closed, open, afterEscape, escapeRestoredFocus: true };
+          } finally {
+            if (await navToggle.getAttribute('aria-expanded') === 'true') {
+              await page.keyboard.press('Escape');
+            }
+          }
+        });
+      }
+
       await check('focus visibility', async () => {
         const selector = 'a[href], button, summary';
         const inspect = async () => page.evaluate(selector => {
           const nodes = [...document.querySelectorAll(selector)];
+          const eligibleKeys = nodes.flatMap((node, key) => {
+            const candidateStyle = getComputedStyle(node);
+            return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
+              candidateStyle.visibility === 'visible' &&
+              [...node.getClientRects()].some(rect => rect.width && rect.height) ? [key] : [];
+          });
           const node = document.activeElement;
           const style = getComputedStyle(node);
+          const rects = [...node.getClientRects()].map(rect => ({
+            x: rect.x, y: rect.y, width: rect.width, height: rect.height,
+          }));
           return {
             key: nodes.indexOf(node),
             name: (node.textContent || node.getAttribute('aria-label') || node.tagName).trim().slice(0, 80),
+            tag: node.tagName,
+            tabIndex: node.tabIndex,
+            display: style.display,
+            visibility: style.visibility,
+            disabled: Boolean(node.disabled),
+            inertAncestor: Boolean(node.closest('[inert]')),
+            rects,
+            eligibleKeys,
             outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth,
             boxShadow: style.boxShadow,
           };
@@ -231,34 +374,38 @@ async function run() {
           `no visible focus indicator for ${evidence.name}`,
         );
         const traverseEligibleControls = async state => {
-          const expected = await page.locator(selector).evaluateAll(nodes => nodes.flatMap((node, key) => {
-            const style = getComputedStyle(node);
-            return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
-              style.visibility === 'visible' && [...node.getClientRects()].some(rect => rect.width && rect.height) ? [key] : [];
-          }));
-          assert.ok(expected.length > 0, `${state}: no keyboard candidates`);
           const first = await inspect();
-          assert.ok(expected.includes(first.key), `${state}: initial focus is not an eligible control`);
+          const expected = new Set(first.eligibleKeys);
+          assert.ok(expected.size > 0, `${state}: no keyboard candidates`);
+          assert.ok(expected.has(first.key), `${state}: initial focus is not an eligible control`);
           const seen = new Set();
+          const controlCount = await page.locator(selector).count();
           // Browsers need not wrap Tab from the last page control to the first.
-          // Stop only after the forward pass has visited every eligible control.
-          for (let step = 0; step <= expected.length + 2; step += 1) {
-            const current = await inspect();
+          // Track controls that become eligible as focus reveals navigation items.
+          // Stop only after the forward pass visits every eligible control observed.
+          for (let step = 0; step <= controlCount + 2; step += 1) {
+            const current = step === 0 ? first : await inspect();
+            for (const key of current.eligibleKeys) expected.add(key);
             if (step > 0 && current.key === first.key) break;
             if (current.key >= 0) {
-              assert.ok(expected.includes(current.key), `${state}: reached an ineligible control`);
+              assert.ok(
+                current.eligibleKeys.includes(current.key),
+                `${state}: reached an ineligible control ${JSON.stringify(current)}; expected keys ${[...expected].join(',')}`,
+              );
               assertIndicator(current);
               seen.add(current.key);
             }
-            if (seen.size === expected.length) break;
+            if (seen.size === expected.size) break;
             await page.keyboard.press('Tab');
           }
+          const final = await inspect();
+          for (const key of final.eligibleKeys) expected.add(key);
           assert.deepEqual(
             [...seen].sort((a, b) => a - b),
-            expected.sort((a, b) => a - b),
+            [...expected].sort((a, b) => a - b),
             `${state}: keyboard controls were missed`,
           );
-          return { state, expected: expected.length, checked: seen.size };
+          return { state, expected: expected.size, checked: seen.size };
         };
 
         await page.evaluate(() => { history.scrollRestoration = 'manual'; });
