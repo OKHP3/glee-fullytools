@@ -60,7 +60,8 @@ run of `tests/test_browser_acceptance.py` or `resilience-qa.py`.
 The FoundRy accessibility evidence has an explicit Node runtime boundary:
 `npm ci && npx playwright install chromium && npm run
 qa:foundry-accessibility -- --engine chromium`. It checks both narrow viewports
-and keeps human screen-reader testing outside the automated result.
+and the 768px compact-navigation breakpoint, and keeps human screen-reader
+testing outside the automated result.
 
 The following scripts are **reference-only**. They may still be useful for a
 deliberately scoped maintenance or migration task, but they are not part of

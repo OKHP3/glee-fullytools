@@ -54,6 +54,7 @@ const { engine: ENGINE, outputPath: OUTPUT_PATH } = parseArgs(process.argv.slice
 const VIEWPORTS = [
   { name: 'narrow-320', width: 320, height: 780 },
   { name: 'narrow-390', width: 390, height: 844 },
+  { name: 'tablet-768', width: 768, height: 1024 },
 ];
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'application/javascript',
@@ -212,6 +213,109 @@ async function run() {
         assert.equal(await details.getAttribute('open'), null);
         return { summaries: await page.locator('details summary').count(), toggled: true };
       });
+
+      if (viewport.name === 'tablet-768') {
+        await check('compact navigation mode and menu visibility', async () => {
+          const navToggle = page.locator('.nav-toggle');
+          const inspectNavigation = () => page.evaluate(() => {
+            const header = document.querySelector('.site-header');
+            const toggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('#navigation');
+            const toggleStyle = getComputedStyle(toggle);
+            const navStyle = getComputedStyle(nav);
+            const toggleRect = toggle.getBoundingClientRect();
+            const navRect = nav.getBoundingClientRect();
+            const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+              const style = getComputedStyle(link);
+              const rect = link.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility === 'visible' &&
+                rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+            }).length;
+            return {
+              compactMediaQueryMatches: matchMedia('(max-width: 768px)').matches,
+              toggleDisplay: toggleStyle.display,
+              toggleVisible: toggleStyle.display !== 'none' &&
+                toggleRect.width > 0 && toggleRect.height > 0 &&
+                toggleRect.right > 0 && toggleRect.left < innerWidth &&
+                toggleRect.bottom > 0 && toggleRect.top < innerHeight,
+              navPosition: navStyle.position,
+              navTransform: navStyle.transform,
+              navOnscreen: navRect.width > 0 && navRect.height > 0 &&
+                navRect.right > 0 && navRect.left < innerWidth &&
+                navRect.bottom > 0 && navRect.top < innerHeight,
+              visibleLinks,
+              navOpen: header.classList.contains('nav-open'),
+              expanded: toggle.getAttribute('aria-expanded'),
+              ariaHidden: nav.getAttribute('aria-hidden'),
+              inert: nav.hasAttribute('inert'),
+              focusRestored: document.activeElement === toggle,
+            };
+          });
+
+          const closed = await inspectNavigation();
+          assert.equal(closed.compactMediaQueryMatches, true, '768px no longer matches the compact-navigation media query');
+          assert.equal(closed.toggleVisible, true, 'compact navigation toggle is not visible at 768px');
+          assert.equal(closed.navPosition, 'fixed', 'compact menu is not using the current fixed-position CSS mode');
+          assert.notEqual(closed.navTransform, 'none', 'closed compact menu has no off-canvas transform');
+          assert.equal(closed.navOnscreen, false, 'closed compact menu remains in the viewport');
+          assert.equal(closed.visibleLinks, 0, 'closed compact menu has visible links in the viewport');
+          assert.equal(closed.navOpen, false);
+          assert.equal(closed.expanded, 'false');
+          assert.equal(closed.ariaHidden, 'true');
+          assert.equal(closed.inert, true);
+
+          try {
+            await navToggle.click();
+            await page.waitForFunction(() => {
+              const nav = document.querySelector('#navigation');
+              if (!nav) return false;
+              return [...nav.querySelectorAll('a[href]')].some(link => {
+                const style = getComputedStyle(link);
+                const rect = link.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility === 'visible' &&
+                  rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                  rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+              });
+            });
+            const open = await inspectNavigation();
+            assert.equal(open.compactMediaQueryMatches, true);
+            assert.equal(open.toggleVisible, true);
+            assert.equal(open.navPosition, 'fixed');
+            assert.equal(open.navOpen, true);
+            assert.equal(open.expanded, 'true');
+            assert.equal(open.ariaHidden, 'false');
+            assert.equal(open.inert, false);
+            assert.equal(open.navOnscreen, true, 'opened compact menu is not visible in the viewport');
+            assert.ok(open.visibleLinks > 0, 'opened compact menu has no visible links');
+            assert.notEqual(open.navTransform, closed.navTransform, 'opening the toggle did not change the CSS menu transform');
+
+            await page.keyboard.press('Escape');
+            await page.waitForFunction(() => {
+              const toggle = document.querySelector('.nav-toggle');
+              const nav = document.querySelector('#navigation');
+              const rect = nav?.getBoundingClientRect();
+              return toggle?.getAttribute('aria-expanded') === 'false' &&
+                document.activeElement === toggle &&
+                nav?.getAttribute('aria-hidden') === 'true' &&
+                nav.hasAttribute('inert') && rect && rect.bottom <= 0;
+            });
+            const afterEscape = await inspectNavigation();
+            assert.equal(afterEscape.navOpen, false);
+            assert.equal(afterEscape.expanded, 'false');
+            assert.equal(afterEscape.ariaHidden, 'true');
+            assert.equal(afterEscape.inert, true);
+            assert.equal(afterEscape.navOnscreen, false);
+            assert.equal(afterEscape.visibleLinks, 0);
+            assert.equal(afterEscape.focusRestored, true, 'Escape did not restore focus to the toggle');
+            return { closed, open, afterEscape, escapeRestoredFocus: true };
+          } finally {
+            if (await navToggle.getAttribute('aria-expanded') === 'true') {
+              await page.keyboard.press('Escape');
+            }
+          }
+        });
+      }
 
       await check('focus visibility', async () => {
         const selector = 'a[href], button, summary';

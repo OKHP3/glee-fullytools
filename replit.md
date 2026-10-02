@@ -49,7 +49,8 @@ uses its separately declared Playwright package. CI restores the locked npm
 dependencies and installs `chromium`, `firefox`, and `webkit` drivers. Invoke
 `npm run qa:foundry-accessibility` once with each explicit selector:
 `--engine chromium`, `--engine firefox`, and `--engine webkit`. Each invocation
-reports `NOT RUN` with a reason and exits nonzero if its runtime is unavailable;
+checks 320×780, 390×844, and the CSS compact-navigation boundary at 768×1024.
+It reports `NOT RUN` with a reason and exits nonzero if its runtime is unavailable;
 Pages CI runs all three as a blocking gate and retains separate reports. Do not
 add or upgrade dependencies for this check.
 
