@@ -265,6 +265,38 @@ jobs:
                   "Browser-specific color-scheme evidence is incomplete; "
                   + " | ".join(details)
               )
+          rows = [
+              "| Browser engine | Covered cases | Report |",
+              "| --- | --- | --- |",
+          ]
+          labels = {
+              "chromium": "Chromium",
+              "firefox": "Firefox",
+              "webkit": "WebKit",
+          }
+          covered_cases = (
+              "`light` (saved light preference); "
+              "`dark` (saved dark preference); "
+              "`disabled_storage` (local storage blocked)"
+          )
+          for browser in expected:
+              report_name = f"color-scheme-init-{browser}.json"
+              rows.append(
+                  f"| {labels[browser]} | {covered_cases} | "
+                  f"[`{report_name}`]({report_name}) |"
+              )
+          index = [
+              "# Browser color-scheme evidence",
+              "",
+              "Generated from the successful browser theme checks for this "
+              "Pages validation run.",
+              "",
+              *rows,
+              "",
+          ]
+          (audit_dir / "color-scheme-evidence-index.md").write_text(
+              "\n".join(index), encoding="utf-8"
+          )
           print("Verified browser-specific color-scheme evidence for chromium, firefox, and webkit.")
           PY
 
@@ -322,6 +354,14 @@ jobs:
               destination = artifact_dir / audit_summary
               destination.parent.mkdir(parents=True, exist_ok=True)
               shutil.copy2(audit_summary, destination)
+              with destination.open("a", encoding="utf-8") as report:
+                  report.write(
+                      "\n\n## Browser theme release evidence\n\n"
+                      "See the [browser color-scheme evidence index]"
+                      "(../audit/color-scheme-evidence-index.md) for the "
+                      "Chromium, Firefox, and WebKit reports from this "
+                      "validation run.\n"
+                  )
           PY
 
       - name: Upload validation reports
@@ -352,19 +392,57 @@ jobs:
           import os
           from pathlib import Path
 
-          audit_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"]) / "assets" / "audit"
+          validation_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
+          audit_dir = validation_dir / "assets" / "audit"
           expected = (
               "color-scheme-init-chromium.json",
               "color-scheme-init-firefox.json",
               "color-scheme-init-webkit.json",
           )
           missing = [name for name in expected if not (audit_dir / name).is_file()]
+          index_path = audit_dir / "color-scheme-evidence-index.md"
+          if not index_path.is_file():
+              missing.append(index_path.name)
           if missing:
               raise SystemExit(
                   "Downloaded Pages validation artifact is missing browser theme reports: "
                   + ", ".join(missing)
               )
-          print("Verified all three browser theme reports in the downloaded Pages validation artifact.")
+          index = index_path.read_text(encoding="utf-8")
+          required_rows = {
+              "| Chromium | `light` (saved light preference); `dark` (saved dark preference); "
+              "`disabled_storage` (local storage blocked) | "
+              "[`color-scheme-init-chromium.json`](color-scheme-init-chromium.json) |",
+              "| Firefox | `light` (saved light preference); `dark` (saved dark preference); "
+              "`disabled_storage` (local storage blocked) | "
+              "[`color-scheme-init-firefox.json`](color-scheme-init-firefox.json) |",
+              "| WebKit | `light` (saved light preference); `dark` (saved dark preference); "
+              "`disabled_storage` (local storage blocked) | "
+              "[`color-scheme-init-webkit.json`](color-scheme-init-webkit.json) |",
+          }
+          missing_rows = sorted(row for row in required_rows if row not in index)
+          if missing_rows:
+              raise SystemExit(
+                  "Downloaded Pages validation artifact has an incomplete browser "
+                  "theme index: " + "; ".join(missing_rows)
+              )
+          audit_summary = validation_dir / "assets" / "docs" / "audit-report.md"
+          if not audit_summary.is_file():
+              raise SystemExit(
+                  "Downloaded Pages validation artifact is missing assets/docs/audit-report.md"
+              )
+          summary_text = audit_summary.read_text(encoding="utf-8")
+          if (
+              "[browser color-scheme evidence index]"
+              "(../audit/color-scheme-evidence-index.md)"
+          ) not in summary_text:
+              raise SystemExit(
+                  "Downloaded audit report does not link to the browser theme index"
+              )
+          print(
+              "Verified all three browser theme reports and their indexed cases "
+              "in the downloaded Pages validation artifact."
+          )
           PY
 
   deploy:
