@@ -209,7 +209,7 @@ jobs:
       - name: Install matching browser and test the FoundRy page
         run: |
           npx playwright install --with-deps chromium
-          npm run qa:foundry-accessibility
+          npm run qa:foundry-accessibility -- --engine chromium
 
   review-action-versions:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

@@ -44,11 +44,14 @@ Python 3 interpreter instead of `python3`. `py -3` works only if its registered
 interpreter exists. The September 5 local checks used the installed Codex
 bundled Python when the system launcher pointed to a missing executable.
 Python browser runners require the pinned Python Playwright runtime/browser;
-static-lint fallback is not browser evidence. The focused FoundRy Node runner is
-the exception: run `npm ci && npx playwright install chromium && npm run
-qa:foundry-accessibility`. Its Node package and Chromium driver are separate
-from the Python browser gates; a missing dependency is a failed setup, not a
-skipped check.
+static-lint fallback is not browser evidence. The focused FoundRy Node runner
+uses its separately declared Playwright package. CI restores the locked npm
+dependencies and installs `chromium`, `firefox`, and `webkit` drivers. Invoke
+`npm run qa:foundry-accessibility` once with each explicit selector:
+`--engine chromium`, `--engine firefox`, and `--engine webkit`. Each invocation
+reports `NOT RUN` with a reason and exits nonzero if its runtime is unavailable;
+Pages CI runs all three as a blocking gate and retains separate reports. Do not
+add or upgrade dependencies for this check.
 
 ## CI Gate (GitHub Actions)
 
