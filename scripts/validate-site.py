@@ -56,7 +56,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from csp import all_pages, build_policies, page_class
-from public_inventory import collect_html_files, site_origin
+from public_inventory import collect_html_files, derive_url, site_origin
 
 SKIP_DIRS = {"node_modules", ".local", ".git", "attached_assets", "assets", ".pythonlibs", ".cache", ".agents"}
 SITE = site_origin()
@@ -108,12 +108,7 @@ def _write_validation_report(out: Path, report: dict) -> bool:
 
 
 def expected_canonical(rel: Path) -> str:
-    parts = rel.parts
-    if rel.name == "index.html":
-        if len(parts) == 1:
-            return f"{SITE}/"
-        return f"{SITE}/{'/'.join(parts[:-1])}/"
-    return f"{SITE}/{rel.as_posix()}"
+    return SITE + derive_url(ROOT / rel, ROOT)
 
 
 def check_page(rel: Path, html: str) -> dict:
@@ -346,6 +341,17 @@ def main(validated_commit: str | None = None) -> int:
     global_warnings = []
     total_issues = 0
     total_warnings = 0
+
+    def record_global(detail: str, *, warning: bool = False) -> None:
+        """Keep each site-wide detail and its total together."""
+        nonlocal total_issues, total_warnings
+        if warning:
+            global_warnings.append(detail)
+            total_warnings += 1
+        else:
+            global_issues.append(detail)
+            total_issues += 1
+
     for path in collect_html_files(ROOT):
         rel = path.relative_to(ROOT)
         result = check_page(rel, path.read_text(encoding="utf-8", errors="replace"))
@@ -361,12 +367,7 @@ def main(validated_commit: str | None = None) -> int:
     organization_identity_issues = _check_organization_identity_approval()
     for msg in organization_identity_issues:
         print(f"\nOrganization identity approval: {msg}")
-    if organization_identity_issues:
-        total_issues += len(organization_identity_issues)
-        global_issues.extend(
-            f"Organization identity approval: {msg}"
-            for msg in organization_identity_issues
-        )
+        record_global(f"Organization identity approval: {msg}")
 
     if total_issues:
         print("\nPages with issues:")
@@ -385,8 +386,7 @@ def main(validated_commit: str | None = None) -> int:
     if css_drift_issue:
         print(f"\nCSS-lines drift: {css_drift_issue}")
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
-        total_issues += 1
-        global_issues.append(f"CSS-lines drift: {css_drift_issue}")
+        record_global(f"CSS-lines drift: {css_drift_issue}")
 
     # ── Global invariant: showcase STAT markers (pages / tool-ettes / etc.) ─
     # showcase/index.html embeds live counts via <!-- STAT:X --> markers.
@@ -396,10 +396,9 @@ def main(validated_commit: str | None = None) -> int:
     stat_drift_issues = _check_stat_markers_drift(tolerance=2)
     for msg in stat_drift_issues:
         print(f"\nSTAT marker drift: {msg}")
+        record_global(f"STAT marker drift: {msg}")
     if stat_drift_issues:
         print("  Fix: python3 scripts/sync-portfolio-stats.py")
-        total_issues += len(stat_drift_issues)
-        global_issues.extend(f"STAT marker drift: {msg}" for msg in stat_drift_issues)
 
     # ── Global invariant: docs/adr/ index sync ────────────────────────────
     # Every *.md file in docs/adr/ (except README.md and template.md) must be
@@ -409,8 +408,7 @@ def main(validated_commit: str | None = None) -> int:
     if adr_drift_issue:
         print(f"\nADR index drift: {adr_drift_issue}")
         print("  Fix: update docs/adr/README.md index table and AGENTS.md section 2.2.1")
-        total_warnings += 1
-        global_warnings.append(f"ADR index drift: {adr_drift_issue}")
+        record_global(f"ADR index drift: {adr_drift_issue}", warning=True)
 
     # ── Global invariant: scripts/*.py count vs AGENTS.md classification table ─
     # When a new .py script is added to scripts/ it must be classified in the
@@ -421,8 +419,7 @@ def main(validated_commit: str | None = None) -> int:
     if scripts_drift:
         print(f"\nscripts/ count drift: {scripts_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-PY -->")
-        total_issues += 1
-        global_issues.append(f"scripts/ count drift: {scripts_drift}")
+        record_global(f"scripts/ count drift: {scripts_drift}")
 
     # ── Global invariant: scripts/*.mjs + *.sh count vs AGENTS.md ────────────
     # When a new non-Python runner is added to scripts/ it must be classified
@@ -432,8 +429,7 @@ def main(validated_commit: str | None = None) -> int:
     if scripts_non_py_drift:
         print(f"\nscripts/ non-Python count drift: {scripts_non_py_drift}")
         print("  Fix: classify the script in AGENTS.md and bump <!-- STAT:SCRIPTS-OTHER -->")
-        total_issues += 1
-        global_issues.append(f"scripts/ non-Python count drift: {scripts_non_py_drift}")
+        record_global(f"scripts/ non-Python count drift: {scripts_non_py_drift}")
 
     # ── Global invariant: og:image:alt / twitter:image:alt vs SVG aria-label ─
     # For every tool page whose og:image is a local .svg, the alt text must be
@@ -444,10 +440,9 @@ def main(validated_commit: str | None = None) -> int:
     alt_mismatches = _check_og_image_alt_drift(_html_mod)
     for msg in alt_mismatches:
         print(f"\nog:image:alt drift: {msg}")
+        record_global(f"og:image:alt drift: {msg}")
     if alt_mismatches:
         print("  Fix: python3 scripts/sync-image-alt.py")
-        total_issues += len(alt_mismatches)
-        global_issues.extend(f"og:image:alt drift: {msg}" for msg in alt_mismatches)
 
     # ── Global invariant: sparkle fallback sync ───────────────────────────────
     # Every HTML page carries a static <a data-sparkle-link> fallback built from
@@ -457,10 +452,9 @@ def main(validated_commit: str | None = None) -> int:
     sparkle_mismatches = _check_sparkle_drift()
     for msg in sparkle_mismatches:
         print(f"\nSparkle drift: {msg}")
+        record_global(f"Sparkle drift: {msg}")
     if sparkle_mismatches:
         print("  Fix: python3 scripts/sync-sparkle-fallback.py")
-        total_issues += len(sparkle_mismatches)
-        global_issues.extend(f"Sparkle drift: {msg}" for msg in sparkle_mismatches)
 
     # ── Global invariant: branded dark-mode coverage ──────────────────────────
     # Every hardcoded light-hex surface in the GLEE and ASKJAMIE sections of
@@ -471,14 +465,11 @@ def main(validated_commit: str | None = None) -> int:
     glee_dark_issues = _check_glee_dark_coverage()
     for msg in glee_dark_issues:
         print(f"\nGlee dark-mode coverage: {msg}")
+        record_global(f"Glee dark-mode coverage: {msg}")
     if glee_dark_issues:
         print(
             '  Fix: add html[data-color-scheme="dark"] or '
             "@media (prefers-color-scheme: dark) override in the branded section"
-        )
-        total_issues += len(glee_dark_issues)
-        global_issues.extend(
-            f"Glee dark-mode coverage: {msg}" for msg in glee_dark_issues
         )
 
     # ── Global invariant: CSS cache-buster token drift ────────────────────────
@@ -489,13 +480,12 @@ def main(validated_commit: str | None = None) -> int:
     css_token_issues = _check_css_token_drift(_hashlib)
     for msg in css_token_issues:
         print(f"\nCSS token drift: {msg}")
+        record_global(f"CSS token drift: {msg}")
     if css_token_issues:
         print(
             "  Fix: run python3 scripts/sync-css-version.py, then commit the "
             "generated HTML token refresh before release."
         )
-        total_issues += len(css_token_issues)
-        global_issues.extend(f"CSS token drift: {msg}" for msg in css_token_issues)
 
     # ── Global invariant: template image metadata pairs ─────────────────────
     # Templates live under assets/ and are intentionally excluded from the
@@ -504,11 +494,7 @@ def main(validated_commit: str | None = None) -> int:
     template_metadata_issues = _check_template_metadata()
     for msg in template_metadata_issues:
         print(f"\nTemplate metadata: {msg}")
-    if template_metadata_issues:
-        total_issues += len(template_metadata_issues)
-        global_issues.extend(
-            f"Template metadata: {msg}" for msg in template_metadata_issues
-        )
+        record_global(f"Template metadata: {msg}")
 
     # ── Global invariant: offline shell integrity ────────────────────────────
     # Keep the installable shell intentional and same-origin. Third-party
@@ -516,9 +502,7 @@ def main(validated_commit: str | None = None) -> int:
     pwa_issues = _check_offline_shell()
     for msg in pwa_issues:
         print(f"\nOffline shell: {msg}")
-    if pwa_issues:
-        total_issues += len(pwa_issues)
-        global_issues.extend(f"Offline shell: {msg}" for msg in pwa_issues)
+        record_global(f"Offline shell: {msg}")
 
     # ── Global invariant: Mermaid VERSION pin consistency ───────────────────
     # assets/vendor/mermaid/VERSION must exist, be a plain semver string, and
@@ -529,11 +513,7 @@ def main(validated_commit: str | None = None) -> int:
     mermaid_version_issues = _check_mermaid_version_pin()
     for msg in mermaid_version_issues:
         print(f"\nMermaid VERSION pin: {msg}")
-    if mermaid_version_issues:
-        total_issues += len(mermaid_version_issues)
-        global_issues.extend(
-            f"Mermaid VERSION pin: {msg}" for msg in mermaid_version_issues
-        )
+        record_global(f"Mermaid VERSION pin: {msg}")
 
     # ── Global invariant: Mermaid / CSP class alignment ──────────────────────
     # Mermaid renders inline style="..." attributes and <style> blocks at
@@ -546,11 +526,7 @@ def main(validated_commit: str | None = None) -> int:
     mermaid_csp_warnings = _check_mermaid_csp_alignment()
     for msg in mermaid_csp_warnings:
         print(f"\nMermaid/CSP alignment: {msg}")
-    if mermaid_csp_warnings:
-        total_warnings += len(mermaid_csp_warnings)
-        global_warnings.extend(
-            f"Mermaid/CSP alignment: {msg}" for msg in mermaid_csp_warnings
-        )
+        record_global(f"Mermaid/CSP alignment: {msg}", warning=True)
 
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)

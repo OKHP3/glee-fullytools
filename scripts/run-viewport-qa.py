@@ -20,6 +20,7 @@ import sys
 import json
 import time
 from pathlib import Path
+from public_inventory import derive_url
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -150,14 +151,13 @@ def _discover_toolbox_pages(root: Path) -> list:
     for idx in sorted(toolbox_dir.glob("*/index.html")):
         branch = idx.parent.name
         nn = branch.split("-")[0]          # e.g. '01'
-        pages.append((f"branch-{nn}", f"/toolbox/{branch}/"))
+        pages.append((f"branch-{nn}", derive_url(idx, root)))
 
     # Tool-ettes, depth 2 under toolbox/
     for idx in sorted(toolbox_dir.glob("*/*/index.html")):
         tool   = idx.parent.name           # e.g. '01a-resume-builder'
-        branch = idx.parent.parent.name    # e.g. '01-discovered-careers'
         nnx = tool.split("-")[0]           # e.g. '01a'
-        pages.append((f"tool-{nnx}", f"/toolbox/{branch}/{tool}/"))
+        pages.append((f"tool-{nnx}", derive_url(idx, root)))
 
     return pages
 

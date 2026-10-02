@@ -24,6 +24,11 @@ from urllib.parse import urljoin, urlsplit
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
 UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
+UTILITY_RECOVERY = {
+    "/404.html": ("main .btn-primary", "Return home", "/"),
+    "/under-construction.html": ("main .btn-primary", "Browse live Tools", "/toolbox/"),
+    "/offline.html": ("main .button-primary", "Return home", "/"),
+}
 FirstPaintStatus = Literal["observed", "unsupported", "unavailable_after_load"]
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_DIR) not in sys.path:
@@ -304,6 +309,74 @@ def _check_saved_preference_context(
         context.close()
 
 
+def storage_error_name(page) -> str:
+    """Confirm the denied-storage fixture remains active across navigation."""
+    return page.evaluate(
+        """() => {
+          try { void window.localStorage; return 'accessible'; }
+          catch (error) { return error.name; }
+        }"""
+    )
+
+
+def check_utility_recovery(page, base_url: str, route: str, page_errors) -> dict:
+    """Tab to the primary recovery action and activate it without mouse or focus()."""
+    selector, label, destination = UTILITY_RECOVERY[route]
+    action = page.locator(selector)
+    assert action.count() == 1 and action.is_visible(), (
+        f"{route}: expected one visible primary recovery action"
+    )
+    assert action.inner_text().strip() == label, (
+        f"{route}: primary recovery action no longer says {label!r}"
+    )
+    expected_url = urljoin(base_url, destination)
+    assert action.evaluate("element => element.href") == expected_url, (
+        f"{route}: recovery action must point to {destination}"
+    )
+    assert storage_error_name(page) == "SecurityError", (
+        f"{route}: storage was not blocked before keyboard recovery"
+    )
+
+    # Bounded real keyboard traversal catches tabindex=-1, inert, and focus traps.
+    for tab_count in range(1, 101):
+        page.keyboard.press("Tab")
+        if action.evaluate("element => element === document.activeElement"):
+            break
+    else:
+        raise AssertionError(f"{route}: recovery action was not reachable with Tab")
+
+    with page.expect_navigation(wait_until="load") as navigation:
+        page.keyboard.press("Enter")
+    response = navigation.value
+    assert response is not None and response.ok, (
+        f"{route}: keyboard recovery failed: "
+        f"{response.status if response else 'no response'}"
+    )
+    assert page.url == expected_url, (
+        f"{route}: keyboard recovery reached {page.url}, expected {expected_url}"
+    )
+    assert page.locator("h1").is_visible(), (
+        f"{route}: recovery destination has no visible primary content"
+    )
+    assert storage_error_name(page) == "SecurityError", (
+        f"{route}: storage denial did not persist on the recovery destination"
+    )
+    assert not page_errors, (
+        f"{route}: page errors during keyboard recovery: {page_errors}"
+    )
+    return {
+        "action": label,
+        "destination": destination,
+        "keyboard_reachable": True,
+        "tab_presses": tab_count,
+        "activation_key": "Enter",
+        "destination_status": response.status,
+        "destination_h1_visible": True,
+        "storage_error": "SecurityError",
+        "page_errors": [],
+    }
+
+
 def _check_disabled_storage_context(
     browser,
     base_url: str,
@@ -379,6 +452,14 @@ def _check_disabled_storage_context(
             page.wait_for_load_state("load")
             timing = paint_timing(page)
             assert_paint_order(route, timing)
+            assert not page_errors, (
+                f"{route} raised page errors after load with disabled storage: "
+                f"{page_errors}"
+            )
+            recovery = (
+                check_utility_recovery(page, base_url, route, page_errors)
+                if route in UTILITY_ROUTES else None
+            )
             results.append({
                 "route": route,
                 "page_type": route_type(route),
@@ -387,6 +468,7 @@ def _check_disabled_storage_context(
                 "initial_dom": initial,
                 "bootstrap_events": event_evidence,
                 "timing": timing,
+                **({"recovery": recovery} if recovery is not None else {}),
             })
         return {
             "routes": len(results),

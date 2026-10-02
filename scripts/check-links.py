@@ -25,6 +25,7 @@ from urllib.parse import unquote, urlsplit
 from public_inventory import (
     collect_html_files,
     collect_indexable_html_files,
+    derive_url,
     site_origin,
 )
 
@@ -134,10 +135,7 @@ def resolves(href: str, source_path: Path, page_fragments: set[str],
 
 def route_for_index(path: Path) -> str:
     """Return the public route represented by an index.html file."""
-    rel = path.relative_to(ROOT)
-    if rel.as_posix() == "index.html":
-        return "/"
-    return f"/{'/'.join(rel.parts[:-1])}/"
+    return derive_url(path, ROOT)
 
 
 def sitemap_exclusion(path: Path) -> dict | None:
