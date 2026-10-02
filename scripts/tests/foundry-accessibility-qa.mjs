@@ -54,6 +54,7 @@ const { engine: ENGINE, outputPath: OUTPUT_PATH } = parseArgs(process.argv.slice
 const VIEWPORTS = [
   { name: 'narrow-320', width: 320, height: 780 },
   { name: 'narrow-390', width: 390, height: 844 },
+  { name: 'tablet-768', width: 768, height: 1024 },
 ];
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'application/javascript',
@@ -213,6 +214,109 @@ async function run() {
         return { summaries: await page.locator('details summary').count(), toggled: true };
       });
 
+      if (viewport.name === 'tablet-768') {
+        await check('compact navigation mode and menu visibility', async () => {
+          const navToggle = page.locator('.nav-toggle');
+          const inspectNavigation = () => page.evaluate(() => {
+            const header = document.querySelector('.site-header');
+            const toggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('#navigation');
+            const toggleStyle = getComputedStyle(toggle);
+            const navStyle = getComputedStyle(nav);
+            const toggleRect = toggle.getBoundingClientRect();
+            const navRect = nav.getBoundingClientRect();
+            const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+              const style = getComputedStyle(link);
+              const rect = link.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility === 'visible' &&
+                rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+            }).length;
+            return {
+              compactMediaQueryMatches: matchMedia('(max-width: 768px)').matches,
+              toggleDisplay: toggleStyle.display,
+              toggleVisible: toggleStyle.display !== 'none' &&
+                toggleRect.width > 0 && toggleRect.height > 0 &&
+                toggleRect.right > 0 && toggleRect.left < innerWidth &&
+                toggleRect.bottom > 0 && toggleRect.top < innerHeight,
+              navPosition: navStyle.position,
+              navTransform: navStyle.transform,
+              navOnscreen: navRect.width > 0 && navRect.height > 0 &&
+                navRect.right > 0 && navRect.left < innerWidth &&
+                navRect.bottom > 0 && navRect.top < innerHeight,
+              visibleLinks,
+              navOpen: header.classList.contains('nav-open'),
+              expanded: toggle.getAttribute('aria-expanded'),
+              ariaHidden: nav.getAttribute('aria-hidden'),
+              inert: nav.hasAttribute('inert'),
+              focusRestored: document.activeElement === toggle,
+            };
+          });
+
+          const closed = await inspectNavigation();
+          assert.equal(closed.compactMediaQueryMatches, true, '768px no longer matches the compact-navigation media query');
+          assert.equal(closed.toggleVisible, true, 'compact navigation toggle is not visible at 768px');
+          assert.equal(closed.navPosition, 'fixed', 'compact menu is not using the current fixed-position CSS mode');
+          assert.notEqual(closed.navTransform, 'none', 'closed compact menu has no off-canvas transform');
+          assert.equal(closed.navOnscreen, false, 'closed compact menu remains in the viewport');
+          assert.equal(closed.visibleLinks, 0, 'closed compact menu has visible links in the viewport');
+          assert.equal(closed.navOpen, false);
+          assert.equal(closed.expanded, 'false');
+          assert.equal(closed.ariaHidden, 'true');
+          assert.equal(closed.inert, true);
+
+          try {
+            await navToggle.click();
+            await page.waitForFunction(() => {
+              const nav = document.querySelector('#navigation');
+              if (!nav) return false;
+              return [...nav.querySelectorAll('a[href]')].some(link => {
+                const style = getComputedStyle(link);
+                const rect = link.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility === 'visible' &&
+                  rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                  rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+              });
+            });
+            const open = await inspectNavigation();
+            assert.equal(open.compactMediaQueryMatches, true);
+            assert.equal(open.toggleVisible, true);
+            assert.equal(open.navPosition, 'fixed');
+            assert.equal(open.navOpen, true);
+            assert.equal(open.expanded, 'true');
+            assert.equal(open.ariaHidden, 'false');
+            assert.equal(open.inert, false);
+            assert.equal(open.navOnscreen, true, 'opened compact menu is not visible in the viewport');
+            assert.ok(open.visibleLinks > 0, 'opened compact menu has no visible links');
+            assert.notEqual(open.navTransform, closed.navTransform, 'opening the toggle did not change the CSS menu transform');
+
+            await page.keyboard.press('Escape');
+            await page.waitForFunction(() => {
+              const toggle = document.querySelector('.nav-toggle');
+              const nav = document.querySelector('#navigation');
+              const rect = nav?.getBoundingClientRect();
+              return toggle?.getAttribute('aria-expanded') === 'false' &&
+                document.activeElement === toggle &&
+                nav?.getAttribute('aria-hidden') === 'true' &&
+                nav.hasAttribute('inert') && rect && rect.bottom <= 0;
+            });
+            const afterEscape = await inspectNavigation();
+            assert.equal(afterEscape.navOpen, false);
+            assert.equal(afterEscape.expanded, 'false');
+            assert.equal(afterEscape.ariaHidden, 'true');
+            assert.equal(afterEscape.inert, true);
+            assert.equal(afterEscape.navOnscreen, false);
+            assert.equal(afterEscape.visibleLinks, 0);
+            assert.equal(afterEscape.focusRestored, true, 'Escape did not restore focus to the toggle');
+            return { closed, open, afterEscape, escapeRestoredFocus: true };
+          } finally {
+            if (await navToggle.getAttribute('aria-expanded') === 'true') {
+              await page.keyboard.press('Escape');
+            }
+          }
+        });
+      }
+
       await check('focus visibility', async () => {
         const selector = 'a[href], button, summary';
         const inspect = async () => page.evaluate(selector => {
@@ -230,7 +334,7 @@ async function run() {
           (evidence.outlineStyle !== 'none' && evidence.outlineWidth !== '0px') || evidence.boxShadow !== 'none',
           `no visible focus indicator for ${evidence.name}`,
         );
-        const cycle = async state => {
+        const traverseEligibleControls = async state => {
           const expected = await page.locator(selector).evaluateAll(nodes => nodes.flatMap((node, key) => {
             const style = getComputedStyle(node);
             return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
@@ -240,20 +344,24 @@ async function run() {
           const first = await inspect();
           assert.ok(expected.includes(first.key), `${state}: initial focus is not an eligible control`);
           const seen = new Set();
-          let completed = false;
-          // One document cycle, with room for the browser's own focus stop.
+          // Browsers need not wrap Tab from the last page control to the first.
+          // Stop only after the forward pass has visited every eligible control.
           for (let step = 0; step <= expected.length + 2; step += 1) {
             const current = await inspect();
-            if (step > 0 && current.key === first.key) { completed = true; break; }
+            if (step > 0 && current.key === first.key) break;
             if (current.key >= 0) {
               assert.ok(expected.includes(current.key), `${state}: reached an ineligible control`);
               assertIndicator(current);
               seen.add(current.key);
             }
+            if (seen.size === expected.length) break;
             await page.keyboard.press('Tab');
           }
-          assert.ok(completed, `${state}: keyboard navigation did not complete a cycle`);
-          assert.deepEqual([...seen].sort((a, b) => a - b), expected.sort((a, b) => a - b), `${state}: keyboard controls were missed`);
+          assert.deepEqual(
+            [...seen].sort((a, b) => a - b),
+            expected.sort((a, b) => a - b),
+            `${state}: keyboard controls were missed`,
+          );
           return { state, expected: expected.length, checked: seen.size };
         };
 
@@ -294,19 +402,32 @@ async function run() {
         assertIndicator(await inspect());
         const navToggle = page.locator('.nav-toggle');
         assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
-        const closed = await cycle('menu closed');
-        await navToggle.click();
-        await page.waitForFunction(() => document.querySelector('#navigation a') === document.activeElement);
-        assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
-        // Establish keyboard modality after the pointer opens the menu.
-        await page.keyboard.press('Tab');
-        const open = await cycle('menu open');
-        assert.ok(open.checked > closed.checked, 'opening the menu added no keyboard targets');
-        await page.keyboard.press('Escape');
-        assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
-        assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
-        assertIndicator(await inspect());
-        return { closed, open, negativeControl: 'detected missing indicator' };
+        const closed = await traverseEligibleControls('menu closed');
+        try {
+          await navToggle.click();
+          await page.waitForFunction(() => document.querySelector('#navigation a') === document.activeElement);
+          assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
+          // Return to the first page target with keyboard input, so this forward
+          // pass does not depend on the browser wrapping at the end of the page.
+          await page.keyboard.press('Shift+Tab');
+          await page.keyboard.press('Shift+Tab');
+          assert.equal(
+            await skip.evaluate(node => node === document.activeElement),
+            true,
+            'open-menu traversal did not return to the first keyboard target',
+          );
+          const open = await traverseEligibleControls('menu open');
+          assert.ok(open.checked > closed.checked, 'opening the menu added no keyboard targets');
+          await page.keyboard.press('Escape');
+          assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
+          assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
+          assertIndicator(await inspect());
+          return { closed, open, negativeControl: 'detected missing indicator' };
+        } finally {
+          if (await navToggle.getAttribute('aria-expanded') === 'true') {
+            await page.keyboard.press('Escape');
+          }
+        }
       });
 
       await check('expanded mobile navigation keyboard focus', async () => {

@@ -26,3 +26,13 @@ For Git Smart HTTP with a PAT, authenticate as `x-access-token` through `GIT_ASK
 **Why:** A valid workflow-scoped PAT can be rejected by Git Smart HTTP when supplied as a Bearer header, while the same token succeeds through the standard username/password exchange.
 
 **How to apply:** Use an ephemeral askpass helper that returns `x-access-token` for the username prompt and the secret for the password prompt; clear credential helpers and never print or persist the token.
+
+The repository's historical mixed-case origin URL redirects to its lowercase
+canonical GitHub URL. A normal feature-branch push can succeed while printing a
+"repository moved" notice.
+
+**Why:** The push was accepted and the fetched feature ref matched the local commit;
+the redirect notice did not indicate a failed write.
+
+**How to apply:** Treat the notice as informational when the push succeeds and the
+expected remote ref verifies. Do not change the origin URL unless the owner asks.

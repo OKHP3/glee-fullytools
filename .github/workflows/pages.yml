@@ -133,8 +133,9 @@ jobs:
         run: |
           set -uo pipefail
           failed=0
-          python3 scripts/tests/test-foundry-accessibility-report.py
-          if [ "$?" -ne 0 ]; then failed=1; fi
+          if ! python3 scripts/tests/test-foundry-accessibility-report.py; then
+            failed=1
+          fi
           for engine in chromium firefox webkit; do
             if ! python3 scripts/check-foundry-accessibility-report.py \
               --engine "$engine" \

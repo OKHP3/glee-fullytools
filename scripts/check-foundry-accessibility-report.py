@@ -14,7 +14,38 @@ from urllib.parse import urlsplit
 EXPECTED_VIEWPORTS = [
     {"name": "narrow-320", "width": 320, "height": 780},
     {"name": "narrow-390", "width": 390, "height": 844},
+    {"name": "tablet-768", "width": 768, "height": 1024},
 ]
+REQUIRED_CHECKS = {
+    "narrow-320": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+    "narrow-390": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+    "tablet-768": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "compact navigation mode and menu visibility",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+}
 EXPECTED_ENGINES = ("chromium", "firefox", "webkit")
 ENGINE_LABELS = {
     "chromium": "Chromium",
@@ -62,7 +93,8 @@ def validate_report(report: object, expected_engine: str | None = None) -> list[
 
     if report.get("viewports") != EXPECTED_VIEWPORTS:
         errors.append(
-            "viewports must contain narrow-320 at 320x780 and narrow-390 at 390x844"
+            "viewports must contain narrow-320 at 320x780, narrow-390 at 390x844, "
+            "and tablet-768 at 768x1024"
         )
 
     runtime = report.get("runtime")
@@ -155,6 +187,17 @@ def validate_report(report: object, expected_engine: str | None = None) -> list[
         if missing_viewports:
             errors.append(
                 "runtime RUN report has no checks for: " + ", ".join(missing_viewports)
+            )
+        missing_checks = [
+            f"{viewport}: {label}"
+            for viewport, labels in REQUIRED_CHECKS.items()
+            for label in labels
+            if f"{viewport}: {label}" not in seen_names
+        ]
+        if missing_checks:
+            errors.append(
+                "runtime RUN report is missing required checks: "
+                + ", ".join(missing_checks)
             )
     elif runtime_status == "NOT RUN" and checks:
         errors.append("runtime NOT RUN report must not contain browser checks")

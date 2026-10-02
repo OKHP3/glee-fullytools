@@ -10,7 +10,39 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
+VALIDATE_WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
 CHECKER_PATH = ROOT / "scripts" / "check-foundry-accessibility-report.py"
+QA_RUNNER_PATH = ROOT / "scripts" / "tests" / "foundry-accessibility-qa.mjs"
+FIXTURE_CHECKS = {
+    "narrow-320": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+    "narrow-390": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+    "tablet-768": (
+        "page identity and landmarks",
+        "heading order",
+        "CTA accessible names",
+        "FAQ keyboard operation",
+        "compact navigation mode and menu visibility",
+        "focus visibility",
+        "expanded mobile navigation keyboard focus",
+        "narrow viewport overflow and console health",
+    ),
+}
 CHECKER_SPEC = importlib.util.spec_from_file_location(
     "foundry_accessibility_report_checker", CHECKER_PATH
 )
@@ -31,20 +63,22 @@ validate_report = CHECKER.validate_report
 def valid_report(engine: str = "chromium") -> dict:
     checks = [
         {
-            "name": "narrow-320: page identity and landmarks",
+            "name": f"{viewport}: {label}",
             "status": "PASS",
-            "evidence": {"h1": "FoundRy"},
-        },
-        {
-            "name": "narrow-390: narrow viewport overflow and console health",
-            "status": "FAIL",
-            "error": "document width exceeded viewport",
-        },
-        {
-            "name": "narrow-390: optional check",
-            "status": "NOT RUN",
-        },
+            "evidence": {"fixture": "complete required check"},
+        }
+        for viewport, labels in FIXTURE_CHECKS.items()
+        for label in labels
     ]
+    overflow_check = next(
+        check for check in checks
+        if check["name"] == "narrow-390: narrow viewport overflow and console health"
+    )
+    overflow_check.update(
+        status="FAIL",
+        error="document width exceeded viewport",
+    )
+    checks.append({"name": "narrow-390: optional check", "status": "NOT RUN"})
     return {
         "generatedAt": "2026-10-01T18:00:00.000Z",
         "sourceSha": "a" * 40,
@@ -66,12 +100,69 @@ def step_block(workflow: str, name: str) -> str:
     marker = f"      - name: {name}\n"
     start = workflow.find(marker)
     if start < 0:
-        raise AssertionError(f"Pages workflow is missing step {name!r}")
+        raise AssertionError(f"Workflow is missing step {name!r}")
     next_step = workflow.find("\n      - name: ", start + len(marker))
     return workflow[start:] if next_step < 0 else workflow[start:next_step]
 
 
 class FoundryAccessibilityReportTests(unittest.TestCase):
+    def test_focus_traversal_requires_complete_coverage_without_native_wrap(self):
+        source = QA_RUNNER_PATH.read_text(encoding="utf-8")
+        start = source.index("await check('focus visibility'")
+        end = source.index("await check('expanded mobile navigation keyboard focus'", start)
+        focus_check = source[start:end]
+
+        self.assertIn("const selector = 'a[href], button, summary';", focus_check)
+        self.assertIn(
+            "node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]')",
+            focus_check,
+        )
+        self.assertIn("style.visibility === 'visible'", focus_check)
+        self.assertIn("seen.add(current.key)", focus_check)
+        self.assertIn("assertIndicator(current)", focus_check)
+        self.assertIn("if (seen.size === expected.length) break;", focus_check)
+        self.assertIn("keyboard controls were missed", focus_check)
+        self.assertNotIn("keyboard navigation did not complete a cycle", focus_check)
+        self.assertIn("negative fixture was not detected", focus_check)
+        self.assertGreaterEqual(
+            focus_check.count("page.keyboard.press('Shift+Tab')"),
+            2,
+        )
+        self.assertIn("open-menu traversal did not return to the first keyboard target", focus_check)
+        self.assertIn(
+            "if (await navToggle.getAttribute('aria-expanded') === 'true')",
+            focus_check,
+        )
+
+    def test_tablet_runner_measures_the_compact_css_mode_and_interactions(self):
+        source = QA_RUNNER_PATH.read_text(encoding="utf-8")
+        self.assertIn(
+            "{ name: 'tablet-768', width: 768, height: 1024 },",
+            source,
+        )
+        start = source.index("await check('compact navigation mode and menu visibility'")
+        end = source.index("await check('focus visibility'", start)
+        tablet_check = source[start:end]
+
+        for required_evidence in (
+            "matchMedia('(max-width: 768px)').matches",
+            "toggleStyle.display",
+            "navStyle.position",
+            "navStyle.transform",
+            "navOnscreen",
+            "visibleLinks",
+            "aria-expanded",
+            "aria-hidden",
+            "hasAttribute('inert')",
+            "page.keyboard.press('Escape')",
+            "focusRestored",
+        ):
+            with self.subTest(evidence=required_evidence):
+                self.assertIn(required_evidence, tablet_check)
+
+        self.assertIn("compact navigation mode and menu visibility", source)
+        self.assertIn("if (viewport.name === 'tablet-768')", source)
+
     def test_complete_report_contract_is_accepted(self):
         self.assertEqual(validate_report(valid_report()), [])
 
@@ -131,23 +222,53 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
                     [],
                 )
 
-    def test_both_narrow_viewport_records_are_required(self):
+    def test_all_three_viewport_records_are_required(self):
         report = valid_report()
-        report["viewports"] = report["viewports"][:1]
+        report["viewports"] = report["viewports"][:2]
         self.assertTrue(
-            any("viewports must contain narrow-320" in error for error in validate_report(report))
+            any("viewports must contain" in error and "tablet-768 at 768x1024" in error
+                for error in validate_report(report))
         )
 
-    def test_runtime_run_requires_checks_for_both_viewports(self):
+    def test_runtime_run_requires_checks_for_all_three_viewports(self):
         report = valid_report()
-        report["checks"] = [report["checks"][0]]
-        report["summary"] = {status: 0 for status in STATUSES}
-        report["summary"]["PASS"] = 1
+        report["checks"] = [
+            check for check in report["checks"]
+            if not check["name"].startswith("tablet-768: ")
+        ]
+        report["summary"] = {
+            status: sum(check["status"] == status for check in report["checks"])
+            for status in STATUSES
+        }
         errors = validate_report(report)
         self.assertTrue(
-            any("no checks for: narrow-390" in error for error in errors),
+            any("no checks for: tablet-768" in error for error in errors),
             errors,
         )
+
+    def test_runtime_run_requires_tablet_mode_and_focus_checks(self):
+        for missing in (
+            "tablet-768: compact navigation mode and menu visibility",
+            "tablet-768: focus visibility",
+            "tablet-768: expanded mobile navigation keyboard focus",
+        ):
+            with self.subTest(missing=missing):
+                report = valid_report()
+                report["checks"] = [
+                    check for check in report["checks"] if check["name"] != missing
+                ]
+                report["summary"] = {
+                    status: sum(check["status"] == status for check in report["checks"])
+                    for status in STATUSES
+                }
+                errors = validate_report(report)
+                self.assertTrue(
+                    any(
+                        f"runtime RUN report is missing required checks: {missing}" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
 
     def test_runtime_status_and_not_run_reason_are_required(self):
         for runtime in (
@@ -193,15 +314,21 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
 
     def test_malformed_check_status_and_missing_failure_error_are_rejected(self):
         report = valid_report()
-        report["checks"][1]["status"] = "BROKEN"
-        report["checks"][1].pop("error")
+        failure_check = next(
+            check for check in report["checks"] if check["status"] == "FAIL"
+        )
+        failure_check["status"] = "BROKEN"
+        failure_check.pop("error")
         errors = validate_report(report)
         self.assertTrue(
             any("status must be PASS, FAIL, or NOT RUN" in error for error in errors)
         )
 
         report = valid_report()
-        report["checks"][1].pop("error")
+        failure_check = next(
+            check for check in report["checks"] if check["status"] == "FAIL"
+        )
+        failure_check.pop("error")
         errors = validate_report(report)
         self.assertTrue(any("must include an error" in error for error in errors))
 
@@ -227,6 +354,28 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             path.write_text("{", encoding="utf-8")
             errors = validate_file(path)
         self.assertTrue(any("report is invalid JSON" in error for error in errors))
+
+    def test_pr_node_qa_keeps_blocking_chromium_engine_explicit(self):
+        workflow = VALIDATE_WORKFLOW.read_text(encoding="utf-8")
+        node_job_start = workflow.index("\n  node-qa:\n")
+        next_job_start = workflow.index("\n  review-action-versions:\n", node_job_start)
+        node_job = workflow[node_job_start:next_job_start]
+        browser = step_block(
+            node_job,
+            "Install matching browser and test the FoundRy page",
+        )
+        normalized_browser = " ".join(browser.replace("\\", "").split())
+
+        self.assertIn("name: Validate Node dependency updates", node_job)
+        self.assertIn("chromium", EXPECTED_ENGINES)
+        self.assertIn("npx playwright install --with-deps chromium", normalized_browser)
+        self.assertIn(
+            "npm run qa:foundry-accessibility -- --engine chromium",
+            normalized_browser,
+        )
+        self.assertNotIn("continue-on-error", browser)
+        self.assertNotIn("--engine firefox", normalized_browser)
+        self.assertNotIn("--engine webkit", normalized_browser)
 
     def test_pages_runs_each_engine_after_blocking_gate_and_retains_reports(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
