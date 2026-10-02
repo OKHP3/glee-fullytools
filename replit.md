@@ -45,12 +45,13 @@ interpreter exists. The September 5 local checks used the installed Codex
 bundled Python when the system launcher pointed to a missing executable.
 Python browser runners require the pinned Python Playwright runtime/browser;
 static-lint fallback is not browser evidence. The focused FoundRy Node runner
-uses its separately declared Playwright package: run `npm ci`, install
-`chromium`, `firefox`, and `webkit` with `npx playwright install chromium
-firefox webkit`, then invoke `npm run qa:foundry-accessibility -- --engine
-<chromium|firefox|webkit>` once per engine. Each invocation requires an explicit
-engine and reports `NOT RUN` with a reason if its runtime is unavailable; Pages
-CI runs all three as a blocking gate and retains separate reports.
+uses its separately declared Playwright package. CI restores the locked npm
+dependencies and installs `chromium`, `firefox`, and `webkit` drivers. Invoke
+`npm run qa:foundry-accessibility` once with each explicit selector:
+`--engine chromium`, `--engine firefox`, and `--engine webkit`. Each invocation
+reports `NOT RUN` with a reason and exits nonzero if its runtime is unavailable;
+Pages CI runs all three as a blocking gate and retains separate reports. Do not
+add or upgrade dependencies for this check.
 
 ## CI Gate (GitHub Actions)
 
