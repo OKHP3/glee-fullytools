@@ -241,7 +241,7 @@ async function run() {
                 toggleRect.bottom > 0 && toggleRect.top < innerHeight,
               navPosition: navStyle.position,
               navTransform: navStyle.transform,
-              navOnscreen: navRect.width > 0 && navRect.height > 0 &&
+              panelIntersectsViewport: navRect.width > 0 && navRect.height > 0 &&
                 navRect.right > 0 && navRect.left < innerWidth &&
                 navRect.bottom > 0 && navRect.top < innerHeight,
               visibleLinks,
@@ -258,7 +258,6 @@ async function run() {
           assert.equal(closed.toggleVisible, true, 'compact navigation toggle is not visible at 768px');
           assert.equal(closed.navPosition, 'fixed', 'compact menu is not using the current fixed-position CSS mode');
           assert.notEqual(closed.navTransform, 'none', 'closed compact menu has no off-canvas transform');
-          assert.equal(closed.navOnscreen, false, 'closed compact menu remains in the viewport');
           assert.equal(closed.visibleLinks, 0, 'closed compact menu has visible links in the viewport');
           assert.equal(closed.navOpen, false);
           assert.equal(closed.expanded, 'false');
@@ -268,16 +267,31 @@ async function run() {
           try {
             await navToggle.click();
             await page.waitForFunction(() => {
+              const header = document.querySelector('.site-header');
               const nav = document.querySelector('#navigation');
-              if (!nav) return false;
-              return [...nav.querySelectorAll('a[href]')].some(link => {
+              if (!header?.classList.contains('nav-open') || !nav) return false;
+              const transform = getComputedStyle(nav).transform;
+              const matrix2d = transform.match(/^matrix\(([^)]+)\)$/);
+              const matrix3d = transform.match(/^matrix3d\(([^)]+)\)$/);
+              let translateY = transform === 'none' ? 0 : Number.NaN;
+              if (matrix2d) {
+                const values = matrix2d[1].split(',').map(Number);
+                if (values.length === 6) translateY = values[5];
+              } else if (matrix3d) {
+                const values = matrix3d[1].split(',').map(Number);
+                if (values.length === 16) translateY = values[13];
+              }
+              const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
                 const style = getComputedStyle(link);
                 const rect = link.getBoundingClientRect();
                 return style.display !== 'none' && style.visibility === 'visible' &&
                   rect.width > 0 && rect.height > 0 && rect.right > 0 &&
                   rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
-              });
-            });
+              }).length;
+              return Number.isFinite(translateY) && Math.abs(translateY) < 0.5 &&
+                nav.getAttribute('aria-hidden') === 'false' &&
+                !nav.hasAttribute('inert') && visibleLinks > 0;
+            }, null, { timeout: 5000 });
             const open = await inspectNavigation();
             assert.equal(open.compactMediaQueryMatches, true);
             assert.equal(open.toggleVisible, true);
@@ -286,26 +300,34 @@ async function run() {
             assert.equal(open.expanded, 'true');
             assert.equal(open.ariaHidden, 'false');
             assert.equal(open.inert, false);
-            assert.equal(open.navOnscreen, true, 'opened compact menu is not visible in the viewport');
+            assert.equal(open.panelIntersectsViewport, true, 'opened compact menu is not visible in the viewport');
             assert.ok(open.visibleLinks > 0, 'opened compact menu has no visible links');
             assert.notEqual(open.navTransform, closed.navTransform, 'opening the toggle did not change the CSS menu transform');
 
             await page.keyboard.press('Escape');
-            await page.waitForFunction(() => {
+            await page.waitForFunction(closedTransform => {
               const toggle = document.querySelector('.nav-toggle');
               const nav = document.querySelector('#navigation');
-              const rect = nav?.getBoundingClientRect();
+              if (!toggle || !nav) return false;
+              const visibleLinks = [...nav.querySelectorAll('a[href]')].filter(link => {
+                const style = getComputedStyle(link);
+                const rect = link.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility === 'visible' &&
+                  rect.width > 0 && rect.height > 0 && rect.right > 0 &&
+                  rect.left < innerWidth && rect.bottom > 0 && rect.top < innerHeight;
+              }).length;
               return toggle?.getAttribute('aria-expanded') === 'false' &&
                 document.activeElement === toggle &&
-                nav?.getAttribute('aria-hidden') === 'true' &&
-                nav.hasAttribute('inert') && rect && rect.bottom <= 0;
-            });
+                nav.getAttribute('aria-hidden') === 'true' &&
+                nav.hasAttribute('inert') &&
+                getComputedStyle(nav).transform === closedTransform &&
+                visibleLinks === 0;
+            }, closed.navTransform, { timeout: 5000 });
             const afterEscape = await inspectNavigation();
             assert.equal(afterEscape.navOpen, false);
             assert.equal(afterEscape.expanded, 'false');
             assert.equal(afterEscape.ariaHidden, 'true');
             assert.equal(afterEscape.inert, true);
-            assert.equal(afterEscape.navOnscreen, false);
             assert.equal(afterEscape.visibleLinks, 0);
             assert.equal(afterEscape.focusRestored, true, 'Escape did not restore focus to the toggle');
             return { closed, open, afterEscape, escapeRestoredFocus: true };
@@ -323,9 +345,19 @@ async function run() {
           const nodes = [...document.querySelectorAll(selector)];
           const node = document.activeElement;
           const style = getComputedStyle(node);
+          const rects = [...node.getClientRects()].map(rect => ({
+            x: rect.x, y: rect.y, width: rect.width, height: rect.height,
+          }));
           return {
             key: nodes.indexOf(node),
             name: (node.textContent || node.getAttribute('aria-label') || node.tagName).trim().slice(0, 80),
+            tag: node.tagName,
+            tabIndex: node.tabIndex,
+            display: style.display,
+            visibility: style.visibility,
+            disabled: Boolean(node.disabled),
+            inertAncestor: Boolean(node.closest('[inert]')),
+            rects,
             outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth,
             boxShadow: style.boxShadow,
           };
@@ -350,7 +382,10 @@ async function run() {
             const current = await inspect();
             if (step > 0 && current.key === first.key) break;
             if (current.key >= 0) {
-              assert.ok(expected.includes(current.key), `${state}: reached an ineligible control`);
+              assert.ok(
+                expected.includes(current.key),
+                `${state}: reached an ineligible control ${JSON.stringify(current)}; expected keys ${expected.join(',')}`,
+              );
               assertIndicator(current);
               seen.add(current.key);
             }

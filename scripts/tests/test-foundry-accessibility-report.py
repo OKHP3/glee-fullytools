@@ -149,7 +149,7 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             "toggleStyle.display",
             "navStyle.position",
             "navStyle.transform",
-            "navOnscreen",
+            "panelIntersectsViewport",
             "visibleLinks",
             "aria-expanded",
             "aria-hidden",
