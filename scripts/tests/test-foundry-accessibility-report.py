@@ -10,6 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
+VALIDATE_WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
 CHECKER_PATH = ROOT / "scripts" / "check-foundry-accessibility-report.py"
 CHECKER_SPEC = importlib.util.spec_from_file_location(
     "foundry_accessibility_report_checker", CHECKER_PATH
@@ -66,7 +67,7 @@ def step_block(workflow: str, name: str) -> str:
     marker = f"      - name: {name}\n"
     start = workflow.find(marker)
     if start < 0:
-        raise AssertionError(f"Pages workflow is missing step {name!r}")
+        raise AssertionError(f"Workflow is missing step {name!r}")
     next_step = workflow.find("\n      - name: ", start + len(marker))
     return workflow[start:] if next_step < 0 else workflow[start:next_step]
 
@@ -227,6 +228,28 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             path.write_text("{", encoding="utf-8")
             errors = validate_file(path)
         self.assertTrue(any("report is invalid JSON" in error for error in errors))
+
+    def test_pr_node_qa_keeps_blocking_chromium_engine_explicit(self):
+        workflow = VALIDATE_WORKFLOW.read_text(encoding="utf-8")
+        node_job_start = workflow.index("\n  node-qa:\n")
+        next_job_start = workflow.index("\n  review-action-versions:\n", node_job_start)
+        node_job = workflow[node_job_start:next_job_start]
+        browser = step_block(
+            node_job,
+            "Install matching browser and test the FoundRy page",
+        )
+        normalized_browser = " ".join(browser.replace("\\", "").split())
+
+        self.assertIn("name: Validate Node dependency updates", node_job)
+        self.assertIn("chromium", EXPECTED_ENGINES)
+        self.assertIn("npx playwright install --with-deps chromium", normalized_browser)
+        self.assertIn(
+            "npm run qa:foundry-accessibility -- --engine chromium",
+            normalized_browser,
+        )
+        self.assertNotIn("continue-on-error", browser)
+        self.assertNotIn("--engine firefox", normalized_browser)
+        self.assertNotIn("--engine webkit", normalized_browser)
 
     def test_pages_runs_each_engine_after_blocking_gate_and_retains_reports(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
