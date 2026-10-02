@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
 VALIDATE_WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
 CHECKER_PATH = ROOT / "scripts" / "check-foundry-accessibility-report.py"
+QA_RUNNER_PATH = ROOT / "scripts" / "tests" / "foundry-accessibility-qa.mjs"
 CHECKER_SPEC = importlib.util.spec_from_file_location(
     "foundry_accessibility_report_checker", CHECKER_PATH
 )
@@ -73,6 +74,34 @@ def step_block(workflow: str, name: str) -> str:
 
 
 class FoundryAccessibilityReportTests(unittest.TestCase):
+    def test_focus_traversal_requires_complete_coverage_without_native_wrap(self):
+        source = QA_RUNNER_PATH.read_text(encoding="utf-8")
+        start = source.index("await check('focus visibility'")
+        end = source.index("await check('expanded mobile navigation keyboard focus'", start)
+        focus_check = source[start:end]
+
+        self.assertIn("const selector = 'a[href], button, summary';", focus_check)
+        self.assertIn(
+            "node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]')",
+            focus_check,
+        )
+        self.assertIn("style.visibility === 'visible'", focus_check)
+        self.assertIn("seen.add(current.key)", focus_check)
+        self.assertIn("assertIndicator(current)", focus_check)
+        self.assertIn("if (seen.size === expected.length) break;", focus_check)
+        self.assertIn("keyboard controls were missed", focus_check)
+        self.assertNotIn("keyboard navigation did not complete a cycle", focus_check)
+        self.assertIn("negative fixture was not detected", focus_check)
+        self.assertGreaterEqual(
+            focus_check.count("page.keyboard.press('Shift+Tab')"),
+            2,
+        )
+        self.assertIn("open-menu traversal did not return to the first keyboard target", focus_check)
+        self.assertIn(
+            "if (await navToggle.getAttribute('aria-expanded') === 'true')",
+            focus_check,
+        )
+
     def test_complete_report_contract_is_accepted(self):
         self.assertEqual(validate_report(valid_report()), [])
 
