@@ -12,16 +12,45 @@ import { createRequire } from 'node:module';
 const ROOT = resolve(import.meta.dirname, '..', '..');
 const require = createRequire(import.meta.url);
 const ROUTE = '/foundry/';
-const OUTPUT_PATH = (() => {
-  const args = process.argv.slice(2);
-  const outputIndex = args.indexOf('--output');
-  if (outputIndex === -1) return null;
-  const output = args[outputIndex + 1];
-  if (!output || output.startsWith('--')) {
-    throw new Error('Usage: foundry-accessibility-qa.mjs [--output <path>]');
+const SUPPORTED_ENGINES = ['chromium', 'firefox', 'webkit'];
+const ENGINE_LABELS = {
+  chromium: 'Chromium',
+  firefox: 'Firefox',
+  webkit: 'WebKit',
+};
+
+function parseArgs(args) {
+  let engine = null;
+  let output = null;
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (argument === '--engine') {
+      if (engine !== null) throw new Error('--engine may be supplied only once');
+      engine = args[index + 1];
+      if (!engine || engine.startsWith('--')) {
+        throw new Error('--engine requires chromium, firefox, or webkit');
+      }
+      index += 1;
+    } else if (argument === '--output') {
+      if (output !== null) throw new Error('--output may be supplied only once');
+      output = args[index + 1];
+      if (!output || output.startsWith('--')) {
+        throw new Error('--output requires a path');
+      }
+      index += 1;
+    } else {
+      throw new Error(`Unknown argument: ${argument}`);
+    }
   }
-  return resolve(ROOT, output);
-})();
+  if (!SUPPORTED_ENGINES.includes(engine)) {
+    throw new Error(
+      'Usage: foundry-accessibility-qa.mjs --engine <chromium|firefox|webkit> [--output <path>]',
+    );
+  }
+  return { engine, outputPath: output ? resolve(ROOT, output) : null };
+}
+
+const { engine: ENGINE, outputPath: OUTPUT_PATH } = parseArgs(process.argv.slice(2));
 const VIEWPORTS = [
   { name: 'narrow-320', width: 320, height: 780 },
   { name: 'narrow-390', width: 390, height: 844 },
@@ -91,6 +120,7 @@ async function run() {
     generatedAt: new Date().toISOString(),
     sourceSha: sourceSha(),
     route: ROUTE,
+    engine: ENGINE,
     viewports: VIEWPORTS,
     checks: [],
     limitations: ['Human screen-reader testing was not run.'],
@@ -116,13 +146,16 @@ async function run() {
   report.baseUrl = base;
   let browser;
   try {
-    browser = await playwright.chromium.launch({ headless: true });
+    browser = await playwright[ENGINE].launch({ headless: true });
   } catch (error) {
     await new Promise(resolveServer => server.close(resolveServer));
-    return await notRun(report, `Installed Chromium driver unavailable: ${error.message}`);
+    return await notRun(
+      report,
+      `Installed ${ENGINE_LABELS[ENGINE]} driver unavailable: ${error.message}`,
+    );
   }
 
-  report.runtime = { status: 'RUN', driver: 'Playwright Chromium' };
+  report.runtime = { status: 'RUN', driver: `Playwright ${ENGINE_LABELS[ENGINE]}` };
   try {
     for (const viewport of VIEWPORTS) {
       const context = await browser.newContext({ viewport, serviceWorkers: 'block' });

@@ -2,29 +2,33 @@
 
 ## Scope
 
-Focused browser coverage for `foundry/index.html`: page landmarks and heading structure, visible CTA names, keyboard operation of the FAQ disclosures, focus visibility, and horizontal overflow at 320px and 390px widths. This is not a replacement for the site's full validation or viewport suites.
+Focused Chromium, Firefox, and WebKit browser coverage for `foundry/index.html`: page landmarks and heading structure, visible CTA names, keyboard operation of the FAQ disclosures, focus visibility, and horizontal overflow at 320px and 390px widths. Each engine runs the same checks at both widths. This is not a replacement for the site's full validation or viewport suites.
 
 ## Evidence
 
 - Source SHA: generated at run time by the runner
 - Runner: [`scripts/tests/foundry-accessibility-qa.mjs`](../../scripts/tests/foundry-accessibility-qa.mjs)
 - Fixture: loopback HTTP server on an ephemeral port, with third-party requests and service workers blocked. The production HTML is not rewritten on disk.
-- Supported command: `npm ci && npx playwright install chromium && npm run qa:foundry-accessibility`
-- Optional report output: append `-- --output path/to/foundry-accessibility.json` to
-  write the same JSON evidence that is printed to stdout. The Pages workflow uses
-  `$RUNNER_TEMP/foundry-accessibility.json`, outside the checked-out site, and
-  uploads it as a CI artifact after the focused gate completes, whether that
-  gate passes or fails. The report is not included in the Pages site. Pages CI
-  checks the report contract immediately after the browser gate; a
-  report-contract pass does not override the browser gate's exit status.
+- Supported command: `npm ci`, `npx playwright install chromium firefox webkit`,
+  then run `npm run qa:foundry-accessibility -- --engine <chromium|firefox|webkit>`
+  once for each engine.
+- Each invocation requires explicit `--engine` selection and tags its report with
+  that engine. Optional report output is supplied with `--output path/to/report.json`.
+  Pages CI writes three separate files under `$RUNNER_TEMP`, outside the checked-out
+  site, and uploads the per-engine JSON evidence whether the browser gate passes or
+  fails. The reports are not included in the Pages site. CI validates each report
+  against the engine requested for that file; a report-contract pass does not
+  override a browser-gate failure.
 - Dependency boundary: this focused runner uses the exact-pinned Node
-  `playwright` dev dependency and its Chromium driver. It is separate from the
-  exact-pinned Python Playwright dependency used by the broader browser gates;
-  neither runner weakens or replaces the other.
+  `playwright` dev dependency and its Chromium, Firefox, and WebKit drivers. It is
+  separate from the exact-pinned Python Playwright dependency used by the broader
+  browser gates; neither runner weakens or replaces the other.
 - CI command: GitHub Pages CI uses Node 22.19.0 from `.node-version`, runs
-  `npm ci`, installs Node Chromium with `--with-deps`, and executes the same
-  npm script. A missing Node package or browser is a failed setup, not a
-  passing or skipped assertion.
+  `npm ci`, installs the three Node Playwright engines, and executes the same npm
+  script for each engine. The gate continues through all three runs so one
+  unavailable engine cannot hide evidence from the others. A missing Node package
+  or browser produces an engine-tagged `NOT RUN` report and a failing gate, not a
+  passing or silently skipped assertion.
 
 - Site and stylesheet baseline: `89d5bef70e959065a9bc195481d6b755013b173e`.
   Each runner report records the tested checkout SHA.
@@ -32,19 +36,22 @@ Focused browser coverage for `foundry/index.html`: page landmarks and heading st
   2026-09-08 at 14:00 UTC: 12 PASS, 0 FAIL, 0 NOT RUN. This revision includes
   the corrected keyboard traversal and waits for stylesheet loading; the
   subsequent documentation-only commit records that result.
-- Runner: [`scripts/tests/foundry-accessibility-qa.mjs`](../../scripts/tests/foundry-accessibility-qa.mjs)
+- Historical single-engine baseline: [`scripts/tests/foundry-accessibility-qa.mjs`](../../scripts/tests/foundry-accessibility-qa.mjs)
 - Fixture: loopback HTTP server on an ephemeral port, with third-party requests and service workers blocked. The production HTML is not rewritten on disk.
-- Browser driver result on 2026-09-08: **PASS**. The bundled workspace runtime
-  ran Chromium without an installation. The focused check passes at both narrow
-  widths after using real keyboard Tab navigation; the mobile menu is opened
-  before its links are checked, and the intentionally off-screen skip link is
-  checked separately as the first keyboard target.
+- Browser driver result on 2026-09-08: **PASS in Chromium only**. The bundled
+  workspace runtime ran Chromium without an installation. This historical result
+  does not establish Firefox or WebKit behavior. The focused check passes at both
+  narrow widths after using real keyboard Tab navigation; the mobile menu is
+  opened before its links are checked, and the intentionally off-screen skip
+  link is checked separately as the first keyboard target.
 - Human screen-reader testing: **NOT RUN**.
 
-The JSON report includes both narrow viewport definitions, runtime status,
-`summary` counts for PASS/FAIL/NOT RUN checks, and the explicit human
-screen-reader limitation. The standard-library checker and its malformed-report
-regressions are `scripts/check-foundry-accessibility-report.py` and
+Each JSON report includes its engine, both narrow viewport definitions, runtime
+status, `summary` counts for PASS/FAIL/NOT RUN checks, and the explicit human
+screen-reader limitation. `NOT RUN` must include a reason and zero browser checks.
+The standard-library checker validates the engine tag against the explicitly
+requested engine. Checker regressions are
+`scripts/check-foundry-accessibility-report.py` and
 `scripts/tests/test-foundry-accessibility-report.py`.
 
 ## Coverage implemented

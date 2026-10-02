@@ -15,6 +15,12 @@ EXPECTED_VIEWPORTS = [
     {"name": "narrow-320", "width": 320, "height": 780},
     {"name": "narrow-390", "width": 390, "height": 844},
 ]
+EXPECTED_ENGINES = ("chromium", "firefox", "webkit")
+ENGINE_LABELS = {
+    "chromium": "Chromium",
+    "firefox": "Firefox",
+    "webkit": "WebKit",
+}
 STATUSES = ("PASS", "FAIL", "NOT RUN")
 SCREEN_READER_LIMITATION = "Human screen-reader testing was not run."
 SOURCE_SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
@@ -30,7 +36,7 @@ def _is_utc_timestamp(value: object) -> bool:
     return parsed.tzinfo is not None and parsed.utcoffset() == timedelta(0)
 
 
-def validate_report(report: object) -> list[str]:
+def validate_report(report: object, expected_engine: str | None = None) -> list[str]:
     """Return every report-contract violation without changing the report."""
     if not isinstance(report, dict):
         return ["report must be a JSON object"]
@@ -45,6 +51,14 @@ def validate_report(report: object) -> list[str]:
 
     if report.get("route") != "/foundry/":
         errors.append("route must be /foundry/")
+
+    engine = report.get("engine")
+    if not isinstance(engine, str) or engine not in EXPECTED_ENGINES:
+        errors.append("engine must be chromium, firefox, or webkit")
+    elif expected_engine is not None and engine != expected_engine:
+        errors.append(
+            f"report engine {engine!r} does not match requested engine {expected_engine!r}"
+        )
 
     if report.get("viewports") != EXPECTED_VIEWPORTS:
         errors.append(
@@ -61,6 +75,12 @@ def validate_report(report: object) -> list[str]:
             driver = runtime.get("driver")
             if not isinstance(driver, str) or not driver.strip():
                 errors.append("runtime RUN status requires a driver")
+            elif isinstance(engine, str) and engine in ENGINE_LABELS:
+                expected_driver = f"Playwright {ENGINE_LABELS[engine]}"
+                if driver != expected_driver:
+                    errors.append(
+                        f"runtime driver {driver!r} does not match engine {engine!r}"
+                    )
             base_url = report.get("baseUrl")
             try:
                 parsed_url = urlsplit(base_url) if isinstance(base_url, str) else None
@@ -168,7 +188,7 @@ def validate_report(report: object) -> list[str]:
     return errors
 
 
-def validate_file(path: Path) -> list[str]:
+def validate_file(path: Path, expected_engine: str | None = None) -> list[str]:
     """Load and validate one JSON report, returning readable errors."""
     try:
         report = json.loads(path.read_text(encoding="utf-8"))
@@ -178,15 +198,21 @@ def validate_file(path: Path) -> list[str]:
         return [f"report is not valid UTF-8: {error}"]
     except json.JSONDecodeError as error:
         return [f"report is invalid JSON: {error}"]
-    return validate_report(report)
+    return validate_report(report, expected_engine=expected_engine)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--engine",
+        choices=EXPECTED_ENGINES,
+        required=True,
+        help="expected browser engine for this evidence file",
+    )
     parser.add_argument("report", type=Path, help="FoundRy accessibility report JSON")
     args = parser.parse_args(argv)
 
-    errors = validate_file(args.report)
+    errors = validate_file(args.report, expected_engine=args.engine)
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
