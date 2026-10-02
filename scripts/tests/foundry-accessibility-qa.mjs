@@ -230,7 +230,7 @@ async function run() {
           (evidence.outlineStyle !== 'none' && evidence.outlineWidth !== '0px') || evidence.boxShadow !== 'none',
           `no visible focus indicator for ${evidence.name}`,
         );
-        const cycle = async state => {
+        const traverseEligibleControls = async state => {
           const expected = await page.locator(selector).evaluateAll(nodes => nodes.flatMap((node, key) => {
             const style = getComputedStyle(node);
             return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
@@ -240,20 +240,24 @@ async function run() {
           const first = await inspect();
           assert.ok(expected.includes(first.key), `${state}: initial focus is not an eligible control`);
           const seen = new Set();
-          let completed = false;
-          // One document cycle, with room for the browser's own focus stop.
+          // Browsers need not wrap Tab from the last page control to the first.
+          // Stop only after the forward pass has visited every eligible control.
           for (let step = 0; step <= expected.length + 2; step += 1) {
             const current = await inspect();
-            if (step > 0 && current.key === first.key) { completed = true; break; }
+            if (step > 0 && current.key === first.key) break;
             if (current.key >= 0) {
               assert.ok(expected.includes(current.key), `${state}: reached an ineligible control`);
               assertIndicator(current);
               seen.add(current.key);
             }
+            if (seen.size === expected.length) break;
             await page.keyboard.press('Tab');
           }
-          assert.ok(completed, `${state}: keyboard navigation did not complete a cycle`);
-          assert.deepEqual([...seen].sort((a, b) => a - b), expected.sort((a, b) => a - b), `${state}: keyboard controls were missed`);
+          assert.deepEqual(
+            [...seen].sort((a, b) => a - b),
+            expected.sort((a, b) => a - b),
+            `${state}: keyboard controls were missed`,
+          );
           return { state, expected: expected.length, checked: seen.size };
         };
 
@@ -294,19 +298,32 @@ async function run() {
         assertIndicator(await inspect());
         const navToggle = page.locator('.nav-toggle');
         assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
-        const closed = await cycle('menu closed');
-        await navToggle.click();
-        await page.waitForFunction(() => document.querySelector('#navigation a') === document.activeElement);
-        assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
-        // Establish keyboard modality after the pointer opens the menu.
-        await page.keyboard.press('Tab');
-        const open = await cycle('menu open');
-        assert.ok(open.checked > closed.checked, 'opening the menu added no keyboard targets');
-        await page.keyboard.press('Escape');
-        assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
-        assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
-        assertIndicator(await inspect());
-        return { closed, open, negativeControl: 'detected missing indicator' };
+        const closed = await traverseEligibleControls('menu closed');
+        try {
+          await navToggle.click();
+          await page.waitForFunction(() => document.querySelector('#navigation a') === document.activeElement);
+          assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
+          // Return to the first page target with keyboard input, so this forward
+          // pass does not depend on the browser wrapping at the end of the page.
+          await page.keyboard.press('Shift+Tab');
+          await page.keyboard.press('Shift+Tab');
+          assert.equal(
+            await skip.evaluate(node => node === document.activeElement),
+            true,
+            'open-menu traversal did not return to the first keyboard target',
+          );
+          const open = await traverseEligibleControls('menu open');
+          assert.ok(open.checked > closed.checked, 'opening the menu added no keyboard targets');
+          await page.keyboard.press('Escape');
+          assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
+          assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
+          assertIndicator(await inspect());
+          return { closed, open, negativeControl: 'detected missing indicator' };
+        } finally {
+          if (await navToggle.getAttribute('aria-expanded') === 'true') {
+            await page.keyboard.press('Escape');
+          }
+        }
       });
 
       await check('expanded mobile navigation keyboard focus', async () => {
