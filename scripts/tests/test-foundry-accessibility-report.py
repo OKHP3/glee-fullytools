@@ -117,10 +117,18 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
             "node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]')",
             focus_check,
         )
-        self.assertIn("style.visibility === 'visible'", focus_check)
+        self.assertIn("candidateStyle.visibility === 'visible'", focus_check)
+        self.assertIn(
+            "for (const key of current.eligibleKeys) expected.add(key)",
+            focus_check,
+        )
+        self.assertIn(
+            "current.eligibleKeys.includes(current.key)",
+            focus_check,
+        )
         self.assertIn("seen.add(current.key)", focus_check)
         self.assertIn("assertIndicator(current)", focus_check)
-        self.assertIn("if (seen.size === expected.length) break;", focus_check)
+        self.assertIn("if (seen.size === expected.size) break;", focus_check)
         self.assertIn("keyboard controls were missed", focus_check)
         self.assertNotIn("keyboard navigation did not complete a cycle", focus_check)
         self.assertIn("negative fixture was not detected", focus_check)

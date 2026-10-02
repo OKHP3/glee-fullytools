@@ -52,3 +52,16 @@ first link appears can mistake an in-progress transition for the open state.
 **How to apply:** Wait for the navigation transform to settle, then check link
 visibility, `aria-hidden`/`inert`, and Escape focus restoration independently
 from the panel's geometry.
+
+Keyboard eligibility can also change while focus moves through an open
+navigation menu. Re-evaluate the eligible set during forward traversal and
+require every control observed as eligible to receive focus and a visible
+indicator.
+
+**Why:** At the tablet breakpoint, keyboard focus can reveal links that were
+absent from the initial eligibility snapshot; a one-time snapshot falsely
+labels a reachable link as ineligible.
+
+**How to apply:** For stateful menus, track newly eligible controls through the
+forward pass, while still failing if focus lands on a control that is ineligible
+in its current state or if traversal ends before coverage is complete.

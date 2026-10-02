@@ -343,6 +343,12 @@ async function run() {
         const selector = 'a[href], button, summary';
         const inspect = async () => page.evaluate(selector => {
           const nodes = [...document.querySelectorAll(selector)];
+          const eligibleKeys = nodes.flatMap((node, key) => {
+            const candidateStyle = getComputedStyle(node);
+            return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
+              candidateStyle.visibility === 'visible' &&
+              [...node.getClientRects()].some(rect => rect.width && rect.height) ? [key] : [];
+          });
           const node = document.activeElement;
           const style = getComputedStyle(node);
           const rects = [...node.getClientRects()].map(rect => ({
@@ -358,6 +364,7 @@ async function run() {
             disabled: Boolean(node.disabled),
             inertAncestor: Boolean(node.closest('[inert]')),
             rects,
+            eligibleKeys,
             outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth,
             boxShadow: style.boxShadow,
           };
@@ -367,37 +374,38 @@ async function run() {
           `no visible focus indicator for ${evidence.name}`,
         );
         const traverseEligibleControls = async state => {
-          const expected = await page.locator(selector).evaluateAll(nodes => nodes.flatMap((node, key) => {
-            const style = getComputedStyle(node);
-            return node.tabIndex >= 0 && !node.disabled && !node.closest('[inert]') &&
-              style.visibility === 'visible' && [...node.getClientRects()].some(rect => rect.width && rect.height) ? [key] : [];
-          }));
-          assert.ok(expected.length > 0, `${state}: no keyboard candidates`);
           const first = await inspect();
-          assert.ok(expected.includes(first.key), `${state}: initial focus is not an eligible control`);
+          const expected = new Set(first.eligibleKeys);
+          assert.ok(expected.size > 0, `${state}: no keyboard candidates`);
+          assert.ok(expected.has(first.key), `${state}: initial focus is not an eligible control`);
           const seen = new Set();
+          const controlCount = await page.locator(selector).count();
           // Browsers need not wrap Tab from the last page control to the first.
-          // Stop only after the forward pass has visited every eligible control.
-          for (let step = 0; step <= expected.length + 2; step += 1) {
-            const current = await inspect();
+          // Track controls that become eligible as focus reveals navigation items.
+          // Stop only after the forward pass visits every eligible control observed.
+          for (let step = 0; step <= controlCount + 2; step += 1) {
+            const current = step === 0 ? first : await inspect();
+            for (const key of current.eligibleKeys) expected.add(key);
             if (step > 0 && current.key === first.key) break;
             if (current.key >= 0) {
               assert.ok(
-                expected.includes(current.key),
-                `${state}: reached an ineligible control ${JSON.stringify(current)}; expected keys ${expected.join(',')}`,
+                current.eligibleKeys.includes(current.key),
+                `${state}: reached an ineligible control ${JSON.stringify(current)}; expected keys ${[...expected].join(',')}`,
               );
               assertIndicator(current);
               seen.add(current.key);
             }
-            if (seen.size === expected.length) break;
+            if (seen.size === expected.size) break;
             await page.keyboard.press('Tab');
           }
+          const final = await inspect();
+          for (const key of final.eligibleKeys) expected.add(key);
           assert.deepEqual(
             [...seen].sort((a, b) => a - b),
-            expected.sort((a, b) => a - b),
+            [...expected].sort((a, b) => a - b),
             `${state}: keyboard controls were missed`,
           );
-          return { state, expected: expected.length, checked: seen.size };
+          return { state, expected: expected.size, checked: seen.size };
         };
 
         await page.evaluate(() => { history.scrollRestoration = 'manual'; });
