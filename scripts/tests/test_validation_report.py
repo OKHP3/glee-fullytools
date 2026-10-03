@@ -6,6 +6,7 @@ import importlib.util
 import json
 import argparse
 from contextlib import ExitStack
+from datetime import date, datetime, timezone
 from pathlib import Path
 import tempfile
 import unittest
@@ -167,6 +168,131 @@ class ValidationReportTests(unittest.TestCase):
                 report["provenance"]["validated_commit"],
                 "abcdef0123456789abcdef0123456789abcdef01",
             )
+
+    def test_main_preserves_unchanged_evidence_and_refreshes_global_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            run_date = date(2026, 9, 10)
+            run_times = [
+                datetime(2026, 9, 10, 17, minute, tzinfo=timezone.utc)
+                for minute in (0, 5, 10)
+            ]
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_stat_markers_drift": [],
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            report_path = (
+                root / "assets" / "audit" / "validation-report-2026-09-10.json"
+            )
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    )
+                )
+                # main() adds the path to each result; use a fresh result per run.
+                page_check = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "check_page",
+                        side_effect=lambda *_: {
+                            "issues": ["fixture page issue"],
+                            "warnings": ["fixture page warning"],
+                        },
+                    )
+                )
+                global_check = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_check_css_lines_drift",
+                        return_value="fixture global failure",
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_check_adr_index_sync",
+                        return_value="fixture global warning",
+                    )
+                )
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                clock = stack.enter_context(mock.patch.object(validate_site, "datetime"))
+                clock.now.side_effect = run_times
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = run_date
+
+                self.assertEqual(validate_site.main(), 1)
+                original_bytes = report_path.read_bytes()
+                original_report = json.loads(original_bytes)
+                self.assertEqual(original_report["generated_at"], "2026-09-10T17:00:00Z")
+                self.assertEqual(original_report["run_date"], run_date.isoformat())
+                self.assertEqual(original_report["scanned"], 1)
+                self.assertEqual(
+                    original_report["pages"],
+                    [{
+                        "issues": ["fixture page issue"],
+                        "warnings": ["fixture page warning"],
+                        "path": "index.html",
+                    }],
+                )
+                self.assertEqual(
+                    original_report["global_issues"],
+                    ["CSS-lines drift: fixture global failure"],
+                )
+                self.assertEqual(
+                    original_report["global_warnings"],
+                    ["ADR index drift: fixture global warning"],
+                )
+                self.assertEqual(original_report["total_issues"], 2)
+                self.assertEqual(original_report["total_warnings"], 2)
+
+                self.assertEqual(validate_site.main(), 1)
+                self.assertEqual(report_path.read_bytes(), original_bytes)
+                self.assertEqual(
+                    json.loads(report_path.read_bytes())["generated_at"],
+                    original_report["generated_at"],
+                )
+
+                # Change only the detail, not the count, to test the full payload.
+                global_check.return_value = "changed global failure"
+                self.assertEqual(validate_site.main(), 1)
+                self.assertNotEqual(report_path.read_bytes(), original_bytes)
+                refreshed_report = json.loads(report_path.read_bytes())
+                self.assertEqual(
+                    refreshed_report,
+                    {
+                        **original_report,
+                        "generated_at": "2026-09-10T17:10:00Z",
+                        "global_issues": ["CSS-lines drift: changed global failure"],
+                    },
+                )
+                self.assertEqual(list(report_path.parent.iterdir()), [report_path])
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 3,
+                )
+                self.assertEqual(
+                    clock.now.call_args_list, [mock.call(timezone.utc)] * 3
+                )
 
     def test_unchanged_payload_preserves_report_bytes_and_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
