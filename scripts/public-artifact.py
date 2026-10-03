@@ -34,11 +34,16 @@ IMAGE_EXTENSIONS = {".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico", ".
 DOWNLOAD_FILES: set[str] = set()
 ORIGIN = "https://glee-fully.tools"
 PROVENANCE = "release-provenance.json"
+PUBLIC_DOCUMENTATION_FILES = {"docs/organization-identity-approval.json"}
 
 
 def is_public(name: str) -> bool:
     path = PurePosixPath(name)
-    if name in ROOT_FILES or name == ".well-known/security.txt":
+    if (
+        name in ROOT_FILES
+        or name == ".well-known/security.txt"
+        or name in PUBLIC_DOCUMENTATION_FILES
+    ):
         return True
     if any(part.startswith(".") for part in path.parts):
         return False
@@ -86,6 +91,16 @@ def inventory(source: Path) -> set[str]:
     for name in ROOT_FILES | {".well-known/security.txt"}:
         path = source / name
         if not path.exists():
+            raise ValueError(f"required public file missing: {name}")
+        for parent in path.parents:
+            if parent == source:
+                break
+            safe_path(parent, source)
+        safe_path(path, source)
+        result.add(name)
+    for name in sorted(PUBLIC_DOCUMENTATION_FILES):
+        path = source / name
+        if not path.is_file():
             raise ValueError(f"required public file missing: {name}")
         for parent in path.parents:
             if parent == source:

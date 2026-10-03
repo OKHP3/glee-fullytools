@@ -15,6 +15,7 @@ GIT_BASH = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Git/bin/b
 BASH = str(GIT_BASH) if os.name == "nt" and GIT_BASH.is_file() else shutil.which("bash")
 CALLS = [
     "scripts/build-search-index.py --check",
+    "scripts/sync-portfolio-stats.py",
     "scripts/sync-portfolio-stats.py --check",
     "scripts/generate-sitemap.py --check",
     "scripts/generate-feed.py --check",

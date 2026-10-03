@@ -133,6 +133,7 @@ def expected_public_top_level() -> set[str]:
         "arcade",
         "assets",
         "contact",
+        "docs",
         "ecosystem",
         "foundry",
         "favicon.ico",

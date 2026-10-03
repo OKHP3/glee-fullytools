@@ -13,7 +13,10 @@ done
 echo "Post-merge: checking committed search index..."
 python3 scripts/build-search-index.py --check
 
-echo "Post-merge: checking committed portfolio stats..."
+echo "Post-merge: refreshing generated portfolio stats..."
+python3 scripts/sync-portfolio-stats.py
+
+echo "Post-merge: checking portfolio stats..."
 python3 scripts/sync-portfolio-stats.py --check
 
 echo "Post-merge: checking committed discovery artifacts..."

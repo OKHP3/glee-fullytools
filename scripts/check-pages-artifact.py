@@ -8,6 +8,11 @@ from pathlib import Path
 
 from public_inventory import expected_public_top_level, forbidden_artifact_parts
 
+PUBLIC_DOCUMENTATION_PATHS = {
+    "docs",
+    "docs/organization-identity-approval.json",
+}
+
 
 def check_artifact(root: Path) -> list[str]:
     issues: list[str] = []
@@ -15,10 +20,13 @@ def check_artifact(root: Path) -> list[str]:
     forbidden = forbidden_artifact_parts()
     for path in sorted(root.rglob("*")):
         rel = path.relative_to(root)
+        relative = rel.as_posix()
         if rel.parts and rel.parts[0] not in allowed_top:
-            issues.append(f"top-level path is not public: {rel.as_posix()}")
-        if any(part in forbidden for part in rel.parts):
-            issues.append(f"forbidden artifact path: {rel.as_posix()}")
+            issues.append(f"top-level path is not public: {relative}")
+        if relative not in PUBLIC_DOCUMENTATION_PATHS and any(
+            part in forbidden for part in rel.parts
+        ):
+            issues.append(f"forbidden artifact path: {relative}")
     assets = root / "assets"
     if assets.is_dir():
         allowed_assets = {"css", "data", "img", "js", "vendor"}
@@ -28,6 +36,11 @@ def check_artifact(root: Path) -> list[str]:
     provenance = root / "release-provenance.json"
     if not provenance.is_file():
         issues.append("release-provenance.json is missing")
+    approval_record = root / "docs" / "organization-identity-approval.json"
+    if not approval_record.is_file():
+        issues.append(
+            "required public file missing: docs/organization-identity-approval.json"
+        )
     return issues
 
 
