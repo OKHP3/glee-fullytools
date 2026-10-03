@@ -235,6 +235,7 @@ jobs:
           expected = ("chromium", "firefox", "webkit")
           missing = []
           invalid = []
+          versions = {}
           for browser in expected:
               path = audit_dir / f"color-scheme-init-{browser}.json"
               if not path.is_file():
@@ -249,6 +250,13 @@ jobs:
                   invalid.append(
                       f"{path.name}: browser={report.get('browser')!r}, expected {browser!r}"
                   )
+              version = report.get("browser_version")
+              if not isinstance(version, str) or not version.strip():
+                  invalid.append(
+                      f"{path.name}: browser_version must be a non-empty string"
+                  )
+              else:
+                  versions[browser] = version.strip()
               if report.get("status") != "PASS":
                   invalid.append(f"{path.name}: status={report.get('status')!r}, expected 'PASS'")
               cases = report.get("cases")
@@ -268,8 +276,8 @@ jobs:
                   + " | ".join(details)
               )
           rows = [
-              "| Browser engine | Covered cases | Report |",
-              "| --- | --- | --- |",
+              "| Browser engine | Browser version | Covered cases | Report |",
+              "| --- | --- | --- | --- |",
           ]
           labels = {
               "chromium": "Chromium",
@@ -284,7 +292,7 @@ jobs:
           for browser in expected:
               report_name = f"color-scheme-init-{browser}.json"
               rows.append(
-                  f"| {labels[browser]} | {covered_cases} | "
+                  f"| {labels[browser]} | {versions[browser]} | {covered_cases} | "
                   f"[`{report_name}`]({report_name}) |"
               )
           index = [
@@ -415,6 +423,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import os
+          import json
           from pathlib import Path
 
           validation_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
@@ -434,17 +443,40 @@ jobs:
                   + ", ".join(missing)
               )
           index = index_path.read_text(encoding="utf-8")
-          required_rows = {
-              "| Chromium | `light` (saved light preference); `dark` (saved dark preference); "
-              "`disabled_storage` (local storage blocked) | "
-              "[`color-scheme-init-chromium.json`](color-scheme-init-chromium.json) |",
-              "| Firefox | `light` (saved light preference); `dark` (saved dark preference); "
-              "`disabled_storage` (local storage blocked) | "
-              "[`color-scheme-init-firefox.json`](color-scheme-init-firefox.json) |",
-              "| WebKit | `light` (saved light preference); `dark` (saved dark preference); "
-              "`disabled_storage` (local storage blocked) | "
-              "[`color-scheme-init-webkit.json`](color-scheme-init-webkit.json) |",
+          labels = {
+              "chromium": "Chromium",
+              "firefox": "Firefox",
+              "webkit": "WebKit",
           }
+          covered_cases = (
+              "`light` (saved light preference); "
+              "`dark` (saved dark preference); "
+              "`disabled_storage` (local storage blocked)"
+          )
+          required_rows = set()
+          for browser, label in labels.items():
+              report_path = audit_dir / f"color-scheme-init-{browser}.json"
+              try:
+                  report = json.loads(report_path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError) as error:
+                  raise SystemExit(
+                      f"{report_path.name}: cannot parse downloaded JSON ({error})"
+                  )
+              if report.get("browser") != browser:
+                  raise SystemExit(
+                      f"{report_path.name}: browser={report.get('browser')!r}, "
+                      f"expected {browser!r}"
+                  )
+              version = report.get("browser_version")
+              if not isinstance(version, str) or not version.strip():
+                  raise SystemExit(
+                      f"{report_path.name}: browser_version must be a non-empty string"
+                  )
+              report_name = report_path.name
+              required_rows.add(
+                  f"| {label} | {version.strip()} | {covered_cases} | "
+                  f"[`{report_name}`]({report_name}) |"
+              )
           missing_rows = sorted(row for row in required_rows if row not in index)
           if missing_rows:
               raise SystemExit(

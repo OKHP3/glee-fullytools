@@ -575,6 +575,7 @@ def main() -> None:
             if args.executable_path:
                 launch_options["executable_path"] = args.executable_path
             browser = getattr(playwright, args.browser).launch(**launch_options)
+            report["browser_version"] = browser.version
             try:
                 evidence = {
                     preference: check_saved_preference(
