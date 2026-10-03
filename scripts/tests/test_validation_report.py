@@ -235,7 +235,9 @@ class ValidationReportTests(unittest.TestCase):
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
                     )
-                clock = stack.enter_context(mock.patch.object(validate_site, "datetime"))
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
                 clock.now.side_effect = run_times
                 calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
                 calendar.today.return_value = run_date
@@ -345,7 +347,9 @@ class ValidationReportTests(unittest.TestCase):
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
                     )
-                clock = stack.enter_context(mock.patch.object(validate_site, "datetime"))
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
                 clock.now.side_effect = [
                     datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
                     datetime(2026, 9, 11, 17, 5, tzinfo=timezone.utc),
@@ -451,6 +455,24 @@ class ValidationReportTests(unittest.TestCase):
             "numeric timestamp": json.dumps({**payload, "generated_at": 123}),
             "empty timestamp": json.dumps({**payload, "generated_at": ""}),
             "malformed timestamp": json.dumps({**payload, "generated_at": "not-a-date"}),
+            "malformed UTC timestamp": json.dumps(
+                {**payload, "generated_at": "not-a-dateZ"}
+            ),
+            "impossible calendar date": json.dumps(
+                {**payload, "generated_at": "2026-02-30T17:00:00Z"}
+            ),
+            "non-leap-year February date": json.dumps(
+                {**payload, "generated_at": "2026-02-29T17:00:00Z"}
+            ),
+            "impossible month": json.dumps(
+                {**payload, "generated_at": "2026-13-10T17:00:00Z"}
+            ),
+            "impossible time": json.dumps(
+                {**payload, "generated_at": "2026-09-10T25:00:00Z"}
+            ),
+            "date without time": json.dumps(
+                {**payload, "generated_at": "2026-09-10Z"}
+            ),
             "timestamp without timezone": json.dumps(
                 {**payload, "generated_at": "2026-09-10T17:00:00"}
             ),
@@ -472,6 +494,10 @@ class ValidationReportTests(unittest.TestCase):
 
                 replaced = json.loads(report_path.read_text(encoding="utf-8"))
                 self.assertEqual(replaced, current)
+                self.assertEqual(
+                    report_path.read_bytes(),
+                    json.dumps(current, indent=2, ensure_ascii=False).encode("utf-8"),
+                )
                 self.assertEqual(replaced["generated_at"], "2026-09-10T17:05:00Z")
                 self.assertEqual(
                     datetime.fromisoformat(replaced["generated_at"].replace("Z", "+00:00")),
@@ -479,6 +505,22 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(previous_path.read_bytes(), previous_bytes)
                 self.assertEqual(set(audit_dir.iterdir()), {previous_path, report_path})
+
+    def test_valid_utc_timestamps_preserve_original_formatting(self):
+        for timestamp in (
+            "2026-09-10T17:00:00Z",
+            "2026-09-10T17:00:00.123456Z",
+            "2024-02-29T17:00:00Z",
+        ):
+            with self.subTest(timestamp=timestamp), tempfile.TemporaryDirectory() as directory:
+                report_path = Path(directory) / "validation-report.json"
+                existing = {"generated_at": timestamp, "scanned": 1, "pages": []}
+                original_bytes = (json.dumps(existing) + "\n").encode("utf-8")
+                report_path.write_bytes(original_bytes)
+                current = {**existing, "generated_at": "2026-09-10T17:05:00Z"}
+
+                self.assertFalse(validate_site._write_validation_report(report_path, current))
+                self.assertEqual(report_path.read_bytes(), original_bytes)
 
     def test_changed_payload_refreshes_report_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
