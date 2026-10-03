@@ -21,6 +21,7 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+from public_paths import link_target
 
 from public_inventory import (
     collect_html_files,
@@ -90,21 +91,8 @@ def fragment_is_checkable(fragment: str) -> bool:
 
 
 def resolve_target(href: str, source_dir: Path) -> Path | None:
-    """Does this internal href resolve to a real file or dir/index.html?"""
-    clean = unquote(urlsplit(href).path)
-    if not clean:
-        return source_dir / "index.html"
-    if clean.startswith("/"):
-        target = ROOT / clean.lstrip("/")
-    else:
-        target = (source_dir / clean).resolve()
-    if target.is_file():
-        return target
-    if target.is_dir() and (target / "index.html").is_file():
-        return target / "index.html"
-    if (Path(str(target).rstrip("/")) / "index.html").is_file():
-        return Path(str(target).rstrip("/")) / "index.html"
-    return None
+    """Resolve a source-relative link, never a source-relative discovery route."""
+    return link_target(href, source_dir, ROOT, SITE)
 
 
 def resolves(href: str, source_path: Path, page_fragments: set[str],
