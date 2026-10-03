@@ -86,7 +86,7 @@ def _write_validation_report(out: Path, report: dict) -> bool:
     serialized = json.dumps(report, indent=2, ensure_ascii=False)
     try:
         existing = json.loads(out.read_text(encoding="utf-8"))
-    except (FileNotFoundError, OSError, json.JSONDecodeError):
+    except (FileNotFoundError, OSError, UnicodeDecodeError, json.JSONDecodeError):
         existing = None
 
     timestamp = existing.get("generated_at") if isinstance(existing, dict) else None
