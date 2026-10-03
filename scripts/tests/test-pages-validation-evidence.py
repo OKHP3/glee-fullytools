@@ -196,7 +196,10 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Uploaded validation evidence must have its effective retention checked"
         )
+    checkout_position = job_block.find("uses: actions/checkout@v7")
     retention_position = job_block.find(RETENTION_VERIFY_STEP)
+    if checkout_position < 0 or checkout_position > retention_position:
+        raise AssertionError("Retention checker requires checkout before execution")
     download_position = job_block.find("uses: actions/download-artifact@v8")
     if (
         retention_position < 0
@@ -302,6 +305,14 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
 
 
 class PagesValidationEvidenceTests(unittest.TestCase):
+    def test_retention_checker_requires_repository_checkout(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        before, job = workflow.split(POST_UPLOAD_JOB, 1)
+        job, after = job.split(DEPLOY_JOB, 1)
+        broken = before + POST_UPLOAD_JOB + job.replace("uses: actions/checkout@v7", "uses: actions/download-artifact@v8", 1) + DEPLOY_JOB + after
+        with self.assertRaisesRegex(AssertionError, "requires checkout"):
+            assert_uploaded_theme_evidence_contract(broken)
+
     @classmethod
     def setUpClass(cls):
         cls.workflow = WORKFLOW.read_text(encoding="utf-8")
