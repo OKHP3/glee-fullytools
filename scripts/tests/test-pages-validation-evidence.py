@@ -42,22 +42,34 @@ THEME_CASE_LABELS = ("`light`", "`dark`", "`disabled_storage`")
 def browser_theme_index() -> str:
     """Return a valid minimal index for exercising the uploaded-artifact gate."""
     rows = [
-        "| Browser engine | Covered cases | Report |",
-        "| --- | --- | --- |",
+        "| Browser engine | Browser version | Covered cases | Report |",
+        "| --- | --- | --- | --- |",
     ]
-    for browser, label in (
-        ("chromium", "Chromium"),
-        ("firefox", "Firefox"),
-        ("webkit", "WebKit"),
-    ):
+    for browser, label, version in browser_versions():
         rows.append(
-            f"| {label} | `light` (saved light preference); "
+            f"| {label} | {version} | `light` (saved light preference); "
             f"`dark` (saved dark preference); "
             f"`disabled_storage` (local storage blocked) | "
             f"[`color-scheme-init-{browser}.json`]"
             f"(color-scheme-init-{browser}.json) |"
         )
     return "\n".join(["# Browser color-scheme evidence", "", *rows, ""])
+
+
+def browser_versions():
+    return (
+        ("chromium", "Chromium", "136.0.7103.25"),
+        ("firefox", "Firefox", "138.0"),
+        ("webkit", "WebKit", "18.4"),
+    )
+
+
+def write_browser_theme_reports(audit: Path) -> None:
+    for browser, _, version in browser_versions():
+        (audit / f"color-scheme-init-{browser}.json").write_text(
+            json.dumps({"browser": browser, "browser_version": version}),
+            encoding="utf-8",
+        )
 
 
 def audit_report_index_link() -> str:
@@ -131,6 +143,10 @@ def assert_validation_evidence_contract(workflow: str) -> None:
     if THEME_INDEX_NAME not in theme_block:
         raise AssertionError(
             "Successful browser theme verification must generate its release index"
+        )
+    if "browser_version" not in theme_block or "Browser version" not in theme_block:
+        raise AssertionError(
+            "Browser theme reports and the release index must retain exact browser versions"
         )
     if (
         THEME_INDEX_NAME not in staging_block
@@ -235,6 +251,10 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
                 "Downloaded browser theme index must identify light, dark, "
                 "and disabled-storage cases"
             )
+    if "browser_version" not in verify_block or "version.strip()" not in verify_block:
+        raise AssertionError(
+            "Downloaded theme evidence must verify browser versions in both reports and index"
+        )
 
     deploy_block = workflow[deploy_position:]
     deploy_needs = deploy_block.split("\n    runs-on:", 1)[0]
@@ -391,10 +411,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
-            for browser in ("chromium", "firefox", "webkit"):
-                (audit / f"color-scheme-init-{browser}.json").write_text(
-                    "{}", encoding="utf-8"
-                )
+            write_browser_theme_reports(audit)
             docs = root / "assets" / "docs"
             docs.mkdir(parents=True)
             (docs / "audit-report.md").write_text(
@@ -421,10 +438,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
-            for browser in ("chromium", "firefox", "webkit"):
-                (audit / f"color-scheme-init-{browser}.json").write_text(
-                    "{}", encoding="utf-8"
-                )
+            write_browser_theme_reports(audit)
             (audit / THEME_INDEX_NAME).write_text(
                 browser_theme_index(), encoding="utf-8"
             )
@@ -444,6 +458,39 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("indexed cases", result.stdout)
 
+    def test_downloaded_artifact_check_rejects_a_version_mismatch(self):
+        job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            write_browser_theme_reports(audit)
+            mismatched_index = browser_theme_index().replace(
+                "136.0.7103.25", "136.0.7103.26"
+            )
+            (audit / THEME_INDEX_NAME).write_text(
+                mismatched_index, encoding="utf-8"
+            )
+            docs = root / "assets" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "audit-report.md").write_text(
+                audit_report_index_link(), encoding="utf-8"
+            )
+            env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("incomplete browser theme index", result.stderr)
+
     def test_theme_verification_generates_index_for_all_engines_and_cases(self):
         block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
             "\n      - name:", 1
@@ -455,11 +502,13 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
-            for browser in ("chromium", "firefox", "webkit"):
+            versions = dict((browser, version) for browser, _, version in browser_versions())
+            for browser, _, version in browser_versions():
                 (audit / f"color-scheme-init-{browser}.json").write_text(
                     json.dumps(
                         {
                             "browser": browser,
+                            "browser_version": version,
                             "status": "PASS",
                             "cases": {
                                 "light": {},
@@ -485,8 +534,48 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             ):
                 self.assertIn(label, index)
                 self.assertIn(f"color-scheme-init-{browser}.json", index)
+                self.assertIn(versions[browser], index)
+            self.assertIn("Browser version", index)
             for case in THEME_CASE_LABELS:
                 self.assertIn(case, index)
+
+    def test_theme_verification_rejects_missing_browser_version(self):
+        block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser, _, version in browser_versions():
+                report = {
+                    "browser": browser,
+                    "status": "PASS",
+                    "cases": {
+                        "light": {},
+                        "dark": {},
+                        "disabled_storage": {},
+                    },
+                }
+                if browser != "webkit":
+                    report["browser_version"] = version
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "color-scheme-init-webkit.json: browser_version must be a non-empty string",
+                result.stderr,
+            )
 
     def test_staging_links_the_generated_index_from_the_copied_audit_report(self):
         block = self.workflow.split(STAGING_STEP, 1)[1].split(UPLOAD_STEP, 1)[0]
@@ -497,9 +586,14 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
-            (audit / THEME_INDEX_NAME).write_text(
-                browser_theme_index(), encoding="utf-8"
-            )
+            for browser, _, version in browser_versions():
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(
+                        {"browser": browser, "browser_version": version}
+                    ),
+                    encoding="utf-8",
+                )
+            (audit / THEME_INDEX_NAME).write_text(browser_theme_index(), encoding="utf-8")
             (audit / "validation-report-2026-10-02.json").write_text(
                 '{"current": true}', encoding="utf-8"
             )
@@ -530,6 +624,17 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             staged_audit = artifact / "assets" / "audit"
             self.assertTrue((staged_audit / THEME_INDEX_NAME).is_file())
+            staged_index = (staged_audit / THEME_INDEX_NAME).read_text(
+                encoding="utf-8"
+            )
+            for browser, _, version in browser_versions():
+                staged_report = json.loads(
+                    (staged_audit / f"color-scheme-init-{browser}.json").read_text(
+                        encoding="utf-8"
+                    )
+                )
+                self.assertEqual(staged_report["browser_version"], version)
+                self.assertIn(version, staged_index)
             self.assertTrue(
                 (staged_audit / "validation-report-2026-10-02.json").is_file()
             )
