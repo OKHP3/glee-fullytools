@@ -17,8 +17,10 @@ STAGING_STEP = "- name: Stage complete validation evidence"
 UPLOAD_STEP = "- name: Upload validation reports"
 THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
+RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
 DEPLOY_JOB = "  deploy:"
+RETENTION_CHECKER = ROOT / "scripts" / "check-pages-validation-retention.py"
 LATE_EVIDENCE_STEPS = (
     "- name: Run browser responsive and asset QA",
     "- name: Run visitor, privacy, and rendered contrast acceptance",
@@ -158,15 +160,57 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Uploaded validation evidence check must run after the release validation job"
         )
-    download_position = job_block.find("uses: actions/download-artifact@v8")
-    if download_position < 0 or download_position > job_block.find(POST_UPLOAD_VERIFY_STEP):
+    if "      actions: read" not in job_block:
         raise AssertionError(
-            "Uploaded validation evidence must be downloaded before checking its reports"
+            "Uploaded validation evidence check needs read access to artifact metadata"
+        )
+    if RETENTION_VERIFY_STEP not in job_block:
+        raise AssertionError(
+            "Uploaded validation evidence must have its effective retention checked"
+        )
+    retention_position = job_block.find(RETENTION_VERIFY_STEP)
+    download_position = job_block.find("uses: actions/download-artifact@v8")
+    if (
+        retention_position < 0
+        or download_position < retention_position
+        or download_position > job_block.find(POST_UPLOAD_VERIFY_STEP)
+    ):
+        raise AssertionError(
+            "Artifact retention and report accessibility must be checked before deployment"
+        )
+    if (
+        "needs.validate.outputs.validation_artifact_id" not in job_block
+        or "scripts/check-pages-validation-retention.py" not in job_block
+    ):
+        raise AssertionError(
+            "Release check must inspect the uploaded artifact's GitHub retention metadata"
         )
     download_block = job_block[download_position:].split("\n      - name:", 1)[0]
     if "name: pages-validation-${{ github.sha }}" not in download_block:
         raise AssertionError(
             "Uploaded validation evidence check must download this commit's artifact"
+        )
+
+    validate_block = workflow[
+        workflow.find("  validate:"):post_upload_position
+    ]
+    upload_position = validate_block.find(UPLOAD_STEP)
+    if upload_position < 0:
+        raise AssertionError("Pages validation artifact upload step is missing")
+    upload_block = validate_block[upload_position:].split("\n      - name:", 1)[0]
+    if (
+        "id: upload_validation_reports" not in upload_block
+        or "retention-days: 90" not in upload_block
+    ):
+        raise AssertionError(
+            "Pages validation evidence upload must request the approved 90-day period"
+        )
+    if (
+        "validation_artifact_id: ${{ steps.upload_validation_reports.outputs.artifact-id }}"
+        not in validate_block
+    ):
+        raise AssertionError(
+            "The uploaded validation artifact id must be passed to the retention check"
         )
 
     verify_block = job_block[job_block.find(POST_UPLOAD_VERIFY_STEP):]
@@ -213,6 +257,91 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_uploaded_validation_artifact_is_checked_before_deployment(self):
         assert_uploaded_theme_evidence_contract(self.workflow)
+
+    def test_artifact_retention_checker_accepts_the_approved_period(self):
+        artifact = {
+            "id": 123,
+            "name": "pages-validation-abc123",
+            "expired": False,
+            "created_at": "2026-01-01T00:00:00Z",
+            "expires_at": "2026-04-01T00:00:00Z",
+        }
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(RETENTION_CHECKER),
+                "--artifact-id",
+                "123",
+                "--artifact-name",
+                "pages-validation-abc123",
+            ],
+            input=json.dumps(artifact),
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("at least 90 days", result.stdout)
+
+    def test_artifact_retention_checker_rejects_short_or_wrong_artifacts(self):
+        cases = (
+            (
+                {
+                    "id": 123,
+                    "name": "pages-validation-abc123",
+                    "expired": False,
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "expires_at": "2026-03-31T00:00:00Z",
+                },
+                "shorter than the approved 90 days",
+            ),
+            (
+                {
+                    "id": 123,
+                    "name": "pages-validation-abc123",
+                    "expired": True,
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "expires_at": "2026-04-01T00:00:00Z",
+                },
+                "artifact is expired",
+            ),
+            (
+                {
+                    "id": 456,
+                    "name": "pages-validation-abc123",
+                    "expired": False,
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "expires_at": "2026-04-01T00:00:00Z",
+                },
+                "expected 123",
+            ),
+            (
+                {
+                    "id": 123,
+                    "name": "pages-validation-other",
+                    "expired": False,
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "expires_at": "2026-04-01T00:00:00Z",
+                },
+                "expected 'pages-validation-abc123'",
+            ),
+        )
+        for artifact, expected_error in cases:
+            with self.subTest(expected_error=expected_error):
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(RETENTION_CHECKER),
+                        "--artifact-id",
+                        "123",
+                        "--artifact-name",
+                        "pages-validation-abc123",
+                    ],
+                    input=json.dumps(artifact),
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected_error, result.stderr)
 
     def test_downloaded_artifact_check_fails_for_each_missing_browser_report(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
