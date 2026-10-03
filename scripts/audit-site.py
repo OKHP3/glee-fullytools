@@ -472,7 +472,7 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
         return ["search-index.json missing"]
     try:
         data = json.loads(idx.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         return [f"search-index.json is unreadable: {exc}"]
     try:
         pages = data.get("pages", data) if isinstance(data, dict) else data
