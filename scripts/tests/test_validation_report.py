@@ -425,6 +425,61 @@ class ValidationReportTests(unittest.TestCase):
                 "2026-09-10T17:00:00Z",
             )
 
+    def test_unusable_report_is_replaced_with_current_utc_evidence(self):
+        current = {
+            "generated_at": "2026-09-10T17:05:00Z",
+            "run_date": "2026-09-10",
+            "report_type": "site-validation",
+            "scanned": 1,
+            "total_issues": 0,
+            "total_warnings": 0,
+            "global_issues": [],
+            "global_warnings": [],
+            "pages": [{"issues": [], "warnings": [], "path": "index.html"}],
+        }
+        payload = {key: value for key, value in current.items() if key != "generated_at"}
+        cases = {
+            "malformed JSON": '{"generated_at":',
+            "empty file": "",
+            "JSON array": json.dumps([current]),
+            "JSON string": json.dumps("2026-09-10T17:00:00Z"),
+            "JSON number": "123",
+            "JSON boolean": "true",
+            "JSON null": "null",
+            "missing timestamp": json.dumps(payload),
+            "null timestamp": json.dumps({**payload, "generated_at": None}),
+            "numeric timestamp": json.dumps({**payload, "generated_at": 123}),
+            "empty timestamp": json.dumps({**payload, "generated_at": ""}),
+            "malformed timestamp": json.dumps({**payload, "generated_at": "not-a-date"}),
+            "timestamp without timezone": json.dumps(
+                {**payload, "generated_at": "2026-09-10T17:00:00"}
+            ),
+            "timestamp without UTC suffix": json.dumps(
+                {**payload, "generated_at": "2026-09-10T17:00:00+00:00"}
+            ),
+        }
+        for scenario, damaged in cases.items():
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                previous_path = audit_dir / "validation-report-2026-09-09.json"
+                previous_bytes = b'{"generated_at": "2026-09-09T17:00:00Z"}\n'
+                previous_path.write_bytes(previous_bytes)
+                report_path.write_text(damaged, encoding="utf-8")
+
+                self.assertTrue(validate_site._write_validation_report(report_path, current))
+
+                replaced = json.loads(report_path.read_text(encoding="utf-8"))
+                self.assertEqual(replaced, current)
+                self.assertEqual(replaced["generated_at"], "2026-09-10T17:05:00Z")
+                self.assertEqual(
+                    datetime.fromisoformat(replaced["generated_at"].replace("Z", "+00:00")),
+                    datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc),
+                )
+                self.assertEqual(previous_path.read_bytes(), previous_bytes)
+                self.assertEqual(set(audit_dir.iterdir()), {previous_path, report_path})
+
     def test_changed_payload_refreshes_report_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
             report_path = Path(directory) / "validation-report-2026-09-10.json"
