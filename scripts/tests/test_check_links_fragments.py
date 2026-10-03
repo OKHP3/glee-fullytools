@@ -23,7 +23,7 @@ class FragmentLinkTests(unittest.TestCase):
         self.assertEqual(parser.fragments, set())
 
     def test_same_document_and_cross_page_fragments_are_exact(self):
-        with tempfile.TemporaryDirectory() as temp:
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_links, "ROOT", Path(temp)):
             root = Path(temp)
             source = root / "source.html"
             target = root / "target.html"
@@ -56,7 +56,7 @@ class FragmentLinkTests(unittest.TestCase):
 
     def test_protocol_relative_and_non_html_fragments(self):
         self.assertTrue(check_links.is_external("//cdn.example/site.css"))
-        with tempfile.TemporaryDirectory() as temp:
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_links, "ROOT", Path(temp)):
             source = Path(temp) / "source.html"
             pdf = Path(temp) / "guide.pdf"
             source.write_text("<p>source</p>", encoding="utf-8")

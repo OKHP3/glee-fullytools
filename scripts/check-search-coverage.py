@@ -18,6 +18,12 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit
 
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from public_paths import discovery_path
+
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_NAME = Path("config/public-inventory.json")
@@ -49,22 +55,8 @@ def _is_scoped_html(path: Path, root: Path, inventory: dict) -> bool:
     return path.suffix.lower() == ".html"
 
 
-def _path_for_url(url: str, origin: str) -> Path | None:
-    parsed = urlsplit(url)
-    expected = urlsplit(origin)
-    if (
-        parsed.scheme != expected.scheme
-        or parsed.netloc != expected.netloc
-        or parsed.query
-        or parsed.fragment
-    ):
-        return None
-    path = parsed.path or "/"
-    if path == "/":
-        return Path("index.html")
-    if path.endswith("/"):
-        return Path(path.lstrip("/")) / "index.html"
-    return Path(path.lstrip("/"))
+def _path_for_url(url: str, origin: str, root: Path = ROOT) -> Path | None:
+    return discovery_path(url, root, origin, canonical=True)
 
 
 def _page_type(url: str, origin: str, inventory: dict) -> str:
@@ -121,9 +113,9 @@ def derive_scope(root: Path) -> tuple[dict, list[str]]:
 
     urls = {url for url in locs if url}
     for url in sorted(urls):
-        relative = _path_for_url(url, origin)
+        relative = _path_for_url(url, origin, root)
         if relative is None:
-            issues.append(f"sitemap URL is outside the configured site origin or has a query: {url}")
+            issues.append(f"sitemap URL is outside the configured site origin or path boundary, or has a query/fragment: {url}")
             continue
         if ".." in relative.parts:
             issues.append(f"sitemap URL escapes the repository path boundary: {url}")

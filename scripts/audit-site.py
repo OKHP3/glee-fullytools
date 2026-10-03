@@ -77,7 +77,8 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
-from public_inventory import collect_html_files
+from public_inventory import collect_html_files, site_origin
+from public_paths import discovery_path
 
 ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache",
@@ -393,16 +394,10 @@ def parse_sitemap() -> Tuple[List[str], List[str]]:
     return [u for u in locs if u], []
 
 
-def url_to_relpath(url: str) -> str:
-    """Map https://glee-fully.tools/foo/ -> foo/index.html (or foo.html)."""
-    path = url.replace("https://glee-fully.tools", "").lstrip("/")
-    if path == "":
-        return "index.html"
-    if path.endswith(".html"):
-        return path
-    if path.endswith("/"):
-        return path + "index.html"
-    return path + "/index.html"
+def url_to_relpath(url: str) -> str | None:
+    """Map a rooted discovery URL, rejecting foreign or escaping URLs."""
+    path = discovery_path(url, ROOT, site_origin())
+    return path.as_posix() if path is not None else None
 
 
 def reconcile_sitemap(html_files: List[Path]) -> Tuple[List[str], List[str], List[str]]:
@@ -412,10 +407,16 @@ def reconcile_sitemap(html_files: List[Path]) -> Tuple[List[str], List[str], Lis
     sitemap_urls, errors = parse_sitemap()
     if errors:
         return [], [], errors
-    rels_in_sitemap = {url_to_relpath(u) for u in sitemap_urls}
+    rels_in_sitemap = set()
+    for url in sitemap_urls:
+        relative = url_to_relpath(url)
+        if relative is None:
+            errors.append(f"Invalid sitemap discovery URL: {url}")
+        else:
+            rels_in_sitemap.add(relative)
     in_sitemap_missing_disk = sorted(rels_in_sitemap - rels_on_disk)
     on_disk_missing_sitemap = sorted(rels_on_disk - rels_in_sitemap)
-    return in_sitemap_missing_disk, on_disk_missing_sitemap, []
+    return in_sitemap_missing_disk, on_disk_missing_sitemap, errors
 
 
 CRUFT_PATTERNS = ("*.bak", "*.orig", "*.swp", "*.swo", ".DS_Store", "Thumbs.db", "*~")
@@ -488,20 +489,18 @@ def reconcile_search_index(html_files: List[Path]) -> List[str]:
                 f"(re-run build-search-index.py after fixing EXCLUDE_DIRS): {u}"
                 for u in template_urls
             ]
-        indexed_rels = {
-            url_to_relpath(u) if u.startswith("http") else u.lstrip("/")
-            for u in indexed_urls
-            if u
-        }
-        indexed_rels = {
-            r if r.endswith(".html") else r.rstrip("/") + "/index.html"
-            for r in indexed_rels
-        }
-        indexed_rels = {r.lstrip("/") or "index.html" for r in indexed_rels}
+        indexed_rels = set()
+        invalid_urls = []
+        for url in indexed_urls:
+            relative = url_to_relpath(url)
+            if relative is None:
+                invalid_urls.append(f"Invalid search-index discovery URL: {url}")
+            else:
+                indexed_rels.add(relative)
         rels_on_disk = {p.relative_to(ROOT).as_posix() for p in html_files}
         rels_on_disk -= EXCLUDE_FROM_SEARCH_INDEX
         missing = sorted(rels_on_disk - indexed_rels)
-        return [f"Page on disk not in search index: {p}" for p in missing]
+        return invalid_urls + [f"Page on disk not in search index: {p}" for p in missing]
     except Exception as exc:  # pragma: no cover — defensive
         return [f"search-index reconciliation crashed: {exc!r}"]
 
