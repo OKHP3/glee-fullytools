@@ -86,14 +86,19 @@ def _write_validation_report(out: Path, report: dict) -> bool:
     serialized = json.dumps(report, indent=2, ensure_ascii=False)
     try:
         existing = json.loads(out.read_text(encoding="utf-8"))
-    except (FileNotFoundError, OSError, json.JSONDecodeError):
+    except (FileNotFoundError, OSError, UnicodeDecodeError, json.JSONDecodeError):
         existing = None
 
-    if (
-        isinstance(existing, dict)
-        and isinstance(existing.get("generated_at"), str)
-        and existing["generated_at"].endswith("Z")
-    ):
+    timestamp = existing.get("generated_at") if isinstance(existing, dict) else None
+    usable_timestamp = False
+    if isinstance(timestamp, str) and timestamp.endswith("Z"):
+        try:
+            parsed_timestamp = datetime.fromisoformat(timestamp[:-1] + "+00:00")
+            usable_timestamp = parsed_timestamp.utcoffset() == timezone.utc.utcoffset(None)
+        except ValueError:
+            pass
+
+    if usable_timestamp:
         existing_payload = {
             key: value for key, value in existing.items() if key != "generated_at"
         }

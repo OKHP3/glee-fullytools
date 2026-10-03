@@ -15,7 +15,9 @@ SCRIPTS = Path(__file__).resolve().parents[1]
 
 class ReconciliationTests(unittest.TestCase):
     def test_idle_browser_connection_does_not_block_server(self):
-        qa = runpy.run_path(str(SCRIPTS / "resilience-qa.py"))
+        # run_path does not add the script directory like direct execution does.
+        with patch.object(sys, "path", [str(SCRIPTS), *sys.path]):
+            qa = runpy.run_path(str(SCRIPTS / "resilience-qa.py"))
         server, url = qa["start_lifecycle_server"]()
         idle = socket.create_connection(("127.0.0.1", urlparse(url).port))
         try:
