@@ -506,6 +506,45 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(previous_path.read_bytes(), previous_bytes)
                 self.assertEqual(set(audit_dir.iterdir()), {previous_path, report_path})
 
+    def test_invalid_utf8_report_is_replaced_without_changing_historical_reports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory) / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            historical_reports = {
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+            }
+            for path, content in historical_reports.items():
+                path.write_bytes(content)
+            report_path.write_bytes(b'{"generated_at": "\xff"}')
+            current = {
+                "generated_at": "2026-09-10T17:05:00Z",
+                "run_date": "2026-09-10",
+                "report_type": "site-validation",
+                "scanned": 1,
+                "total_issues": 0,
+                "total_warnings": 0,
+                "pages": [{"path": "caf\u00e9/index.html", "issues": [], "warnings": []}],
+            }
+
+            self.assertTrue(validate_site._write_validation_report(report_path, current))
+
+            self.assertEqual(
+                json.loads(report_path.read_text(encoding="utf-8")), current
+            )
+            self.assertEqual(
+                report_path.read_bytes(),
+                json.dumps(current, indent=2, ensure_ascii=False).encode("utf-8"),
+            )
+            for path, content in historical_reports.items():
+                self.assertEqual(path.read_bytes(), content)
+            self.assertEqual(
+                set(audit_dir.iterdir()), set(historical_reports) | {report_path}
+            )
+
     def test_valid_utc_timestamps_preserve_original_formatting(self):
         for timestamp in (
             "2026-09-10T17:00:00Z",
