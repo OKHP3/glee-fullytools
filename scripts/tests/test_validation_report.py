@@ -495,8 +495,8 @@ class ValidationReportTests(unittest.TestCase):
                 replaced = json.loads(report_path.read_text(encoding="utf-8"))
                 self.assertEqual(replaced, current)
                 self.assertEqual(
-                    report_path.read_bytes(),
-                    json.dumps(current, indent=2, ensure_ascii=False).encode("utf-8"),
+                    report_path.read_text(encoding="utf-8"),
+                    json.dumps(current, indent=2, ensure_ascii=False),
                 )
                 self.assertEqual(replaced["generated_at"], "2026-09-10T17:05:00Z")
                 self.assertEqual(
