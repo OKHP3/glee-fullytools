@@ -33,6 +33,36 @@ HISTORICAL_FILTER = 'audit_dir.glob("validation-report-*.json")'
 COMPLETE_AUDIT_COPY = 'shutil.copytree("assets/audit", audit_dir)'
 THEME_BROWSER_LOOP = "for browser in chromium firefox webkit; do"
 THEME_REPORT_PATTERN = "color-scheme-init-$browser.json"
+THEME_INDEX_NAME = "color-scheme-evidence-index.md"
+THEME_CASE_LABELS = ("`light`", "`dark`", "`disabled_storage`")
+
+
+def browser_theme_index() -> str:
+    """Return a valid minimal index for exercising the uploaded-artifact gate."""
+    rows = [
+        "| Browser engine | Covered cases | Report |",
+        "| --- | --- | --- |",
+    ]
+    for browser, label in (
+        ("chromium", "Chromium"),
+        ("firefox", "Firefox"),
+        ("webkit", "WebKit"),
+    ):
+        rows.append(
+            f"| {label} | `light` (saved light preference); "
+            f"`dark` (saved dark preference); "
+            f"`disabled_storage` (local storage blocked) | "
+            f"[`color-scheme-init-{browser}.json`]"
+            f"(color-scheme-init-{browser}.json) |"
+        )
+    return "\n".join(["# Browser color-scheme evidence", "", *rows, ""])
+
+
+def audit_report_index_link() -> str:
+    return (
+        "[browser color-scheme evidence index]"
+        "(../audit/color-scheme-evidence-index.md)"
+    )
 
 
 def assert_validation_evidence_contract(workflow: str) -> None:
@@ -96,6 +126,17 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Complete evidence staging must require successful browser-specific theme verification"
         )
+    if THEME_INDEX_NAME not in theme_block:
+        raise AssertionError(
+            "Successful browser theme verification must generate its release index"
+        )
+    if (
+        THEME_INDEX_NAME not in staging_block
+        or "../audit/color-scheme-evidence-index.md" not in staging_block
+    ):
+        raise AssertionError(
+            "Validation staging must retain and link the browser theme index"
+        )
 
 
 def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
@@ -135,10 +176,21 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         "color-scheme-init-webkit.json",
     )
     missing_names = [name for name in expected_reports if name not in verify_block]
-    if missing_names or "missing" not in verify_block:
+    if (
+        missing_names
+        or THEME_INDEX_NAME not in verify_block
+        or "audit-report.md" not in verify_block
+        or "missing" not in verify_block
+    ):
         raise AssertionError(
-            "Downloaded validation artifact check must fail when any browser theme report is absent"
+            "Downloaded validation artifact check must require the reports and their index"
         )
+    for case in THEME_CASE_LABELS:
+        if case not in verify_block:
+            raise AssertionError(
+                "Downloaded browser theme index must identify light, dark, "
+                "and disabled-storage cases"
+            )
 
     deploy_block = workflow[deploy_position:]
     deploy_needs = deploy_block.split("\n    runs-on:", 1)[0]
@@ -181,6 +233,14 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 for report_name in expected_reports:
                     if report_name != missing_name:
                         (audit / report_name).write_text("{}", encoding="utf-8")
+                (audit / THEME_INDEX_NAME).write_text(
+                    browser_theme_index(), encoding="utf-8"
+                )
+                docs = root / "assets" / "docs"
+                docs.mkdir(parents=True)
+                (docs / "audit-report.md").write_text(
+                    audit_report_index_link(), encoding="utf-8"
+                )
                 env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
                 result = subprocess.run(
                     [sys.executable, "-c", code],
@@ -191,6 +251,36 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 )
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(missing_name, result.stderr)
+
+    def test_downloaded_artifact_check_fails_when_theme_index_is_missing(self):
+        job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser in ("chromium", "firefox", "webkit"):
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    "{}", encoding="utf-8"
+                )
+            docs = root / "assets" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "audit-report.md").write_text(
+                audit_report_index_link(), encoding="utf-8"
+            )
+            env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(THEME_INDEX_NAME, result.stderr)
 
     def test_downloaded_artifact_check_accepts_all_browser_reports(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
@@ -206,6 +296,14 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 (audit / f"color-scheme-init-{browser}.json").write_text(
                     "{}", encoding="utf-8"
                 )
+            (audit / THEME_INDEX_NAME).write_text(
+                browser_theme_index(), encoding="utf-8"
+            )
+            docs = root / "assets" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "audit-report.md").write_text(
+                audit_report_index_link(), encoding="utf-8"
+            )
             env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root)}
             result = subprocess.run(
                 [sys.executable, "-c", code],
@@ -215,7 +313,105 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 text=True,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("Verified all three browser theme reports", result.stdout)
+            self.assertIn("indexed cases", result.stdout)
+
+    def test_theme_verification_generates_index_for_all_engines_and_cases(self):
+        block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser in ("chromium", "firefox", "webkit"):
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(
+                        {
+                            "browser": browser,
+                            "status": "PASS",
+                            "cases": {
+                                "light": {},
+                                "dark": {},
+                                "disabled_storage": {},
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            index = (audit / THEME_INDEX_NAME).read_text(encoding="utf-8")
+            for browser, label in (
+                ("chromium", "Chromium"),
+                ("firefox", "Firefox"),
+                ("webkit", "WebKit"),
+            ):
+                self.assertIn(label, index)
+                self.assertIn(f"color-scheme-init-{browser}.json", index)
+            for case in THEME_CASE_LABELS:
+                self.assertIn(case, index)
+
+    def test_staging_links_the_generated_index_from_the_copied_audit_report(self):
+        block = self.workflow.split(STAGING_STEP, 1)[1].split(UPLOAD_STEP, 1)[0]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / THEME_INDEX_NAME).write_text(
+                browser_theme_index(), encoding="utf-8"
+            )
+            (audit / "validation-report-2026-10-02.json").write_text(
+                '{"current": true}', encoding="utf-8"
+            )
+            (audit / "validation-report-2026-10-01.json").write_text(
+                '{"historical": true}', encoding="utf-8"
+            )
+            (audit / "links-report-2026-10-02.json").write_text(
+                '{"audit": true}', encoding="utf-8"
+            )
+            docs = root / "assets" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "audit-report.md").write_text(
+                "# Audit report\n", encoding="utf-8"
+            )
+            artifact = root / "validation-artifact"
+            env = {
+                **os.environ,
+                "VALIDATION_ARTIFACT_DIR": str(artifact),
+                "VALIDATION_REPORT_NAME": "validation-report-2026-10-02.json",
+            }
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            staged_audit = artifact / "assets" / "audit"
+            self.assertTrue((staged_audit / THEME_INDEX_NAME).is_file())
+            self.assertTrue(
+                (staged_audit / "validation-report-2026-10-02.json").is_file()
+            )
+            self.assertFalse(
+                (staged_audit / "validation-report-2026-10-01.json").exists()
+            )
+            self.assertTrue((staged_audit / "links-report-2026-10-02.json").is_file())
+            staged_summary = (
+                artifact / "assets" / "docs" / "audit-report.md"
+            ).read_text(encoding="utf-8")
+            self.assertIn(audit_report_index_link(), staged_summary)
 
     def test_early_staging_has_clear_failure(self):
         changed = self.workflow.replace(

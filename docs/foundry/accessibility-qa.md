@@ -70,10 +70,10 @@ The runner asserts:
    skip link is the initial target and appears inside the viewport after its
    transition. Escape closes the menu and returns focus to its toggle.
 6. At 768×1024, computed styles confirm the live compact-navigation mode:
-   the toggle is visible, the closed menu is offscreen and inert, opening the
-   toggle exposes menu links in the viewport, and Escape hides the menu and
-   restores focus. The same keyboard traversal and focus-indicator checks run
-   with the menu closed and open at this width.
+   the toggle is visible, the closed menu has no visible links and is inert,
+   opening the toggle exposes menu links in the viewport, and Escape hides the
+   menu and restores focus. The same keyboard traversal and focus-indicator
+   checks run with the menu closed and open at this width.
 7. The document does not exceed the viewport width at 320px, 390px, or 768px,
    and no page errors occur.
 

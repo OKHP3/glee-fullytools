@@ -14,3 +14,4 @@
 - [Release evidence contracts](release-evidence-contracts.md) — discovery outputs and Pages publication must share explicit, tested scope contracts.
 - [Post-merge generated artifacts](post-merge-generated-artifacts.md) — run discovery checks before idempotent cache-version sync so merges cannot leave the offline shell stale.
 - [Merge-marker-safe comments](merge-marker-safe-comments.md) — avoid HTML comment divider lines beginning with repeated equals signs; merge validation can mistake them for conflict markers.
+- [Search-console evidence boundary](search-console-evidence-boundary.md) — keep Google/Bing verification evidence separate from unrelated coding work; never infer success from analytics code or missing data.

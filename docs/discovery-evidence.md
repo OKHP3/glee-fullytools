@@ -90,15 +90,24 @@ Console or Bing coverage result.
 
 | Console | Post-processing coverage report | Included | Excluded / blocked / duplicate / failed | Review result |
 |---|---|---:|---:|---|
-| Google Search Console | Not supplied to this workspace | Unknown | Unknown; no console findings were provided | **BLOCKED** — indexing and sitemap-processing status cannot be confirmed |
-| Bing Webmaster Tools | Not supplied to this workspace | Unknown | Unknown; no console findings were provided | **BLOCKED** — indexing and sitemap-processing status cannot be confirmed |
+| Google Search Console | Owner-supplied summary of a Codex inspection on 2026-10-02 (America/Chicago): the currently signed-in account showed the welcome screen; “Already started? finish verification” reported “No properties detected” and no properties waiting for verification. | Unknown | Unknown; no coverage report or counts were available | **NOT VERIFIED IN THE CHECKED ACCOUNT** — this does not rule out a property under another account. Property verification, sitemap submission, indexing status, and aggregate counts remain unknown. |
+| Bing Webmaster Tools | Owner-supplied status: no account-level verification or sitemap-submission result has been reviewed. | Unknown | Unknown; no account-level coverage report or counts were available | **UNKNOWN / NOT VERIFIED FROM AVAILABLE EVIDENCE** — verification, submission, indexing status, and dates remain unknown. |
 
 These `Unknown` values are deliberate. They are not zero counts and must not be
-reported as proof that all 61 URLs are indexed. No owner confirmation,
-reviewer initials, account-identifying screenshot, token, cookie, or credential
-was available for this review. The owner must provide sanitized aggregate
-counts and the review date from both consoles before this section can be
-changed to a confirmed result.
+reported as proof that all 61 URLs are indexed. The Google entry is an
+owner-supplied summary of a Codex observation, not an owner-reviewed result and
+not an independent check in this workspace; the checked account's “No
+properties detected” message does not establish whether another account has a
+verified property. No owner confirmation or reviewer initials were supplied.
+No account-identifying screenshot, token, cookie, or credential is included.
+
+The presence of Google Analytics code in
+[`assets/js/glee-site-enhancements.js`](../assets/js/glee-site-enhancements.js)
+does not prove Search Console property verification or sitemap submission.
+Verification dates, sitemap-submission dates, indexing results, and aggregate
+counts remain **UNKNOWN** for both consoles. No account setup or sitemap
+submission was performed. A future confirmed result requires owner review and
+sanitized result evidence from both consoles.
 
 ## Search-console owner actions
 
