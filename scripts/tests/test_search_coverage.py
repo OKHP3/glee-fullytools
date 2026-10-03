@@ -89,7 +89,7 @@ class SearchCoverageTests(unittest.TestCase):
     def test_current_repository_record_matches_sitemap_scope(self):
         current, issues = CHECKER.check(ROOT)
         self.assertEqual(issues, [])
-        self.assertEqual(current["url_count"], 61)
+        self.assertEqual(current["url_count"], 62)
         self.assertEqual(
             current["breakdown"],
             {
@@ -97,7 +97,7 @@ class SearchCoverageTests(unittest.TestCase):
                 "toolbox_hub": 1,
                 "branch": 7,
                 "tool-ette": 42,
-                "supporting": 10,
+                "supporting": 11,
             },
         )
 
