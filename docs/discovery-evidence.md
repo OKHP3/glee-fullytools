@@ -133,7 +133,12 @@ verification or submission until the owner supplies that evidence.
 The approved Organization identity URLs and their non-secret approval metadata
 live in the schema-checked
 [`organization-identity-approval.json`](organization-identity-approval.json)
-record. The homepage Organization JSON-LD must match that record exactly.
+record. The homepage Organization JSON-LD must match that record exactly. Any
+change to the approved URL set requires a later approval date and a renewed
+reviewer confirmation. The release validator compares against the last
+confirmed identity set in Git history and continues to block later releases
+until both approval fields have been refreshed; they may be updated in separate
+commits.
 
 These URLs were already present in the public structured data and are retained
 without adding any new social identity. No private account details are recorded
