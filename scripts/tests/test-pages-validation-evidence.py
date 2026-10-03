@@ -19,6 +19,7 @@ THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
+THEME_SUMMARY_STEP = "- name: Add verified browser theme results to run summary"
 DEPLOY_JOB = "  deploy:"
 RETENTION_CHECKER = ROOT / "scripts" / "check-pages-validation-retention.py"
 LATE_EVIDENCE_STEPS = (
@@ -161,14 +162,25 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
     """Require a release-level check of the uploaded validation artifact."""
     post_upload_position = workflow.find(POST_UPLOAD_JOB)
     verify_step_position = workflow.find(POST_UPLOAD_VERIFY_STEP)
+    summary_step_position = workflow.find(THEME_SUMMARY_STEP)
     deploy_position = workflow.find(DEPLOY_JOB)
-    if min(post_upload_position, verify_step_position, deploy_position) < 0:
+    if min(
+        post_upload_position,
+        verify_step_position,
+        summary_step_position,
+        deploy_position,
+    ) < 0:
         raise AssertionError(
-            "Pages workflow must download and verify the validation artifact in a separate job"
+            "Pages workflow must download, verify, and summarize the validation artifact in a separate job"
         )
-    if not post_upload_position < verify_step_position < deploy_position:
+    if not (
+        post_upload_position
+        < verify_step_position
+        < summary_step_position
+        < deploy_position
+    ):
         raise AssertionError(
-            "Downloaded validation evidence must be checked before the deploy job"
+            "Downloaded validation evidence must be checked and summarized before the deploy job"
         )
 
     job_block = workflow[post_upload_position:deploy_position]
@@ -256,6 +268,28 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
             "Downloaded theme evidence must verify browser versions in both reports and index"
         )
 
+    summary_block = workflow[summary_step_position:deploy_position]
+    if (
+        "steps.downloaded_theme_evidence.outcome == 'success'" not in summary_block
+        or "success()" not in summary_block
+        or "VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation"
+        not in summary_block
+        or "GITHUB_STEP_SUMMARY" not in summary_block
+    ):
+        raise AssertionError(
+            "Run summary must use the downloaded artifact and run only after its verification succeeds"
+        )
+    for browser in ("Chromium", "Firefox", "WebKit"):
+        if browser not in summary_block:
+            raise AssertionError(
+                f"Run summary must include the {browser} browser engine"
+            )
+    for case in ("Light preference", "Dark preference", "Disabled storage"):
+        if case not in summary_block:
+            raise AssertionError(
+                f"Run summary must include the {case} browser theme case"
+            )
+
     deploy_block = workflow[deploy_position:]
     deploy_needs = deploy_block.split("\n    runs-on:", 1)[0]
     if (
@@ -277,6 +311,74 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_uploaded_validation_artifact_is_checked_before_deployment(self):
         assert_uploaded_theme_evidence_contract(self.workflow)
+
+    def test_run_summary_lists_verified_engines_and_theme_cases(self):
+        block = self.workflow.split(THEME_SUMMARY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        code = textwrap.dedent(
+            block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "pages-validation" / "assets" / "audit"
+            audit.mkdir(parents=True)
+            summary_path = root / "step-summary.md"
+            for browser, _, version in browser_versions():
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(
+                        {
+                            "browser": browser,
+                            "browser_version": version,
+                            "status": "PASS",
+                            "cases": {
+                                "light": {},
+                                "dark": {},
+                                "disabled_storage": {},
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            env = {
+                **os.environ,
+                "VALIDATION_ARTIFACT_DIR": str(root / "pages-validation"),
+                "GITHUB_STEP_SUMMARY": str(summary_path),
+            }
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            for browser, label, version in browser_versions():
+                self.assertIn(f"| {label} | {version} | Pass | Pass | Pass |", summary)
+                self.assertIn(f"color-scheme-init-{browser}.json", summary)
+            for case in (
+                "Light preference",
+                "Dark preference",
+                "Disabled storage",
+            ):
+                self.assertIn(case, summary)
+
+            (audit / "color-scheme-init-webkit.json").unlink()
+            summary_path.unlink()
+            failed = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertIn(
+                "color-scheme-init-webkit.json: cannot read verified browser report",
+                failed.stderr,
+            )
+            self.assertFalse(summary_path.exists())
 
     def test_artifact_retention_checker_accepts_the_approved_period(self):
         artifact = {
@@ -365,7 +467,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_downloaded_artifact_check_fails_for_each_missing_browser_report(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
-        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1].split(
+            THEME_SUMMARY_STEP, 1
+        )[0]
         code = textwrap.dedent(
             block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
         )
@@ -403,7 +507,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_downloaded_artifact_check_fails_when_theme_index_is_missing(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
-        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1].split(
+            THEME_SUMMARY_STEP, 1
+        )[0]
         code = textwrap.dedent(
             block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
         )
@@ -430,7 +536,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_downloaded_artifact_check_accepts_all_browser_reports(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
-        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1].split(
+            THEME_SUMMARY_STEP, 1
+        )[0]
         code = textwrap.dedent(
             block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
         )
@@ -460,7 +568,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_downloaded_artifact_check_rejects_a_version_mismatch(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
-        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1]
+        block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1].split(
+            THEME_SUMMARY_STEP, 1
+        )[0]
         code = textwrap.dedent(
             block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
         )

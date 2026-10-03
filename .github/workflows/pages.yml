@@ -418,6 +418,7 @@ jobs:
           path: ${{ runner.temp }}/pages-validation
 
       - name: Verify downloaded browser theme reports
+        id: downloaded_theme_evidence
         env:
           VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
         run: |
@@ -500,6 +501,74 @@ jobs:
               "Verified all three browser theme reports and their indexed cases "
               "in the downloaded Pages validation artifact."
           )
+          PY
+
+      - name: Add verified browser theme results to run summary
+        if: ${{ success() && steps.downloaded_theme_evidence.outcome == 'success' }}
+        env:
+          VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          validation_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
+          audit_dir = validation_dir / "assets" / "audit"
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if not summary_path:
+              raise SystemExit("GITHUB_STEP_SUMMARY is not available")
+
+          browsers = (
+              ("chromium", "Chromium"),
+              ("firefox", "Firefox"),
+              ("webkit", "WebKit"),
+          )
+          required_cases = {"light", "dark", "disabled_storage"}
+          rows = [
+              "| Browser engine | Browser version | Light preference | "
+              "Dark preference | Disabled storage | Evidence |",
+              "| --- | --- | --- | --- | --- | --- |",
+          ]
+          for browser, label in browsers:
+              report_path = audit_dir / f"color-scheme-init-{browser}.json"
+              try:
+                  report = json.loads(report_path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError) as error:
+                  raise SystemExit(
+                      f"{report_path.name}: cannot read verified browser report ({error})"
+                  )
+              if report.get("browser") != browser or report.get("status") != "PASS":
+                  raise SystemExit(
+                      f"{report_path.name}: expected {browser} report with PASS status"
+                  )
+              version = report.get("browser_version")
+              if not isinstance(version, str) or not version.strip():
+                  raise SystemExit(
+                      f"{report_path.name}: browser_version must be a non-empty string"
+                  )
+              cases = report.get("cases")
+              if not isinstance(cases, dict) or not required_cases <= cases.keys():
+                  raise SystemExit(
+                      f"{report_path.name}: expected light, dark, and disabled_storage cases"
+                  )
+              rows.append(
+                  f"| {label} | {version.strip()} | Pass | Pass | Pass | "
+                  f"`{report_path.name}` |"
+              )
+
+          summary = [
+              "## Browser theme results",
+              "",
+              "The downloaded, verified Pages validation artifact passed these cases:",
+              "",
+              *rows,
+              "",
+              "Light and dark use saved preferences; disabled storage blocks local storage.",
+              "",
+          ]
+          with Path(summary_path).open("a", encoding="utf-8") as output:
+              output.write("\n".join(summary))
           PY
 
   deploy:
