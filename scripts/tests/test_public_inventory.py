@@ -30,6 +30,15 @@ ARTIFACT = importlib.util.module_from_spec(ARTIFACT_SPEC)
 ARTIFACT_SPEC.loader.exec_module(ARTIFACT)
 
 
+def write_minimal_artifact(root: Path, *, include_approval_record: bool = True) -> None:
+    (root / "release-provenance.json").write_text("{}", encoding="utf-8")
+    (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
+    if include_approval_record:
+        record = root / "docs" / "organization-identity-approval.json"
+        record.parent.mkdir(parents=True, exist_ok=True)
+        record.write_text("{}", encoding="utf-8")
+
+
 class PublicInventoryTests(unittest.TestCase):
     def test_active_scripts_share_public_url_derivation(self):
         self.assertEqual(scan_scripts(SCRIPTS), [])
@@ -184,9 +193,7 @@ def inverse(url, root):
     def test_artifact_policy_rejects_internal_paths(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
-            (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
-            (root / "docs").mkdir()
+            write_minimal_artifact(root)
             (root / "docs" / "private.md").write_text("no", encoding="utf-8")
             issues = ARTIFACT.check_artifact(root)
             self.assertTrue(any("forbidden artifact path" in issue for issue in issues))
@@ -194,15 +201,25 @@ def inverse(url, root):
     def test_artifact_policy_accepts_minimal_public_artifact(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
-            (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
+            write_minimal_artifact(root)
             self.assertEqual(ARTIFACT.check_artifact(root), [])
+
+    def test_artifact_policy_requires_organization_approval_record(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_minimal_artifact(root, include_approval_record=False)
+
+            issues = ARTIFACT.check_artifact(root)
+
+        self.assertIn(
+            "required public file missing: docs/organization-identity-approval.json",
+            issues,
+        )
 
     def test_artifact_policy_accepts_foundry_section(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "index.html").write_text("<!doctype html>", encoding="utf-8")
-            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
+            write_minimal_artifact(root)
             (root / "foundry").mkdir()
             (root / "foundry" / "index.html").write_text(
                 "<!doctype html>", encoding="utf-8"
@@ -212,7 +229,7 @@ def inverse(url, root):
     def test_artifact_policy_accepts_transition_section(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "release-provenance.json").write_text("{}", encoding="utf-8")
+            write_minimal_artifact(root)
             (root / "next-chapter").mkdir()
             (root / "next-chapter" / "index.html").write_text("<!doctype html>", encoding="utf-8")
             self.assertEqual(ARTIFACT.check_artifact(root), [])
