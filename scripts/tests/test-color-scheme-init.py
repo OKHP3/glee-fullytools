@@ -29,6 +29,15 @@ UTILITY_RECOVERY = {
     "/under-construction.html": ("main .btn-primary", "Browse live Tools", "/toolbox/"),
     "/offline.html": ("main .button-primary", "Return home", "/"),
 }
+UTILITY_ALTERNATE_RECOVERY = {
+    "/404.html": ("main .btn-quiet", "Open the Toolbox", "/toolbox/"),
+    "/under-construction.html": ("main .btn-quiet", "Return home", "/"),
+    "/offline.html": (
+        "main a[data-sparkle-link]",
+        "🎰 The Arcade is open — play Glee-fully Chai Chasers, starring Joey & Phoebe 🦋",
+        "/arcade/",
+    ),
+}
 FirstPaintStatus = Literal["observed", "unsupported", "unavailable_after_load"]
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_DIR) not in sys.path:
@@ -319,15 +328,19 @@ def storage_error_name(page) -> str:
     )
 
 
-def check_utility_recovery(page, base_url: str, route: str, page_errors) -> dict:
-    """Tab to the primary recovery action and activate it without mouse or focus()."""
-    selector, label, destination = UTILITY_RECOVERY[route]
+def check_utility_recovery(
+    page, base_url: str, route: str, page_errors, *, alternate: bool = False,
+) -> dict:
+    """Tab to a recovery action and activate it without mouse or focus()."""
+    actions = UTILITY_ALTERNATE_RECOVERY if alternate else UTILITY_RECOVERY
+    selector, label, destination = actions[route]
+    action_kind = "alternate" if alternate else "primary"
     action = page.locator(selector)
     assert action.count() == 1 and action.is_visible(), (
-        f"{route}: expected one visible primary recovery action"
+        f"{route}: expected one visible {action_kind} recovery action"
     )
     assert action.inner_text().strip() == label, (
-        f"{route}: primary recovery action no longer says {label!r}"
+        f"{route}: {action_kind} recovery action no longer says {label!r}"
     )
     expected_url = urljoin(base_url, destination)
     assert action.evaluate("element => element.href") == expected_url, (
@@ -460,6 +473,18 @@ def _check_disabled_storage_context(
                 check_utility_recovery(page, base_url, route, page_errors)
                 if route in UTILITY_ROUTES else None
             )
+            alternate_recovery = None
+            if route in UTILITY_ROUTES:
+                # Return to the source with fresh document focus; the primary
+                # action already navigated away. Keep the same denied-storage
+                # context and error listener active for the entire recovery flow.
+                response = page.goto(urljoin(base_url, route), wait_until="load")
+                assert response is not None and response.ok, (
+                    f"{route}: could not reload for alternate keyboard recovery"
+                )
+                alternate_recovery = check_utility_recovery(
+                    page, base_url, route, page_errors, alternate=True,
+                )
             results.append({
                 "route": route,
                 "page_type": route_type(route),
@@ -469,6 +494,8 @@ def _check_disabled_storage_context(
                 "bootstrap_events": event_evidence,
                 "timing": timing,
                 **({"recovery": recovery} if recovery is not None else {}),
+                **({"alternate_recovery": alternate_recovery}
+                   if alternate_recovery is not None else {}),
             })
         return {
             "routes": len(results),
