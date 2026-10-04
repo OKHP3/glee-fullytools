@@ -747,6 +747,126 @@ class ValidationReportTests(unittest.TestCase):
                     clock.now.call_args_list, [mock.call(timezone.utc)] * 2
                 )
 
+    def test_main_creates_next_day_evidence_for_same_validated_commit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            first_date = date(2026, 9, 10)
+            next_date = date(2026, 9, 11)
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            global_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": "fixture global failure",
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": "fixture global warning",
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            audit_dir = root / "assets" / "audit"
+            first_path = audit_dir / "validation-report-2026-09-10.json"
+            next_path = audit_dir / "validation-report-2026-09-11.json"
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    )
+                )
+                # main() adds the path; return fresh, identical findings each time.
+                page_check = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "check_page",
+                        side_effect=lambda *_: {
+                            "issues": ["fixture page issue"],
+                            "warnings": ["fixture page warning"],
+                        },
+                    )
+                )
+                identity_history = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
+                for name, value in global_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
+                    datetime(2026, 9, 11, 17, 5, tzinfo=timezone.utc),
+                ]
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = first_date
+
+                self.assertEqual(validate_site.main(validated_commit=validated_commit), 1)
+                original_bytes = first_path.read_bytes()
+                original_report = json.loads(original_bytes)
+                self.assertEqual(original_report["run_date"], first_date.isoformat())
+                self.assertEqual(original_report["generated_at"], "2026-09-10T17:00:00Z")
+                self.assertEqual(
+                    original_report["provenance"], {"validated_commit": validated_commit}
+                )
+                self.assertEqual(original_report["scanned"], 1)
+                self.assertEqual(
+                    original_report["pages"],
+                    [{
+                        "issues": ["fixture page issue"],
+                        "warnings": ["fixture page warning"],
+                        "path": "index.html",
+                    }],
+                )
+                self.assertEqual(
+                    original_report["global_issues"],
+                    ["CSS-lines drift: fixture global failure"],
+                )
+                self.assertEqual(
+                    original_report["global_warnings"],
+                    ["ADR index drift: fixture global warning"],
+                )
+                self.assertEqual(original_report["total_issues"], 2)
+                self.assertEqual(original_report["total_warnings"], 2)
+                self.assertFalse(next_path.exists())
+
+                calendar.today.return_value = next_date
+                self.assertEqual(validate_site.main(validated_commit=validated_commit), 1)
+                self.assertEqual(first_path.read_bytes(), original_bytes)
+                self.assertEqual(
+                    json.loads(next_path.read_bytes()),
+                    {
+                        **original_report,
+                        "run_date": next_date.isoformat(),
+                        "generated_at": "2026-09-11T17:05:00Z",
+                        "provenance": {"validated_commit": validated_commit},
+                    },
+                )
+                self.assertEqual(set(audit_dir.iterdir()), {first_path, next_path})
+                self.assertEqual(
+                    identity_history.call_args_list, [mock.call(validated_commit)] * 2
+                )
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 2,
+                )
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
+
     def test_unchanged_payload_preserves_report_bytes_and_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
             report_path = Path(directory) / "validation-report-2026-09-10.json"
