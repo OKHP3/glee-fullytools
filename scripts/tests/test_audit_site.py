@@ -209,6 +209,54 @@ class AuditSiteTests(unittest.TestCase):
             self.assert_unreadable_index_report(root, "Expecting value")
             self.assertEqual(index.read_text(encoding="utf-8"), content)
 
+    def test_unexpected_pages_shape_is_reported_without_aborting_audit(self) -> None:
+        for pages, shape in [({"url": "/about/"}, "dict"), (None, "NoneType")]:
+            with self.subTest(shape=shape), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                index = root / "assets" / "data" / "search-index.json"
+                index.parent.mkdir(parents=True)
+                content = json.dumps({"pages": pages})
+                index.write_text(content, encoding="utf-8")
+                page = root / "about" / "index.html"
+                console = io.StringIO()
+                finding = f"search-index.json has unexpected shape: {shape}"
+                with ExitStack() as stack:
+                    stack.enter_context(patch.object(_MODULE, "ROOT", root))
+                    self.assertEqual(_MODULE.reconcile_search_index([page]), [finding])
+                    stack.enter_context(patch.object(
+                        _MODULE, "iter_html_files", return_value=[page],
+                    ))
+                    stack.enter_context(patch.object(
+                        _MODULE, "audit_page", return_value=["Missing description"],
+                    ))
+                    stack.enter_context(patch.object(
+                        _MODULE, "reconcile_sitemap", return_value=([], [], []),
+                    ))
+                    freshness = stack.enter_context(patch.object(
+                        _MODULE, "check_search_index_freshness",
+                        return_value=["Fixture search-index freshness finding"],
+                    ))
+                    cruft = stack.enter_context(patch.object(
+                        _MODULE, "scan_repo_cruft", return_value=["Unexpected fixture file"],
+                    ))
+                    stack.enter_context(patch.object(
+                        _MODULE.sys, "argv", [str(_SCRIPT), "--report", "reports/audit.md"],
+                    ))
+                    stack.enter_context(patch.object(_MODULE.sys, "stdout", console))
+                    stack.enter_context(patch.object(_MODULE.sys, "stderr", io.StringIO()))
+                    self.assertEqual(_MODULE.main(), 0, "Unexpected-shape findings remain advisory")
+                    freshness.assert_called_once_with([page])
+                    cruft.assert_called_once_with()
+                report = (root / "reports" / "audit.md").read_text(encoding="utf-8")
+                self.assertIn(finding, report)
+                self.assertIn("Missing description", report)
+                self.assertIn("Fixture search-index freshness finding", report)
+                self.assertIn("Unexpected fixture file", report)
+                self.assertIn("**Total issues:** 4", report)
+                self.assertIn("Report written to reports/audit.md", console.getvalue())
+                self.assertIn("Total issues found: 4", console.getvalue())
+                self.assertEqual(index.read_text(encoding="utf-8"), content)
+
     def test_index_read_oserror_is_reported_without_aborting_audit(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
