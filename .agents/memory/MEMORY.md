@@ -12,6 +12,6 @@
 - [Browser QA environment](browser-qa-environment.md) — Playwright Chromium in this Nix runner needs the shared libgbm setup before importing Playwright.
 - [Local Git checkpoint safety](local-merge-history-normalization.md) — host sync or checkpoints can move branch refs; inspect the reflog and preserve unexpected commits before pushing.
 - [Release evidence contracts](release-evidence-contracts.md) — discovery outputs and Pages publication must share explicit, tested scope contracts.
-- [Post-merge generated artifacts](post-merge-generated-artifacts.md) — run discovery checks before idempotent cache-version sync so merges cannot leave the offline shell stale.
+- [Post-merge generated artifacts](post-merge-generated-artifacts.md) — rebuild search index around portfolio stats, then check discovery outputs before cache-version sync.
 - [Merge-marker-safe comments](merge-marker-safe-comments.md) — avoid HTML comment divider lines beginning with repeated equals signs; merge validation can mistake them for conflict markers.
 - [Search-console evidence boundary](search-console-evidence-boundary.md) — keep Google/Bing verification evidence separate from unrelated coding work; never infer success from analytics code or missing data.
