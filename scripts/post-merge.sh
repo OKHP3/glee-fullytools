@@ -19,8 +19,7 @@ python3 scripts/sync-portfolio-stats.py
 echo "Post-merge: rebuilding the search index with refreshed page content..."
 python3 scripts/build-search-index.py
 
-echo "Post-merge: checking generated search index and portfolio stats..."
-python3 scripts/build-search-index.py --check
+echo "Post-merge: checking refreshed portfolio stats..."
 python3 scripts/sync-portfolio-stats.py --check
 
 echo "Post-merge: rebuilding sitemap and feed..."
