@@ -17,7 +17,6 @@ CALLS = [
     "scripts/build-search-index.py",
     "scripts/sync-portfolio-stats.py",
     "scripts/build-search-index.py",
-    "scripts/build-search-index.py --check",
     "scripts/sync-portfolio-stats.py --check",
     "scripts/generate-sitemap.py",
     "scripts/generate-feed.py",
