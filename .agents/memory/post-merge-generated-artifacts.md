@@ -3,14 +3,17 @@ name: Post-merge generated artifacts
 description: Ordering and repair behavior for generated discovery outputs and offline-shell cache versions.
 ---
 
-The post-merge hook must validate committed discovery outputs before running the
-idempotent CSS, JavaScript, and service-worker cache-version synchronizer, then
-verify the synchronized state.
+The post-merge hook should rebuild discovery outputs in dependency order before
+validating them and running the idempotent CSS, JavaScript, and service-worker
+cache-version synchronizer. Rebuild the search index both before and after
+portfolio-stat synchronization because the stats patch changes indexable pages.
 
 **Why:** A merged content/evidence change can update the service-worker
-precache inputs without updating its generated cache name. A check-only step
-fails after the merge and gives no safe local repair path.
+precache inputs without updating its generated cache name. Portfolio-stat
+generation also changes page text consumed by search indexing, so checking the
+index only before stats synchronization leaves it stale for the next merge.
 
-**How to apply:** Keep sitemap/feed validation ahead of cache synchronization;
-allow the synchronization step to repair stale generated references, and retain
-the final check plus site validators so failures remain visible.
+**How to apply:** Generate search index, synchronize portfolio stats, then
+regenerate the search index before checking both outputs. Regenerate sitemap and
+feed from the refreshed index, check all discovery artifacts before cache
+synchronization, and retain final validators so failures remain visible.
