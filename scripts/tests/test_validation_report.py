@@ -1136,6 +1136,81 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(staged_path.read_bytes(), expected_staged.encode("utf-8"))
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence) | {staged_path})
 
+    def test_cleanup_failure_after_successful_save_propagates_and_preserves_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory) / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            original = {
+                "generated_at": "2026-09-10T17:00:00Z",
+                "run_date": "2026-09-10",
+                "total_issues": 0,
+            }
+            report_path.write_bytes((json.dumps(original) + "\n").encode("utf-8"))
+            historical_evidence = {
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+            }
+            for path, content in historical_evidence.items():
+                path.write_bytes(content)
+            changed = {
+                **original, "generated_at": "2026-09-10T17:05:00Z",
+                "total_issues": 1,
+            }
+            serialized = json.dumps(changed, indent=2, ensure_ascii=False).encode("utf-8")
+            cleanup_error = OSError("fixture cleanup failed after successful save")
+            staged_files = []
+            real_temporary_file = tempfile.NamedTemporaryFile
+            real_replace = Path.replace
+
+            def stage_file(*args, **kwargs):
+                temporary = real_temporary_file(*args, **kwargs)
+                staged_files.append(temporary)
+                self.assertEqual(Path(temporary.name).parent, audit_dir)
+                self.assertNotEqual(Path(temporary.name), report_path)
+                self.assertNotIn(Path(temporary.name), historical_evidence)
+                return temporary
+
+            def commit_report(path, destination):
+                self.assertEqual(destination, report_path)
+                self.assertTrue(staged_files[0].closed)
+                self.assertEqual(path.read_bytes(), serialized)
+                return real_replace(path, destination)
+
+            def fail_cleanup(path, *, missing_ok=False):
+                self.assertEqual(path, Path(staged_files[0].name))
+                self.assertTrue(missing_ok)
+                self.assertTrue(staged_files[0].closed)
+                # Replacement already committed the report and removed the staged path.
+                self.assertFalse(path.exists())
+                self.assertEqual(report_path.read_bytes(), serialized)
+                raise cleanup_error
+
+            with mock.patch.object(
+                validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+            ), mock.patch.object(
+                Path, "replace", autospec=True, side_effect=commit_report
+            ) as replace, mock.patch.object(
+                Path, "unlink", autospec=True, side_effect=fail_cleanup
+            ) as unlink:
+                with self.assertRaises(OSError) as raised:
+                    validate_site._write_validation_report(report_path, changed)
+                self.assertIs(raised.exception, cleanup_error)
+                self.assertIsNone(raised.exception.__cause__)
+                self.assertEqual(len(staged_files), 1)
+                staged_path = Path(staged_files[0].name)
+                replace.assert_called_once_with(staged_path, report_path)
+                unlink.assert_called_once_with(staged_path, missing_ok=True)
+
+            self.assertEqual(json.loads(report_path.read_bytes()), changed)
+            self.assertEqual(report_path.read_bytes(), serialized)
+            for path, content in historical_evidence.items():
+                self.assertEqual(path.read_bytes(), content)
+            self.assertFalse(staged_path.exists())
+            self.assertEqual(set(audit_dir.iterdir()), set(historical_evidence) | {report_path})
+
     def test_context_exit_failure_preserves_same_day_and_historical_evidence(self):
         for failure in ("flush", "close"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
