@@ -1150,7 +1150,7 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(path.read_bytes(), content)
             self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
-    def test_failed_save_leaves_first_report_absent_and_preserves_history(self):
+    def test_retry_after_failed_first_save_publishes_report_and_preserves_history(self):
         for failure in ("partial write", "replacement"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
                 audit_dir = Path(directory) / "assets" / "audit"
@@ -1236,6 +1236,21 @@ class ValidationReportTests(unittest.TestCase):
                 for path, content in historical_evidence.items():
                     self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(historical_evidence))
+
+                # Retry the same destination with all failure injections removed.
+                self.assertIs(
+                    validate_site._write_validation_report(report_path, report), True
+                )
+                self.assertEqual(report_path.read_bytes(), serialized.encode("utf-8"))
+                self.assertEqual(
+                    json.loads(report_path.read_text(encoding="utf-8")), report
+                )
+                self.assertFalse(staged_path.exists())
+                for path, content in historical_evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(
+                    set(audit_dir.iterdir()), set(historical_evidence) | {report_path}
+                )
 
     def test_failed_save_preserves_same_day_and_historical_evidence(self):
         for failure in ("partial write", "replacement"):
