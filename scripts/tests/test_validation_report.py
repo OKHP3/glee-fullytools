@@ -1252,7 +1252,7 @@ class ValidationReportTests(unittest.TestCase):
                     set(audit_dir.iterdir()), set(historical_evidence) | {report_path}
                 )
 
-    def test_failed_save_preserves_same_day_and_historical_evidence(self):
+    def test_retry_after_failed_update_replaces_same_day_and_preserves_history(self):
         for failure in ("partial write", "replacement"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
                 audit_dir = Path(directory) / "assets" / "audit"
@@ -1280,6 +1280,7 @@ class ValidationReportTests(unittest.TestCase):
                 save_error = OSError(f"fixture {failure} failed")
                 staged_paths = []
                 real_temporary_file = tempfile.NamedTemporaryFile
+                real_unlink = Path.unlink
 
                 def stage_file(*args, **kwargs):
                     temporary = real_temporary_file(*args, **kwargs)
@@ -1308,18 +1309,37 @@ class ValidationReportTests(unittest.TestCase):
                     validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
                 ), mock.patch.object(
                     Path, "replace", autospec=True, side_effect=fail_replace
-                ) as replace:
+                ) as replace, mock.patch.object(
+                    Path, "unlink", autospec=True, side_effect=real_unlink
+                ) as unlink:
                     with self.assertRaises(OSError) as raised:
                         validate_site._write_validation_report(report_path, changed)
                     self.assertIs(raised.exception, save_error)
+                    self.assertEqual(len(staged_paths), 1)
+                    staged_path = staged_paths[0]
+                    unlink.assert_called_once_with(staged_path, missing_ok=True)
                     if failure == "partial write":
                         replace.assert_not_called()
                     else:
-                        replace.assert_called_once_with(staged_paths[0], report_path)
+                        replace.assert_called_once_with(staged_path, report_path)
 
-                self.assertEqual(len(staged_paths), 1)
+                self.assertFalse(staged_path.exists())
                 for path, content in evidence.items():
                     self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+
+                # Retry the changed payload at the same destination without injections.
+                self.assertIs(
+                    validate_site._write_validation_report(report_path, changed), True
+                )
+                self.assertEqual(report_path.read_bytes(), serialized.encode("utf-8"))
+                self.assertEqual(
+                    json.loads(report_path.read_text(encoding="utf-8")), changed
+                )
+                self.assertFalse(staged_path.exists())
+                for path, content in evidence.items():
+                    if path != report_path:
+                        self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
     def test_cleanup_failure_keeps_original_save_error_and_preserves_evidence(self):
