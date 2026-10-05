@@ -939,33 +939,34 @@ class ValidationReportTests(unittest.TestCase):
                 output.reset_mock()
                 calendar.today.return_value = date(2026, 9, 11)
                 write_error = OSError("fixture evidence save failed")
-                real_write_text = Path.write_text
+                real_replace = Path.replace
 
-                def fail_later_report(path, content, *args, **kwargs):
-                    if path == next_path:
+                def fail_later_report(path, destination):
+                    if destination == next_path:
+                        self.assertEqual(
+                            json.loads(path.read_text(encoding="utf-8")),
+                            {
+                                **original_report,
+                                "run_date": "2026-09-11",
+                                "generated_at": "2026-09-11T17:05:00Z",
+                            },
+                        )
                         raise write_error
-                    return real_write_text(path, content, *args, **kwargs)
+                    return real_replace(path, destination)
 
                 # Exercise the real report writer, failing only its later file save.
                 with mock.patch.object(
-                    Path, "write_text", autospec=True, side_effect=fail_later_report
+                    Path, "replace", autospec=True, side_effect=fail_later_report
                 ) as save:
                     with self.assertRaises(OSError) as raised:
                         validate_site.main(validated_commit=validated_commit)
                     self.assertIs(raised.exception, write_error)
                     save.assert_called_once()
-                    attempted_path, serialized = save.call_args.args
+                    staged_path, attempted_path = save.call_args.args
                     self.assertEqual(attempted_path, next_path)
-                    attempted_report = json.loads(serialized)
-                    self.assertEqual(
-                        attempted_report,
-                        {
-                            **original_report,
-                            "run_date": "2026-09-11",
-                            "generated_at": "2026-09-11T17:05:00Z",
-                        },
-                    )
-                    self.assertEqual(save.call_args.kwargs, {"encoding": "utf-8"})
+                    self.assertEqual(staged_path.parent, audit_dir)
+                    self.assertNotEqual(staged_path, next_path)
+                    self.assertEqual(save.call_args.kwargs, {})
 
                 output.assert_not_called()
                 self.assertEqual(first_path.read_bytes(), original_bytes)
@@ -979,6 +980,76 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
+
+    def test_failed_save_preserves_same_day_and_historical_evidence(self):
+        for failure in ("partial write", "replacement"):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                original = {
+                    "generated_at": "2026-09-10T17:00:00Z",
+                    "run_date": "2026-09-10",
+                    "total_issues": 0,
+                }
+                evidence = {
+                    report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                    audit_dir / "validation-report-2026-09-09.json":
+                        b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                    audit_dir / "validation-report-2026-09-08.json":
+                        b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                }
+                for path, content in evidence.items():
+                    path.write_bytes(content)
+                changed = {
+                    **original, "generated_at": "2026-09-10T17:05:00Z",
+                    "total_issues": 1,
+                }
+                serialized = json.dumps(changed, indent=2, ensure_ascii=False)
+                save_error = OSError(f"fixture {failure} failed")
+                staged_paths = []
+                real_temporary_file = tempfile.NamedTemporaryFile
+
+                def stage_file(*args, **kwargs):
+                    temporary = real_temporary_file(*args, **kwargs)
+                    staged_path = Path(temporary.name)
+                    staged_paths.append(staged_path)
+                    self.assertEqual(staged_path.parent, audit_dir)
+                    self.assertNotIn(staged_path, evidence)
+                    if failure == "partial write":
+                        real_write = temporary.write
+
+                        def partial_write(content):
+                            real_write(content[:20])
+                            temporary.flush()
+                            self.assertEqual(staged_path.read_bytes(), content[:20].encode("utf-8"))
+                            raise save_error
+
+                        temporary.write = mock.Mock(side_effect=partial_write)
+                    return temporary
+
+                def fail_replace(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertEqual(path.read_bytes(), serialized.encode("utf-8"))
+                    raise save_error
+
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+                ), mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=fail_replace
+                ) as replace:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site._write_validation_report(report_path, changed)
+                    self.assertIs(raised.exception, save_error)
+                    if failure == "partial write":
+                        replace.assert_not_called()
+                    else:
+                        replace.assert_called_once_with(staged_paths[0], report_path)
+
+                self.assertEqual(len(staged_paths), 1)
+                for path, content in evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
     def test_unchanged_payload_preserves_report_bytes_and_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
