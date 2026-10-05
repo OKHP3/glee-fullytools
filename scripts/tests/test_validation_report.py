@@ -1003,6 +1003,88 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
+    def test_context_exit_failure_preserves_same_day_and_historical_evidence(self):
+        for failure in ("flush", "close"):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                original = {
+                    "generated_at": "2026-09-10T17:00:00Z",
+                    "run_date": "2026-09-10",
+                    "total_issues": 0,
+                }
+                evidence = {
+                    report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                    audit_dir / "validation-report-2026-09-09.json":
+                        b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                    audit_dir / "validation-report-2026-09-08.json":
+                        b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                }
+                for path, content in evidence.items():
+                    path.write_bytes(content)
+                changed = {
+                    **original, "generated_at": "2026-09-10T17:05:00Z",
+                    "total_issues": 1,
+                }
+                serialized = json.dumps(changed, indent=2, ensure_ascii=False)
+                save_error = OSError(f"fixture {failure} failed on context exit")
+                staged_files = []
+                real_temporary_file = tempfile.NamedTemporaryFile
+
+                class ExitFailureFile:
+                    """Use real staging I/O, failing only during context exit."""
+
+                    def __init__(self, temporary):
+                        self.temporary = temporary
+                        self.name = temporary.name
+                        self.write = mock.Mock(wraps=temporary.write)
+                        self.flush = mock.Mock(
+                            side_effect=save_error if failure == "flush" else temporary.flush
+                        )
+                        self.close = mock.Mock(side_effect=self.close_file)
+
+                    def close_file(self):
+                        # Release the real handle even when simulating a close error.
+                        self.temporary.close()
+                        if failure == "close":
+                            raise save_error
+
+                    def __enter__(self):
+                        return self
+
+                    def __exit__(self, exc_type, exc_value, traceback):
+                        try:
+                            self.flush()
+                        finally:
+                            self.close()
+
+                def stage_file(*args, **kwargs):
+                    staged = ExitFailureFile(real_temporary_file(*args, **kwargs))
+                    staged_files.append(staged)
+                    self.assertEqual(Path(staged.name).parent, audit_dir)
+                    self.assertNotIn(Path(staged.name), evidence)
+                    return staged
+
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+                ), mock.patch.object(Path, "replace", autospec=True) as replace:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site._write_validation_report(report_path, changed)
+                    self.assertIs(raised.exception, save_error)
+                    replace.assert_not_called()
+
+                self.assertEqual(len(staged_files), 1)
+                staged = staged_files[0]
+                staged.write.assert_called_once_with(serialized)
+                staged.flush.assert_called_once_with()
+                staged.close.assert_called_once_with()
+                self.assertTrue(staged.temporary.closed)
+                self.assertFalse(Path(staged.name).exists())
+                for path, content in evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+
     def test_unchanged_payload_preserves_report_bytes_and_timestamp(self):
         with tempfile.TemporaryDirectory() as directory:
             report_path = Path(directory) / "validation-report-2026-09-10.json"
