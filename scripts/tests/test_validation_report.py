@@ -1204,6 +1204,93 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(path.read_bytes(), content)
             self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
+    def test_failed_save_leaves_first_report_absent_and_preserves_history(self):
+        for failure in ("partial write", "replacement"):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                historical_evidence = {
+                    audit_dir / "validation-report-2026-09-09.json":
+                        b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                    audit_dir / "validation-report-2026-09-08.json":
+                        b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                }
+                for path, content in historical_evidence.items():
+                    path.write_bytes(content)
+                report = {
+                    "generated_at": "2026-09-10T17:00:00Z",
+                    "run_date": "2026-09-10",
+                    "total_issues": 0,
+                }
+                serialized = json.dumps(report, indent=2, ensure_ascii=False)
+                save_error = OSError(f"fixture first-report {failure} failed")
+                staged_files = []
+                real_temporary_file = tempfile.NamedTemporaryFile
+                real_unlink = Path.unlink
+                self.assertFalse(report_path.exists())
+
+                def stage_file(*args, **kwargs):
+                    temporary = real_temporary_file(*args, **kwargs)
+                    staged_files.append(temporary)
+                    staged_path = Path(temporary.name)
+                    self.assertEqual(staged_path.parent, audit_dir)
+                    self.assertNotIn(staged_path, historical_evidence)
+                    self.assertNotEqual(staged_path, report_path)
+                    if failure == "partial write":
+                        real_write = temporary.write
+
+                        def partial_write(content):
+                            self.assertEqual(content, serialized)
+                            real_write(content[:20])
+                            temporary.flush()
+                            self.assertEqual(
+                                staged_path.read_bytes(), serialized[:20].encode("utf-8")
+                            )
+                            self.assertFalse(report_path.exists())
+                            raise save_error
+
+                        temporary.write = mock.Mock(side_effect=partial_write)
+                    return temporary
+
+                def fail_replace(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertTrue(staged_files[0].closed)
+                    self.assertEqual(path.read_bytes(), serialized.encode("utf-8"))
+                    self.assertFalse(report_path.exists())
+                    raise save_error
+
+                def cleanup(path, *, missing_ok=False):
+                    self.assertEqual(path, Path(staged_files[0].name))
+                    self.assertTrue(staged_files[0].closed)
+                    self.assertTrue(path.exists())
+                    return real_unlink(path, missing_ok=missing_ok)
+
+                # Exercise real staging and cleanup; only the save operation fails.
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+                ), mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=fail_replace
+                ) as replace, mock.patch.object(
+                    Path, "unlink", autospec=True, side_effect=cleanup
+                ) as unlink:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site._write_validation_report(report_path, report)
+                    self.assertIs(raised.exception, save_error)
+                    self.assertEqual(len(staged_files), 1)
+                    staged_path = Path(staged_files[0].name)
+                    unlink.assert_called_once_with(staged_path, missing_ok=True)
+                    if failure == "partial write":
+                        replace.assert_not_called()
+                    else:
+                        replace.assert_called_once_with(staged_path, report_path)
+
+                self.assertFalse(report_path.exists())
+                self.assertFalse(staged_path.exists())
+                for path, content in historical_evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(set(audit_dir.iterdir()), set(historical_evidence))
+
     def test_failed_save_preserves_same_day_and_historical_evidence(self):
         for failure in ("partial write", "replacement"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
