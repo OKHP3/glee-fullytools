@@ -111,6 +111,7 @@ def _write_validation_report(out: Path, report: dict) -> bool:
             return False
 
     temporary_path = None
+    save_error = None
     try:
         # Close (and flush) the staged file before committing it on the same filesystem.
         with tempfile.NamedTemporaryFile(
@@ -120,9 +121,18 @@ def _write_validation_report(out: Path, report: dict) -> bool:
             temporary_path = Path(temporary.name)
             temporary.write(serialized)
         temporary_path.replace(out)
+    except OSError as error:
+        save_error = error
+        raise
     finally:
         if temporary_path is not None:
-            temporary_path.unlink(missing_ok=True)
+            try:
+                temporary_path.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                if save_error is not None:
+                    # Keep the save failure primary, but expose failed cleanup too.
+                    raise save_error from cleanup_error
+                raise
     return True
 
 
