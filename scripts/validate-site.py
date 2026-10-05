@@ -47,6 +47,7 @@ import argparse
 import json
 import re
 import sys
+import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -108,7 +109,19 @@ def _write_validation_report(out: Path, report: dict) -> bool:
         if existing_payload == report_payload:
             return False
 
-    out.write_text(serialized, encoding="utf-8")
+    temporary_path = None
+    try:
+        # Close (and flush) the staged file before committing it on the same filesystem.
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=out.parent,
+            prefix=f".{out.name}.", suffix=".tmp", delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            temporary.write(serialized)
+        temporary_path.replace(out)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
     return True
 
 
