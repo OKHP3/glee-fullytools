@@ -1003,6 +1003,91 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
+    def test_cleanup_failure_keeps_original_save_error_and_preserves_evidence(self):
+        for failure in ("partial write", "replacement"):
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                original = {
+                    "generated_at": "2026-09-10T17:00:00Z",
+                    "run_date": "2026-09-10",
+                    "total_issues": 0,
+                }
+                evidence = {
+                    report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                    audit_dir / "validation-report-2026-09-09.json":
+                        b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                    audit_dir / "validation-report-2026-09-08.json":
+                        b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                }
+                for path, content in evidence.items():
+                    path.write_bytes(content)
+                changed = {
+                    **original, "generated_at": "2026-09-10T17:05:00Z",
+                    "total_issues": 1,
+                }
+                serialized = json.dumps(changed, indent=2, ensure_ascii=False)
+                save_error = OSError(f"fixture {failure} failed")
+                cleanup_error = OSError("fixture staged-file cleanup failed")
+                staged_files = []
+                real_temporary_file = tempfile.NamedTemporaryFile
+
+                def stage_file(*args, **kwargs):
+                    temporary = real_temporary_file(*args, **kwargs)
+                    staged_files.append(temporary)
+                    staged_path = Path(temporary.name)
+                    self.assertEqual(staged_path.parent, audit_dir)
+                    self.assertNotIn(staged_path, evidence)
+                    if failure == "partial write":
+                        real_write = temporary.write
+
+                        def partial_write(content):
+                            real_write(content[:20])
+                            temporary.flush()
+                            raise save_error
+
+                        temporary.write = mock.Mock(side_effect=partial_write)
+                    return temporary
+
+                def fail_replace(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertEqual(path.read_text(encoding="utf-8"), serialized)
+                    raise save_error
+
+                def fail_cleanup(path, *, missing_ok=False):
+                    self.assertEqual(path, Path(staged_files[0].name))
+                    self.assertTrue(missing_ok)
+                    self.assertTrue(staged_files[0].closed)
+                    raise cleanup_error
+
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+                ), mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=fail_replace
+                ) as replace, mock.patch.object(
+                    Path, "unlink", autospec=True, side_effect=fail_cleanup
+                ) as unlink:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site._write_validation_report(report_path, changed)
+                    # The save failure is primary; cleanup remains explicitly chained.
+                    self.assertIs(raised.exception, save_error)
+                    self.assertIs(raised.exception.__cause__, cleanup_error)
+                    self.assertEqual(len(staged_files), 1)
+                    staged_path = Path(staged_files[0].name)
+                    unlink.assert_called_once_with(staged_path, missing_ok=True)
+                    if failure == "partial write":
+                        replace.assert_not_called()
+                    else:
+                        replace.assert_called_once_with(staged_path, report_path)
+
+                for path, content in evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                # Failed cleanup leaves only the staged file, never damaged evidence.
+                expected_staged = serialized[:20] if failure == "partial write" else serialized
+                self.assertEqual(staged_path.read_text(encoding="utf-8"), expected_staged)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence) | {staged_path})
+
     def test_context_exit_failure_preserves_same_day_and_historical_evidence(self):
         for failure in ("flush", "close"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
