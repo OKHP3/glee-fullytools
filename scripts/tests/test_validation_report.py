@@ -1191,7 +1191,7 @@ class ValidationReportTests(unittest.TestCase):
                             real_write(content[:20])
                             temporary.flush()
                             self.assertEqual(
-                                staged_path.read_bytes(), serialized[:20].encode("utf-8")
+                                staged_path.read_text(encoding="utf-8"), serialized[:20]
                             )
                             self.assertFalse(report_path.exists())
                             raise save_error
@@ -1202,7 +1202,7 @@ class ValidationReportTests(unittest.TestCase):
                 def fail_replace(path, destination):
                     self.assertEqual(destination, report_path)
                     self.assertTrue(staged_files[0].closed)
-                    self.assertEqual(path.read_bytes(), serialized.encode("utf-8"))
+                    self.assertEqual(path.read_text(encoding="utf-8"), serialized)
                     self.assertFalse(report_path.exists())
                     raise save_error
 
