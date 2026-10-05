@@ -1114,6 +1114,49 @@ class ValidationReportTests(unittest.TestCase):
                     set(audit_dir.iterdir()), set(historical_evidence) | {report_path}
                 )
 
+    def test_temporary_file_creation_failure_leaves_first_report_absent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory) / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            historical_evidence = {
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+            }
+            for path, content in historical_evidence.items():
+                path.write_bytes(content)
+            report = {
+                "generated_at": "2026-09-10T17:00:00Z",
+                "run_date": "2026-09-10",
+                "total_issues": 0,
+            }
+            self.assertFalse(report_path.exists())
+            creation_error = OSError("fixture first-report temporary-file creation failed")
+
+            with mock.patch.object(
+                validate_site.tempfile, "NamedTemporaryFile", side_effect=creation_error
+            ) as create_temporary, mock.patch.object(
+                Path, "replace", autospec=True
+            ) as replace, mock.patch.object(
+                Path, "unlink", autospec=True
+            ) as unlink:
+                with self.assertRaises(OSError) as raised:
+                    validate_site._write_validation_report(report_path, report)
+                self.assertIs(raised.exception, creation_error)
+                create_temporary.assert_called_once_with(
+                    mode="w", encoding="utf-8", dir=audit_dir,
+                    prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                )
+                replace.assert_not_called()
+                unlink.assert_not_called()
+
+            self.assertFalse(report_path.exists())
+            for path, content in historical_evidence.items():
+                self.assertEqual(path.read_bytes(), content)
+            self.assertEqual(set(audit_dir.iterdir()), set(historical_evidence))
+
     def test_temporary_file_creation_failure_preserves_existing_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
             audit_dir = Path(directory) / "assets" / "audit"
