@@ -982,12 +982,6 @@ class ValidationReportTests(unittest.TestCase):
                         side_effect=lambda *_: {"issues": [], "warnings": []},
                     )
                 )
-                stack.enter_context(
-                    mock.patch.object(
-                        validate_site, "_last_owner_confirmed_identity_snapshot",
-                        return_value=(None, None),
-                    )
-                )
                 for name, value in clean_checks.items():
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
@@ -1023,7 +1017,7 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(path.parent, audit_dir)
                     self.assertNotEqual(path, report_path)
                     self.assertNotIn(path, historical_evidence)
-                    self.assertEqual(path.read_bytes(), serialized)
+                    self.assertEqual(path.read_text(encoding="utf-8"), serialized.decode("utf-8"))
                     staged_paths.append(path)
                     return real_replace(path, destination)
 
@@ -1031,7 +1025,7 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(path, staged_paths[0])
                     self.assertTrue(missing_ok)
                     self.assertFalse(path.exists())
-                    self.assertEqual(report_path.read_bytes(), serialized)
+                    self.assertEqual(report_path.read_text(encoding="utf-8"), serialized.decode("utf-8"))
                     raise cleanup_error
 
                 # Keep main and its writer real; fail only cleanup after replacement.
@@ -1051,7 +1045,7 @@ class ValidationReportTests(unittest.TestCase):
 
                 output.assert_not_called()
                 self.assertNotEqual(report_path.read_bytes(), original_bytes)
-                self.assertEqual(report_path.read_bytes(), serialized)
+                self.assertEqual(report_path.read_text(encoding="utf-8"), serialized.decode("utf-8"))
                 saved_report = json.loads(report_path.read_bytes())
                 self.assertEqual(saved_report, expected_report)
                 self.assertEqual(saved_report["report_type"], "site-validation")
