@@ -933,6 +933,139 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
 
+    def test_main_propagates_cleanup_failure_after_successful_report_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            page_path = root / "index.html"
+            page_path.write_text("<!doctype html>", encoding="utf-8")
+            audit_dir = root / "assets" / "audit"
+            audit_dir.mkdir()
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            historical_evidence = {
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+            }
+            for path, content in historical_evidence.items():
+                path.write_bytes(content)
+            original_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            changed_commit = "123456789abcdef0123456789abcdef0123456789"
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": None,
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "check_page",
+                        side_effect=lambda *_: {"issues": [], "warnings": []},
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
+                    datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc),
+                ]
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = date(2026, 9, 10)
+
+                self.assertEqual(validate_site.main(validated_commit=original_commit), 0)
+                original_bytes = report_path.read_bytes()
+                original_report = json.loads(original_bytes)
+                expected_report = {
+                    **original_report,
+                    "generated_at": "2026-09-10T17:05:00Z",
+                    "provenance": {"validated_commit": changed_commit},
+                }
+                serialized = json.dumps(
+                    expected_report, indent=2, ensure_ascii=False
+                ).encode("utf-8")
+                output.reset_mock()
+                cleanup_error = OSError("fixture cleanup failed after successful save")
+                real_replace = Path.replace
+                staged_paths = []
+
+                def commit_report(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertEqual(path.parent, audit_dir)
+                    self.assertNotEqual(path, report_path)
+                    self.assertNotIn(path, historical_evidence)
+                    self.assertEqual(path.read_bytes(), serialized)
+                    staged_paths.append(path)
+                    return real_replace(path, destination)
+
+                def fail_cleanup(path, *, missing_ok=False):
+                    self.assertEqual(path, staged_paths[0])
+                    self.assertTrue(missing_ok)
+                    self.assertFalse(path.exists())
+                    self.assertEqual(report_path.read_bytes(), serialized)
+                    raise cleanup_error
+
+                # Keep main and its writer real; fail only cleanup after replacement.
+                with mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=commit_report
+                ) as replace, mock.patch.object(
+                    Path, "unlink", autospec=True, side_effect=fail_cleanup
+                ) as unlink:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site.main(validated_commit=changed_commit)
+                    self.assertIs(raised.exception, cleanup_error)
+                    self.assertIsNone(raised.exception.__cause__)
+                    self.assertEqual(len(staged_paths), 1)
+                    staged_path = staged_paths[0]
+                    replace.assert_called_once_with(staged_path, report_path)
+                    unlink.assert_called_once_with(staged_path, missing_ok=True)
+
+                output.assert_not_called()
+                self.assertNotEqual(report_path.read_bytes(), original_bytes)
+                self.assertEqual(report_path.read_bytes(), serialized)
+                saved_report = json.loads(report_path.read_bytes())
+                self.assertEqual(saved_report, expected_report)
+                self.assertEqual(saved_report["report_type"], "site-validation")
+                self.assertEqual(saved_report["run_date"], "2026-09-10")
+                self.assertEqual(saved_report["scanned"], 1)
+                self.assertEqual(saved_report["total_issues"], 0)
+                self.assertEqual(saved_report["total_warnings"], 0)
+                for path, content in historical_evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                self.assertFalse(staged_path.exists())
+                self.assertEqual(
+                    set(audit_dir.iterdir()), set(historical_evidence) | {report_path}
+                )
+
     def test_failed_save_preserves_same_day_and_historical_evidence(self):
         for failure in ("partial write", "replacement"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
