@@ -1021,6 +1021,170 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
 
+    def test_main_recovers_after_partial_first_report_write_on_same_day(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            audit_dir = root / "assets" / "audit"
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": None,
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            expected_report = {
+                "generated_at": "2026-09-10T17:00:00Z",
+                "run_date": "2026-09-10",
+                "report_type": "site-validation",
+                "provenance": {"validated_commit": validated_commit},
+                "scanned": 1,
+                "total_issues": 0,
+                "total_warnings": 0,
+                "pages": [{"issues": [], "warnings": [], "path": "index.html"}],
+                "global_issues": [],
+                "global_warnings": [],
+                "organization_identity_issues": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    )
+                )
+                page_check = stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "check_page",
+                        side_effect=lambda *_: {"issues": [], "warnings": []},
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
+                    datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc),
+                ]
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = date(2026, 9, 10)
+                save_error = OSError("fixture first-report partial write failed")
+                real_temporary_file = tempfile.NamedTemporaryFile
+                staged_files = []
+                self.assertFalse(audit_dir.exists())
+
+                def stage_partial_file(*args, **kwargs):
+                    temporary = real_temporary_file(*args, **kwargs)
+                    staged_files.append(temporary)
+                    staged_path = Path(temporary.name)
+                    self.assertEqual(staged_path.parent, audit_dir)
+                    self.assertNotEqual(staged_path, report_path)
+                    real_write = temporary.write
+
+                    def partial_write(content):
+                        self.assertEqual(json.loads(content), expected_report)
+                        self.assertEqual(
+                            content, json.dumps(expected_report, indent=2, ensure_ascii=False)
+                        )
+                        real_write(content[:20])
+                        temporary.flush()
+                        self.assertEqual(
+                            staged_path.read_text(encoding="utf-8"), content[:20]
+                        )
+                        self.assertFalse(report_path.exists())
+                        self.assertEqual(set(audit_dir.iterdir()), {staged_path})
+                        raise save_error
+
+                    temporary.write = mock.Mock(side_effect=partial_write)
+                    return temporary
+
+                # Keep main, JSON serialization and file creation real; only the
+                # first staged write fails after a prefix reaches the filesystem.
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile",
+                    side_effect=stage_partial_file,
+                ) as staging:
+                    with self.assertRaises(OSError) as raised:
+                        validate_site.main(validated_commit=validated_commit)
+                    self.assertIs(raised.exception, save_error)
+                    staging.assert_called_once_with(
+                        mode="w", encoding="utf-8", dir=audit_dir,
+                        prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                    )
+                self.assertEqual(len(staged_files), 1)
+                staged_file = staged_files[0]
+                staged_file.write.assert_called_once()
+                self.assertTrue(staged_file.closed)
+                self.assertFalse(Path(staged_file.name).exists())
+                self.assertFalse(report_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), set())
+                output.assert_not_called()
+
+                # Retry the first-ever report on the same day with the injection
+                # removed. A fresh warning must survive real UTF-8 serialization.
+                finding = "retry warning with valid Unicode: café"
+                page_check.side_effect = lambda *_: {
+                    "issues": [], "warnings": [finding]
+                }
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile",
+                    wraps=real_temporary_file,
+                ) as staging:
+                    self.assertEqual(
+                        validate_site.main(validated_commit=validated_commit), 0
+                    )
+                    staging.assert_called_once_with(
+                        mode="w", encoding="utf-8", dir=audit_dir,
+                        prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                    )
+                saved_bytes = report_path.read_bytes()
+                self.assertEqual(
+                    json.loads(saved_bytes),
+                    {
+                        **expected_report,
+                        "generated_at": "2026-09-10T17:05:00Z",
+                        "total_warnings": 1,
+                        "pages": [{
+                            "issues": [], "warnings": [finding], "path": "index.html",
+                        }],
+                    },
+                )
+                self.assertIn(finding.encode("utf-8"), saved_bytes)
+                self.assertFalse(Path(staged_file.name).exists())
+                self.assertEqual(set(audit_dir.iterdir()), {report_path})
+                output.assert_any_call("  issues:   0")
+                output.assert_any_call("  warnings: 1")
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 2,
+                )
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
+
     def test_main_recovers_after_unencodable_finding_and_preserves_history(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
