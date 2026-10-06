@@ -1349,7 +1349,10 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(len(encoding_errors), 1)
                 self.assertIs(raised.exception, encoding_errors[0])
                 self.assertEqual(raised.exception.encoding, "utf-8")
-                self.assertEqual(raised.exception.object, serialized)
+                # Windows text streams translate LF to CRLF before encoding.
+                self.assertEqual(
+                    raised.exception.object.replace("\r\n", "\n"), serialized
+                )
                 staged_path = Path(staged_files[0].name)
                 staged_files[0].write.assert_called_once_with(serialized)
                 replace.assert_not_called()
