@@ -14,8 +14,12 @@ HOOK = Path(__file__).resolve().parents[1] / "post-merge.sh"
 GIT_BASH = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Git/bin/bash.exe"
 BASH = str(GIT_BASH) if os.name == "nt" and GIT_BASH.is_file() else shutil.which("bash")
 CALLS = [
-    "scripts/build-search-index.py --check",
+    "scripts/build-search-index.py",
+    "scripts/sync-portfolio-stats.py",
+    "scripts/build-search-index.py",
     "scripts/sync-portfolio-stats.py --check",
+    "scripts/generate-sitemap.py",
+    "scripts/generate-feed.py",
     "scripts/generate-sitemap.py --check",
     "scripts/generate-feed.py --check",
     "scripts/sync-css-version.py",
@@ -27,9 +31,11 @@ CALLS = [
 REQUIRED = ("index.html", "assets/css/theme.css", "assets/js/app.js")
 SUCCESS = "Post-merge: all checks passed."
 SHELL = """
+CALL_NUMBER=0
 python3() {
   printf 'CALL|%s\\n' "$*"
-  if [ "$*" = "$FAIL_CALL" ]; then return 23; fi
+  CALL_NUMBER=$((CALL_NUMBER + 1))
+  if [ "$CALL_NUMBER" -eq "$FAIL_AT" ]; then return 23; fi
   return 0
 }
 tree() { echo 'Unexpected tree command' >&2; return 97; }
@@ -39,7 +45,7 @@ source ./post-merge.sh
 
 
 class PostMergeTests(unittest.TestCase):
-    def run_hook(self, fail_call="", missing=None):
+    def run_hook(self, fail_at=0, missing=None):
         self.assertIsNotNone(BASH, "Bash is required to exercise the shell hook")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -51,7 +57,7 @@ class PostMergeTests(unittest.TestCase):
                     path.touch()
             result = subprocess.run(
                 [BASH, "-c", SHELL], cwd=root,
-                env={**os.environ, "FAIL_CALL": fail_call},
+                env={**os.environ, "FAIL_AT": str(fail_at)},
                 capture_output=True, text=True, timeout=15,
             )
         calls = [line.removeprefix("CALL|") for line in result.stdout.splitlines()
@@ -68,7 +74,7 @@ class PostMergeTests(unittest.TestCase):
     def test_each_failed_check_stops_later_checks_and_success(self):
         for index, call in enumerate(CALLS):
             with self.subTest(call=call):
-                result, calls = self.run_hook(fail_call=call)
+                result, calls = self.run_hook(fail_at=index + 1)
                 self.assertEqual(result.returncode, 23, result.stdout + result.stderr)
                 self.assertEqual(calls, CALLS[:index + 1])
                 self.assertNotIn(SUCCESS, result.stdout)

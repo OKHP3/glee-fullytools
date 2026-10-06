@@ -24,6 +24,7 @@ class PublicArtifactTests(unittest.TestCase):
         self.write(".nojekyll", "")
         self.write("CNAME", "glee-fully.tools\n")
         self.write("index.html", '<a href="/search/">Search</a><script src="/assets/js/app.js"></script>')
+        self.write("docs/organization-identity-approval.json", '{"schema": 1}')
         self.write("search/index.html", '<h1>Search</h1>')
         self.write("assets/js/app.js", "// public runtime")
         self.write("site.webmanifest", '{"icons": []}')
@@ -48,6 +49,9 @@ class PublicArtifactTests(unittest.TestCase):
         self.stage()
         self.assertTrue((self.output / ".well-known/security.txt").is_file())
         self.assertTrue((self.output / ".nojekyll").is_file())
+        self.assertTrue(
+            (self.output / "docs/organization-identity-approval.json").is_file()
+        )
         self.assertTrue((self.output / "next-chapter/index.html").is_file())
         self.assertFalse((self.output / "assets/templates").exists())
         self.assertFalse((self.output / "assets/data/private.json").exists())
@@ -58,6 +62,19 @@ class PublicArtifactTests(unittest.TestCase):
         (self.output / ".well-known/security.txt").unlink()
         with self.assertRaisesRegex(ValueError, "security.txt"):
             artifact.verify(self.source, self.output, COMMIT)
+
+    def test_transfer_cannot_drop_organization_approval_record(self):
+        self.stage()
+        (self.output / "docs/organization-identity-approval.json").unlink()
+        with self.assertRaisesRegex(ValueError, "organization-identity-approval.json"):
+            artifact.verify(self.source, self.output, COMMIT)
+
+    def test_source_requires_organization_approval_record(self):
+        (self.source / "docs/organization-identity-approval.json").unlink()
+        with self.assertRaisesRegex(
+            ValueError, "required public file missing: docs/organization-identity-approval.json"
+        ):
+            self.stage()
 
     def test_transfer_tampering_and_added_hidden_files_are_rejected(self):
         self.stage()

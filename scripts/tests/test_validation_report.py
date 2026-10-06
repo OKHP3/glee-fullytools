@@ -343,6 +343,13 @@ class ValidationReportTests(unittest.TestCase):
                         },
                     )
                 )
+                identity_history = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
                 for name, value in global_checks.items():
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
@@ -379,6 +386,9 @@ class ValidationReportTests(unittest.TestCase):
                     repeated_report["provenance"], original_report["provenance"]
                 )
                 self.assertEqual(list(report_path.parent.iterdir()), [report_path])
+                self.assertEqual(
+                    identity_history.call_args_list, [mock.call(validated_commit)] * 2
+                )
                 self.assertEqual(
                     page_check.call_args_list,
                     [mock.call(Path("index.html"), page_html)] * 2,
@@ -435,6 +445,13 @@ class ValidationReportTests(unittest.TestCase):
                             validate_site,
                             "check_page",
                             side_effect=[dict(original_page), dict(changed_page)],
+                        )
+                    )
+                    stack.enter_context(
+                        mock.patch.object(
+                            validate_site,
+                            "_last_owner_confirmed_identity_snapshot",
+                            return_value=(None, None),
                         )
                     )
                     for name, value in global_checks.items():
@@ -541,6 +558,13 @@ class ValidationReportTests(unittest.TestCase):
                         },
                     )
                 )
+                identity_history = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
                 for name, value in global_checks.items():
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
@@ -604,6 +628,10 @@ class ValidationReportTests(unittest.TestCase):
                     },
                 )
                 self.assertEqual(list(report_path.parent.iterdir()), [report_path])
+                self.assertEqual(
+                    identity_history.call_args_list,
+                    [mock.call(original_commit), mock.call(changed_commit)],
+                )
                 self.assertEqual(
                     page_check.call_args_list,
                     [mock.call(Path("index.html"), page_html)] * 2,
@@ -767,6 +795,13 @@ class ValidationReportTests(unittest.TestCase):
                         },
                     )
                 )
+                identity_history = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
                 for name, value in global_checks.items():
                     stack.enter_context(
                         mock.patch.object(validate_site, name, return_value=value)
@@ -824,6 +859,9 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(set(audit_dir.iterdir()), {first_path, next_path})
                 self.assertEqual(
+                    identity_history.call_args_list, [mock.call(validated_commit)] * 2
+                )
+                self.assertEqual(
                     page_check.call_args_list,
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
@@ -869,6 +907,13 @@ class ValidationReportTests(unittest.TestCase):
                         validate_site,
                         "check_page",
                         side_effect=lambda *_: {"issues": [], "warnings": []},
+                    )
+                )
+                identity_history = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
                     )
                 )
                 for name, value in clean_checks.items():
@@ -928,6 +973,9 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertFalse(next_path.exists())
                 self.assertEqual(set(audit_dir.iterdir()), {first_path})
                 self.assertEqual(
+                    identity_history.call_args_list, [mock.call(validated_commit)] * 2
+                )
+                self.assertEqual(
                     page_check.call_args_list,
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
@@ -980,6 +1028,12 @@ class ValidationReportTests(unittest.TestCase):
                     mock.patch.object(
                         validate_site, "check_page",
                         side_effect=lambda *_: {"issues": [], "warnings": []},
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
                     )
                 )
                 for name, value in clean_checks.items():
