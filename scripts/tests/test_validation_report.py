@@ -1205,68 +1205,75 @@ class ValidationReportTests(unittest.TestCase):
             self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
     def test_serialization_failure_preserves_evidence_and_allows_corrected_retry(self):
-        with tempfile.TemporaryDirectory() as directory:
-            audit_dir = Path(directory) / "assets" / "audit"
-            audit_dir.mkdir(parents=True)
-            report_path = audit_dir / "validation-report-2026-09-10.json"
-            original = {
-                "generated_at": "2026-09-10T17:00:00Z",
-                "run_date": "2026-09-10",
-                "total_issues": 0,
-            }
-            evidence = {
-                report_path: (json.dumps(original) + "\n").encode("utf-8"),
-                audit_dir / "validation-report-2026-09-09.json":
-                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
-                audit_dir / "validation-report-2026-09-08.json":
-                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
-            }
-            for path, content in evidence.items():
-                path.write_bytes(content)
-            changed = {
-                **original, "generated_at": "2026-09-10T17:05:00Z",
-                "total_issues": 1,
-                "global_issues": ["Changed validation finding"],
-            }
-            invalid = {**changed, "global_issues": {object()}}
+        circular_issues = []
+        circular_issues.append(circular_issues)
+        cases = (
+            ("non-serializable value", {object()}, TypeError,
+             "Object of type set is not JSON serializable"),
+            ("circular reference", circular_issues, ValueError,
+             "Circular reference detected"),
+        )
+        for failure, invalid_issues, error_type, message in cases:
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
+                audit_dir = Path(directory) / "assets" / "audit"
+                audit_dir.mkdir(parents=True)
+                report_path = audit_dir / "validation-report-2026-09-10.json"
+                original = {
+                    "generated_at": "2026-09-10T17:00:00Z",
+                    "run_date": "2026-09-10",
+                    "total_issues": 0,
+                }
+                evidence = {
+                    report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                    audit_dir / "validation-report-2026-09-09.json":
+                        b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                    audit_dir / "validation-report-2026-09-08.json":
+                        b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+                }
+                for path, content in evidence.items():
+                    path.write_bytes(content)
+                changed = {
+                    **original, "generated_at": "2026-09-10T17:05:00Z",
+                    "total_issues": 1,
+                    "global_issues": ["Changed validation finding"],
+                }
+                invalid = {**changed, "global_issues": invalid_issues}
 
-            # Let the real encoder reject the payload before any save operation.
-            with mock.patch.object(
-                validate_site.json, "dumps", wraps=json.dumps
-            ) as dumps, mock.patch.object(
-                validate_site.tempfile, "NamedTemporaryFile"
-            ) as create_temporary, mock.patch.object(
-                Path, "replace", autospec=True
-            ) as replace, mock.patch.object(
-                Path, "unlink", autospec=True
-            ) as unlink:
-                with self.assertRaisesRegex(
-                    TypeError, "Object of type set is not JSON serializable"
-                ):
-                    validate_site._write_validation_report(report_path, invalid)
-                dumps.assert_called_once_with(invalid, indent=2, ensure_ascii=False)
-                create_temporary.assert_not_called()
-                replace.assert_not_called()
-                unlink.assert_not_called()
+                # Let the real encoder reject the payload before any save operation.
+                with mock.patch.object(
+                    validate_site.json, "dumps", wraps=json.dumps
+                ) as dumps, mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile"
+                ) as create_temporary, mock.patch.object(
+                    Path, "replace", autospec=True
+                ) as replace, mock.patch.object(
+                    Path, "unlink", autospec=True
+                ) as unlink:
+                    with self.assertRaisesRegex(error_type, message):
+                        validate_site._write_validation_report(report_path, invalid)
+                    dumps.assert_called_once_with(invalid, indent=2, ensure_ascii=False)
+                    create_temporary.assert_not_called()
+                    replace.assert_not_called()
+                    unlink.assert_not_called()
 
-            for path, content in evidence.items():
-                self.assertEqual(path.read_bytes(), content)
-            self.assertEqual(set(audit_dir.iterdir()), set(evidence))
-
-            # Correct the payload and publish to the same destination with real I/O.
-            self.assertIs(
-                validate_site._write_validation_report(report_path, changed), True
-            )
-            self.assertNotEqual(report_path.read_bytes(), evidence[report_path])
-            self.assertEqual(
-                report_path.read_text(encoding="utf-8"),
-                json.dumps(changed, indent=2, ensure_ascii=False),
-            )
-            self.assertEqual(json.loads(report_path.read_bytes()), changed)
-            for path, content in evidence.items():
-                if path != report_path:
+                for path, content in evidence.items():
                     self.assertEqual(path.read_bytes(), content)
-            self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+
+                # Correct the payload and publish to the same destination with real I/O.
+                self.assertIs(
+                    validate_site._write_validation_report(report_path, changed), True
+                )
+                self.assertNotEqual(report_path.read_bytes(), evidence[report_path])
+                self.assertEqual(
+                    report_path.read_text(encoding="utf-8"),
+                    json.dumps(changed, indent=2, ensure_ascii=False),
+                )
+                self.assertEqual(json.loads(report_path.read_bytes()), changed)
+                for path, content in evidence.items():
+                    if path != report_path:
+                        self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
     def test_first_save_serialization_failure_leaves_report_absent_and_allows_retry(self):
         circular_issues = []
