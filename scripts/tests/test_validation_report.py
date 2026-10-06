@@ -981,7 +981,7 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
 
-    def test_main_surfaces_unencodable_finding_and_preserves_prior_evidence(self):
+    def test_main_recovers_after_unencodable_finding_and_preserves_history(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "assets").mkdir()
@@ -1042,6 +1042,7 @@ class ValidationReportTests(unittest.TestCase):
                     datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
                     datetime(2026, 9, 11, 17, 5, tzinfo=timezone.utc),
                     datetime(2026, 9, 11, 17, 10, tzinfo=timezone.utc),
+                    datetime(2026, 9, 11, 17, 15, tzinfo=timezone.utc),
                 ]
                 calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
                 for day in (date(2026, 9, 10), date(2026, 9, 11)):
@@ -1085,11 +1086,39 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(path.read_bytes(), original_bytes)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
                 output.assert_not_called()
+
+                # Correct the finding and retry main on the same day, with real
+                # serialization and staging rather than calling the writer directly.
+                finding = "corrected warning with valid Unicode: café"
+                with mock.patch.object(
+                    validate_site.tempfile,
+                    "NamedTemporaryFile",
+                    wraps=tempfile.NamedTemporaryFile,
+                ) as staging:
+                    self.assertEqual(
+                        validate_site.main(validated_commit=validated_commit), 0
+                    )
+                    staging.assert_called_once_with(
+                        mode="w", encoding="utf-8", dir=audit_dir,
+                        prefix=f".{same_day_path.name}.", suffix=".tmp", delete=False,
+                    )
+                corrected_bytes = same_day_path.read_bytes()
+                expected_report = json.loads(evidence[same_day_path])
+                expected_report["generated_at"] = "2026-09-11T17:15:00Z"
+                expected_report["total_warnings"] = 1
+                expected_report["pages"][0]["warnings"] = [finding]
+                self.assertNotEqual(corrected_bytes, evidence[same_day_path])
+                self.assertEqual(json.loads(corrected_bytes), expected_report)
+                self.assertIn(finding.encode("utf-8"), corrected_bytes)
+                self.assertEqual(historical_path.read_bytes(), evidence[historical_path])
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+                output.assert_any_call("  issues:   0")
+                output.assert_any_call("  warnings: 1")
                 self.assertEqual(
                     page_check.call_args_list,
-                    [mock.call(Path("index.html"), page_html)] * 3,
+                    [mock.call(Path("index.html"), page_html)] * 4,
                 )
-                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 4)
 
     def test_main_propagates_cleanup_failure_after_successful_report_replacement(self):
         with tempfile.TemporaryDirectory() as directory:
