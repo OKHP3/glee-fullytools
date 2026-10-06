@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Verify stack checker safety and repository baseline
         run: |
@@ -139,6 +141,7 @@ jobs:
 
       - name: Run discovery, publication, asset, and artifact regressions
         run: |
+          python3 -m unittest scripts.tests.test_public_paths scripts.tests.test_search_coverage scripts.tests.test_audit_site scripts.tests.test_check_links_fragments
           python3 -m unittest scripts.tests.test_public_inventory
           python3 scripts/tests/test_pages_search_coverage_gate.py
           python3 scripts/tests/test-visitor-truth.py

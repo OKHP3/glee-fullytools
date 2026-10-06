@@ -33,6 +33,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `post-merge.sh` | active | Post-merge integrity hook; checks generated outputs and idempotently repairs cache-version references and the offline shell; run with Bash, never Python |
 | `public-artifact.py` | active | Stage and verify the reviewed public inventory, transferred bytes, and final Pages archive |
 | `public_inventory.py` | active | Public inventory model imported by `check-pages-artifact.py` and `public-artifact.py`; not run directly |
+| `public_paths.py` | active | Shared reverse URL lookup for discovery routes and source-relative links; not run directly |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
 | `resilience-qa.py` | active | Installability, offline lifecycle, cross-browser, crawler, and third-party failure acceptance checks |
@@ -51,6 +52,27 @@ Cross-site write authorization is separate from a dry-run suggestion. Follow
 review semantic compatibility, and preserve site adapters. Newest Git touch time
 does not establish ownership or compatibility. This checkout has no replacement
 manifest-driven promotion executor; do not describe the proposed model as implemented.
+
+### Reverse URL lookup contracts
+
+`public_paths.discovery_path` accepts root-relative routes and same-origin URLs,
+decodes their paths once, maps directory/extensionless routes to `index.html`,
+and leaves standalone filenames intact. It does not require files to exist:
+audits need to report missing targets. Query strings and fragments do not change
+the file lookup. Search coverage passes `canonical=True`, requiring absolute
+same-origin URLs without queries or fragments. Relative strings like `about/`
+are not discovery routes.
+
+`public_paths.link_target` instead resolves HTML links against the source
+directory, accepts root-relative paths, and requires an existing file or
+directory index. It supports resource files as well as HTML; same-document
+fragment validation remains in `check-links.py`, which also retains its policy
+of skipping external/protocol-relative links. Both lookup helpers reject
+foreign origins, decoded paths escaping the root, and symlink escapes. Lookup
+does not decide indexability or publication scope; those remain inventory rules.
+
+Run the cross-consumer regressions with
+`python3 -m unittest scripts.tests.test_public_paths`.
 
 `tests/test-release-readiness.cjs` supplies focused Node Playwright cross-engine
 journeys when that runtime and browsers already exist. Missing engines return

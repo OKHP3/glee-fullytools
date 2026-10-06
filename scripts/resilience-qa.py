@@ -34,6 +34,7 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
+from public_paths import discovery_path
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT_DATE = date.today().isoformat()
@@ -145,12 +146,10 @@ class StaticPageParser(HTMLParser):
 
 
 def route_file(route: str) -> Path:
-    clean = route.split("?", 1)[0].split("#", 1)[0]
-    if clean == "/":
-        return ROOT / "index.html"
-    if clean.endswith("/"):
-        return ROOT / clean.lstrip("/") / "index.html"
-    return ROOT / clean.lstrip("/")
+    relative = discovery_path(route, ROOT, SITE_ORIGIN)
+    if relative is None:
+        raise ValueError(f"Invalid resilience discovery route: {route}")
+    return ROOT / relative
 
 
 def get_meta(parser: StaticPageParser, attr: str, value: str) -> str:

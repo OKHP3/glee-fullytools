@@ -46,7 +46,9 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
+import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 
@@ -86,14 +88,19 @@ def _write_validation_report(out: Path, report: dict) -> bool:
     serialized = json.dumps(report, indent=2, ensure_ascii=False)
     try:
         existing = json.loads(out.read_text(encoding="utf-8"))
-    except (FileNotFoundError, OSError, json.JSONDecodeError):
+    except (FileNotFoundError, OSError, UnicodeDecodeError, json.JSONDecodeError):
         existing = None
 
-    if (
-        isinstance(existing, dict)
-        and isinstance(existing.get("generated_at"), str)
-        and existing["generated_at"].endswith("Z")
-    ):
+    timestamp = existing.get("generated_at") if isinstance(existing, dict) else None
+    usable_timestamp = False
+    if isinstance(timestamp, str) and timestamp.endswith("Z"):
+        try:
+            parsed_timestamp = datetime.fromisoformat(timestamp[:-1] + "+00:00")
+            usable_timestamp = parsed_timestamp.utcoffset() == timezone.utc.utcoffset(None)
+        except ValueError:
+            pass
+
+    if usable_timestamp:
         existing_payload = {
             key: value for key, value in existing.items() if key != "generated_at"
         }
@@ -103,7 +110,29 @@ def _write_validation_report(out: Path, report: dict) -> bool:
         if existing_payload == report_payload:
             return False
 
-    out.write_text(serialized, encoding="utf-8")
+    temporary_path = None
+    save_error = None
+    try:
+        # Close (and flush) the staged file before committing it on the same filesystem.
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=out.parent,
+            prefix=f".{out.name}.", suffix=".tmp", delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            temporary.write(serialized)
+        temporary_path.replace(out)
+    except OSError as error:
+        save_error = error
+        raise
+    finally:
+        if temporary_path is not None:
+            try:
+                temporary_path.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                if save_error is not None:
+                    # Keep the save failure primary, but expose failed cleanup too.
+                    raise save_error from cleanup_error
+                raise
     return True
 
 
@@ -364,7 +393,13 @@ def main(validated_commit: str | None = None) -> int:
     # The homepage's structured-data sameAs list is an owner-approved claim.
     # Keep it synchronized with the human-readable approval record so a future
     # identity edit cannot ship without updating its evidence.
-    organization_identity_issues = _check_organization_identity_approval()
+    last_owner_approved_snapshot, approval_history_issue = (
+        _last_owner_confirmed_identity_snapshot(validated_commit)
+    )
+    organization_identity_issues = _check_organization_identity_approval(
+        last_approved_snapshot=last_owner_approved_snapshot,
+        history_issue=approval_history_issue,
+    )
     for msg in organization_identity_issues:
         print(f"\nOrganization identity approval: {msg}")
         record_global(f"Organization identity approval: {msg}")
@@ -1167,7 +1202,145 @@ def _check_css_token_drift(hashlib_mod) -> list:
     return mismatches
 
 
-def _check_organization_identity_approval() -> list:
+def _identity_approval_snapshot_is_valid(record: object) -> bool:
+    """Return whether a historical approval record is usable as a baseline."""
+    if not isinstance(record, dict):
+        return False
+
+    approval_date = record.get("approval_date")
+    if not isinstance(approval_date, str):
+        return False
+    try:
+        date.fromisoformat(approval_date)
+    except ValueError:
+        return False
+
+    confirmation = record.get("reviewer_confirmation")
+    if (
+        not isinstance(confirmation, dict)
+        or confirmation.get("status") != "confirmed"
+        or not isinstance(confirmation.get("statement"), str)
+        or not confirmation["statement"].strip()
+    ):
+        return False
+
+    approved_urls = record.get("approved_urls")
+    return (
+        isinstance(approved_urls, list)
+        and bool(approved_urls)
+        and all(
+            isinstance(url, str) and re.fullmatch(r"https?://\S+", url)
+            for url in approved_urls
+        )
+        and len(approved_urls) == len(set(approved_urls))
+    )
+
+
+def _last_owner_confirmed_identity_snapshot(
+    validated_commit: str | None = None,
+) -> tuple[dict | None, str | None]:
+    """Find the latest committed identity set with renewed date and confirmation.
+
+    A URL-set edit without both a later approval date and renewed reviewer
+    confirmation must remain blocked on later commits too. The two fields may
+    be refreshed in separate commits; both must be present before the baseline
+    advances. Looking only at the target's parent would let an unrelated commit
+    hide a stale edit.
+    """
+    shallow_result = subprocess.run(
+        ["git", "rev-parse", "--is-shallow-repository"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if shallow_result.returncode != 0:
+        return None, (
+            "Git history is unavailable; cannot verify the last owner-approved "
+            "identity set"
+        )
+    if shallow_result.stdout.strip() == "true":
+        return None, (
+            "Git history is shallow; cannot verify the last owner-approved "
+            "identity set"
+        )
+
+    target = validated_commit or "HEAD"
+    history = subprocess.run(
+        [
+            "git",
+            "log",
+            "--first-parent",
+            "--reverse",
+            "--format=%H",
+            target,
+            "--",
+            "docs/organization-identity-approval.json",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if history.returncode != 0:
+        return None, (
+            "Git history could not be read for "
+            "docs/organization-identity-approval.json"
+        )
+
+    last_confirmed: dict | None = None
+    for revision in history.stdout.splitlines():
+        shown = subprocess.run(
+            [
+                "git",
+                "show",
+                f"{revision}:docs/organization-identity-approval.json",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if shown.returncode != 0:
+            # A deletion is not a new approval event; retain the last valid one.
+            continue
+        try:
+            record = json.loads(shown.stdout)
+        except json.JSONDecodeError:
+            continue
+        if not _identity_approval_snapshot_is_valid(record):
+            continue
+
+        if last_confirmed is None:
+            last_confirmed = record
+        else:
+            confirmation_changed = (
+                record["reviewer_confirmation"]
+                != last_confirmed["reviewer_confirmation"]
+            )
+            try:
+                later_date = date.fromisoformat(
+                    record["approval_date"]
+                ) > date.fromisoformat(
+                    last_confirmed["approval_date"]
+                )
+            except (KeyError, TypeError, ValueError):
+                later_date = False
+            if confirmation_changed and later_date:
+                last_confirmed = record
+
+    if last_confirmed is None:
+        return None, (
+            "No valid owner-confirmed identity record was found in Git history"
+        )
+    return last_confirmed, None
+
+
+def _check_organization_identity_approval(
+    *,
+    last_approved_snapshot: dict | None = None,
+    history_issue: str | None = None,
+) -> list:
     """Return mismatches between homepage Organization sameAs and its approval record.
 
     The machine-readable approval record lives beside the human-readable
@@ -1228,6 +1401,8 @@ def _check_organization_identity_approval() -> list:
         ]
 
     issues: list[str] = []
+    if history_issue:
+        issues.append(history_issue)
     published = organization_nodes[0].get("sameAs")
     if not isinstance(published, list) or not all(
         isinstance(url, str) and re.fullmatch(r"https?://\S+", url)
@@ -1390,6 +1565,20 @@ def _check_organization_identity_approval() -> list:
 
     published_set = set(published_urls)
     approved_set = set(approved_urls)
+    if last_approved_snapshot is not None:
+        last_approved_urls = set(last_approved_snapshot["approved_urls"])
+        if approved_set != last_approved_urls:
+            added = sorted(approved_set - last_approved_urls)
+            removed = sorted(last_approved_urls - approved_set)
+            issues.append(
+                "approved identity URL set differs from the last owner-confirmed "
+                "set (added: "
+                + (", ".join(added) if added else "none")
+                + "; removed: "
+                + (", ".join(removed) if removed else "none")
+                + "); refresh both approval_date and reviewer_confirmation "
+                "in a fresh owner approval"
+            )
     missing_approval = sorted(published_set - approved_set)
     unpublished_approval = sorted(approved_set - published_set)
     if missing_approval:

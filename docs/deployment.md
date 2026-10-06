@@ -87,9 +87,12 @@ payload receives a new UTC `generated_at` value. The Pages workflow passes the
 full event SHA with `--commit`, verifies that the report's
 `provenance.validated_commit` value exactly matches `${{ github.sha }}`, and
 only then stages the current dated report with the other audit outputs and
-uploads them as a short-lived CI artifact. Older dated site-validation reports
-from the checkout are excluded so they cannot be mistaken for evidence produced
-by the current release.
+uploads them as a GitHub Actions artifact for the owner-approved 90-day review
+period. Before deployment, the workflow checks GitHub's artifact metadata for
+the effective expiry and downloads the reports; deployment is blocked if the
+artifact expires sooner or any required browser report is unavailable. Older
+dated site-validation reports from the checkout are excluded so they cannot be
+mistaken for evidence produced by the current release.
 
 To review downloaded evidence outside the workflow UI, compare three values:
 the 40-character SHA in the `pages-validation-<sha>` artifact name, the JSON
