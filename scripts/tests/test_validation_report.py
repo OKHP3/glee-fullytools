@@ -1275,6 +1275,56 @@ class ValidationReportTests(unittest.TestCase):
                         self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
+    def test_invalid_incoming_timestamp_rejected_even_when_payload_is_unchanged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory) / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            original = {
+                "generated_at": "2026-09-10T17:00:00Z",
+                "run_date": "2026-09-10",
+                "report_type": "site-validation",
+                "scanned": 1,
+                "total_issues": 0,
+                "total_warnings": 0,
+                "global_issues": [],
+                "global_warnings": [],
+                "pages": [{"issues": [], "warnings": [], "path": "index.html"}],
+            }
+            evidence = {
+                report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+            }
+            for path, content in evidence.items():
+                path.write_bytes(content)
+            invalid = {**original, "generated_at": {object()}}
+
+            # Timestamp metadata is ignored for idempotency, not JSON validation.
+            with mock.patch.object(
+                validate_site.json, "dumps", wraps=json.dumps
+            ) as dumps, mock.patch.object(
+                validate_site.tempfile, "NamedTemporaryFile"
+            ) as create_temporary, mock.patch.object(
+                Path, "replace", autospec=True
+            ) as replace, mock.patch.object(
+                Path, "unlink", autospec=True
+            ) as unlink:
+                with self.assertRaisesRegex(
+                    TypeError, "Object of type set is not JSON serializable"
+                ):
+                    validate_site._write_validation_report(report_path, invalid)
+                dumps.assert_called_once_with(invalid, indent=2, ensure_ascii=False)
+                create_temporary.assert_not_called()
+                replace.assert_not_called()
+                unlink.assert_not_called()
+
+            for path, content in evidence.items():
+                self.assertEqual(path.read_bytes(), content)
+            self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+
     def test_first_save_serialization_failure_leaves_report_absent_and_allows_retry(self):
         circular_issues = []
         circular_issues.append(circular_issues)
