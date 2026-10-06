@@ -1275,6 +1275,91 @@ class ValidationReportTests(unittest.TestCase):
                         self.assertEqual(path.read_bytes(), content)
                 self.assertEqual(set(audit_dir.iterdir()), set(evidence))
 
+    def test_utf8_encoding_failure_preserves_evidence_and_cleans_staged_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory) / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            original = {
+                "generated_at": "2026-09-10T17:00:00Z",
+                "run_date": "2026-09-10",
+                "total_issues": 0,
+            }
+            evidence = {
+                report_path: (json.dumps(original) + "\n").encode("utf-8"),
+                audit_dir / "validation-report-2026-09-09.json":
+                    b'{"generated_at": "2026-09-09T17:00:00Z"}\n',
+                audit_dir / "validation-report-2026-09-08.json":
+                    b'{"generated_at": "2026-09-08T17:00:00Z"}\n',
+            }
+            for path, content in evidence.items():
+                path.write_bytes(content)
+            invalid = {
+                **original, "generated_at": "2026-09-10T17:05:00Z",
+                "total_issues": 1,
+                "global_issues": ["Finding with lone surrogate: \ud800"],
+            }
+            # JSON serialization succeeds; the real UTF-8 text write rejects it.
+            serialized = json.dumps(invalid, indent=2, ensure_ascii=False)
+            self.assertIn("\ud800", serialized)
+            staged_files = []
+            encoding_errors = []
+            real_temporary_file = tempfile.NamedTemporaryFile
+            real_unlink = Path.unlink
+
+            def stage_file(*args, **kwargs):
+                temporary = real_temporary_file(*args, **kwargs)
+                staged_files.append(temporary)
+                staged_path = Path(temporary.name)
+                self.assertEqual(staged_path.parent, audit_dir)
+                self.assertNotIn(staged_path, evidence)
+                real_write = temporary.write
+
+                def observe_write(content):
+                    self.assertEqual(content, serialized)
+                    try:
+                        return real_write(content)
+                    except UnicodeEncodeError as error:
+                        encoding_errors.append(error)
+                        raise
+
+                temporary.write = mock.Mock(side_effect=observe_write)
+                return temporary
+
+            def cleanup(path, *, missing_ok=False):
+                self.assertEqual(path, Path(staged_files[0].name))
+                self.assertTrue(staged_files[0].closed)
+                self.assertTrue(path.exists())
+                return real_unlink(path, missing_ok=missing_ok)
+
+            with mock.patch.object(
+                validate_site.json, "dumps", wraps=json.dumps
+            ) as dumps, mock.patch.object(
+                validate_site.tempfile, "NamedTemporaryFile", side_effect=stage_file
+            ) as create_temporary, mock.patch.object(
+                Path, "replace", autospec=True
+            ) as replace, mock.patch.object(
+                Path, "unlink", autospec=True, side_effect=cleanup
+            ) as unlink:
+                with self.assertRaises(UnicodeEncodeError) as raised:
+                    validate_site._write_validation_report(report_path, invalid)
+                dumps.assert_called_once_with(invalid, indent=2, ensure_ascii=False)
+                create_temporary.assert_called_once()
+                self.assertEqual(len(staged_files), 1)
+                self.assertEqual(len(encoding_errors), 1)
+                self.assertIs(raised.exception, encoding_errors[0])
+                self.assertEqual(raised.exception.encoding, "utf-8")
+                self.assertEqual(raised.exception.object, serialized)
+                staged_path = Path(staged_files[0].name)
+                staged_files[0].write.assert_called_once_with(serialized)
+                replace.assert_not_called()
+                unlink.assert_called_once_with(staged_path, missing_ok=True)
+
+            self.assertFalse(staged_path.exists())
+            for path, content in evidence.items():
+                self.assertEqual(path.read_bytes(), content)
+            self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+
     def test_invalid_incoming_timestamp_rejected_even_when_payload_is_unchanged(self):
         with tempfile.TemporaryDirectory() as directory:
             audit_dir = Path(directory) / "assets" / "audit"
