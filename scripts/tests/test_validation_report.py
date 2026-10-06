@@ -1332,7 +1332,8 @@ class ValidationReportTests(unittest.TestCase):
                     validate_site.tempfile, "NamedTemporaryFile",
                     side_effect=create_staging_file,
                 ) as staging:
-                    with self.assertRaises(IsADirectoryError) as raised:
+                    # Windows reports this directory conflict as PermissionError.
+                    with self.assertRaises((IsADirectoryError, PermissionError)) as raised:
                         validate_site.main(validated_commit=validated_commit)
                     staging.assert_called_once_with(
                         mode="w", encoding="utf-8", dir=audit_dir,
