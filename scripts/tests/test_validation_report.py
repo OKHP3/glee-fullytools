@@ -981,6 +981,116 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
 
+    def test_main_surfaces_unencodable_finding_and_preserves_prior_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            audit_dir = root / "assets" / "audit"
+            historical_path = audit_dir / "validation-report-2026-09-10.json"
+            same_day_path = audit_dir / "validation-report-2026-09-11.json"
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": None,
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                # Isolate console encoding so the failure must come from UTF-8 staging.
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    )
+                )
+                page_check = stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "check_page",
+                        side_effect=lambda *_: {"issues": [], "warnings": []},
+                    )
+                )
+                stack.enter_context(
+                    mock.patch.object(
+                        validate_site,
+                        "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    )
+                )
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
+                    datetime(2026, 9, 11, 17, 5, tzinfo=timezone.utc),
+                    datetime(2026, 9, 11, 17, 10, tzinfo=timezone.utc),
+                ]
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                for day in (date(2026, 9, 10), date(2026, 9, 11)):
+                    calendar.today.return_value = day
+                    self.assertEqual(
+                        validate_site.main(validated_commit=validated_commit), 0
+                    )
+                evidence = {
+                    path: path.read_bytes()
+                    for path in (historical_path, same_day_path)
+                }
+                for path, original_bytes in evidence.items():
+                    report = json.loads(original_bytes)
+                    self.assertEqual(report["run_date"], path.stem.removeprefix("validation-report-"))
+                    self.assertEqual(report["total_issues"], 0)
+                    self.assertEqual(report["total_warnings"], 0)
+
+                finding = "changed warning with lone surrogate: \ud800"
+                # A warning-only run would otherwise return success; keep results fresh.
+                page_check.side_effect = lambda *_: {
+                    "issues": [], "warnings": [finding]
+                }
+                output.reset_mock()
+                # Observe the real temporary file; do not inject a write exception.
+                with mock.patch.object(
+                    validate_site.tempfile,
+                    "NamedTemporaryFile",
+                    wraps=tempfile.NamedTemporaryFile,
+                ) as staging:
+                    with self.assertRaises(UnicodeEncodeError) as raised:
+                        validate_site.main(validated_commit=validated_commit)
+                    staging.assert_called_once_with(
+                        mode="w", encoding="utf-8", dir=audit_dir,
+                        prefix=f".{same_day_path.name}.", suffix=".tmp", delete=False,
+                    )
+                error = raised.exception
+                self.assertEqual(error.encoding, "utf-8")
+                self.assertIn(finding, error.object)
+                self.assertEqual(error.object[error.start:error.end], "\ud800")
+                for path, original_bytes in evidence.items():
+                    self.assertEqual(path.read_bytes(), original_bytes)
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+                output.assert_not_called()
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 3,
+                )
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
+
     def test_main_propagates_cleanup_failure_after_successful_report_replacement(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
