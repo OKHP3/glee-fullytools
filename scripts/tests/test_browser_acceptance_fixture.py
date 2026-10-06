@@ -12,6 +12,8 @@ spec.loader.exec_module(color_scheme_test)
 
 
 class BootstrapEventIsolationTests(unittest.TestCase):
+    timing = {"asset_response_end": 12, "domcontentloaded_start": 20}
+
     def test_initial_blank_document_is_not_the_navigation_boundary(self):
         events = [
             ("domcontentloaded", "about:blank"),
@@ -19,7 +21,7 @@ class BootstrapEventIsolationTests(unittest.TestCase):
             ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
             ("domcontentloaded", "http://localhost:5000/about/"),
         ]
-        result = color_scheme_test.bootstrap_events(events, "/about/")
+        result = color_scheme_test.bootstrap_events(events, "/about/", self.timing)
         self.assertEqual(result["domcontentloaded_index"], 3)
 
     def test_actual_late_bootstrap_still_fails(self):
@@ -29,7 +31,43 @@ class BootstrapEventIsolationTests(unittest.TestCase):
             ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
         ]
         with self.assertRaisesRegex(AssertionError, "did not finish"):
-            color_scheme_test.bootstrap_events(events, "/about/")
+            color_scheme_test.bootstrap_events(events, "/about/", {
+                "asset_response_end": 25, "domcontentloaded_start": 20,
+            })
+
+    def test_delayed_protocol_callback_uses_browser_timing(self):
+        events = [
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "http://localhost:5000/about/"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+        ]
+        result = color_scheme_test.bootstrap_events(events, "/about/", self.timing)
+        self.assertEqual(result["asset_finished_index"], 2)
+        self.assertEqual(result["asset_response_end"], 12)
+
+    def test_early_callback_does_not_override_late_browser_timing(self):
+        events = [
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "http://localhost:5000/about/"),
+        ]
+        with self.assertRaisesRegex(AssertionError, "did not finish"):
+            color_scheme_test.bootstrap_events(events, "/about/", {
+                "asset_response_end": 25, "domcontentloaded_start": 20,
+            })
+
+    def test_missing_browser_timing_cannot_pass(self):
+        events = [
+            ("request", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("finished", "http://localhost:5000/assets/js/color-scheme-init.js"),
+            ("domcontentloaded", "http://localhost:5000/about/"),
+        ]
+        for end, start in ((None, 20), (12, None), (0, 20), (12, 0)):
+            with self.subTest(end=end, start=start):
+                with self.assertRaisesRegex(AssertionError, "missing browser timing"):
+                    color_scheme_test.bootstrap_events(events, "/about/", {
+                        "asset_response_end": end, "domcontentloaded_start": start,
+                    })
 
     def test_missing_target_navigation_still_fails(self):
         events = [
@@ -38,7 +76,7 @@ class BootstrapEventIsolationTests(unittest.TestCase):
             ("domcontentloaded", "about:blank"),
         ]
         with self.assertRaisesRegex(AssertionError, "incomplete"):
-            color_scheme_test.bootstrap_events(events, "/about/")
+            color_scheme_test.bootstrap_events(events, "/about/", self.timing)
 
 
 class LocalHttpNavigationFixtureTests(unittest.TestCase):
