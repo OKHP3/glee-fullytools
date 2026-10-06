@@ -1636,6 +1636,155 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
                     self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
 
+    def test_main_remains_blocked_after_denied_global_save_with_partial_same_day_recovery(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit_dir = root / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            historical_path = audit_dir / "validation-report-2026-09-09.json"
+            historical_bytes = b'{"generated_at": "2026-09-09T17:00:00Z"}\n'
+            historical_path.write_bytes(historical_bytes)
+            historical_stat = historical_path.stat()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            cleared_issue = "CSS blocker cleared before retry"
+            remaining_issue = "unresolved STAT blocker with valid Unicode: café"
+            failed_report = {
+                "generated_at": "2026-09-10T17:05:00Z",
+                "run_date": "2026-09-10",
+                "report_type": "site-validation",
+                "provenance": {"validated_commit": validated_commit},
+                "scanned": 1,
+                "total_issues": 2,
+                "total_warnings": 0,
+                "pages": [{"issues": [], "warnings": [], "path": "index.html"}],
+                "global_issues": [
+                    f"CSS-lines drift: {cleared_issue}",
+                    f"STAT marker drift: {remaining_issue}",
+                ],
+                "global_warnings": [],
+                "organization_identity_issues": [],
+            }
+            global_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": cleared_issue,
+                "_check_stat_markers_drift": [remaining_issue],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "collect_html_files", return_value=[page_path],
+                ))
+                page_check = stack.enter_context(mock.patch.object(
+                    validate_site, "check_page",
+                    side_effect=lambda *_: {"issues": [], "warnings": []},
+                ))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "_last_owner_confirmed_identity_snapshot",
+                    return_value=(None, None),
+                ))
+                checks = {
+                    name: stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                    for name, value in global_checks.items()
+                }
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = date(2026, 9, 10)
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc),
+                    datetime(2026, 9, 10, 17, 10, tzinfo=timezone.utc),
+                ]
+                denied_error = PermissionError("fixture partially resolved report access denied")
+
+                def deny_replacement(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertFalse(report_path.exists())
+                    self.assertEqual(path.parent, audit_dir)
+                    self.assertTrue(path.name.startswith(f".{report_path.name}."))
+                    self.assertEqual(path.suffix, ".tmp")
+                    self.assertEqual(json.loads(path.read_bytes()), failed_report)
+                    self.assertEqual(set(audit_dir.iterdir()), {historical_path, path})
+                    raise denied_error
+
+                # Only deny the final replacement; staging, writing and cleanup
+                # use the real filesystem, independent of runner permissions.
+                with mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=deny_replacement,
+                ) as replacement:
+                    with self.assertRaises(PermissionError) as raised:
+                        validate_site.main(validated_commit=validated_commit)
+                    self.assertIs(raised.exception, denied_error)
+                    replacement.assert_called_once()
+                    staged_path, destination = replacement.call_args.args
+                    self.assertEqual(destination, report_path)
+
+                self.assertEqual(output.call_args_list, [
+                    mock.call(f"\nCSS-lines drift: {cleared_issue}"),
+                    mock.call("  Fix: python3 scripts/sync-portfolio-stats.py"),
+                    mock.call(f"\nSTAT marker drift: {remaining_issue}"),
+                    mock.call("  Fix: python3 scripts/sync-portfolio-stats.py"),
+                ])
+                output.reset_mock()
+                self.assertFalse(report_path.exists())
+                self.assertFalse(staged_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), {historical_path})
+                self.assertEqual(list(root.rglob("*.tmp")), [])
+                self.assertEqual(historical_path.read_bytes(), historical_bytes)
+                self.assertEqual(historical_path.stat().st_ino, historical_stat.st_ino)
+                self.assertEqual(historical_path.stat().st_mtime_ns, historical_stat.st_mtime_ns)
+
+                # Clear only one blocker and retry on the same date with real
+                # replacement I/O; clean pages must not hide the remaining blocker.
+                checks["_check_css_lines_drift"].return_value = None
+                self.assertEqual(validate_site.main(validated_commit=validated_commit), 1)
+                saved_bytes = report_path.read_bytes()
+                self.assertEqual(json.loads(saved_bytes), {
+                    **failed_report,
+                    "generated_at": "2026-09-10T17:10:00Z",
+                    "total_issues": 1,
+                    "global_issues": [f"STAT marker drift: {remaining_issue}"],
+                })
+                self.assertIn(remaining_issue.encode("utf-8"), saved_bytes)
+                self.assertNotIn(cleared_issue.encode("utf-8"), saved_bytes)
+                self.assertEqual(historical_path.read_bytes(), historical_bytes)
+                self.assertEqual(historical_path.stat().st_ino, historical_stat.st_ino)
+                self.assertEqual(historical_path.stat().st_mtime_ns, historical_stat.st_mtime_ns)
+                self.assertFalse(staged_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), {historical_path, report_path})
+                self.assertEqual(list(root.rglob("*.tmp")), [])
+                output.assert_any_call(f"\nSTAT marker drift: {remaining_issue}")
+                output.assert_any_call("  issues:   1")
+                output.assert_any_call("  warnings: 0")
+                output.assert_any_call(f"  detail:   {report_path.relative_to(root)}")
+                self.assertNotIn(cleared_issue, str(output.call_args_list))
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 2,
+                )
+                self.assertEqual(checks["_check_css_lines_drift"].call_count, 2)
+                self.assertEqual(checks["_check_stat_markers_drift"].call_count, 2)
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+
     def test_main_recovers_after_first_report_audit_directory_creation_failure_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
