@@ -1205,8 +1205,8 @@ class ValidationReportTests(unittest.TestCase):
             )
             self.assertNotEqual(report_path.read_bytes(), evidence[report_path])
             self.assertEqual(
-                report_path.read_bytes(),
-                json.dumps(changed, indent=2, ensure_ascii=False).encode("utf-8"),
+                report_path.read_text(encoding="utf-8"),
+                json.dumps(changed, indent=2, ensure_ascii=False),
             )
             self.assertEqual(json.loads(report_path.read_bytes()), changed)
             for path, content in evidence.items():
