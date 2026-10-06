@@ -1021,6 +1021,153 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
 
+    def test_main_recovers_after_permission_denied_replacement_on_same_day(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit_dir = root / "assets" / "audit"
+            audit_dir.mkdir(parents=True)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            historical_path = audit_dir / "validation-report-2026-09-09.json"
+            historical_bytes = b'{"generated_at": "2026-09-09T17:00:00Z"}\n'
+            historical_path.write_bytes(historical_bytes)
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": None,
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "collect_html_files", return_value=[page_path]
+                ))
+                page_check = stack.enter_context(mock.patch.object(
+                    validate_site, "check_page",
+                    side_effect=lambda *_: {"issues": [], "warnings": []},
+                ))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "_last_owner_confirmed_identity_snapshot",
+                    return_value=(None, None),
+                ))
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = date(2026, 9, 10)
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.side_effect = [
+                    datetime(2026, 9, 10, 17, 0, tzinfo=timezone.utc),
+                    datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc),
+                    datetime(2026, 9, 10, 17, 10, tzinfo=timezone.utc),
+                ]
+
+                self.assertEqual(validate_site.main(validated_commit=validated_commit), 0)
+                original_bytes = report_path.read_bytes()
+                original_report = json.loads(original_bytes)
+                evidence = {
+                    report_path: original_bytes,
+                    historical_path: historical_bytes,
+                }
+                original_stats = {path: path.stat() for path in evidence}
+                output.reset_mock()
+                failed_warning = "warning from denied save"
+                page_check.side_effect = lambda *_: {
+                    "issues": [], "warnings": [failed_warning],
+                }
+                denied_error = PermissionError("fixture report replacement access denied")
+
+                def deny_replacement(path, destination):
+                    self.assertEqual(destination, report_path)
+                    self.assertEqual(path.parent, audit_dir)
+                    self.assertNotIn(path, evidence)
+                    self.assertTrue(path.name.startswith(f".{report_path.name}."))
+                    self.assertEqual(path.suffix, ".tmp")
+                    self.assertEqual(json.loads(path.read_bytes()), {
+                        **original_report,
+                        "generated_at": "2026-09-10T17:05:00Z",
+                        "pages": [{
+                            "issues": [], "warnings": [failed_warning], "path": "index.html",
+                        }],
+                        "total_warnings": 1,
+                    })
+                    raise denied_error
+
+                # Permissions are unreliable under privileged runners. Inject only
+                # the final replacement denial; writing, closing and cleanup are real.
+                with mock.patch.object(
+                    Path, "replace", autospec=True, side_effect=deny_replacement
+                ) as replacement:
+                    with self.assertRaises(PermissionError) as raised:
+                        validate_site.main(validated_commit=validated_commit)
+                    self.assertIs(raised.exception, denied_error)
+                    replacement.assert_called_once()
+                    staged_path, destination = replacement.call_args.args
+                    replacement.assert_called_once_with(staged_path, report_path)
+                    self.assertEqual(destination, report_path)
+
+                output.assert_not_called()
+                self.assertFalse(staged_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+                for path, content in evidence.items():
+                    self.assertEqual(path.read_bytes(), content)
+                    self.assertEqual(path.stat().st_ino, original_stats[path].st_ino)
+                    self.assertEqual(path.stat().st_mtime_ns, original_stats[path].st_mtime_ns)
+
+                # Retry on the same date without any filesystem injections.
+                finding = "fresh retry issue with valid Unicode: café"
+                warning = "fresh retry warning"
+                page_check.side_effect = lambda *_: {
+                    "issues": [finding], "warnings": [warning],
+                }
+                self.assertEqual(validate_site.main(validated_commit=validated_commit), 1)
+                saved_bytes = report_path.read_bytes()
+                self.assertNotEqual(saved_bytes, original_bytes)
+                self.assertEqual(json.loads(saved_bytes), {
+                    **original_report,
+                    "generated_at": "2026-09-10T17:10:00Z",
+                    "pages": [{
+                        "issues": [finding], "warnings": [warning], "path": "index.html",
+                    }],
+                    "total_issues": 1,
+                    "total_warnings": 1,
+                })
+                self.assertIn(finding.encode("utf-8"), saved_bytes)
+                self.assertEqual(historical_path.read_bytes(), historical_bytes)
+                self.assertEqual(
+                    historical_path.stat().st_mtime_ns,
+                    original_stats[historical_path].st_mtime_ns,
+                )
+                self.assertFalse(staged_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), set(evidence))
+                self.assertEqual(list(root.rglob("*.tmp")), [])
+                output.assert_any_call("  issues:   1")
+                output.assert_any_call("  warnings: 1")
+                output.assert_any_call(f"  detail:   {report_path.relative_to(root)}")
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 3,
+                )
+                self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 6)
+
     def test_main_recovers_after_first_report_audit_directory_creation_failure_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
