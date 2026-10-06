@@ -1332,7 +1332,7 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertIs(
                     validate_site._write_validation_report(report_path, changed), True
                 )
-                self.assertEqual(report_path.read_bytes(), serialized.encode("utf-8"))
+                self.assertEqual(report_path.read_text(encoding="utf-8"), serialized)
                 self.assertEqual(
                     json.loads(report_path.read_text(encoding="utf-8")), changed
                 )
