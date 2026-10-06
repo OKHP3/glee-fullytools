@@ -216,6 +216,18 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Release check must inspect the uploaded artifact's GitHub retention metadata"
         )
+    retention_block = job_block[retention_position:download_position]
+    required_run_binding = (
+        "EXPECTED_RUN_ID: ${{ github.run_id }}",
+        "EXPECTED_COMMIT: ${{ github.sha }}",
+        "actions/runs/$EXPECTED_RUN_ID",
+        '--output "$RUNNER_TEMP/pages-workflow-run.json"',
+        '--run-metadata "$RUNNER_TEMP/pages-workflow-run.json"',
+        '--run-id "$EXPECTED_RUN_ID"',
+        '--commit "$EXPECTED_COMMIT"',
+    )
+    if any(binding not in retention_block for binding in required_run_binding):
+        raise AssertionError("Retention check must fetch and bind the current workflow run and commit")
     download_block = job_block[download_position:].split("\n      - name:", 1)[0]
     if "name: pages-validation-${{ github.sha }}" not in download_block:
         raise AssertionError(
@@ -313,6 +325,23 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "requires checkout"):
             assert_uploaded_theme_evidence_contract(broken)
 
+    def test_retention_checker_requires_authenticated_run_metadata_and_release_identity(self):
+        before, retention = self.workflow.split(RETENTION_VERIFY_STEP, 1)
+        for binding in (
+            "EXPECTED_RUN_ID: ${{ github.run_id }}",
+            "EXPECTED_COMMIT: ${{ github.sha }}",
+            "actions/runs/$EXPECTED_RUN_ID",
+            '--output "$RUNNER_TEMP/pages-workflow-run.json"',
+            '--run-metadata "$RUNNER_TEMP/pages-workflow-run.json"',
+            '--run-id "$EXPECTED_RUN_ID"',
+            '--commit "$EXPECTED_COMMIT"',
+        ):
+            with self.subTest(binding=binding):
+                with self.assertRaisesRegex(AssertionError, "fetch and bind"):
+                    assert_uploaded_theme_evidence_contract(
+                        before + RETENTION_VERIFY_STEP + retention.replace(binding, "missing", 1)
+                    )
+
     @classmethod
     def setUpClass(cls):
         cls.workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -391,6 +420,32 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
             self.assertFalse(summary_path.exists())
 
+    def run_retention_check(self, artifact, workflow_run=None):
+        workflow_run = workflow_run if workflow_run is not None else {
+            "id": 987,
+            "head_sha": "a" * 40,
+            "created_at": "2026-01-01T00:00:00Z",
+        }
+        artifact = dict(artifact)
+        artifact.setdefault("workflow_run", {"id": 987, "head_sha": "a" * 40})
+        with tempfile.TemporaryDirectory() as directory:
+            run_path = Path(directory) / "workflow-run.json"
+            run_path.write_text(json.dumps(workflow_run), encoding="utf-8")
+            return subprocess.run(
+                [
+                    sys.executable,
+                    str(RETENTION_CHECKER),
+                    "--artifact-id", "123",
+                    "--artifact-name", "pages-validation-abc123",
+                    "--run-metadata", str(run_path),
+                    "--run-id", "987",
+                    "--commit", "a" * 40,
+                ],
+                input=json.dumps(artifact),
+                capture_output=True,
+                text=True,
+            )
+
     def test_artifact_retention_checker_accepts_the_approved_period(self):
         artifact = {
             "id": 123,
@@ -399,19 +454,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "created_at": "2026-01-01T00:00:00Z",
             "expires_at": "2026-04-01T00:00:00Z",
         }
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(RETENTION_CHECKER),
-                "--artifact-id",
-                "123",
-                "--artifact-name",
-                "pages-validation-abc123",
-            ],
-            input=json.dumps(artifact),
-            capture_output=True,
-            text=True,
-        )
+        result = self.run_retention_check(artifact)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("at least 90 days", result.stdout)
 
@@ -460,21 +503,65 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         )
         for artifact, expected_error in cases:
             with self.subTest(expected_error=expected_error):
-                result = subprocess.run(
-                    [
-                        sys.executable,
-                        str(RETENTION_CHECKER),
-                        "--artifact-id",
-                        "123",
-                        "--artifact-name",
-                        "pages-validation-abc123",
-                    ],
-                    input=json.dumps(artifact),
-                    capture_output=True,
-                    text=True,
+                result = self.run_retention_check(artifact)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected_error, result.stderr)
+
+    def test_delayed_upload_and_rerun_use_the_original_run_retention_clock(self):
+        # GitHub caps expiry at run creation + retention, not artifact upload time.
+        for created_at in ("2026-01-01T00:10:55Z", "2026-01-11T00:00:00Z"):
+            with self.subTest(created_at=created_at):
+                artifact = {
+                    "id": 123, "name": "pages-validation-abc123", "expired": False,
+                    "created_at": created_at, "expires_at": "2026-04-01T00:00:00Z",
+                }
+                run = {
+                    "id": 987, "head_sha": "a" * 40,
+                    "created_at": "2026-01-01T00:00:00Z",
+                    "run_started_at": created_at,
+                }
+                result = self.run_retention_check(artifact, run)
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_retention_clock_rejects_short_period_and_unbound_or_invalid_metadata(self):
+        artifact = {
+            "id": 123, "name": "pages-validation-abc123", "expired": False,
+            "created_at": "2026-01-01T00:10:55Z",
+            "expires_at": "2026-04-01T00:00:00Z",
+            "workflow_run": {"id": 987, "head_sha": "a" * 40},
+        }
+        run = {"id": 987, "head_sha": "a" * 40, "created_at": "2026-01-01T00:00:00Z"}
+        cases = (
+            ({"expires_at": "2026-03-31T23:59:59Z"}, {}, "shorter than the approved 90 days"),
+            ({"workflow_run": None}, {}, "workflow_run"),
+            ({"workflow_run": {"id": 986, "head_sha": "a" * 40}}, {}, "run id"),
+            ({"workflow_run": {"id": 987, "head_sha": "b" * 40}}, {}, "commit"),
+            ({}, {"id": 986}, "run id"),
+            ({}, {"head_sha": "b" * 40}, "commit"),
+            ({}, {"created_at": None}, "created_at"),
+            ({}, {"created_at": "2026-01-01T00:00:00"}, "timezone"),
+            ({"created_at": "2025-12-31T23:59:59Z"}, {}, "before its workflow run"),
+            ({"created_at": "2026-04-01T00:00:00Z"}, {}, "before its expiration"),
+        )
+        for artifact_patch, run_patch, expected_error in cases:
+            with self.subTest(expected_error=expected_error):
+                result = self.run_retention_check(
+                    {**artifact, **artifact_patch}, {**run, **run_patch}
                 )
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(expected_error, result.stderr)
+
+    def test_retention_checker_rejects_non_object_run_metadata(self):
+        artifact = {
+            "id": 123, "name": "pages-validation-abc123", "expired": False,
+            "created_at": "2026-01-01T00:10:55Z",
+            "expires_at": "2026-04-01T00:00:00Z",
+        }
+        for run in ([], "not a workflow run"):
+            with self.subTest(run=run):
+                result = self.run_retention_check(artifact, run)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("workflow run response must be a JSON object", result.stderr)
 
     def test_downloaded_artifact_check_fails_for_each_missing_browser_report(self):
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
