@@ -1136,6 +1136,123 @@ class ValidationReportTests(unittest.TestCase):
                 )
                 clock.now.assert_called_once_with(timezone.utc)
 
+    def test_main_recovers_after_file_blocks_audit_directory_on_same_day(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets_dir = root / "assets"
+            assets_dir.mkdir()
+            page_path = root / "index.html"
+            page_html = "<!doctype html>"
+            page_path.write_text(page_html, encoding="utf-8")
+            audit_dir = assets_dir / "audit"
+            blocking_bytes = b"existing audit file must remain intact\n"
+            audit_dir.write_bytes(blocking_bytes)
+            blocking_stat = audit_dir.stat()
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+            clean_checks = {
+                "_check_organization_identity_approval": [],
+                "_check_css_lines_drift": None,
+                "_check_stat_markers_drift": [],
+                "_check_adr_index_sync": None,
+                "_check_scripts_py_drift": None,
+                "_check_scripts_non_py_drift": None,
+                "_check_og_image_alt_drift": [],
+                "_check_sparkle_drift": [],
+                "_check_glee_dark_coverage": [],
+                "_check_css_token_drift": [],
+                "_check_template_metadata": [],
+                "_check_offline_shell": [],
+                "_check_mermaid_version_pin": [],
+                "_check_mermaid_csp_alignment": [],
+            }
+            with ExitStack() as stack:
+                stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                output = stack.enter_context(mock.patch("builtins.print"))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "collect_html_files", return_value=[page_path]
+                ))
+                page_check = stack.enter_context(mock.patch.object(
+                    validate_site, "check_page",
+                    side_effect=lambda *_: {"issues": [], "warnings": []},
+                ))
+                stack.enter_context(mock.patch.object(
+                    validate_site, "_last_owner_confirmed_identity_snapshot",
+                    return_value=(None, None),
+                ))
+                for name, value in clean_checks.items():
+                    stack.enter_context(
+                        mock.patch.object(validate_site, name, return_value=value)
+                    )
+                calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                calendar.today.return_value = date(2026, 9, 10)
+                clock = stack.enter_context(
+                    mock.patch.object(validate_site, "datetime", wraps=datetime)
+                )
+                clock.now.return_value = datetime(2026, 9, 10, 17, 5, tzinfo=timezone.utc)
+
+                # Keep the filesystem real: mkdir must reject the existing file,
+                # without replacing it or attempting to stage a report.
+                with mock.patch.object(
+                    validate_site.tempfile, "NamedTemporaryFile",
+                    wraps=validate_site.tempfile.NamedTemporaryFile,
+                ) as staging:
+                    with self.assertRaises(FileExistsError) as raised:
+                        validate_site.main(validated_commit=validated_commit)
+                    self.assertEqual(raised.exception.filename, str(audit_dir))
+                    staging.assert_not_called()
+                self.assertTrue(audit_dir.is_file())
+                self.assertEqual(audit_dir.read_bytes(), blocking_bytes)
+                self.assertEqual(audit_dir.stat().st_ino, blocking_stat.st_ino)
+                self.assertEqual(audit_dir.stat().st_mtime_ns, blocking_stat.st_mtime_ns)
+                self.assertFalse(report_path.exists())
+                self.assertEqual(set(assets_dir.iterdir()), {audit_dir})
+                self.assertEqual(set(root.rglob("*")), {assets_dir, audit_dir, page_path})
+                clock.now.assert_not_called()
+                calendar.today.assert_not_called()
+                output.assert_not_called()
+
+                # Remove only the conflict and retry on the unchanged date.
+                # New findings must replace the failed run's clean result.
+                audit_dir.unlink()
+                finding = "retry issue with valid Unicode: café"
+                warning = "retry warning"
+                page_check.side_effect = lambda *_: {
+                    "issues": [finding], "warnings": [warning],
+                }
+                self.assertEqual(
+                    validate_site.main(validated_commit=validated_commit), 1
+                )
+                saved_bytes = report_path.read_bytes()
+                self.assertEqual(json.loads(saved_bytes), {
+                    "generated_at": "2026-09-10T17:05:00Z",
+                    "run_date": "2026-09-10",
+                    "report_type": "site-validation",
+                    "provenance": {"validated_commit": validated_commit},
+                    "scanned": 1,
+                    "total_issues": 1,
+                    "total_warnings": 1,
+                    "pages": [{
+                        "issues": [finding], "warnings": [warning], "path": "index.html",
+                    }],
+                    "global_issues": [],
+                    "global_warnings": [],
+                    "organization_identity_issues": [],
+                })
+                self.assertIn(finding.encode("utf-8"), saved_bytes)
+                self.assertTrue(audit_dir.is_dir())
+                self.assertEqual(set(assets_dir.iterdir()), {audit_dir})
+                self.assertEqual(set(audit_dir.iterdir()), {report_path})
+                self.assertEqual(list(root.rglob("*.tmp")), [])
+                output.assert_any_call("  issues:   1")
+                output.assert_any_call("  warnings: 1")
+                self.assertEqual(
+                    page_check.call_args_list,
+                    [mock.call(Path("index.html"), page_html)] * 2,
+                )
+                clock.now.assert_called_once_with(timezone.utc)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
+
     def test_main_recovers_after_first_report_temporary_file_creation_failure_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
