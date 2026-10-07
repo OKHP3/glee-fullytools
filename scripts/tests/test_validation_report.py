@@ -21,6 +21,95 @@ _SPEC.loader.exec_module(validate_site)
 
 
 class ValidationReportTests(unittest.TestCase):
+    def test_main_keeps_filename_and_run_date_consistent_across_midnight(self):
+        for issues in ([], ["fixture page issue"]):
+            with self.subTest(issues=issues), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "assets").mkdir()
+                page_path = root / "index.html"
+                page_path.write_text("<!doctype html>", encoding="utf-8")
+                audit_dir = root / "assets" / "audit"
+                report_path = audit_dir / "validation-report-2026-12-31.json"
+                current_date = date(2026, 12, 31)
+                generation_time = datetime(2027, 1, 1, tzinfo=timezone.utc)
+                validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+                clean_checks = {
+                    "_check_organization_identity_approval": [],
+                    "_check_css_lines_drift": None,
+                    "_check_stat_markers_drift": [],
+                    "_check_adr_index_sync": None,
+                    "_check_scripts_py_drift": None,
+                    "_check_scripts_non_py_drift": None,
+                    "_check_og_image_alt_drift": [],
+                    "_check_sparkle_drift": [],
+                    "_check_glee_dark_coverage": [],
+                    "_check_css_token_drift": [],
+                    "_check_template_metadata": [],
+                    "_check_offline_shell": [],
+                    "_check_mermaid_version_pin": [],
+                    "_check_mermaid_csp_alignment": [],
+                }
+
+                def cross_midnight(tz):
+                    nonlocal current_date
+                    self.assertEqual(tz, timezone.utc)
+                    self.assertEqual(current_date, date(2026, 12, 31))
+                    current_date = date(2027, 1, 1)
+                    return generation_time
+
+                with ExitStack() as stack:
+                    stack.enter_context(mock.patch.object(validate_site, "ROOT", root))
+                    output = stack.enter_context(mock.patch("builtins.print"))
+                    stack.enter_context(mock.patch.object(
+                        validate_site, "collect_html_files", return_value=[page_path]
+                    ))
+                    stack.enter_context(mock.patch.object(
+                        validate_site, "check_page",
+                        return_value={"issues": issues, "warnings": []},
+                    ))
+                    stack.enter_context(mock.patch.object(
+                        validate_site, "_last_owner_confirmed_identity_snapshot",
+                        return_value=(None, None),
+                    ))
+                    for name, value in clean_checks.items():
+                        stack.enter_context(
+                            mock.patch.object(validate_site, name, return_value=value)
+                        )
+                    calendar = stack.enter_context(mock.patch.object(validate_site, "date"))
+                    calendar.today.side_effect = lambda: current_date
+                    clock = stack.enter_context(
+                        mock.patch.object(validate_site, "datetime", wraps=datetime)
+                    )
+                    clock.now.side_effect = cross_midnight
+                    staging = stack.enter_context(mock.patch.object(
+                        validate_site.tempfile, "NamedTemporaryFile",
+                        wraps=tempfile.NamedTemporaryFile,
+                    ))
+
+                    # One run, with real serialization, staging and replacement.
+                    self.assertEqual(validate_site.main(validated_commit), int(bool(issues)))
+                    report = json.loads(report_path.read_text(encoding="utf-8"))
+                    self.assertEqual(report["run_date"], "2026-12-31")
+                    self.assertEqual(
+                        report_path.name, f"validation-report-{report['run_date']}.json"
+                    )
+                    self.assertEqual(report["generated_at"], "2027-01-01T00:00:00Z")
+                    self.assertEqual(report["provenance"]["validated_commit"], validated_commit)
+                    self.assertEqual(report["scanned"], 1)
+                    self.assertEqual(report["total_issues"], len(issues))
+                    self.assertEqual(report["pages"], [{
+                        "issues": issues, "warnings": [], "path": "index.html",
+                    }])
+                    self.assertEqual(current_date, date(2027, 1, 1))
+                    calendar.today.assert_called_once_with()
+                    clock.now.assert_called_once_with(timezone.utc)
+                    staging.assert_called_once_with(
+                        mode="w", encoding="utf-8", dir=audit_dir,
+                        prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                    )
+                    self.assertEqual(set(audit_dir.iterdir()), {report_path})
+                    output.assert_any_call(f"  detail:   {report_path.relative_to(root)}")
+
     def test_all_global_checks_preserve_details_counts_and_exit_status(self):
         # Scalar checks report one finding; list checks must retain every item.
         checks = {
@@ -1166,7 +1255,7 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 3,
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 3)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 6)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 3)
 
     def test_main_recovers_after_permission_denied_first_report_replacement_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1308,7 +1397,7 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_recovers_after_denied_first_save_on_next_calendar_date(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1461,7 +1550,7 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_returns_success_after_denied_blocking_first_save_on_same_day(self):
         for scenario, retry_warnings in (
@@ -1622,7 +1711,7 @@ class ValidationReportTests(unittest.TestCase):
                         [mock.call(Path("index.html"), page_html)] * 2,
                     )
                     self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                    self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                    self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_returns_success_after_denied_global_blocking_save_on_same_day(self):
         for scenario, retry_warning in (
@@ -1787,7 +1876,7 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(checks["_check_css_lines_drift"].call_count, 2)
                     self.assertEqual(checks["_check_adr_index_sync"].call_count, 2)
                     self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                    self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                    self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_remains_blocked_after_denied_global_save_with_partial_same_day_recovery(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1936,7 +2025,7 @@ class ValidationReportTests(unittest.TestCase):
                 self.assertEqual(checks["_check_css_lines_drift"].call_count, 2)
                 self.assertEqual(checks["_check_stat_markers_drift"].call_count, 2)
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_recovers_after_first_report_audit_directory_creation_failure_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -2168,7 +2257,7 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
                 clock.now.assert_called_once_with(timezone.utc)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
+                calendar.today.assert_called_once_with()
 
     def test_main_recovers_after_directory_blocks_report_filename_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -2311,7 +2400,7 @@ class ValidationReportTests(unittest.TestCase):
                     [mock.call(Path("index.html"), page_html)] * 2,
                 )
                 self.assertEqual(clock.now.call_args_list, [mock.call(timezone.utc)] * 2)
-                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 4)
+                self.assertEqual(calendar.today.call_args_list, [mock.call()] * 2)
 
     def test_main_recovers_after_first_report_temporary_file_creation_failure_on_same_day(self):
         with tempfile.TemporaryDirectory() as directory:

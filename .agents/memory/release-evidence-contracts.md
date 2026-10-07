@@ -15,6 +15,12 @@ changed, not when every check ran.
 its own exclusions or when dated reports are mistaken for current proof.
 Timestamp-only rewrites add review noise without adding evidence.
 
+Preserve the validator's local-date convention rather than changing report
+grouping to UTC when fixing midnight consistency.
+
+**Why:** Switching date zones would change historical evidence grouping; the
+consistency fix should not redefine what constitutes a reporting day.
+
 **How to apply:** Extend the shared inventory and its tests before changing an
 output generator or the Pages copy policy; validate a representative artifact,
 including forbidden-path failures, before release. Keep idempotency behavior
