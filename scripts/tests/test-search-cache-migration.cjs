@@ -78,6 +78,7 @@ test('returning visitors bypass an old unversioned index and search offline afte
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
     const base = `http://127.0.0.1:${server.address().port}`;
     let browser;
+    let page;
     const stopServer = () => new Promise(resolve => {
       if (!server.listening) { resolve(); return; }
       server.closeAllConnections();
@@ -85,15 +86,20 @@ test('returning visitors bypass an old unversioned index and search offline afte
     });
     try {
       browser = await chromium.launch();
+      console.log(`Cache migration browser: ${browser.version()}; Node ${process.version}`);
       const context = await browser.newContext();
       await context.route('**/*', route => route.request().url().startsWith(base + '/')
         ? route.continue() : route.abort());
-      let page = await context.newPage();
+      page = await context.newPage();
       page.setDefaultTimeout(15000);
       const results = () => page.locator('[data-glee-search-inline-results]');
       await page.goto(base + '/search/?q=probe');
       await results().getByText('Cache probe old', { exact: true }).waitFor();
-      await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+      await page.waitForFunction(async () => {
+        const registration = await navigator.serviceWorker.getRegistration();
+        return registration?.active?.state === 'activated' &&
+          navigator.serviceWorker.controller === registration.active && !registration.waiting;
+      });
       await page.reload();
       await results().getByText('Cache probe old', { exact: true }).waitFor();
       assert.equal(await page.evaluate(async cache => {
@@ -116,7 +122,11 @@ test('returning visitors bypass an old unversioned index and search offline afte
       page.setDefaultTimeout(15000);
       await page.goto(base + '/search/?q=probe');
       await page.waitForFunction(async old => !(await caches.keys()).includes(old), oldCache);
-      await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+      await page.waitForFunction(async () => {
+        const registration = await navigator.serviceWorker.getRegistration();
+        return registration?.active?.state === 'activated' &&
+          navigator.serviceWorker.controller === registration.active && !registration.waiting;
+      });
       assert.equal(await page.evaluate(async ({ cache, key }) => {
         const response = await (await caches.open(cache)).match(key);
         return (await response.json()).pages[0].title;
@@ -127,6 +137,28 @@ test('returning visitors bypass an old unversioned index and search offline afte
       await stopServer();
       await page.reload();
       await results().getByText('Cache probe new', { exact: true }).waitFor();
+    } catch (error) {
+      if (page && !page.isClosed()) {
+        try {
+          console.error('Cache migration diagnostic:', JSON.stringify(await page.evaluate(async () => {
+            const registration = await navigator.serviceWorker.getRegistration();
+            const names = await caches.keys();
+            return {
+              metadata: document.querySelector('meta[name="search-index-version"]')?.content,
+              status: document.querySelector('[data-glee-search-inline-status]')?.textContent,
+              results: document.querySelector('[data-glee-search-inline-results]')?.textContent,
+              controller: navigator.serviceWorker.controller?.state,
+              active: registration?.active?.state,
+              sameController: navigator.serviceWorker.controller === registration?.active,
+              waiting: registration?.waiting?.state,
+              caches: await Promise.all(names.map(async name => ({
+                name, keys: (await (await caches.open(name)).keys()).map(request => request.url),
+              }))),
+            };
+          })));
+        } catch (diagnosticError) { console.error('Diagnostic unavailable:', diagnosticError.message); }
+      }
+      throw error;
     } finally {
       await browser?.close();
       await stopServer();
