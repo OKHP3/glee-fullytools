@@ -209,11 +209,14 @@ jobs:
           node --input-type=module -e "await import('puppeteer'); await import('lighthouse');"
           npm exec --no -- lighthouse --version
 
-      - name: Install matching browser and test the FoundRy page
-        run: |
-          npx playwright install --with-deps chromium
-          npm run qa:foundry-accessibility -- --engine chromium
-          node --test scripts/tests/test-search-cache-migration.cjs
+      - name: Install matching Chromium browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Test FoundRy page accessibility
+        run: npm run qa:foundry-accessibility -- --engine chromium
+
+      - name: Test returning-visitor search cache migration
+        run: node --test scripts/tests/test-search-cache-migration.cjs
 
   review-action-versions:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
