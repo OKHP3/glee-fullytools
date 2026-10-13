@@ -358,6 +358,50 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
 
+    def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
+        legacy_run = {
+            "id": 32620098281,
+            "head_sha": "874297729317108f804d0e1bf65c9c792bb09b37",
+            "created_at": "2026-08-23T05:20:14Z",
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [legacy_run]}, None
+            if "/compare/" in url:
+                return {"status": "behind"}, None
+            artifact_requests.append(url)
+            return {"artifacts": []}, None
+
+        checked = retention_checker.monitor_repository(
+            "owner/repo", "https://api.github.com", "test-token",
+            now=datetime(2026, 10, 13, tzinfo=timezone.utc), fetch_page=fetch,
+        )
+        self.assertEqual(checked, 0)
+        self.assertEqual(artifact_requests, [])
+
+    def test_retention_monitor_rejects_unknown_or_divergent_policy_ancestry(self):
+        run = {
+            "id": 44, "head_sha": "a" * 40,
+            "created_at": "2026-10-12T10:00:00Z", "conclusion": "success",
+        }
+        for status in ("diverged", None):
+            with self.subTest(status=status):
+                def fetch(url, token):
+                    if "/workflows/pages.yml/runs?" in url:
+                        return {"workflow_runs": [run]}, None
+                    if "/compare/" in url:
+                        return {"status": status}, None
+                    self.fail("Uncertain ancestry must not reach artifact lookup")
+
+                with self.assertRaisesRegex(ValueError, "retention-policy ancestry"):
+                    retention_checker.monitor_repository(
+                        "owner/repo", "https://api.github.com", "test-token",
+                        now=datetime(2026, 10, 13, tzinfo=timezone.utc), fetch_page=fetch,
+                    )
+
     def test_retention_monitor_reports_missing_active_artifact_with_commit(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
         commit = "a" * 40
@@ -371,6 +415,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         def fetch(url, token):
             if "/workflows/pages.yml/runs?" in url:
                 return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
             if "/runs/44/artifacts?" in url:
                 self.assertIn("include_expired=true", url)
                 return {"artifacts": []}, None
@@ -424,6 +470,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 return {
                     "workflow_runs": [active_run, old_run, failed_run]
                 }, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
             if "/runs/" in url and "/artifacts?" in url:
                 run_id = int(url.split("/runs/", 1)[1].split("/", 1)[0])
                 requested_runs.append(run_id)

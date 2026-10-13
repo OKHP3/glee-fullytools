@@ -50,3 +50,12 @@ GitHub's retention deadline is measured from the original workflow run's
 at least 90 days from that timestamp, with no tolerance for a shorter period. An
 upload made after validation therefore has less than 90 days remaining at upload
 time. Artifacts must also be unexpired and have valid creation/expiration order.
+
+The daily retention monitor checks successful Pages runs whose review windows
+remain open and whose source includes the first 90-day retention-policy commit,
+`edf2d3509e6b51cdd42ad36cd9ca1dd111cfd08e`. GitHub's commit comparison establishes
+that ancestry; a release that predates the policy is excluded, while unavailable
+or divergent ancestry fails the check. This avoids imposing a new artifact
+requirement on older releases that did not promise 90-day retention. The monitor
+reads workflow and artifact metadata only; it does not deploy, recreate missing
+evidence, or change retention settings.

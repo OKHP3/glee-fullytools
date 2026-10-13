@@ -13,6 +13,9 @@ from urllib.request import Request, urlopen
 
 REQUIRED_RETENTION = timedelta(days=90)
 API_VERSION = "2022-11-28"
+# The source revision that first requested 90-day Pages evidence retention.
+# Earlier successful releases did not promise this artifact lifetime.
+RETENTION_POLICY_COMMIT = "edf2d3509e6b51cdd42ad36cd9ca1dd111cfd08e"
 
 
 def parse_timestamp(value: object, field: str) -> datetime:
@@ -157,6 +160,20 @@ def monitor_repository(
             raise ValueError(
                 "Successful Pages run is missing a numeric id or commit SHA "
                 f"(run metadata: {run!r})"
+            )
+
+        compare_url = (
+            f"{api_url.rstrip('/')}/repos/{repository}/compare/"
+            f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
+        )
+        comparison, _ = (fetch_page or api_page)(compare_url, token)
+        policy_status = comparison.get("status") if isinstance(comparison, dict) else None
+        if policy_status == "behind":
+            continue
+        if policy_status not in ("ahead", "identical"):
+            raise ValueError(
+                f"Cannot establish retention-policy ancestry for commit {commit} "
+                f"(run {run_id}): comparison status {policy_status!r}"
             )
 
         artifacts_url = (
