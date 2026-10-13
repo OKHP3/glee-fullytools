@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Contract tests for complete, commit-linked Pages validation evidence."""
 from pathlib import Path
+from datetime import datetime, timedelta, timezone
+import importlib.util
 import json
 import os
 import subprocess
@@ -22,6 +24,12 @@ POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
 THEME_SUMMARY_STEP = "- name: Add verified browser theme results to run summary"
 DEPLOY_JOB = "  deploy:"
 RETENTION_CHECKER = ROOT / "scripts" / "check-pages-validation-retention.py"
+RETENTION_WORKFLOW = ROOT / ".github" / "workflows" / "pages-validation-retention.yml"
+RETENTION_SPEC = importlib.util.spec_from_file_location(
+    "check_pages_validation_retention", RETENTION_CHECKER
+)
+retention_checker = importlib.util.module_from_spec(RETENTION_SPEC)
+RETENTION_SPEC.loader.exec_module(retention_checker)
 LATE_EVIDENCE_STEPS = (
     "- name: Run browser responsive and asset QA",
     "- name: Run visitor, privacy, and rendered contrast acceptance",
@@ -341,6 +349,139 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     assert_uploaded_theme_evidence_contract(
                         before + RETENTION_VERIFY_STEP + retention.replace(binding, "missing", 1)
                     )
+
+    def test_scheduled_retention_workflow_is_read_only_and_daily(self):
+        workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn('cron: "17 12 * * *"', workflow)
+        self.assertIn("actions: read", workflow)
+        self.assertIn("--monitor-window", workflow)
+        self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
+        self.assertNotIn("actions/deploy-pages", workflow)
+
+    def test_retention_monitor_reports_missing_active_artifact_with_commit(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "a" * 40
+        run = {
+            "id": 44,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/runs/44/artifacts?" in url:
+                self.assertIn("include_expired=true", url)
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            rf"commit {commit} \(run 44\).*missing before its 90-day review window ends",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+    def test_retention_monitor_checks_successful_runs_only_inside_window(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "b" * 40
+        active_run = {
+            "id": 51,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        old_run = {
+            "id": 52,
+            "head_sha": "c" * 40,
+            "created_at": "2026-07-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        failed_run = {
+            "id": 53,
+            "head_sha": "d" * 40,
+            "created_at": "2026-10-05T12:00:00Z",
+            "conclusion": "failure",
+        }
+        artifact = {
+            "id": 501,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 51, "head_sha": commit},
+        }
+        requested_runs = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {
+                    "workflow_runs": [active_run, old_run, failed_run]
+                }, None
+            if "/runs/" in url and "/artifacts?" in url:
+                run_id = int(url.split("/runs/", 1)[1].split("/", 1)[0])
+                requested_runs.append(run_id)
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        checked = retention_checker.monitor_repository(
+            "owner/repo",
+            "https://api.github.com",
+            "test-token",
+            now=now,
+            fetch_page=fetch,
+        )
+        self.assertEqual(checked, 1)
+        self.assertEqual(requested_runs, [51])
+
+    def test_retention_monitor_stops_checking_at_the_90_day_deadline(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        exact_deadline_run = {
+            "id": 61,
+            "head_sha": "e" * 40,
+            "created_at": (now - timedelta(days=90)).isoformat(),
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [exact_deadline_run]}, None
+            artifact_requests.append(url)
+            return {"artifacts": []}, None
+
+        checked = retention_checker.monitor_repository(
+            "owner/repo",
+            "https://api.github.com",
+            "test-token",
+            now=now,
+            fetch_page=fetch,
+        )
+        self.assertEqual(checked, 0)
+        self.assertEqual(artifact_requests, [])
+
+    def test_retention_monitor_follows_github_pagination(self):
+        first = "https://api.github.com/first"
+        second = "https://api.github.com/second"
+        calls = []
+
+        def fetch(url, token):
+            calls.append(url)
+            if url == first:
+                return {"workflow_runs": [{"id": 1}]}, second
+            return {"workflow_runs": [{"id": 2}]}, None
+
+        self.assertEqual(
+            retention_checker._list_all(first, "workflow_runs", "test-token", fetch),
+            [{"id": 1}, {"id": 2}],
+        )
+        self.assertEqual(calls, [first, second])
 
     @classmethod
     def setUpClass(cls):
