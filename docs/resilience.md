@@ -37,6 +37,11 @@ game can work offline.
 - When connectivity returns, navigation uses the network response and updates
   the same-origin navigation cache. A new worker version removes older
   `glee-fully-shell-*` caches during activation before claiming clients.
+- English search uses the generated `search-index-version` HTML metadata and
+  the matching worker cache key. Index-only changes update that metadata and
+  the worker without changing the shared runtime. Only an eight-character
+  lowercase hash is accepted; metadata cannot supply another URL. The existing
+  French index and German/Spanish English fallback remain unchanged.
 - Cache writes are best effort. Storage or quota failures cannot replace a
   successful network response with offline content. Runtime HTML storage is
   bounded to 80 entries beyond the intentional precache; serialized writes
