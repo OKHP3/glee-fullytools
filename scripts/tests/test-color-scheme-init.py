@@ -104,8 +104,12 @@ def load_context(browser, base_url: str, init_script: str = "", *, preference=No
     return context
 
 
-def bootstrap_events(events: list[tuple[str, str | None]], route: str) -> dict[str, object]:
-    """Prove the external bootstrap completed before DOMContentLoaded."""
+def bootstrap_events(
+    events: list[tuple[str, str | None]],
+    route: str,
+    timing: dict[str, object],
+) -> dict[str, object]:
+    """Prove completion on the browser clock; retain protocol events as evidence."""
     asset_events = [
         (kind, index)
         for index, (kind, _) in enumerate(events)
@@ -132,15 +136,25 @@ def bootstrap_events(events: list[tuple[str, str | None]], route: str) -> dict[s
         f"{route}: external color-scheme asset was not requested "
         "before DOMContentLoaded"
     )
-    assert finished_index < dcl_index, (
+    # WebKit can deliver requestfinished after its DOMContentLoaded callback.
+    # Resource and navigation timing share the document's time origin, so they
+    # prove actual completion independently of protocol callback delivery order.
+    response_end = timing.get("asset_response_end")
+    dcl_start = timing.get("domcontentloaded_start")
+    assert response_end is not None and dcl_start is not None and (
+        response_end > 0 and dcl_start > 0
+    ), f"{route}: missing browser timing for color-scheme bootstrap: {timing}"
+    assert response_end <= dcl_start, (
         f"{route}: external color-scheme asset did not finish "
-        "before DOMContentLoaded"
+        f"before DOMContentLoaded: timing={timing}; events={events}"
     )
     return {
         "event_order": [kind for kind, _ in events],
         "asset_request_index": request_index,
         "asset_finished_index": finished_index,
         "domcontentloaded_index": dcl_index,
+        "asset_response_end": response_end,
+        "domcontentloaded_start": dcl_start,
     }
 
 
@@ -151,6 +165,7 @@ def paint_timing(page) -> dict[str, float | FirstPaintStatus | None]:
           const assets = performance.getEntriesByType('resource')
             .filter(entry => new URL(entry.name).pathname === assetPath);
           const asset = assets[assets.length - 1];
+          const navigation = performance.getEntriesByType('navigation')[0];
           const canReadPaintEntries =
             typeof performance.getEntriesByType === 'function';
           const supportedEntryTypes =
@@ -166,6 +181,8 @@ def paint_timing(page) -> dict[str, float | FirstPaintStatus | None]:
           const firstPaint = paints.find(entry => entry.name === 'first-paint');
           return {
             asset_response_end: asset ? asset.responseEnd : null,
+            domcontentloaded_start: navigation
+              ? navigation.domContentLoadedEventStart : null,
             first_paint: firstPaint ? firstPaint.startTime : null,
             first_paint_status: firstPaint
               ? 'observed'
@@ -296,9 +313,9 @@ def _check_saved_preference_context(
                 f"{route} does not load the external color-scheme asset"
             )
 
-            event_evidence = bootstrap_events(events, route)
             page.wait_for_load_state("load")
             timing = paint_timing(page)
+            event_evidence = bootstrap_events(events, route, timing)
             assert_paint_order(route, timing)
 
             results.append({
@@ -461,9 +478,9 @@ def _check_disabled_storage_context(
                 f"{route} did not reach DOMContentLoaded with disabled storage: "
                 f"{initial}"
             )
-            event_evidence = bootstrap_events(events, route)
             page.wait_for_load_state("load")
             timing = paint_timing(page)
+            event_evidence = bootstrap_events(events, route, timing)
             assert_paint_order(route, timing)
             assert not page_errors, (
                 f"{route} raised page errors after load with disabled storage: "

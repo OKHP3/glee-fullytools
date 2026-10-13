@@ -10,23 +10,13 @@ for f in index.html assets/css/theme.css assets/js/app.js; do
   fi
 done
 
-echo "Post-merge: rebuilding the search index and portfolio stats..."
-python3 scripts/build-search-index.py
+echo "Post-merge: checking committed search index..."
+python3 scripts/build-search-index.py --check
 
-echo "Post-merge: refreshing generated portfolio stats..."
-python3 scripts/sync-portfolio-stats.py
-
-echo "Post-merge: rebuilding the search index with refreshed page content..."
-python3 scripts/build-search-index.py
-
-echo "Post-merge: checking refreshed portfolio stats..."
+echo "Post-merge: checking committed portfolio stats..."
 python3 scripts/sync-portfolio-stats.py --check
 
-echo "Post-merge: rebuilding sitemap and feed..."
-python3 scripts/generate-sitemap.py
-python3 scripts/generate-feed.py
-
-echo "Post-merge: checking generated discovery artifacts..."
+echo "Post-merge: checking committed discovery artifacts..."
 python3 scripts/generate-sitemap.py --check
 python3 scripts/generate-feed.py --check
 

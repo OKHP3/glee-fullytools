@@ -34,6 +34,8 @@ The dated report is tracked evidence, not a per-run log.  When the current
 report's validation payload is unchanged, the existing file (including its
 generated_at timestamp) is preserved byte-for-byte.  A changed payload gets a
 fresh UTC generated_at timestamp.
+The filename and run_date share one local calendar date captured when report
+writing begins.  The UTC generated_at may fall on a different calendar date.
 
 Exit code:
   0 if no critical defects, 1 otherwise.
@@ -565,10 +567,11 @@ def main(validated_commit: str | None = None) -> int:
 
     audit_dir = ROOT / "assets" / "audit"
     audit_dir.mkdir(exist_ok=True)
-    out = audit_dir / f"validation-report-{date.today().isoformat()}.json"
+    run_date = date.today().isoformat()
+    out = audit_dir / f"validation-report-{run_date}.json"
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "run_date": date.today().isoformat(),
+        "run_date": run_date,
         "report_type": "site-validation",
         "provenance": {"validated_commit": validated_commit},
         "scanned": len(pages),

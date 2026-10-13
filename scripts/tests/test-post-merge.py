@@ -14,12 +14,8 @@ HOOK = Path(__file__).resolve().parents[1] / "post-merge.sh"
 GIT_BASH = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Git/bin/bash.exe"
 BASH = str(GIT_BASH) if os.name == "nt" and GIT_BASH.is_file() else shutil.which("bash")
 CALLS = [
-    "scripts/build-search-index.py",
-    "scripts/sync-portfolio-stats.py",
-    "scripts/build-search-index.py",
+    "scripts/build-search-index.py --check",
     "scripts/sync-portfolio-stats.py --check",
-    "scripts/generate-sitemap.py",
-    "scripts/generate-feed.py",
     "scripts/generate-sitemap.py --check",
     "scripts/generate-feed.py --check",
     "scripts/sync-css-version.py",

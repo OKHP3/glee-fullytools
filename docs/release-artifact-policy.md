@@ -37,3 +37,16 @@ python3 scripts/check-pages-artifact.py /tmp/pages-policy-fixture
 
 The workflow's actual artifact check is the release evidence. A local fixture
 can verify the validator's pass/fail behavior but is not a deployment.
+
+## Validation evidence retention
+
+The separate validation artifact requests 90 days of retention. Before deployment,
+the workflow checks its effective expiration using authenticated GitHub artifact
+and workflow-run metadata. Both responses must identify the current run and
+release commit; missing or mismatched metadata blocks deployment.
+
+GitHub's retention deadline is measured from the original workflow run's
+`created_at`, not the later artifact upload or rerun start. The checker requires
+at least 90 days from that timestamp, with no tolerance for a shorter period. An
+upload made after validation therefore has less than 90 days remaining at upload
+time. Artifacts must also be unexpired and have valid creation/expiration order.
