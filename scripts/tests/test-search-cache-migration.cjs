@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
+const { once } = require('node:events');
 const vm = require('node:vm');
 const { chromium } = require('playwright');
 
@@ -114,10 +115,19 @@ test('returning visitors bypass an old unversioned index and search offline afte
       assert.equal(await page.evaluate(async cache => (await caches.keys()).includes(cache), oldCache), true,
         'the old worker remains installed while the new index is fetched');
 
+      const oldWorker = context.serviceWorkers().find(worker => worker.url() === base + '/sw.js');
+      assert.equal(await oldWorker.evaluate('CACHE_NAME'), oldCache);
+      const nextWorkerStarted = context.waitForEvent('serviceworker');
       currentWorker = true;
       await page.evaluate(async () => (await navigator.serviceWorker.getRegistration()).update());
+      const nextWorker = await nextWorkerStarted;
+      assert.equal(await nextWorker.evaluate('CACHE_NAME'), newCache);
       await page.waitForFunction(async () => !!(await navigator.serviceWorker.getRegistration()).waiting);
+      // Let the previous controlled client and worker finish closing before
+      // opening another client. Reopening immediately can keep it in control.
+      const oldWorkerClosed = once(oldWorker, 'close', { signal: AbortSignal.timeout(15000) });
       await page.close();
+      await oldWorkerClosed;
       page = await context.newPage();
       page.setDefaultTimeout(15000);
       await page.goto(base + '/search/?q=probe');
