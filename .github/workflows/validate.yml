@@ -135,6 +135,7 @@ jobs:
         run: |
           python3 scripts/tests/test-foundry-page.py
           python3 scripts/tests/test-foundry-universe-links.py
+          python3 scripts/tests/test-foundry-accessibility-report.py
 
       - name: Run CLS session-window regressions
         run: node --test scripts/tests/test-cls-session-window.cjs

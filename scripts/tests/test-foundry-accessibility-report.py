@@ -368,20 +368,21 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
         node_job_start = workflow.index("\n  node-qa:\n")
         next_job_start = workflow.index("\n  review-action-versions:\n", node_job_start)
         node_job = workflow[node_job_start:next_job_start]
-        browser = step_block(
-            node_job,
-            "Install matching browser and test the FoundRy page",
-        )
+        browser_install = step_block(node_job, "Install matching Chromium browser")
+        browser = step_block(node_job, "Test FoundRy page accessibility")
+        normalized_install = " ".join(browser_install.replace("\\", "").split())
         normalized_browser = " ".join(browser.replace("\\", "").split())
 
         self.assertIn("name: Validate Node dependency updates", node_job)
         self.assertIn("chromium", EXPECTED_ENGINES)
-        self.assertIn("npx playwright install --with-deps chromium", normalized_browser)
+        self.assertIn("npx playwright install --with-deps chromium", normalized_install)
+        self.assertLess(node_job.index(browser_install), node_job.index(browser))
         self.assertIn(
             "npm run qa:foundry-accessibility -- --engine chromium",
             normalized_browser,
         )
         self.assertNotIn("continue-on-error", browser)
+        self.assertNotIn("continue-on-error", browser_install)
         self.assertNotIn("--engine firefox", normalized_browser)
         self.assertNotIn("--engine webkit", normalized_browser)
 
