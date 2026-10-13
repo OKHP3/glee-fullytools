@@ -7,9 +7,14 @@
 // IntersectionObserver to defer rendering until each diagram approaches the
 // viewport. Falls back to immediate render where the API is unavailable.
 
-// Most diagrams are informational and do not need Mermaid's click handling.
-// The two v2 heat pages opt in with data-mermaid-security="loose" because
-// their diagrams contain curated outbound click directives.
+// Mermaid's securityLevel and this site's exact URL allowlist are separate.
+// Mermaid URL links and click callbacks follow Mermaid's own handling; this
+// allowlist only checks source `click NODE "URL"` directives.
+// That source filter runs only when the page body explicitly opts in with
+// data-mermaid-security="loose". The published v2 heat pages currently omit
+// the attribute, so this initializer selects strict mode and does not run the
+// custom filter there. Strict mode does not prove SVG URL anchors are absent
+// or that this site's exact allowlist was applied.
 const usesClickableLinks =
   document.body?.dataset.mermaidSecurity === "loose";
 
@@ -39,6 +44,8 @@ function isAllowedClickTarget(value) {
 }
 
 function sanitizeClickableLinks(source) {
+  // This exact-target filter covers source URL-click syntax, not every Mermaid
+  // link or callback path.
   // Mermaid's click syntax is line-oriented: click NODE "URL" "tooltip".
   // Remove an entire directive when its URL is not an exact allowlist match.
   return source.replace(
@@ -269,13 +276,24 @@ function enhanceMermaidLinks(node) {
       link.querySelector("title")?.textContent?.trim();
     if (label) link.setAttribute("aria-label", label);
     if (href) {
-      // Interactive SVG links must remain reachable in the keyboard order.
+      // Mermaid can emit SVG URL links in either mode. This accessibility
+      // enhancement does not apply the site's ALLOWED_CLICK_TARGETS list.
       node.setAttribute("role", "group");
       node.querySelector("svg")?.setAttribute("role", "group");
       link.setAttribute("role", "link");
       link.setAttribute("tabindex", "0");
     } else link.setAttribute("tabindex", "-1");
   });
+}
+
+function showUniverseRenderFailure(node) {
+  const status = node
+    .closest(".askjamie-mermaid-shell")
+    ?.querySelector("[data-mermaid-failure-status]");
+  if (!status) return;
+  status.hidden = false;
+  status.textContent =
+    "The diagram could not be displayed. Use the links below to browse these pages.";
 }
 
 function renderOne(node) {
@@ -289,7 +307,10 @@ function renderOne(node) {
   loadMermaid()
     .then((mermaid) => mermaid.run({ nodes: [node] }))
     .then(() => enhanceMermaidLinks(node))
-    .catch((err) => console.warn("[mermaid-init] render error:", err));
+    .catch((err) => {
+      showUniverseRenderFailure(node);
+      console.warn("[mermaid-init] render error:", err);
+    });
 }
 
 function scheduleRender(node) {

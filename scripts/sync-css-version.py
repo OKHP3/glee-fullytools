@@ -37,7 +37,7 @@ SKIP_DIRS = {
 # Capture group 1 = the existing token (anything up to the next quote/space).
 CSS_REF_RE = re.compile(r"(theme\.css\?v=)([^\"' >]+)")
 JS_REF_RE = re.compile(
-    r"(?<![A-Za-z0-9._/-])(?P<prefix>(?:/)?assets/js/(?P<asset>app|glee-site-enhancements|universe-map|color-scheme-init)\.js)"
+    r"(?<![A-Za-z0-9._/-])(?P<prefix>(?:/)?assets/js/(?P<asset>app|mermaid-init|glee-site-enhancements|universe-map|color-scheme-init)\.js)"
     r"(?P<query>\?[^\"' >#]*)?(?P<fragment>#[^\"' >]*)?"
 )
 SEARCH_INDEX_REF_RE = re.compile(
@@ -46,6 +46,7 @@ SEARCH_INDEX_REF_RE = re.compile(
 JS_ASSETS = {
     "color-scheme-init": "assets/js/color-scheme-init.js",
     "app": "assets/js/app.js",
+    "mermaid-init": "assets/js/mermaid-init.js",
     "universe-map": "assets/js/universe-map.js",
     "glee-site-enhancements": "assets/js/glee-site-enhancements.js",
 }
