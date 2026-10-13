@@ -213,6 +213,7 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run qa:foundry-accessibility -- --engine chromium
+          node --test scripts/tests/test-search-cache-migration.cjs
 
   review-action-versions:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

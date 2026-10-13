@@ -43,6 +43,10 @@ JS_REF_RE = re.compile(
 SEARCH_INDEX_REF_RE = re.compile(
     r"(?P<prefix>(?:/)?assets/data/search-index\.json)(?P<query>\?[^\"' >#]*)?(?P<fragment>#[^\"' >]*)?"
 )
+SEARCH_INDEX_META_RE = re.compile(
+    r'(?P<prefix><meta name="search-index-version" content=")[^"]*'
+    r'(?P<suffix>">[ \t]*<!-- AUTOGEN:SEARCH-INDEX-VERSION -->)'
+)
 JS_ASSETS = {
     "color-scheme-init": "assets/js/color-scheme-init.js",
     "app": "assets/js/app.js",
@@ -115,6 +119,28 @@ def rewrite_search_index_refs(source: str, token: str) -> str:
     return SEARCH_INDEX_REF_RE.sub(replace, source)
 
 
+def rewrite_search_index_metadata(source: str, token: str) -> str:
+    """Keep the index cache key in generated HTML, outside the shared runtime."""
+    if not any(match.group("asset") == "app" for match in JS_REF_RE.finditer(source)):
+        return source
+    metadata = (
+        f'  <meta name="search-index-version" content="{token}"> '
+        '<!-- AUTOGEN:SEARCH-INDEX-VERSION -->\n'
+    )
+    if SEARCH_INDEX_META_RE.search(source):
+        return SEARCH_INDEX_META_RE.sub(
+            lambda match: match.group("prefix") + token + match.group("suffix"), source
+        )
+    if 'name="search-index-version"' in source:
+        raise ValueError("Unmanaged search-index-version metadata must be reviewed")
+    if "</head>" not in source:
+        raise ValueError("Search runtime page is missing its head boundary")
+    closing = re.search(r"(?m)^[ \t]*</head>", source)
+    if closing:
+        return source[:closing.start()] + metadata + source[closing.start():]
+    return source.replace("</head>", metadata + "</head>", 1)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -145,8 +171,6 @@ def main() -> int:
             if "glee-site-enhancements" in js_tokens
             else app_source
         )
-        if search_index_token:
-            app_patched = rewrite_search_index_refs(app_patched, search_index_token)
         if app_patched != app_source:
             stale = True
             if args.check:
@@ -177,6 +201,7 @@ def main() -> int:
         patched = rewrite_javascript_refs(patched, js_tokens)
         if search_index_token:
             patched = rewrite_search_index_refs(patched, search_index_token)
+            patched = rewrite_search_index_metadata(patched, search_index_token)
         if patched == src:
             unchanged += 1
         else:
