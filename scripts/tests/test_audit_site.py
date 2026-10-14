@@ -19,6 +19,8 @@ _MODULE = importlib.util.module_from_spec(_SPEC)
 assert _SPEC.loader is not None
 _SPEC.loader.exec_module(_MODULE)
 
+ORIGIN = "https://glee-fully.tools"
+
 
 class AuditSiteTests(unittest.TestCase):
     def run_cli_fixture(self, root: Path, report: str, stdout) -> int:
@@ -72,6 +74,118 @@ class AuditSiteTests(unittest.TestCase):
             self.assertEqual(self.run_cli_fixture(root, str(report), console), 0)
             self.assertIn(str(report.resolve()), console.getvalue())
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
+
+    def og_image_findings(self, root: Path, url: str) -> list[str]:
+        page = root / "content" / "index.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(
+            f'<meta property="og:image" content="{url}">',
+            encoding="utf-8",
+        )
+        with patch.object(_MODULE, "ROOT", root), patch.object(
+            _MODULE, "site_origin", return_value=ORIGIN
+        ):
+            return [
+                issue for issue in _MODULE.audit_page(page)
+                if issue.startswith("og:image")
+            ]
+
+    def assert_invalid_og_images_stay_inside_root(
+        self, root: Path, urls: tuple[str, ...]
+    ) -> None:
+        root_resolved = root.resolve()
+        original_exists = Path.exists
+        original_is_file = Path.is_file
+
+        def guard_outside(method):
+            def checked(path):
+                resolved = path.resolve()
+                try:
+                    resolved.relative_to(root_resolved)
+                except ValueError as exc:
+                    raise AssertionError(
+                        f"auditor checked a file outside the repository: {path}"
+                    ) from exc
+                return method(path)
+            return checked
+
+        with patch.object(
+            Path, "exists", autospec=True, side_effect=guard_outside(original_exists)
+        ), patch.object(
+            Path, "is_file", autospec=True, side_effect=guard_outside(original_is_file)
+        ):
+            for url in urls:
+                with self.subTest(url=url):
+                    findings = self.og_image_findings(root, url)
+                    self.assertEqual(len(findings), 1)
+                    self.assertIn(
+                        "does not resolve to a safe file inside", findings[0]
+                    )
+                    self.assertIn(url, findings[0])
+
+    def test_local_og_images_resolve_queries_and_percent_encoded_filenames(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(b"image")
+            (image_dir / "hero card.png").write_bytes(b"image")
+            for url in (
+                f"{ORIGIN}/assets/social/hero.png?v=2",
+                f"{ORIGIN}/assets/social/hero%20card.png?width=1200",
+            ):
+                with self.subTest(url=url):
+                    self.assertEqual(self.og_image_findings(root, url), [])
+
+    def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_route = root / "assets" / "social" / "album"
+            image_route.mkdir(parents=True)
+            (image_route / "index.html").write_text("<html></html>", encoding="utf-8")
+            url = f"{ORIGIN}/assets/social/album/"
+            findings = self.og_image_findings(root, url)
+            self.assertEqual(len(findings), 1)
+            self.assertIn("not an image file", findings[0])
+
+    def test_external_og_image_is_not_resolved_as_a_local_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            url = "https://glee-fully.tools.attacker.test/assets/social/missing.png"
+            with patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
+                self.assertEqual(self.og_image_findings(root, url), [])
+            resolve.assert_not_called()
+
+    def test_traversal_and_missing_og_images_are_actionable_without_outside_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            outside = Path(directory) / "outside.png"
+            outside.write_bytes(b"outside")
+            self.assert_invalid_og_images_stay_inside_root(
+                root,
+                (
+                    f"{ORIGIN}/%2e%2e/outside.png",
+                    f"{ORIGIN}/assets/social/missing.png",
+                ),
+            )
+
+    def test_symlink_escaping_og_image_is_actionable_without_outside_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            outside = Path(directory) / "outside.png"
+            outside.write_bytes(b"outside")
+            escaped_link = image_dir / "escaped.png"
+            try:
+                escaped_link.symlink_to(outside)
+            except (OSError, NotImplementedError) as exc:
+                self.skipTest(f"File symlinks unavailable: {exc}")
+            self.assert_invalid_og_images_stay_inside_root(
+                root, (f"{ORIGIN}/assets/social/escaped.png",)
+            )
 
     def test_symlinked_root_keeps_report_display_relative(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
