@@ -993,7 +993,8 @@ document.addEventListener("DOMContentLoaded", () => {
         render();
       }).catch(setLoadError);
       focusTimer = setTimeout(() => {
-        if (overlay.dataset.open === "true") input.focus();
+        // Do not steal focus after a visitor has already entered the panel.
+        if (overlay.dataset.open === "true" && !overlay.contains(document.activeElement)) input.focus();
       }, 30);
     }
     function close() {
