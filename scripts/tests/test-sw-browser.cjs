@@ -32,7 +32,11 @@ const server = http.createServer(async (request, response) => {
     await context.route('**/*', route => route.request().url().startsWith(base) ? route.continue() : route.abort());
     const page = await context.newPage();
     const errors = [];
-    page.on('pageerror', error => errors.push(error.message));
+    const pageErrors = [];
+    page.on('pageerror', error => {
+      errors.push(error.message);
+      pageErrors.push(error.message);
+    });
     context.on('requestfailed', request => errors.push(`${request.url()}: ${request.failure()?.errorText}`));
     await page.goto(base, { waitUntil: 'load' });
     // This runner isolates the worker's lifecycle from the adapter's load timing.
@@ -93,15 +97,63 @@ const server = http.createServer(async (request, response) => {
     assert.equal(adapterResponse.fromServiceWorker(), true);
     assert.ok(page.url().endsWith('case=offline'));
     await page.waitForFunction(() => document.querySelector('[data-glee-search-inline-results] a'));
-    await page.goto(base + '/toolbox/01-discovered-careers/01a-resume-builder/', { waitUntil: 'load' });
+    const fallbackPath = '/toolbox/01-discovered-careers/01a-resume-builder/';
+    const fallback = await page.goto(base + fallbackPath, { waitUntil: 'load' });
+    assert.equal(fallback.fromServiceWorker(), true, 'fallback is served by the active worker');
     assert.match(await page.title(), /offline/i, 'unvisited page uses honest offline fallback');
+
+    // Follow the fallback's real tab order; programmatic focus would hide a
+    // keyboard-navigation regression. Expected offline network failures are
+    // separate from JavaScript page errors.
+    async function followRecoveryLink(link, destination) {
+      let reached = false;
+      for (let step = 0; step < 12; step++) {
+        await page.keyboard.press('Tab');
+        if (await link.evaluate(node => document.activeElement === node)) {
+          reached = true;
+          break;
+        }
+      }
+      assert.ok(reached, `Tab reaches recovery link to ${destination}`);
+      // The reconnect link reloads the same URL. Wait for the new load event,
+      // not waitForURL, which could resolve against the previous fallback.
+      const [response] = await Promise.all([
+        page.waitForResponse(response => response.request().isNavigationRequest() &&
+          response.url() === base + destination),
+        page.waitForEvent('load'),
+        page.keyboard.press('Enter'),
+      ]);
+      assert.equal(page.url(), base + destination);
+      return response;
+    }
+    const home = await followRecoveryLink(page.getByRole('link', { name: 'Return home', exact: true }), '/');
+    assert.equal(home.fromServiceWorker(), true, 'Return home uses the precached homepage offline');
+    assert.doesNotMatch(await page.title(), /offline/i);
+
+    await page.goto(base + fallbackPath, { waitUntil: 'load' });
+    assert.match(await page.title(), /offline/i);
+    assert.equal(await worker.evaluate(async () => {
+      const name = (await caches.keys()).find(name => name.startsWith('glee-fully-shell-'));
+      return !!await (await caches.open(name)).match(new URL('/arcade/', self.location.origin).href);
+    }), false, 'Arcade has not been cached by this fixture');
+    const offlineArcade = await followRecoveryLink(page.locator('a[href="/arcade/"]'), '/arcade/');
+    assert.equal(offlineArcade.fromServiceWorker(), true);
+    assert.match(await page.title(), /offline/i, 'uncached Arcade remains an honest fallback while offline');
+
     await context.setOffline(false);
+    const arcade = await followRecoveryLink(page.locator('a[href="/arcade/"]'), '/arcade/');
+    assert.equal(arcade.status(), 200);
+    assert.doesNotMatch(await page.title(), /offline/i, 'Arcade loads after reconnecting');
+    assert.equal(new URL(page.url()).pathname, '/arcade/');
+    assert.deepEqual(pageErrors, [], 'recovery journeys produce no page errors');
     await page.goto(base + '/toolbox/01-discovered-careers/01a-resume-builder/', { waitUntil: 'domcontentloaded' });
     assert.match(await page.locator('h1').innerText(), /Resume/i);
     console.log(JSON.stringify({ status: 'passed', browser: 'Chromium', publicSiteDirectory: root,
       checks: ['quota failure keeps online page', 'unavailable storage keeps online page',
         'query shell deduplication', 'cold offline adapter from service worker',
-        'offline query and search results', 'uncached offline fallback', 'reconnect navigation'] }, null, 2));
+        'offline query and search results', 'uncached offline fallback',
+        'keyboard Return home offline', 'honest uncached Arcade offline',
+        'keyboard Arcade after reconnect', 'recovery has no page errors', 'reconnect navigation'] }, null, 2));
   } finally {
     if (browser) await browser.close();
     server.closeAllConnections();
