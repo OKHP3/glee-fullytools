@@ -478,7 +478,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ValueError,
-            rf"commit {commit} \(run 44\).*missing before its 90-day review window ends",
+            rf"run 44 \| commit {commit} \| review deadline "
+            r"2026-12-30T12:00:00\+00:00: validation artifact is missing",
         ):
             retention_checker.monitor_repository(
                 "owner/repo",
@@ -487,6 +488,71 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 now=now,
                 fetch_page=fetch,
             )
+
+    def test_retention_monitor_reports_every_active_run_with_invalid_or_missing_evidence(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        first_commit = "a" * 40
+        second_commit = "b" * 40
+        runs = [
+            {
+                "id": 44,
+                "head_sha": first_commit,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 45,
+                "head_sha": second_commit,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+        requests = []
+        invalid_artifact = {
+            "id": 450,
+            "name": f"pages-validation-{second_commit}",
+            "expired": True,
+            "created_at": "2026-10-02T12:01:00Z",
+            "expires_at": "2026-12-31T12:00:00Z",
+            "workflow_run": {"id": 45, "head_sha": second_commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/" in url and "/artifacts?" in url:
+                run_id = int(url.split("/runs/", 1)[1].split("/", 1)[0])
+                requests.append(run_id)
+                if run_id == 44:
+                    return {"artifacts": []}, None
+                return {"artifacts": [invalid_artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        message = str(raised.exception)
+        self.assertIn("problems in active review windows (2)", message)
+        self.assertIn(
+            f"run 44 | commit {first_commit} | review deadline "
+            "2026-12-30T12:00:00+00:00: validation artifact is missing",
+            message,
+        )
+        self.assertIn(
+            f"run 45 | commit {second_commit} | review deadline "
+            "2026-12-31T12:00:00+00:00: validation artifact is invalid or unavailable: "
+            "GitHub reports that the validation artifact is expired",
+            message,
+        )
+        self.assertEqual(requests, [44, 45])
 
     def test_retention_monitor_checks_successful_runs_only_inside_window(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
@@ -592,9 +658,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ValueError,
-            rf"commit {commit} \(run 71\).*active 90-day review window ending "
-            r"2026-12-30T12:00:00\+00:00: artifact download failed: "
-            r"HTTP Error 403: Forbidden",
+            rf"run 71 \| commit {commit} \| review deadline "
+            r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
+            r"unavailable: artifact download failed: HTTP Error 403: Forbidden",
         ):
             retention_checker.monitor_repository(
                 "owner/repo",
