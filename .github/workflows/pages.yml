@@ -213,6 +213,7 @@ jobs:
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
 
       - name: Run color-scheme bootstrap regression in all installed engines
+        id: theme_browser_checks
         run: |
           failed=0
           for browser in chromium firefox webkit; do
@@ -223,6 +224,97 @@ jobs:
               || failed=1
           done
           exit "$failed"
+
+      - name: Summarize browser theme failures (diagnostic only)
+        if: ${{ always() && steps.theme_browser_checks.outcome == 'failure' }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          expected = (
+              ("chromium", "Chromium"),
+              ("firefox", "Firefox"),
+              ("webkit", "WebKit"),
+          )
+          valid_cases = {"light", "dark", "disabled_storage"}
+          lines = [
+              "## Browser theme failure diagnostics (not validated release evidence)",
+              "",
+              "**Diagnostic only.** This summary describes a failed gate; it does not "
+              "verify or validate any browser result.",
+              "",
+          ]
+
+          def one_line(value):
+              return " ".join(str(value).split()).replace("`", "'")[:300]
+
+          audit_dir = Path("assets/audit")
+          for browser, label in expected:
+              path = audit_dir / f"color-scheme-init-{browser}.json"
+              if not path.is_file():
+                  lines.append(
+                      f"- **{label}:** failure report unavailable; inspect this engine's workflow log."
+                  )
+                  continue
+              try:
+                  report = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                  lines.append(
+                      f"- **{label}:** failure report is malformed or unreadable "
+                      f"({one_line(error)}); inspect the workflow log."
+                  )
+                  continue
+              if not isinstance(report, dict):
+                  lines.append(
+                      f"- **{label}:** failure report is malformed (JSON root must "
+                      "be an object); inspect the workflow log."
+                  )
+                  continue
+
+              engine = label
+              version = report.get("browser_version")
+              if isinstance(version, str) and version.strip():
+                  engine += f" ({one_line(version)})"
+              reported_browser = report.get("browser")
+              if reported_browser not in (None, browser):
+                  engine += f" [report says {one_line(reported_browser)}]"
+
+              status = report.get("status")
+              if status == "FAIL":
+                  failed_case = report.get("failed_case")
+                  case = (
+                      failed_case
+                      if isinstance(failed_case, str) and failed_case in valid_cases
+                      else "not identified"
+                  )
+                  detail = one_line(report.get("error", ""))
+                  suffix = f" — {detail}" if detail else ""
+                  lines.append(f"- **{engine}:** failed in `{case}`{suffix}.")
+                  if report.get("diagnostic_only") is not True:
+                      lines.append(
+                          "  - Report is missing its diagnostic-only marker; "
+                          "treat the details as unverified."
+                      )
+              elif status == "PASS":
+                  lines.append(
+                      f"- **{engine}:** report says PASS, but this is not a "
+                      "validated release result because the browser gate failed."
+                  )
+              else:
+                  lines.append(
+                      f"- **{engine}:** failure report has no recognized status "
+                      f"({one_line(status) or 'missing'}); inspect the workflow log."
+                  )
+
+          summary = "\n".join(lines) + "\n"
+          print(summary, end="")
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as output:
+                  output.write(summary)
+          PY
 
       - name: Verify browser-specific theme evidence
         id: theme_evidence
