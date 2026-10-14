@@ -20,6 +20,12 @@ assert _SPEC.loader is not None
 _SPEC.loader.exec_module(_MODULE)
 
 ORIGIN = "https://glee-fully.tools"
+IMAGE_SIGNATURES = {
+    "png": b"\x89PNG\r\n\x1a\n\x00\x00\x00\r",
+    "jpg": b"\xff\xd8\xff\xdb\x00\x43\x00\x00\x00\x00\x00\x00",
+    "gif": b"GIF89a\x00\x00\x00\x00\x00\x00",
+    "webp": b"RIFF\x00\x00\x00\x00WEBP",
+}
 
 
 class AuditSiteTests(unittest.TestCase):
@@ -98,7 +104,7 @@ class AuditSiteTests(unittest.TestCase):
             root = Path(directory) / "repo"
             images = root / "assets" / "social"
             images.mkdir(parents=True)
-            (images / "hero.png").write_bytes(b"image")
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             invalid = (
                 f"{ORIGIN}/assets/social/missing.png",
                 f"{ORIGIN}/%2e%2e/outside.png",
@@ -116,7 +122,7 @@ class AuditSiteTests(unittest.TestCase):
             root = Path(directory) / "repo"
             images = root / "assets" / "social"
             images.mkdir(parents=True)
-            (images / "hero.png").write_bytes(b"image")
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             local = f"{ORIGIN}/assets/social/hero.png"
             with patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
                 self.assertEqual(self.og_image_findings(
@@ -132,7 +138,7 @@ class AuditSiteTests(unittest.TestCase):
             page = root / "index.html"
             images = root / "assets"
             images.mkdir(parents=True)
-            (images / "hero.png").write_bytes(b"image")
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             page.write_text(
                 '<meta property="og:image" content="/assets/hero.png">'
                 "<META content='/assets/missing.png?v=1&amp;width=2' PROPERTY='og:image'>"
@@ -151,7 +157,7 @@ class AuditSiteTests(unittest.TestCase):
             root = Path(directory) / "repo"
             images = root / "assets"
             images.mkdir(parents=True)
-            (images / "hero.png").write_bytes(b"image")
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             page = root / "index.html"
             page.write_text(
                 '<meta property="og:image" content="/assets/hero.png">'
@@ -206,13 +212,42 @@ class AuditSiteTests(unittest.TestCase):
             root = Path(directory) / "repo"
             image_dir = root / "assets" / "social"
             image_dir.mkdir(parents=True)
-            (image_dir / "hero.png").write_bytes(b"image")
-            (image_dir / "hero card.png").write_bytes(b"image")
+            (image_dir / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            (image_dir / "hero card.png").write_bytes(IMAGE_SIGNATURES["png"])
             for url in (
                 f"{ORIGIN}/assets/social/hero.png?v=2",
                 f"{ORIGIN}/assets/social/hero%20card.png?width=1200",
             ):
                 with self.subTest(url=url):
+                    self.assertEqual(self.og_image_findings(root, url), [])
+
+    def test_existing_non_image_file_is_reported_even_when_it_has_image_extension(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "document.png").write_bytes(b"%PDF-1.7\n")
+            url = f"{ORIGIN}/assets/social/document.png"
+
+            findings = self.og_image_findings(root, url)
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("supported image signature", findings[0])
+            self.assertIn("PNG, JPEG, GIF, WebP", findings[0])
+
+    def test_supported_social_image_signatures_are_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for extension, signature in IMAGE_SIGNATURES.items():
+                (image_dir / f"card.{extension}").write_bytes(signature)
+
+            for extension in IMAGE_SIGNATURES:
+                with self.subTest(extension=extension):
+                    url = f"{ORIGIN}/assets/social/card.{extension}"
                     self.assertEqual(self.og_image_findings(root, url), [])
 
     def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:

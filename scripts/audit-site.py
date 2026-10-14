@@ -32,8 +32,9 @@ Per-page checks actually emitted as issues:
     break anchor navigation and JS lookups)
   * every in-page anchor link (`href="#foo"`) resolves to a real
     `id="foo"` on the same page
-  * og:image URL (when it points to glee-fully.tools) resolves to a file
-    that actually exists on disk (URL-decoded to handle %20 etc.)
+  * og:image URL (when it points to glee-fully.tools) resolves to a
+    supported raster image (PNG, JPEG, GIF, or WebP) on disk, checked by
+    file signature (URL-decoded to handle %20 etc.)
 
 Cross-file / repo-wide checks:
   * no leftover backup / OS-junk files (.bak, .orig, .swp, .DS_Store, ~)
@@ -96,6 +97,18 @@ DESC_MAX = 165
 # Brand-correct theme color
 EXPECTED_THEME_COLOR = "#d35b2d"
 EXPECTED_BG_COLOR = "#f5f0ea"
+
+# Social-preview support is intentionally limited to widely supported raster
+# formats. SVG and other formats are excluded because major sharing platforms
+# do not consistently render them as social cards.
+SOCIAL_IMAGE_SIGNATURES = {
+    "PNG": lambda header: header.startswith(b"\x89PNG\r\n\x1a\n"),
+    "JPEG": lambda header: header.startswith(b"\xff\xd8\xff"),
+    "GIF": lambda header: header.startswith((b"GIF87a", b"GIF89a")),
+    "WebP": lambda header: (
+        len(header) >= 12 and header[:4] == b"RIFF" and header[8:12] == b"WEBP"
+    ),
+}
 
 
 def iter_html_files() -> List[Path]:
@@ -208,7 +221,7 @@ BARE_LINK_TEXTS = frozenset({
 
 
 def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str | None:
-    """Validate local og:image paths without fetching external resources."""
+    """Validate local og:image paths and signatures without fetching URLs."""
     try:
         parsed = urlsplit(url)
         expected_origin = urlsplit(origin)
@@ -228,6 +241,17 @@ def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str 
         )
     if target.suffix.lower() in {".html", ".htm"}:
         return f"og:image path resolves to an HTML page, not an image file: {url}"
+    try:
+        with target.open("rb") as image_file:
+            header = image_file.read(12)
+    except OSError:
+        return f"og:image file could not be inspected: {url}"
+    if not any(matches(header) for matches in SOCIAL_IMAGE_SIGNATURES.values()):
+        supported = ", ".join(SOCIAL_IMAGE_SIGNATURES)
+        return (
+            "og:image file does not have a supported image signature "
+            f"({supported}): {url}"
+        )
     return None
 
 
