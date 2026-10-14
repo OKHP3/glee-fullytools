@@ -217,11 +217,14 @@ def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str 
         if actual_origin != (expected_origin.scheme, expected_origin.netloc):
             return None
 
-    if link_target(url, source_dir, root, origin) is None:
+    target = link_target(url, source_dir, root, origin)
+    if target is None:
         return (
             "og:image path does not resolve to a safe file inside "
             f"the repository: {url}"
         )
+    if target.suffix.lower() in {".html", ".htm"}:
+        return f"og:image path resolves to an HTML page, not an image file: {url}"
     return None
 
 
