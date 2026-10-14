@@ -81,6 +81,7 @@ class SyncCssVersionTests(unittest.TestCase):
             app = root / "assets" / "js" / "app.js"
             enhancements = root / "assets" / "js" / "glee-site-enhancements.js"
             bootstrap = root / "assets" / "js" / "color-scheme-init.js"
+            mermaid = root / "assets" / "js" / "mermaid-init.js"
             page = root / "about" / "index.html"
             worker = root / "sw.js"
             css.parent.mkdir(parents=True)
@@ -91,18 +92,21 @@ class SyncCssVersionTests(unittest.TestCase):
             app.write_bytes(b"console.log('app');\r\n")
             enhancements.write_bytes(b"console.log('enhance');\r\n")
             bootstrap.write_bytes(b"console.log('theme');\r\n")
+            mermaid.write_bytes(b"console.log('mermaid');\r\n")
             app.write_bytes(b'const moduleUrl = "/assets/js/glee-site-enhancements.js";\r\n')
             page.write_text(
                 '<script src="/assets/js/color-scheme-init.js?v=old"></script>\n'
                 '<script src="/assets/js/app.js?v=stale&mode=test#keep"></script>\n'
                 '<script src="https://cdn.example/assets/js/app.js?v=foreign"></script>\n'
-                '<script src="/assets/js/glee-site-enhancements.js#keep"></script>\n',
+                '<script src="/assets/js/glee-site-enhancements.js#keep"></script>\n'
+                '<script type="module" src="/assets/js/mermaid-init.js?v=old&mode=diagram#keep"></script>\n',
                 encoding="utf-8",
             )
             worker.write_text(
                 'const CACHE_NAME = "glee-fully-shell-v1";\n'
                 'const PRECACHE_URLS = ["/", "/assets/js/app.js?v=3", '
-                '"/assets/js/glee-site-enhancements.js", "/assets/js/color-scheme-init.js?v=old"];\n',
+                '"/assets/js/glee-site-enhancements.js", "/assets/js/color-scheme-init.js?v=old", '
+                '"/assets/js/mermaid-init.js?v=old"];\n',
                 encoding="utf-8",
             )
 
@@ -138,6 +142,8 @@ class SyncCssVersionTests(unittest.TestCase):
                     rewritten,
                 )
                 worker_text = worker.read_text(encoding="utf-8")
+                self.assertIn(f'mermaid-init.js?v={tokens["mermaid-init"]}&mode=diagram#keep', rewritten)
+                self.assertIn(f'mermaid-init.js?v={tokens["mermaid-init"]}', worker_text)
                 self.assertIn(f'/assets/js/app.js?v={tokens["app"]}', worker_text)
                 self.assertIn(
                     f'/assets/js/glee-site-enhancements.js?v={tokens["glee-site-enhancements"]}',
@@ -170,8 +176,8 @@ class SyncCssVersionTests(unittest.TestCase):
             app.parent.mkdir(parents=True)
             index.parent.mkdir(parents=True)
             css.write_text("body {}\n", encoding="utf-8")
-            app.write_text('const INDEX_URL = "/assets/data/search-index.json?mode=test#keep";\n', encoding="utf-8")
-            page.write_text("<script src=\"/assets/js/app.js?v=old&mode=test#keep\"></script>\n", encoding="utf-8")
+            app.write_text('const INDEX_URL = "/assets/data/search-index.json";\n', encoding="utf-8")
+            page.write_text("<head></head>\n<script src=\"/assets/js/app.js?v=old&mode=test#keep\"></script>\n", encoding="utf-8")
             index.write_text('{"pages":[{"url":"/foundry/"}]}\n', encoding="utf-8")
             worker.write_text(
                 'const CACHE_NAME = "glee-fully-shell-v1";\n'
@@ -184,12 +190,14 @@ class SyncCssVersionTests(unittest.TestCase):
             try:
                 _MODULE.REPO = root
                 _MODULE.THEME_CSS = css
+                original_app = app.read_bytes()
                 self.assertEqual(self.run_main()[0], 0)
                 token = _MODULE.normalized_hash(index)
                 app_text = app.read_text(encoding="utf-8")
                 page_text = page.read_text(encoding="utf-8")
                 worker_text = worker.read_text(encoding="utf-8")
-                self.assertIn(f"search-index.json?mode=test&v={token}#keep", app_text)
+                self.assertEqual(app.read_bytes(), original_app)
+                self.assertIn(f'<meta name="search-index-version" content="{token}">', page_text)
                 self.assertIn(f"app.js?v={_MODULE.normalized_hash(app)}&mode=test#keep", page_text)
                 self.assertIn(f"search-index.json?v={token}", worker_text)
 
@@ -198,10 +206,15 @@ class SyncCssVersionTests(unittest.TestCase):
                 self.assertEqual((app.read_bytes(), page.read_bytes(), worker.read_bytes()), stable)
 
                 index.write_text('{"pages":[{"url":"/foundry/"},{"url":"/new-page/"}]}\n', encoding="utf-8")
+                self.assertEqual(self.run_main("--check")[0], 1)
+                self.assertEqual((app.read_bytes(), page.read_bytes(), worker.read_bytes()), stable)
                 self.assertEqual(self.run_main()[0], 0)
                 new_token = _MODULE.normalized_hash(index)
                 self.assertNotEqual(token, new_token)
-                self.assertIn(f"search-index.json?mode=test&v={new_token}#keep", app.read_text(encoding="utf-8"))
+                self.assertEqual(app.read_bytes(), original_app)
+                new_page = page.read_text(encoding="utf-8")
+                self.assertIn(f'<meta name="search-index-version" content="{new_token}">', new_page)
+                self.assertEqual(new_page.count('name="search-index-version"'), 1)
                 self.assertIn(f"app.js?v={_MODULE.normalized_hash(app)}&mode=test#keep", page.read_text(encoding="utf-8"))
                 self.assertIn(f"search-index.json?v={new_token}", worker.read_text(encoding="utf-8"))
                 self.assertEqual(self.run_main("--check")[0], 0)

@@ -216,6 +216,8 @@ def run_checks(browser, expect, args) -> list[dict]:
         expect(links.nth(1)).to_be_visible()
         input_box.press("ArrowDown")
         expect(links.nth(1)).to_have_attribute("data-active", "true")
+        # Cover the delayed opening callback as well as immediate selection.
+        page.wait_for_timeout(60)
         expect(links.nth(1)).to_be_focused()
         selected = links.nth(1).get_attribute("href")
         page.keyboard.press("ArrowUp")

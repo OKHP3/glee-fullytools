@@ -50,3 +50,28 @@ GitHub's retention deadline is measured from the original workflow run's
 at least 90 days from that timestamp, with no tolerance for a shorter period. An
 upload made after validation therefore has less than 90 days remaining at upload
 time. Artifacts must also be unexpired and have valid creation/expiration order.
+
+The daily retention monitor checks successful Pages runs whose review windows
+remain open and whose source includes the first 90-day retention-policy commit,
+`edf2d3509e6b51cdd42ad36cd9ca1dd111cfd08e`. GitHub's commit comparison establishes
+that ancestry; a release that predates the policy is excluded, while unavailable
+or divergent ancestry fails the check. This avoids imposing a new artifact
+requirement on older releases that did not promise 90-day retention. The monitor
+reads workflow and artifact metadata only; it does not deploy, recreate missing
+evidence, or change retention settings.
+
+## Owner decision on alternate storage
+
+On 2026-10-14, the owner deferred an alternate evidence store: it is not needed
+for the current release. Keep the existing GitHub Actions 90-day retention
+request and pre-deployment retention gate unchanged. The owner reports that
+release `2ec769dac8f93b641fb70b4e458cdc7f26deb581` passed Pages run
+`38492195326`, with validation artifact `11862551945` retained through
+`2027-01-12T00:48:04Z`.
+
+Do not create a repository, transfer evidence, grant access, delete evidence, or
+weaken the gate for this release. Revisit the optional private-repository
+fallback only if an actual repository or organization retention ceiling prevents
+the approved 90-day period. Implementation then requires the owner to name the
+private destination and explicitly approve its access scope; no destination or
+reviewer list is approved by this deferral.

@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── 5. OKH Search — overlay + dedicated /search/ page ──────────────────────
 // Consolidated from search.js (2026-05-03). All 26 production pages load this.
-// Index: /assets/data/search-index.json?v=4bbebbc1  Styles: inlined into theme.css (2026-05-04)
+// Index: /assets/data/search-index.json. HTML metadata owns its cache version.
 // Keyboard: Ctrl/Cmd+K or "/" to open · Esc to close · ↑/↓ navigate · ↵ follow
 (function () {
   "use strict";
@@ -631,7 +631,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // English catalog until their publication gate explicitly promotes them.
   const SEARCH_INDEXES = { fr: "/assets/data/search-index.fr.json" };
   const pageLocale = (document.documentElement.lang || "en").toLowerCase().split("-", 1)[0];
-  const INDEX_URL = SEARCH_INDEXES[pageLocale] || "/assets/data/search-index.json?v=4bbebbc1";
+  const indexVersion = document.querySelector('meta[name="search-index-version"]')?.content || "";
+  const englishIndex = "/assets/data/search-index.json" +
+    (/^[a-f0-9]{8}$/.test(indexVersion) ? "?v=" + indexVersion : "");
+  const INDEX_URL = SEARCH_INDEXES[pageLocale] || englishIndex;
   const usesEnglishFallback = pageLocale === "de" || pageLocale === "es";
   const scopeNotice = usesEnglishFallback ? " Search English content." : "";
   const isGlee = () => document.body.classList.contains("glee-main");
@@ -990,7 +993,8 @@ document.addEventListener("DOMContentLoaded", () => {
         render();
       }).catch(setLoadError);
       focusTimer = setTimeout(() => {
-        if (overlay.dataset.open === "true") input.focus();
+        // Do not steal focus after a visitor has already entered the panel.
+        if (overlay.dataset.open === "true" && !overlay.contains(document.activeElement)) input.focus();
       }, 30);
     }
     function close() {
