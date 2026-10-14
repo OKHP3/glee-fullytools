@@ -63,6 +63,10 @@ const server = http.createServer(async (request, response) => {
       await probe.close();
       if (nativeTabDestination !== 'link') report.limitations.push({ engine,
         coverage: 'Next-link Tab navigation NOT RUN: native browser Tab excludes anchors even in an isolated HTML fixture.' });
+      async function dismissTransition() {
+        const dialog = page.locator('.glee-transition-dialog[open]');
+        if (await dialog.count()) await dialog.locator('[data-transition-close]').click();
+      }
       const pageErrors = [];
       page.on('pageerror', error => pageErrors.push(error.message));
       for (const route of ['/', '/toolbox/01-discovered-careers/',
@@ -96,6 +100,7 @@ const server = http.createServer(async (request, response) => {
         await page.waitForURL(base + selected);
         const notice = page.locator('[data-wip-dismiss]');
         if (await notice.isVisible()) await notice.click();
+        await dismissTransition();
         const trigger = page.locator('.okh-search-trigger');
         await trigger.click();
         assert.equal(await page.locator('.okh-search-overlay').getAttribute('aria-label'), 'Search Glee‑fully Tools');
@@ -110,13 +115,17 @@ const server = http.createServer(async (request, response) => {
       for (const method of ['pointer', 'keyboard', 'shortcut', 'immediate-close']) {
         await check('modal focus return ' + method, async () => {
           await page.goto(base + '/', { waitUntil: 'load' });
+          await dismissTransition();
           const trigger = page.locator('.okh-search-trigger');
           await trigger.waitFor({ state: 'visible' });
           if (method === 'pointer') {
             await trigger.click();
           } else {
             await trigger.focus();
-            if (method === 'shortcut') await page.keyboard.press('Control+k');
+            if (method === 'shortcut') {
+              const key = await page.evaluate(() => /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'Meta+k' : 'Control+k');
+              await page.keyboard.press(key);
+            }
             else if (method === 'immediate-close') {
               await trigger.evaluate(element => {
                 element.click();

@@ -133,9 +133,12 @@ class FoundryAccessibilityReportTests(unittest.TestCase):
         self.assertNotIn("keyboard navigation did not complete a cycle", focus_check)
         self.assertIn("negative fixture was not detected", focus_check)
         self.assertGreaterEqual(
-            focus_check.count("page.keyboard.press('Shift+Tab')"),
+            focus_check.count("page.keyboard.press(tabKey === 'Tab' ? 'Shift+Tab' : 'Alt+Shift+Tab')"),
             2,
         )
+        self.assertIn("probe.keyboard.press('Alt+Tab')", source)
+        self.assertIn("browser has no verified link traversal key", source)
+        self.assertIn("report.keyboardTraversal", source)
         self.assertIn("open-menu traversal did not return to the first keyboard target", focus_check)
         self.assertIn(
             "if (await navToggle.getAttribute('aria-expanded') === 'true')",

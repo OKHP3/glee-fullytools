@@ -166,6 +166,22 @@ async function run() {
       });
       const page = await context.newPage();
       page.setDefaultTimeout(5000);
+      // macOS WebKit uses Option+Tab to include ordinary links without
+      // changing the owner's global keyboard-navigation preferences.
+      const probe = await context.newPage();
+      await probe.setContent('<button id="before">Before</button><a id="link" href="#x">Link</a><button>After</button>');
+      await probe.locator('#before').focus();
+      await probe.keyboard.press('Tab');
+      let tabKey = 'Tab';
+      if (await probe.evaluate(() => document.activeElement.id !== 'link')) {
+        await probe.locator('#before').focus();
+        await probe.keyboard.press('Alt+Tab');
+        assert.equal(await probe.evaluate(() => document.activeElement.id), 'link', 'browser has no verified link traversal key');
+        tabKey = 'Alt+Tab';
+      }
+      report.keyboardTraversal = { ...(report.keyboardTraversal || {}), [viewport.name]: tabKey };
+      await probe.close();
+
       const pageErrors = [];
       page.on('pageerror', error => pageErrors.push(error.message));
       await page.goto(`${base}${ROUTE}`, { waitUntil: 'domcontentloaded', timeout: 10000 });
@@ -396,7 +412,7 @@ async function run() {
               seen.add(current.key);
             }
             if (seen.size === expected.size) break;
-            await page.keyboard.press('Tab');
+            await page.keyboard.press(tabKey);
           }
           const final = await inspect();
           for (const key of final.eligibleKeys) expected.add(key);
@@ -419,13 +435,13 @@ async function run() {
         }));
         await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
         await page.waitForFunction(() => scrollY === 0);
-        await page.keyboard.press('Tab');
+        await page.keyboard.press(tabKey);
         const skip = page.locator('.skip-to-content');
         assert.equal(await skip.evaluate(node => node === document.activeElement), true, 'skip link is not the first keyboard target');
         assertIndicator(await inspect());
         await page.waitForFunction(() => {
           const rect = document.querySelector('.skip-to-content').getBoundingClientRect();
-          return rect.y >= 0 && rect.y < innerHeight;
+          return rect.x >= 0 && rect.x < innerWidth && rect.y >= 0 && rect.y < innerHeight;
         });
         const box = await skip.boundingBox();
         assert.ok(box && box.x >= 0 && box.y >= 0 && box.x < viewport.width && box.y < viewport.height, 'focused skip link is off screen');
@@ -452,8 +468,8 @@ async function run() {
           assert.equal(await navToggle.getAttribute('aria-expanded'), 'true');
           // Return to the first page target with keyboard input, so this forward
           // pass does not depend on the browser wrapping at the end of the page.
-          await page.keyboard.press('Shift+Tab');
-          await page.keyboard.press('Shift+Tab');
+          await page.keyboard.press(tabKey === 'Tab' ? 'Shift+Tab' : 'Alt+Shift+Tab');
+          await page.keyboard.press(tabKey === 'Tab' ? 'Shift+Tab' : 'Alt+Shift+Tab');
           assert.equal(
             await skip.evaluate(node => node === document.activeElement),
             true,
@@ -519,7 +535,7 @@ async function run() {
             `no visible focus indicator for expanded navigation link ${style.name}`,
           );
           evidence.push(style);
-          if (i < count - 1) await page.keyboard.press('Tab');
+          if (i < count - 1) await page.keyboard.press(tabKey);
         }
 
         return {
