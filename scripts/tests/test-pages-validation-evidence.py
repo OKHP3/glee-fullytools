@@ -18,6 +18,8 @@ PROVENANCE_STEP = "- name: Verify validation report provenance"
 STAGING_STEP = "- name: Stage complete validation evidence"
 UPLOAD_STEP = "- name: Upload validation reports"
 THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
+THEME_BROWSER_STEP = "- name: Run color-scheme bootstrap regression in all installed engines"
+THEME_FAILURE_DIAGNOSTIC_STEP = "- name: Summarize browser theme failures (diagnostic only)"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -30,6 +32,12 @@ RETENTION_SPEC = importlib.util.spec_from_file_location(
 )
 retention_checker = importlib.util.module_from_spec(RETENTION_SPEC)
 RETENTION_SPEC.loader.exec_module(retention_checker)
+COLOR_SCHEME_SCRIPT = ROOT / "scripts" / "tests" / "test-color-scheme-init.py"
+COLOR_SCHEME_SPEC = importlib.util.spec_from_file_location(
+    "color_scheme_init_browser_check", COLOR_SCHEME_SCRIPT
+)
+color_scheme_checker = importlib.util.module_from_spec(COLOR_SCHEME_SPEC)
+COLOR_SCHEME_SPEC.loader.exec_module(color_scheme_checker)
 LATE_EVIDENCE_STEPS = (
     "- name: Run browser responsive and asset QA",
     "- name: Run visitor, privacy, and rendered contrast acceptance",
@@ -73,6 +81,15 @@ def browser_versions():
     )
 
 
+def theme_failure_diagnostic_code(workflow: str) -> str:
+    block = workflow.split(THEME_FAILURE_DIAGNOSTIC_STEP, 1)[1].split(
+        "\n      - name:", 1
+    )[0]
+    return textwrap.dedent(
+        block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0]
+    )
+
+
 def write_browser_theme_reports(audit: Path) -> None:
     for browser, _, version in browser_versions():
         (audit / f"color-scheme-init-{browser}.json").write_text(
@@ -92,7 +109,14 @@ def assert_validation_evidence_contract(workflow: str) -> None:
     """Raise a focused failure when release-evidence staging becomes unsafe."""
     positions = {
         label: workflow.find(label)
-        for label in (PROVENANCE_STEP, STAGING_STEP, UPLOAD_STEP, *LATE_EVIDENCE_STEPS)
+        for label in (
+            PROVENANCE_STEP,
+            STAGING_STEP,
+            UPLOAD_STEP,
+            THEME_BROWSER_STEP,
+            THEME_FAILURE_DIAGNOSTIC_STEP,
+            *LATE_EVIDENCE_STEPS,
+        )
     }
     missing = [label for label, position in positions.items() if position < 0]
     if missing:
@@ -132,6 +156,24 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         )
 
     theme_position = positions[THEME_VERIFY_STEP]
+    browser_gate_position = positions[THEME_BROWSER_STEP]
+    diagnostic_position = positions[THEME_FAILURE_DIAGNOSTIC_STEP]
+    if not browser_gate_position < diagnostic_position < theme_position:
+        raise AssertionError(
+            "Browser failure diagnostics must run after the browser gate and "
+            "before verified theme evidence"
+        )
+    diagnostic_block = workflow[diagnostic_position:theme_position]
+    if (
+        "always() && steps.theme_browser_checks.outcome == 'failure'"
+        not in diagnostic_block
+        or "GITHUB_STEP_SUMMARY" not in diagnostic_block
+        or "not validated release evidence" not in diagnostic_block
+    ):
+        raise AssertionError(
+            "Browser failure summaries must be failure-only, diagnostic, and "
+            "separate from validated release evidence"
+        )
     theme_block = workflow[theme_position:staging_position]
     if "Browser-specific color-scheme evidence is incomplete" not in theme_block:
         raise AssertionError(
@@ -540,6 +582,91 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_uploaded_validation_artifact_is_checked_before_deployment(self):
         assert_uploaded_theme_evidence_contract(self.workflow)
+
+    def test_browser_check_records_failed_case_without_discarding_completed_cases(self):
+        report = {"cases": {}}
+        color_scheme_checker.capture_case(
+            report, "light", lambda: {"preference_applied": True}
+        )
+
+        def fail_dark_case():
+            raise AssertionError("dark preference was not applied")
+
+        with self.assertRaisesRegex(AssertionError, "dark preference was not applied"):
+            color_scheme_checker.capture_case(report, "dark", fail_dark_case)
+
+        self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
+        self.assertEqual(report["failed_case"], "dark")
+        self.assertEqual(report["error"], "dark preference was not applied")
+        self.assertTrue(report["diagnostic_only"])
+
+    def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps(
+                    {
+                        "browser": "firefox",
+                        "browser_version": "138.0",
+                        "status": "FAIL",
+                        "diagnostic_only": True,
+                        "failed_case": "dark",
+                        "error": "saved dark preference was not applied",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            summary_path = root / "step-summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("Firefox (138.0)", summary)
+            self.assertIn("failed in `dark`", summary)
+            self.assertIn("saved dark preference was not applied", summary)
+            self.assertIn("Diagnostic only", summary)
+            self.assertIn("not validated release evidence", summary)
+            self.assertNotIn("Generated from the successful browser theme checks", summary)
+
+    def test_failure_diagnostic_handles_unavailable_and_malformed_reports(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "color-scheme-init-firefox.json").write_text(
+                "{broken JSON", encoding="utf-8"
+            )
+            (audit / "color-scheme-init-webkit.json").write_text(
+                "[]", encoding="utf-8"
+            )
+            summary_path = root / "step-summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("Chromium", summary)
+            self.assertIn("failure report unavailable", summary)
+            self.assertIn("Firefox", summary)
+            self.assertIn("malformed or unreadable", summary)
+            self.assertIn("WebKit", summary)
+            self.assertIn("JSON root must be an object", summary)
+            self.assertIn("not validated release evidence", summary)
 
     def test_run_summary_lists_verified_engines_and_theme_cases(self):
         block = self.workflow.split(THEME_SUMMARY_STEP, 1)[1].split(

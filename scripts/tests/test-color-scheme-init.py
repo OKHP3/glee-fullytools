@@ -554,6 +554,22 @@ def check_disabled_storage(browser, base_url, routes):
     }
 
 
+def capture_case(report: dict[str, object], name: str, check) -> None:
+    """Keep completed cases and mark a failing case for diagnostic summaries."""
+    try:
+        result = check()
+    except Exception as error:
+        report["diagnostic_only"] = True
+        report["failed_case"] = name
+        report["error"] = str(error)
+        raise
+
+    cases = report.setdefault("cases", {})
+    if not isinstance(cases, dict):
+        raise TypeError("Browser report cases must be an object")
+    cases[name] = result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://127.0.0.1:5000")
@@ -594,22 +610,28 @@ def main() -> None:
             browser = getattr(playwright, args.browser).launch(**launch_options)
             report["browser_version"] = browser.version
             try:
-                evidence = {
-                    preference: check_saved_preference(
-                        browser, base_url, preference, routes
+                for preference in ("light", "dark"):
+                    capture_case(
+                        report,
+                        preference,
+                        lambda preference=preference: check_saved_preference(
+                            browser, base_url, preference, routes
+                        ),
                     )
-                    for preference in ("light", "dark")
-                }
-                evidence["disabled_storage"] = check_disabled_storage(
-                    browser, base_url, ["/", *UTILITY_ROUTES]
+                capture_case(
+                    report,
+                    "disabled_storage",
+                    lambda: check_disabled_storage(
+                        browser, base_url, ["/", *UTILITY_ROUTES]
+                    ),
                 )
             finally:
                 browser.close()
-        report["cases"] = evidence
         report["status"] = "PASS"
     except Exception as error:
         report["status"] = "FAIL"
-        report["error"] = str(error)
+        report["diagnostic_only"] = True
+        report.setdefault("error", str(error))
 
     text = json.dumps(report, indent=2, ensure_ascii=False)
     if args.output:
