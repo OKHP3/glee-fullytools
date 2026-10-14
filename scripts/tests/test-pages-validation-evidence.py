@@ -56,6 +56,17 @@ THEME_INDEX_NAME = "color-scheme-evidence-index.md"
 THEME_CASE_LABELS = ("`light`", "`dark`", "`disabled_storage`")
 
 
+class FakeDownloadResponse:
+    def __init__(self, status):
+        self.status = status
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return False
+
+
 def browser_theme_index() -> str:
     """Return a valid minimal index for exercising the uploaded-artifact gate."""
     rows = [
@@ -398,6 +409,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
+        self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
 
     def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
@@ -506,6 +518,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "workflow_run": {"id": 51, "head_sha": commit},
         }
         requested_runs = []
+        requested_downloads = []
 
         def fetch(url, token):
             if "/workflows/pages.yml/runs?" in url:
@@ -520,15 +533,77 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 return {"artifacts": [artifact]}, None
             self.fail(f"Unexpected GitHub API request: {url}")
 
+        def open_url(request, timeout):
+            requested_downloads.append((request.full_url, request.get_method(), timeout))
+            return FakeDownloadResponse(200)
+
         checked = retention_checker.monitor_repository(
             "owner/repo",
             "https://api.github.com",
             "test-token",
             now=now,
             fetch_page=fetch,
+            open_url=open_url,
         )
         self.assertEqual(checked, 1)
         self.assertEqual(requested_runs, [51])
+        self.assertEqual(
+            requested_downloads,
+            [(
+                "https://api.github.com/repos/owner/repo/actions/artifacts/501/zip",
+                "GET",
+                30,
+            )],
+        )
+
+    def test_retention_monitor_reports_artifact_download_failure_with_review_details(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "f" * 40
+        run = {
+            "id": 71,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 701,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 71, "head_sha": commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            self.assertEqual(
+                request.full_url,
+                "https://api.github.com/repos/owner/repo/actions/artifacts/701/zip",
+            )
+            raise OSError("HTTP Error 403: Forbidden")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            rf"commit {commit} \(run 71\).*active 90-day review window ending "
+            r"2026-12-30T12:00:00\+00:00: artifact download failed: "
+            r"HTTP Error 403: Forbidden",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
 
     def test_retention_monitor_stops_checking_at_the_90_day_deadline(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
