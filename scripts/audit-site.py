@@ -66,7 +66,7 @@ import json
 import re
 import subprocess
 import sys
-import urllib.parse
+from urllib.parse import urlsplit
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -78,7 +78,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from public_inventory import collect_html_files, site_origin
-from public_paths import discovery_path
+from public_paths import discovery_path, link_target
 
 ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_DIRS = {".local", ".agents", "attached_assets", "node_modules", ".cache",
@@ -204,6 +204,27 @@ BARE_LINK_TEXTS = frozenset({
 })
 
 
+def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str | None:
+    """Validate local og:image paths without fetching external resources."""
+    try:
+        parsed = urlsplit(url)
+        expected_origin = urlsplit(origin)
+    except ValueError:
+        return f"og:image URL is malformed or unsafe: {url}"
+
+    if parsed.scheme or parsed.netloc:
+        actual_origin = (parsed.scheme or expected_origin.scheme, parsed.netloc)
+        if actual_origin != (expected_origin.scheme, expected_origin.netloc):
+            return None
+
+    if link_target(url, source_dir, root, origin) is None:
+        return (
+            "og:image path does not resolve to a safe file inside "
+            f"the repository: {url}"
+        )
+    return None
+
+
 def audit_page(path: Path) -> List[str]:
     rel = path.relative_to(ROOT).as_posix()
     src = path.read_text(encoding="utf-8", errors="replace")
@@ -267,16 +288,15 @@ def audit_page(path: Path) -> List[str]:
         if anchor and anchor not in id_set:
             issues.append(f'In-page anchor href="#{anchor}" has no matching id')
 
-    # og:image existence — when og:image points to askjamie.bot, the
-    # decoded path must resolve to a real file on disk. Catches social
-    # cards that would 404 when shared on LinkedIn/X/etc.
+    # og:image existence — resolve local resources through the shared safe
+    # path contract. External images are not fetched or checked on disk.
     og_img = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', src)
     if og_img:
-        url = og_img.group(1)
-        if url.startswith("https://glee-fully.tools"):
-            decoded = urllib.parse.unquote(url.replace("https://glee-fully.tools", ""))
-            if not (ROOT / decoded.lstrip("/")).exists():
-                issues.append(f"og:image file does not exist on disk: {decoded}")
+        image_issue = _og_image_issue(
+            og_img.group(1), path.parent, ROOT, site_origin()
+        )
+        if image_issue:
+            issues.append(image_issue)
 
     # Modern (2025/2026) baseline — security meta tags
     if 'name="referrer"' not in src:
