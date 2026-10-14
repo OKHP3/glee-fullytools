@@ -238,7 +238,7 @@ jobs:
               ("firefox", "Firefox"),
               ("webkit", "WebKit"),
           )
-          valid_cases = {"light", "dark", "disabled_storage"}
+          case_order = ("light", "dark", "disabled_storage")
           lines = [
               "## Browser theme failure diagnostics (not validated release evidence)",
               "",
@@ -282,16 +282,73 @@ jobs:
                   engine += f" [report says {one_line(reported_browser)}]"
 
               status = report.get("status")
+              cases = report.get("cases")
+              cases = cases if isinstance(cases, dict) else {}
+              completed_order = case_order
+              if status == "FAIL":
+                  failed_case = report.get("failed_case")
+                  completed_order = (
+                      case_order[:case_order.index(failed_case)]
+                      if isinstance(failed_case, str) and failed_case in case_order
+                      else ()
+                  )
+              completed_cases = [case for case in completed_order if case in cases]
+              completed = (
+                  ", ".join(f"`{case}`" for case in completed_cases)
+                  or "none"
+              )
               if status == "FAIL":
                   failed_case = report.get("failed_case")
                   case = (
                       failed_case
-                      if isinstance(failed_case, str) and failed_case in valid_cases
+                      if isinstance(failed_case, str) and failed_case in case_order
                       else "not identified"
                   )
                   detail = one_line(report.get("error", ""))
                   suffix = f" — {detail}" if detail else ""
                   lines.append(f"- **{engine}:** failed in `{case}`{suffix}.")
+                  lines.append(
+                      "  - Completed before failure (diagnostic only; not "
+                      f"validated evidence): {completed}."
+                  )
+                  failed_routes = report.get("failed_routes")
+                  if isinstance(failed_routes, list) and failed_routes:
+                      lines.append(
+                          "  - Affected pages (diagnostic only; not validated "
+                          "release evidence):"
+                      )
+                      for failure in failed_routes:
+                          if not isinstance(failure, dict):
+                              continue
+                          route = failure.get("route")
+                          if not isinstance(route, str) or not route.strip():
+                              continue
+                          detail = one_line(failure.get("error", ""))
+                          suffix = f": {detail}" if detail else ""
+                          lines.append(
+                              f"    - `{one_line(route)}`{suffix}"
+                          )
+                  if case != "not identified":
+                      remaining = [
+                          candidate for candidate in case_order
+                          if case_order.index(candidate) > case_order.index(case)
+                      ]
+                  else:
+                      reported_not_run = report.get("not_run_cases")
+                      remaining = (
+                          [candidate for candidate in reported_not_run
+                           if candidate in case_order]
+                          if isinstance(reported_not_run, list)
+                          else [
+                              candidate for candidate in case_order
+                              if candidate not in cases
+                          ]
+                      )
+                  not_run = ", ".join(f"`{candidate}`" for candidate in remaining)
+                  lines.append(
+                      f"  - Not run: {not_run or 'none reported'}; these cases "
+                      "must not be treated as passing or validated evidence."
+                  )
                   if report.get("diagnostic_only") is not True:
                       lines.append(
                           "  - Report is missing its diagnostic-only marker; "
@@ -299,9 +356,16 @@ jobs:
                       )
               elif status == "PASS":
                   lines.append(
-                      f"- **{engine}:** report says PASS, but this is not a "
-                      "validated release result because the browser gate failed."
+                      f"- **{engine}:** completed cases (diagnostic only; not "
+                      f"validated evidence): {completed}."
                   )
+                  missing = [case for case in case_order if case not in cases]
+                  if missing:
+                      lines.append(
+                          "  - Not reported despite PASS status (not validated): "
+                          + ", ".join(f"`{case}`" for case in missing)
+                          + "."
+                      )
               else:
                   lines.append(
                       f"- **{engine}:** failure report has no recognized status "

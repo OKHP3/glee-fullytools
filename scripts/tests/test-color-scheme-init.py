@@ -23,6 +23,7 @@ from urllib.parse import urljoin, urlsplit
 
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
+THEME_CASES = ("light", "dark", "disabled_storage")
 UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
 UTILITY_RECOVERY = {
     "/404.html": ("main .btn-primary", "Return home", "/"),
@@ -248,6 +249,32 @@ def browser_routes() -> list[str]:
 
 def route_type(route: str) -> str:
     return "utility" if route in UTILITY_ROUTES else page_type(route)
+
+
+class RouteCheckFailure(AssertionError):
+    """Keep every failed route available to failure-only diagnostics."""
+
+    def __init__(self, failures: list[dict[str, str]]):
+        self.failed_routes = failures
+        details = "; ".join(
+            f"{failure['route']}: {failure['error']}" for failure in failures
+        )
+        super().__init__(f"Theme checks failed on {len(failures)} route(s): {details}")
+
+
+def collect_route_evidence(routes: list[str], check) -> list[dict[str, object]]:
+    """Run every route check and raise once with all route-specific failures."""
+    results: list[dict[str, object]] = []
+    failures: list[dict[str, str]] = []
+    for route in routes:
+        try:
+            evidence = check(route)
+            results.extend(evidence["route_evidence"])
+        except Exception as error:
+            failures.append({"route": route, "error": str(error)})
+    if failures:
+        raise RouteCheckFailure(failures)
+    return results
 
 
 def _check_saved_preference_context(
@@ -528,12 +555,12 @@ def check_saved_preference(browser, base_url, preference, routes):
     # WebKit intermittently lost the seeded storage during consecutive
     # navigations in one context. Each URL needs its own saved-state fixture
     # and navigation events; cross-page behavior has a separate acceptance suite.
-    results = []
-    for route in routes:
-        evidence = _check_saved_preference_context(
+    results = collect_route_evidence(
+        routes,
+        lambda route: _check_saved_preference_context(
             browser, base_url, preference, [route]
-        )
-        results.extend(evidence["route_evidence"])
+        ),
+    )
     return {
         "routes": len(results),
         "page_types": dict(Counter(result["page_type"] for result in results)),
@@ -542,10 +569,10 @@ def check_saved_preference(browser, base_url, preference, routes):
 
 
 def check_disabled_storage(browser, base_url, routes):
-    results = []
-    for route in routes:
-        evidence = _check_disabled_storage_context(browser, base_url, [route])
-        results.extend(evidence["route_evidence"])
+    results = collect_route_evidence(
+        routes,
+        lambda route: _check_disabled_storage_context(browser, base_url, [route]),
+    )
     return {
         "routes": len(results),
         "page_types": dict(Counter(result["page_type"] for result in results)),
@@ -561,6 +588,13 @@ def capture_case(report: dict[str, object], name: str, check) -> None:
     except Exception as error:
         report["diagnostic_only"] = True
         report["failed_case"] = name
+        if name in THEME_CASES:
+            report["not_run_cases"] = list(
+                THEME_CASES[THEME_CASES.index(name) + 1:]
+            )
+        failed_routes = getattr(error, "failed_routes", None)
+        if isinstance(failed_routes, list):
+            report["failed_routes"] = failed_routes
         report["error"] = str(error)
         raise
 
@@ -610,7 +644,7 @@ def main() -> None:
             browser = getattr(playwright, args.browser).launch(**launch_options)
             report["browser_version"] = browser.version
             try:
-                for preference in ("light", "dark"):
+                for preference in THEME_CASES[:2]:
                     capture_case(
                         report,
                         preference,
@@ -620,7 +654,7 @@ def main() -> None:
                     )
                 capture_case(
                     report,
-                    "disabled_storage",
+                    THEME_CASES[2],
                     lambda: check_disabled_storage(
                         browser, base_url, ["/", *UTILITY_ROUTES]
                     ),
@@ -632,6 +666,15 @@ def main() -> None:
         report["status"] = "FAIL"
         report["diagnostic_only"] = True
         report.setdefault("error", str(error))
+        report.setdefault(
+            "not_run_cases",
+            [
+                name
+                for name in THEME_CASES
+                if name not in report.get("cases", {})
+                and name != report.get("failed_case")
+            ],
+        )
 
     text = json.dumps(report, indent=2, ensure_ascii=False)
     if args.output:

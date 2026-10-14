@@ -95,6 +95,41 @@ def api_page(url: str, token: str) -> tuple[dict[str, object], str | None]:
     return payload, next_url
 
 
+def verify_artifact_download(
+    repository: str,
+    artifact_id: int,
+    api_url: str,
+    token: str,
+    *,
+    open_url=None,
+) -> None:
+    """Confirm GitHub can serve the artifact without reading its archive body."""
+    url = (
+        f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
+        f"{artifact_id}/zip"
+    )
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": API_VERSION,
+            "User-Agent": "Glee-fully-Pages-evidence-retention-check",
+        },
+    )
+    # GitHub redirects to signed artifact storage; authorize only the API request.
+    request.add_unredirected_header("Authorization", f"Bearer {token}")
+    open_request = open_url or urlopen
+    try:
+        with open_request(request, timeout=30) as response:
+            status = getattr(response, "status", 200)
+            if status != 200:
+                raise ValueError(
+                    f"artifact download endpoint returned HTTP {status}"
+                )
+    except (OSError, TimeoutError, ValueError) as error:
+        raise ValueError(f"artifact download failed: {error}") from error
+
+
 def _list_all(
     url: str,
     collection_key: str,
@@ -126,6 +161,7 @@ def monitor_repository(
     *,
     now: datetime | None = None,
     fetch_page=None,
+    open_url=None,
 ) -> int:
     """Fail if a successful Pages run loses its evidence inside the 90-day window."""
     current_time = now or datetime.now(timezone.utc)
@@ -146,81 +182,116 @@ def monitor_repository(
     )
     runs = _list_all(runs_url, "workflow_runs", token, fetch_page)
     checked = 0
+    failures: list[str] = []
 
     for run in runs:
         if run.get("conclusion") != "success":
             continue
         run_id = run.get("id")
         commit = run.get("head_sha")
-        run_created_at = parse_timestamp(run.get("created_at"), "workflow run created_at")
+        try:
+            run_created_at = parse_timestamp(
+                run.get("created_at"), "workflow run created_at"
+            )
+        except ValueError as error:
+            failures.append(
+                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
+                f"review deadline unknown: {error}"
+            )
+            continue
         deadline = run_created_at + REQUIRED_RETENTION
         if deadline <= current_time:
             continue
         if not isinstance(run_id, int) or not isinstance(commit, str) or not commit:
-            raise ValueError(
-                "Successful Pages run is missing a numeric id or commit SHA "
-                f"(run metadata: {run!r})"
+            failures.append(
+                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
+                f"review deadline {deadline.isoformat()}: "
+                "successful Pages run is missing a numeric id or commit SHA"
             )
-
-        compare_url = (
-            f"{api_url.rstrip('/')}/repos/{repository}/compare/"
-            f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
-        )
-        comparison, _ = (fetch_page or api_page)(compare_url, token)
-        policy_status = comparison.get("status") if isinstance(comparison, dict) else None
-        if policy_status == "behind":
             continue
-        if policy_status not in ("ahead", "identical"):
-            raise ValueError(
-                f"Cannot establish retention-policy ancestry for commit {commit} "
-                f"(run {run_id}): comparison status {policy_status!r}"
-            )
 
-        artifacts_url = (
-            f"{api_url.rstrip('/')}/repos/{repository}/actions/runs/{run_id}"
-            f"/artifacts?include_expired=true&per_page=100"
-        )
-        artifacts = _list_all(
-            artifacts_url, "artifacts", token, fetch_page
-        )
-        expected_name = f"pages-validation-{commit}"
-        matching = [item for item in artifacts if item.get("name") == expected_name]
-        if not matching:
-            raise ValueError(
-                f"Pages validation artifact for commit {commit} (run {run_id}) "
-                f"is missing before its 90-day review window ends "
-                f"({deadline.isoformat()})"
+        try:
+            compare_url = (
+                f"{api_url.rstrip('/')}/repos/{repository}/compare/"
+                f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
             )
-
-        errors = []
-        for artifact in matching:
-            try:
-                artifact_id = artifact.get("id")
-                if not isinstance(artifact_id, int):
-                    raise ValueError("GitHub artifact metadata is missing a numeric id")
-                validate_artifact(
-                    artifact,
-                    artifact_id,
-                    expected_name,
-                    run,
-                    run_id,
-                    commit,
+            comparison, _ = (fetch_page or api_page)(compare_url, token)
+            policy_status = (
+                comparison.get("status") if isinstance(comparison, dict) else None
+            )
+            if policy_status == "behind":
+                continue
+            if policy_status not in ("ahead", "identical"):
+                raise ValueError(
+                    "cannot establish retention-policy ancestry "
+                    f"(comparison status {policy_status!r})"
                 )
-                expires_at = parse_timestamp(artifact.get("expires_at"), "expires_at")
-                if expires_at <= current_time:
-                    raise ValueError("GitHub reports that the artifact expired early")
-            except ValueError as error:
-                errors.append(str(error))
-            else:
-                break
-        else:
-            raise ValueError(
-                f"Pages validation artifact for commit {commit} (run {run_id}) "
-                f"failed its active 90-day review window ending "
-                f"{deadline.isoformat()}: {'; '.join(errors)}"
+
+            artifacts_url = (
+                f"{api_url.rstrip('/')}/repos/{repository}/actions/runs/{run_id}"
+                f"/artifacts?include_expired=true&per_page=100"
             )
+            artifacts = _list_all(
+                artifacts_url, "artifacts", token, fetch_page
+            )
+            expected_name = f"pages-validation-{commit}"
+            matching = [
+                item for item in artifacts if item.get("name") == expected_name
+            ]
+            if not matching:
+                raise ValueError("validation artifact is missing")
+
+            errors = []
+            for artifact in matching:
+                try:
+                    artifact_id = artifact.get("id")
+                    if not isinstance(artifact_id, int):
+                        raise ValueError(
+                            "GitHub artifact metadata is missing a numeric id"
+                        )
+                    validate_artifact(
+                        artifact,
+                        artifact_id,
+                        expected_name,
+                        run,
+                        run_id,
+                        commit,
+                    )
+                    expires_at = parse_timestamp(
+                        artifact.get("expires_at"), "expires_at"
+                    )
+                    if expires_at <= current_time:
+                        raise ValueError("GitHub reports that the artifact expired early")
+                    verify_artifact_download(
+                        repository,
+                        artifact_id,
+                        api_url,
+                        token,
+                        open_url=open_url,
+                    )
+                except (OSError, TimeoutError, ValueError) as error:
+                    errors.append(str(error))
+                else:
+                    break
+            else:
+                raise ValueError(
+                    f"validation artifact is invalid or unavailable: {'; '.join(errors)}"
+                )
+        except (OSError, TimeoutError, ValueError) as error:
+            failures.append(
+                f"run {run_id} | commit {commit} | "
+                f"review deadline {deadline.isoformat()}: {error}"
+            )
+            continue
         checked += 1
 
+    if failures:
+        raise ValueError(
+            "Pages validation retention check found problems in active review "
+            f"windows ({len(failures)}):\n- " + "\n- ".join(failures)
+        )
     return checked
 
 

@@ -10,6 +10,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from urllib.request import HTTPRedirectHandler
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -54,6 +55,17 @@ THEME_BROWSER_LOOP = "for browser in chromium firefox webkit; do"
 THEME_REPORT_PATTERN = "color-scheme-init-$browser.json"
 THEME_INDEX_NAME = "color-scheme-evidence-index.md"
 THEME_CASE_LABELS = ("`light`", "`dark`", "`disabled_storage`")
+
+
+class FakeDownloadResponse:
+    def __init__(self, status):
+        self.status = status
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return False
 
 
 def browser_theme_index() -> str:
@@ -398,6 +410,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
+        self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
 
     def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
@@ -466,7 +479,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ValueError,
-            rf"commit {commit} \(run 44\).*missing before its 90-day review window ends",
+            rf"run 44 \| commit {commit} \| review deadline "
+            r"2026-12-30T12:00:00\+00:00: validation artifact is missing",
         ):
             retention_checker.monitor_repository(
                 "owner/repo",
@@ -475,6 +489,71 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 now=now,
                 fetch_page=fetch,
             )
+
+    def test_retention_monitor_reports_every_active_run_with_invalid_or_missing_evidence(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        first_commit = "a" * 40
+        second_commit = "b" * 40
+        runs = [
+            {
+                "id": 44,
+                "head_sha": first_commit,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 45,
+                "head_sha": second_commit,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+        requests = []
+        invalid_artifact = {
+            "id": 450,
+            "name": f"pages-validation-{second_commit}",
+            "expired": True,
+            "created_at": "2026-10-02T12:01:00Z",
+            "expires_at": "2026-12-31T12:00:00Z",
+            "workflow_run": {"id": 45, "head_sha": second_commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/" in url and "/artifacts?" in url:
+                run_id = int(url.split("/runs/", 1)[1].split("/", 1)[0])
+                requests.append(run_id)
+                if run_id == 44:
+                    return {"artifacts": []}, None
+                return {"artifacts": [invalid_artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        message = str(raised.exception)
+        self.assertIn("problems in active review windows (2)", message)
+        self.assertIn(
+            f"run 44 | commit {first_commit} | review deadline "
+            "2026-12-30T12:00:00+00:00: validation artifact is missing",
+            message,
+        )
+        self.assertIn(
+            f"run 45 | commit {second_commit} | review deadline "
+            "2026-12-31T12:00:00+00:00: validation artifact is invalid or unavailable: "
+            "GitHub reports that the validation artifact is expired",
+            message,
+        )
+        self.assertEqual(requests, [44, 45])
 
     def test_retention_monitor_checks_successful_runs_only_inside_window(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
@@ -506,6 +585,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "workflow_run": {"id": 51, "head_sha": commit},
         }
         requested_runs = []
+        requested_downloads = []
 
         def fetch(url, token):
             if "/workflows/pages.yml/runs?" in url:
@@ -520,15 +600,92 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 return {"artifacts": [artifact]}, None
             self.fail(f"Unexpected GitHub API request: {url}")
 
+        def open_url(request, timeout):
+            requested_downloads.append((request.full_url, request.get_method(), timeout))
+            return FakeDownloadResponse(200)
+
         checked = retention_checker.monitor_repository(
             "owner/repo",
             "https://api.github.com",
             "test-token",
             now=now,
             fetch_page=fetch,
+            open_url=open_url,
         )
         self.assertEqual(checked, 1)
         self.assertEqual(requested_runs, [51])
+        self.assertEqual(
+            requested_downloads,
+            [(
+                "https://api.github.com/repos/owner/repo/actions/artifacts/501/zip",
+                "GET",
+                30,
+            )],
+        )
+
+    def test_artifact_authorization_is_not_forwarded_to_download_storage(self):
+        def open_url(request, timeout):
+            self.assertEqual(request.get_header("Authorization"), "Bearer test-token")
+            redirected = HTTPRedirectHandler().redirect_request(
+                request, None, 302, "Found", {},
+                "https://artifact-storage.example/download.zip",
+            )
+            self.assertIsNone(redirected.get_header("Authorization"))
+            return FakeDownloadResponse(200)
+
+        retention_checker.verify_artifact_download(
+            "owner/repo", 701, "https://api.github.com", "test-token",
+            open_url=open_url,
+        )
+
+    def test_retention_monitor_reports_artifact_download_failure_with_review_details(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "f" * 40
+        run = {
+            "id": 71,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 701,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 71, "head_sha": commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            self.assertEqual(
+                request.full_url,
+                "https://api.github.com/repos/owner/repo/actions/artifacts/701/zip",
+            )
+            raise OSError("HTTP Error 403: Forbidden")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            rf"run 71 \| commit {commit} \| review deadline "
+            r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
+            r"unavailable: artifact download failed: HTTP Error 403: Forbidden",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
 
     def test_retention_monitor_stops_checking_at_the_90_day_deadline(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
@@ -597,8 +754,48 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
         self.assertEqual(report["failed_case"], "dark")
+        self.assertEqual(report["not_run_cases"], ["disabled_storage"])
         self.assertEqual(report["error"], "dark preference was not applied")
         self.assertTrue(report["diagnostic_only"])
+
+    def test_browser_route_checks_collect_all_failures(self):
+        checked = []
+
+        def check(route):
+            checked.append(route)
+            if route != "/healthy/":
+                raise AssertionError(f"{route} has the wrong theme")
+            return {"route_evidence": [{"route": route}]}
+
+        with self.assertRaises(color_scheme_checker.RouteCheckFailure) as failure:
+            color_scheme_checker.collect_route_evidence(
+                ["/healthy/", "/first/", "/second/"], check
+            )
+
+        self.assertEqual(checked, ["/healthy/", "/first/", "/second/"])
+        self.assertEqual(
+            failure.exception.failed_routes,
+            [
+                {"route": "/first/", "error": "/first/ has the wrong theme"},
+                {"route": "/second/", "error": "/second/ has the wrong theme"},
+            ],
+        )
+
+        report = {"cases": {}}
+        with self.assertRaises(color_scheme_checker.RouteCheckFailure):
+            color_scheme_checker.capture_case(
+                report,
+                "dark",
+                lambda: color_scheme_checker.collect_route_evidence(
+                    ["/first/", "/second/"], check
+                ),
+            )
+        self.assertTrue(report["diagnostic_only"])
+        self.assertEqual(report["failed_case"], "dark")
+        self.assertEqual(
+            report["failed_routes"],
+            failure.exception.failed_routes,
+        )
 
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
@@ -606,6 +803,22 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
+            (audit / "color-scheme-init-chromium.json").write_text(
+                json.dumps(
+                    {
+                        "browser": "chromium",
+                        "status": "FAIL",
+                        "diagnostic_only": True,
+                        "not_run_cases": [
+                            "light",
+                            "dark",
+                            "disabled_storage",
+                        ],
+                        "error": "browser could not be launched",
+                    }
+                ),
+                encoding="utf-8",
+            )
             (audit / "color-scheme-init-firefox.json").write_text(
                 json.dumps(
                     {
@@ -614,6 +827,18 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "status": "FAIL",
                         "diagnostic_only": True,
                         "failed_case": "dark",
+                        "cases": {"light": {"routes": 1}},
+                        "failed_routes": [
+                            {
+                                "route": "/toolbox/example/",
+                                "error": "saved dark preference was not applied",
+                            },
+                            {
+                                "route": "/branch/another/",
+                                "error": "wrong initial scheme",
+                            },
+                        ],
+                        "not_run_cases": ["disabled_storage"],
                         "error": "saved dark preference was not applied",
                     }
                 ),
@@ -630,12 +855,130 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("failed in `not identified`", summary)
+            self.assertIn(
+                "Not run: `light`, `dark`, `disabled_storage`",
+                summary,
+            )
             self.assertIn("Firefox (138.0)", summary)
             self.assertIn("failed in `dark`", summary)
+            self.assertIn(
+                "Completed before failure (diagnostic only; not validated "
+                "evidence): `light`.",
+                summary,
+            )
+            self.assertIn("Not run: `disabled_storage`", summary)
             self.assertIn("saved dark preference was not applied", summary)
+            self.assertIn(
+                "Affected pages (diagnostic only; not validated release evidence)",
+                summary,
+            )
+            self.assertIn("`/toolbox/example/`", summary)
+            self.assertIn("`/branch/another/`", summary)
             self.assertIn("Diagnostic only", summary)
             self.assertIn("not validated release evidence", summary)
+            not_run_line = next(
+                line for line in summary.splitlines() if "Not run:" in line
+            )
+            self.assertIn(
+                "must not be treated as passing or validated evidence",
+                not_run_line,
+            )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
+
+    def test_failure_diagnostic_never_labels_later_cases_completed_before_failure(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        for failed_case, expected in (("dark", "`light`"), (None, "none")):
+            with self.subTest(failed_case=failed_case), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                (audit / "color-scheme-init-firefox.json").write_text(
+                    json.dumps({
+                        "browser": "firefox", "status": "FAIL",
+                        "diagnostic_only": True, "failed_case": failed_case,
+                        "cases": {"light": {}, "disabled_storage": {}},
+                        "not_run_cases": ["disabled_storage"],
+                    }), encoding="utf-8",
+                )
+                summary_path = root / "summary.md"
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                completed = next(line for line in summary.splitlines()
+                                 if "Completed before failure" in line)
+                self.assertTrue(completed.endswith(f": {expected}."), completed)
+                self.assertNotIn("disabled_storage", completed)
+                self.assertIn("Not run: `disabled_storage`", summary)
+
+    def test_failed_route_details_cannot_become_validated_theme_evidence(self):
+        diagnostic_code = theme_failure_diagnostic_code(self.workflow)
+        verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        verify_code = textwrap.dedent(
+            verify_block.split("python3 - <<'PY'\n", 1)[1].rsplit(
+                "          PY", 1
+            )[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser, _, version in browser_versions():
+                report = {
+                    "browser": browser,
+                    "browser_version": version,
+                    "status": "FAIL" if browser == "firefox" else "PASS",
+                    "cases": {
+                        "light": {},
+                        "dark": {},
+                        "disabled_storage": {},
+                    },
+                }
+                if browser == "firefox":
+                    report.update(
+                        {
+                            "diagnostic_only": True,
+                            "failed_case": "dark",
+                            "failed_routes": [
+                                {
+                                    "route": "/private-detail/",
+                                    "error": "wrong scheme",
+                                }
+                            ],
+                        }
+                    )
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+
+            summary_path = root / "step-summary.md"
+            diagnostic = subprocess.run(
+                [sys.executable, "-c", diagnostic_code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(diagnostic.returncode, 0, diagnostic.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("`/private-detail/`", summary)
+            self.assertIn("diagnostic only; not validated release evidence", summary)
+
+            verification = subprocess.run(
+                [sys.executable, "-c", verify_code],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(verification.returncode, 0)
+            self.assertIn("status='FAIL', expected 'PASS'", verification.stderr)
+            self.assertFalse((audit / THEME_INDEX_NAME).exists())
 
     def test_failure_diagnostic_handles_unavailable_and_malformed_reports(self):
         code = theme_failure_diagnostic_code(self.workflow)
