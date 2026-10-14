@@ -742,6 +742,45 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(report["error"], "dark preference was not applied")
         self.assertTrue(report["diagnostic_only"])
 
+    def test_browser_route_checks_collect_all_failures(self):
+        checked = []
+
+        def check(route):
+            checked.append(route)
+            if route != "/healthy/":
+                raise AssertionError(f"{route} has the wrong theme")
+            return {"route_evidence": [{"route": route}]}
+
+        with self.assertRaises(color_scheme_checker.RouteCheckFailure) as failure:
+            color_scheme_checker.collect_route_evidence(
+                ["/healthy/", "/first/", "/second/"], check
+            )
+
+        self.assertEqual(checked, ["/healthy/", "/first/", "/second/"])
+        self.assertEqual(
+            failure.exception.failed_routes,
+            [
+                {"route": "/first/", "error": "/first/ has the wrong theme"},
+                {"route": "/second/", "error": "/second/ has the wrong theme"},
+            ],
+        )
+
+        report = {"cases": {}}
+        with self.assertRaises(color_scheme_checker.RouteCheckFailure):
+            color_scheme_checker.capture_case(
+                report,
+                "dark",
+                lambda: color_scheme_checker.collect_route_evidence(
+                    ["/first/", "/second/"], check
+                ),
+            )
+        self.assertTrue(report["diagnostic_only"])
+        self.assertEqual(report["failed_case"], "dark")
+        self.assertEqual(
+            report["failed_routes"],
+            failure.exception.failed_routes,
+        )
+
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
         with tempfile.TemporaryDirectory() as directory:
@@ -773,6 +812,16 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "diagnostic_only": True,
                         "failed_case": "dark",
                         "cases": {"light": {"routes": 1}},
+                        "failed_routes": [
+                            {
+                                "route": "/toolbox/example/",
+                                "error": "saved dark preference was not applied",
+                            },
+                            {
+                                "route": "/branch/another/",
+                                "error": "wrong initial scheme",
+                            },
+                        ],
                         "not_run_cases": ["disabled_storage"],
                         "error": "saved dark preference was not applied",
                     }
@@ -804,6 +853,12 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
             self.assertIn("Not run: `disabled_storage`", summary)
             self.assertIn("saved dark preference was not applied", summary)
+            self.assertIn(
+                "Affected pages (diagnostic only; not validated release evidence)",
+                summary,
+            )
+            self.assertIn("`/toolbox/example/`", summary)
+            self.assertIn("`/branch/another/`", summary)
             self.assertIn("Diagnostic only", summary)
             self.assertIn("not validated release evidence", summary)
             not_run_line = next(
@@ -814,6 +869,71 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 not_run_line,
             )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
+
+    def test_failed_route_details_cannot_become_validated_theme_evidence(self):
+        diagnostic_code = theme_failure_diagnostic_code(self.workflow)
+        verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
+            "\n      - name:", 1
+        )[0]
+        verify_code = textwrap.dedent(
+            verify_block.split("python3 - <<'PY'\n", 1)[1].rsplit(
+                "          PY", 1
+            )[0]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser, _, version in browser_versions():
+                report = {
+                    "browser": browser,
+                    "browser_version": version,
+                    "status": "FAIL" if browser == "firefox" else "PASS",
+                    "cases": {
+                        "light": {},
+                        "dark": {},
+                        "disabled_storage": {},
+                    },
+                }
+                if browser == "firefox":
+                    report.update(
+                        {
+                            "diagnostic_only": True,
+                            "failed_case": "dark",
+                            "failed_routes": [
+                                {
+                                    "route": "/private-detail/",
+                                    "error": "wrong scheme",
+                                }
+                            ],
+                        }
+                    )
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+
+            summary_path = root / "step-summary.md"
+            diagnostic = subprocess.run(
+                [sys.executable, "-c", diagnostic_code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(diagnostic.returncode, 0, diagnostic.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("`/private-detail/`", summary)
+            self.assertIn("diagnostic only; not validated release evidence", summary)
+
+            verification = subprocess.run(
+                [sys.executable, "-c", verify_code],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(verification.returncode, 0)
+            self.assertIn("status='FAIL', expected 'PASS'", verification.stderr)
+            self.assertFalse((audit / THEME_INDEX_NAME).exists())
 
     def test_failure_diagnostic_handles_unavailable_and_malformed_reports(self):
         code = theme_failure_diagnostic_code(self.workflow)
