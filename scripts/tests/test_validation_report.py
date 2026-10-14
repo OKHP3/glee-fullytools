@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import argparse
+import os
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 from datetime import date, datetime, timezone
@@ -51,7 +52,8 @@ class ValidationReportTests(unittest.TestCase):
                 ))
             ]
             submitted_bytes = [
-                json.dumps(report, indent=2, ensure_ascii=False).encode("utf-8")
+                json.dumps(report, indent=2, ensure_ascii=False)
+                .replace("\n", os.linesep).encode("utf-8")
                 for report in reports
             ]
             real_replace = Path.replace
@@ -86,8 +88,18 @@ class ValidationReportTests(unittest.TestCase):
                     executor.submit(validate_site._write_validation_report, report_path, report)
                     for report in reports
                 ]
+                published = 0
                 for future in futures:
-                    self.assertIs(future.result(timeout=15), True)
+                    try:
+                        self.assertIs(future.result(timeout=15), True)
+                        published += 1
+                    except PermissionError as error:
+                        # Windows may reject one contended rename. The writer
+                        # must surface it and clean its stage; one complete
+                        # payload must still win without serializing the test.
+                        self.assertEqual(os.name, "nt")
+                        self.assertEqual(error.winerror, 5)
+                self.assertGreaterEqual(published, 1)
                 self.assertEqual(replacement.call_count, 2)
 
             # Either writer may win, but a truncated or mixed report may not.
