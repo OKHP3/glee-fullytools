@@ -455,7 +455,12 @@ def browser_journeys(base_url: str, browser_names: list[str]) -> tuple[list[dict
                 failure_item = goto_assert_first_party(
                     blocked_page, base_url, "/arcade/", "third-party failure"
                 )
-                time.sleep(8.4)
+                # Wait for the observable fallback after its eight-second timer;
+                # a fixed sleep can race delayed script startup on a busy host.
+                try:
+                    blocked_page.locator("#arcade-preview-fallback:not([hidden])").wait_for(state="visible", timeout=12000)
+                except Exception as error:
+                    failure_item["fallback_wait_error"] = str(error)
                 fallback = blocked_page.locator("#arcade-preview-fallback:not([hidden])").count()
                 failure_item["blocked_origins"] = sorted(set(blocked))
                 failure_item["fallback_visible"] = fallback > 0
