@@ -112,11 +112,12 @@ def verify_artifact_download(
         url,
         headers={
             "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": API_VERSION,
             "User-Agent": "Glee-fully-Pages-evidence-retention-check",
         },
     )
+    # GitHub redirects to signed artifact storage; authorize only the API request.
+    request.add_unredirected_header("Authorization", f"Bearer {token}")
     open_request = open_url or urlopen
     try:
         with open_request(request, timeout=30) as response:

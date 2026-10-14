@@ -10,6 +10,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from urllib.request import HTTPRedirectHandler
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -622,6 +623,21 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )],
         )
 
+    def test_artifact_authorization_is_not_forwarded_to_download_storage(self):
+        def open_url(request, timeout):
+            self.assertEqual(request.get_header("Authorization"), "Bearer test-token")
+            redirected = HTTPRedirectHandler().redirect_request(
+                request, None, 302, "Found", {},
+                "https://artifact-storage.example/download.zip",
+            )
+            self.assertIsNone(redirected.get_header("Authorization"))
+            return FakeDownloadResponse(200)
+
+        retention_checker.verify_artifact_download(
+            "owner/repo", 701, "https://api.github.com", "test-token",
+            open_url=open_url,
+        )
+
     def test_retention_monitor_reports_artifact_download_failure_with_review_details(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
         commit = "f" * 40
@@ -869,6 +885,35 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 not_run_line,
             )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
+
+    def test_failure_diagnostic_never_labels_later_cases_completed_before_failure(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        for failed_case, expected in (("dark", "`light`"), (None, "none")):
+            with self.subTest(failed_case=failed_case), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                (audit / "color-scheme-init-firefox.json").write_text(
+                    json.dumps({
+                        "browser": "firefox", "status": "FAIL",
+                        "diagnostic_only": True, "failed_case": failed_case,
+                        "cases": {"light": {}, "disabled_storage": {}},
+                        "not_run_cases": ["disabled_storage"],
+                    }), encoding="utf-8",
+                )
+                summary_path = root / "summary.md"
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                completed = next(line for line in summary.splitlines()
+                                 if "Completed before failure" in line)
+                self.assertTrue(completed.endswith(f": {expected}."), completed)
+                self.assertNotIn("disabled_storage", completed)
+                self.assertIn("Not run: `disabled_storage`", summary)
 
     def test_failed_route_details_cannot_become_validated_theme_evidence(self):
         diagnostic_code = theme_failure_diagnostic_code(self.workflow)

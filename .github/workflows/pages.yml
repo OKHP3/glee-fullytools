@@ -284,10 +284,15 @@ jobs:
               status = report.get("status")
               cases = report.get("cases")
               cases = cases if isinstance(cases, dict) else {}
-              completed_cases = [
-                  case for case in case_order
-                  if case in cases and case != report.get("failed_case")
-              ]
+              completed_order = case_order
+              if status == "FAIL":
+                  failed_case = report.get("failed_case")
+                  completed_order = (
+                      case_order[:case_order.index(failed_case)]
+                      if isinstance(failed_case, str) and failed_case in case_order
+                      else ()
+                  )
+              completed_cases = [case for case in completed_order if case in cases]
               completed = (
                   ", ".join(f"`{case}`" for case in completed_cases)
                   or "none"
