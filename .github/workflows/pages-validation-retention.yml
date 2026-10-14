@@ -18,7 +18,7 @@ jobs:
       - name: Checkout monitor
         uses: actions/checkout@v7
 
-      - name: Check Pages validation evidence still exists
+      - name: Check Pages validation evidence remains downloadable
         env:
           GITHUB_API_URL: ${{ github.api_url }}
           GITHUB_REPOSITORY: ${{ github.repository }}

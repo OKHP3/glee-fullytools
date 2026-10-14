@@ -95,6 +95,40 @@ def api_page(url: str, token: str) -> tuple[dict[str, object], str | None]:
     return payload, next_url
 
 
+def verify_artifact_download(
+    repository: str,
+    artifact_id: int,
+    api_url: str,
+    token: str,
+    *,
+    open_url=None,
+) -> None:
+    """Confirm GitHub can serve the artifact without reading its archive body."""
+    url = (
+        f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
+        f"{artifact_id}/zip"
+    )
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": API_VERSION,
+            "User-Agent": "Glee-fully-Pages-evidence-retention-check",
+        },
+    )
+    open_request = open_url or urlopen
+    try:
+        with open_request(request, timeout=30) as response:
+            status = getattr(response, "status", 200)
+            if status != 200:
+                raise ValueError(
+                    f"artifact download endpoint returned HTTP {status}"
+                )
+    except (OSError, TimeoutError, ValueError) as error:
+        raise ValueError(f"artifact download failed: {error}") from error
+
+
 def _list_all(
     url: str,
     collection_key: str,
@@ -126,6 +160,7 @@ def monitor_repository(
     *,
     now: datetime | None = None,
     fetch_page=None,
+    open_url=None,
 ) -> int:
     """Fail if a successful Pages run loses its evidence inside the 90-day window."""
     current_time = now or datetime.now(timezone.utc)
@@ -209,6 +244,13 @@ def monitor_repository(
                 expires_at = parse_timestamp(artifact.get("expires_at"), "expires_at")
                 if expires_at <= current_time:
                     raise ValueError("GitHub reports that the artifact expired early")
+                verify_artifact_download(
+                    repository,
+                    artifact_id,
+                    api_url,
+                    token,
+                    open_url=open_url,
+                )
             except ValueError as error:
                 errors.append(str(error))
             else:
