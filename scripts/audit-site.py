@@ -115,6 +115,7 @@ class PageParser(HTMLParser):
         self.headings: List[int] = []   # ordered heading levels outside <footer>
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
+        self.og_images: List[str] = []
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
         self.external_links: List[Dict[str, str]] = []
@@ -140,6 +141,8 @@ class PageParser(HTMLParser):
             if self._in_footer == 0:
                 self.headings.append(int(tag[1]))
         elif tag == "meta":
+            if (a.get("property") or "").lower() == "og:image":
+                self.og_images.append(a.get("content", "") or "")
             key = a.get("name") or a.get("property") or a.get("http-equiv")
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
@@ -291,16 +294,6 @@ def audit_page(path: Path) -> List[str]:
         if anchor and anchor not in id_set:
             issues.append(f'In-page anchor href="#{anchor}" has no matching id')
 
-    # og:image existence — resolve local resources through the shared safe
-    # path contract. External images are not fetched or checked on disk.
-    og_img = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]+)"', src)
-    if og_img:
-        image_issue = _og_image_issue(
-            og_img.group(1), path.parent, ROOT, site_origin()
-        )
-        if image_issue:
-            issues.append(image_issue)
-
     # Modern (2025/2026) baseline — security meta tags
     if 'name="referrer"' not in src:
         issues.append('Missing <meta name="referrer"> — modern privacy baseline')
@@ -339,6 +332,14 @@ def audit_page(path: Path) -> List[str]:
     except Exception as exc:  # pragma: no cover
         issues.append(f"HTML parser raised: {exc!r}")
         return issues
+
+    # Check every declared social image, including later tags. The parser
+    # handles attribute order, quotes and character references consistently.
+    # External images remain outside the local filesystem audit.
+    for url in p.og_images:
+        image_issue = _og_image_issue(url, path.parent, ROOT, site_origin())
+        if image_issue:
+            issues.append(image_issue)
 
     title = p.title.strip()
     if not title:

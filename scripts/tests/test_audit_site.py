@@ -75,11 +75,14 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn(str(report.resolve()), console.getvalue())
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
 
-    def og_image_findings(self, root: Path, url: str) -> list[str]:
+    def og_image_findings(self, root: Path, url: str, *later_urls: str) -> list[str]:
         page = root / "content" / "index.html"
         page.parent.mkdir(parents=True, exist_ok=True)
         page.write_text(
-            f'<meta property="og:image" content="{url}">',
+            "\n".join(
+                f'<meta property="og:image" content="{image_url}">'
+                for image_url in (url, *later_urls)
+            ),
             encoding="utf-8",
         )
         with patch.object(_MODULE, "ROOT", root), patch.object(
@@ -89,6 +92,59 @@ class AuditSiteTests(unittest.TestCase):
                 issue for issue in _MODULE.audit_page(page)
                 if issue.startswith("og:image")
             ]
+
+    def test_every_later_local_og_image_is_checked(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets" / "social"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(b"image")
+            invalid = (
+                f"{ORIGIN}/assets/social/missing.png",
+                f"{ORIGIN}/%2e%2e/outside.png",
+            )
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/hero.png?v=2", *invalid
+            )
+            self.assertEqual(len(findings), 2)
+            for finding, url in zip(findings, invalid):
+                self.assertIn(url, finding)
+                self.assertIn("safe file inside", finding)
+
+    def test_external_images_in_any_position_are_not_resolved_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets" / "social"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(b"image")
+            local = f"{ORIGIN}/assets/social/hero.png"
+            with patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
+                self.assertEqual(self.og_image_findings(
+                    root, "https://external.test/first.png", local,
+                    "https://glee-fully.tools.attacker.test/later.png"
+                ), [])
+            self.assertEqual(resolve.call_count, 1)
+            self.assertEqual(resolve.call_args.args[0], local)
+
+    def test_later_image_tag_attribute_order_quotes_and_entities(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            page = root / "index.html"
+            images = root / "assets"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(b"image")
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                "<META content='/assets/missing.png?v=1&amp;width=2' PROPERTY='og:image'>"
+                '<!-- <meta property="og:image" content="/ignored.png"> -->',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [x for x in _MODULE.audit_page(page) if x.startswith("og:image")]
+            self.assertEqual(len(findings), 1)
+            self.assertIn("/assets/missing.png?v=1&width=2", findings[0])
 
     def assert_invalid_og_images_stay_inside_root(
         self, root: Path, urls: tuple[str, ...]
