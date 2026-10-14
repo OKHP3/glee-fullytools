@@ -85,7 +85,7 @@ behind Glee-fully tooling. It is a public explanation, not a hosted builder laun
   Exit 0 = safe to publish.
 * **Mermaid runtime:** the `ecosystem/` and `universe/` diagrams run on
   Mermaid, vendored locally at `assets/vendor/mermaid/` (not loaded from a
-  CDN). `assets/vendor/mermaid/VERSION` pins the exact release, currently 12.0.0; a daily
+  CDN). `assets/vendor/mermaid/VERSION` pins the exact release, currently 12.2.0; a daily
   `mermaid-version-watch` GitHub Action compares it against the latest npm
   release and opens/updates a tracking issue when the vendored copy falls
   behind -- re-vendoring is a deliberate, reviewed step, never automatic.
