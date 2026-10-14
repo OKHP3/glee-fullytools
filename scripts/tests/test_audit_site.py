@@ -146,6 +146,28 @@ class AuditSiteTests(unittest.TestCase):
             self.assertEqual(len(findings), 1)
             self.assertIn("/assets/missing.png?v=1&width=2", findings[0])
 
+    def test_later_name_based_og_image_uses_the_metadata_key_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(b"image")
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                '<meta name="og:image" content="/assets/missing.png">'
+                '<meta name="og:image" content="/%2e%2e/outside.png">'
+                '<meta name="og:image" content="https://external.test/image.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [x for x in _MODULE.audit_page(page) if x.startswith("og:image")]
+            self.assertEqual(len(findings), 2)
+            self.assertIn("/assets/missing.png", findings[0])
+            self.assertIn("/%2e%2e/outside.png", findings[1])
+
     def assert_invalid_og_images_stay_inside_root(
         self, root: Path, urls: tuple[str, ...]
     ) -> None:

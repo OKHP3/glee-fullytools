@@ -141,9 +141,9 @@ class PageParser(HTMLParser):
             if self._in_footer == 0:
                 self.headings.append(int(tag[1]))
         elif tag == "meta":
-            if (a.get("property") or "").lower() == "og:image":
-                self.og_images.append(a.get("content", "") or "")
             key = a.get("name") or a.get("property") or a.get("http-equiv")
+            if key and key.lower() == "og:image":
+                self.og_images.append(a.get("content", "") or "")
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
         elif tag == "link" and a.get("rel", "").lower() == "canonical":
