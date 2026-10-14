@@ -5,10 +5,12 @@ from __future__ import annotations
 import importlib.util
 import json
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 from datetime import date, datetime, timezone
 from pathlib import Path
 import tempfile
+from threading import Barrier
 import unittest
 from unittest import mock
 
@@ -21,6 +23,79 @@ _SPEC.loader.exec_module(validate_site)
 
 
 class ValidationReportTests(unittest.TestCase):
+    def test_concurrent_writers_publish_one_complete_payload_without_staged_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            reports = [
+                {
+                    "generated_at": f"2026-09-10T17:0{index}:00Z",
+                    "run_date": "2026-09-10",
+                    "report_type": "site-validation",
+                    "provenance": {"validated_commit": str(index + 1) * 40},
+                    "scanned": 1,
+                    "total_issues": 1,
+                    "total_warnings": 0,
+                    "pages": [{
+                        "path": "index.html",
+                        "issues": [finding],
+                        "warnings": [],
+                    }],
+                    "global_issues": [],
+                    "global_warnings": [],
+                    "organization_identity_issues": [],
+                }
+                for index, finding in enumerate((
+                    "First writer finding: café",
+                    "Second writer finding: 日本語 " + "different evidence " * 100,
+                ))
+            ]
+            submitted_bytes = [
+                json.dumps(report, indent=2, ensure_ascii=False).encode("utf-8")
+                for report in reports
+            ]
+            real_replace = Path.replace
+
+            def check_overlapping_stages():
+                # The barrier action runs before either real replacement: both
+                # writers have flushed and closed their separate staged files.
+                staged_paths = list(audit_dir.glob(f".{report_path.name}.*.tmp"))
+                self.assertEqual(len(staged_paths), 2)
+                self.assertCountEqual(
+                    [path.read_bytes() for path in staged_paths], submitted_bytes
+                )
+                self.assertFalse(report_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), set(staged_paths))
+
+            ready_to_replace = Barrier(2, action=check_overlapping_stages, timeout=10)
+
+            def coordinated_replace(path, destination):
+                self.assertEqual(destination, report_path)
+                self.assertEqual(path.parent, audit_dir)
+                self.assertTrue(path.name.startswith(f".{report_path.name}."))
+                self.assertEqual(path.suffix, ".tmp")
+                ready_to_replace.wait()
+                return real_replace(path, destination)
+
+            # Synchronize only the commit boundary; serialization, staging,
+            # replacement and cleanup all use real filesystem operations.
+            with mock.patch.object(
+                Path, "replace", autospec=True, side_effect=coordinated_replace,
+            ) as replacement, ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [
+                    executor.submit(validate_site._write_validation_report, report_path, report)
+                    for report in reports
+                ]
+                for future in futures:
+                    self.assertIs(future.result(timeout=15), True)
+                self.assertEqual(replacement.call_count, 2)
+
+            # Either writer may win, but a truncated or mixed report may not.
+            saved_bytes = report_path.read_bytes()
+            self.assertIn(saved_bytes, submitted_bytes)
+            self.assertIn(json.loads(saved_bytes), reports)
+            self.assertEqual(set(audit_dir.iterdir()), {report_path})
+
     def test_main_keeps_filename_and_run_date_consistent_across_midnight(self):
         cases = (
             (issues, scenario)
