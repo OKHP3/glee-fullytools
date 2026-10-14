@@ -738,6 +738,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
         self.assertEqual(report["failed_case"], "dark")
+        self.assertEqual(report["not_run_cases"], ["disabled_storage"])
         self.assertEqual(report["error"], "dark preference was not applied")
         self.assertTrue(report["diagnostic_only"])
 
@@ -747,6 +748,22 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             root = Path(directory)
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
+            (audit / "color-scheme-init-chromium.json").write_text(
+                json.dumps(
+                    {
+                        "browser": "chromium",
+                        "status": "FAIL",
+                        "diagnostic_only": True,
+                        "not_run_cases": [
+                            "light",
+                            "dark",
+                            "disabled_storage",
+                        ],
+                        "error": "browser could not be launched",
+                    }
+                ),
+                encoding="utf-8",
+            )
             (audit / "color-scheme-init-firefox.json").write_text(
                 json.dumps(
                     {
@@ -755,6 +772,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "status": "FAIL",
                         "diagnostic_only": True,
                         "failed_case": "dark",
+                        "cases": {"light": {"routes": 1}},
+                        "not_run_cases": ["disabled_storage"],
                         "error": "saved dark preference was not applied",
                     }
                 ),
@@ -771,11 +790,29 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("failed in `not identified`", summary)
+            self.assertIn(
+                "Not run: `light`, `dark`, `disabled_storage`",
+                summary,
+            )
             self.assertIn("Firefox (138.0)", summary)
             self.assertIn("failed in `dark`", summary)
+            self.assertIn(
+                "Completed before failure (diagnostic only; not validated "
+                "evidence): `light`.",
+                summary,
+            )
+            self.assertIn("Not run: `disabled_storage`", summary)
             self.assertIn("saved dark preference was not applied", summary)
             self.assertIn("Diagnostic only", summary)
             self.assertIn("not validated release evidence", summary)
+            not_run_line = next(
+                line for line in summary.splitlines() if "Not run:" in line
+            )
+            self.assertIn(
+                "must not be treated as passing or validated evidence",
+                not_run_line,
+            )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
 
     def test_failure_diagnostic_handles_unavailable_and_malformed_reports(self):

@@ -23,6 +23,7 @@ from urllib.parse import urljoin, urlsplit
 
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
+THEME_CASES = ("light", "dark", "disabled_storage")
 UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
 UTILITY_RECOVERY = {
     "/404.html": ("main .btn-primary", "Return home", "/"),
@@ -561,6 +562,10 @@ def capture_case(report: dict[str, object], name: str, check) -> None:
     except Exception as error:
         report["diagnostic_only"] = True
         report["failed_case"] = name
+        if name in THEME_CASES:
+            report["not_run_cases"] = list(
+                THEME_CASES[THEME_CASES.index(name) + 1:]
+            )
         report["error"] = str(error)
         raise
 
@@ -610,7 +615,7 @@ def main() -> None:
             browser = getattr(playwright, args.browser).launch(**launch_options)
             report["browser_version"] = browser.version
             try:
-                for preference in ("light", "dark"):
+                for preference in THEME_CASES[:2]:
                     capture_case(
                         report,
                         preference,
@@ -620,7 +625,7 @@ def main() -> None:
                     )
                 capture_case(
                     report,
-                    "disabled_storage",
+                    THEME_CASES[2],
                     lambda: check_disabled_storage(
                         browser, base_url, ["/", *UTILITY_ROUTES]
                     ),
@@ -632,6 +637,15 @@ def main() -> None:
         report["status"] = "FAIL"
         report["diagnostic_only"] = True
         report.setdefault("error", str(error))
+        report.setdefault(
+            "not_run_cases",
+            [
+                name
+                for name in THEME_CASES
+                if name not in report.get("cases", {})
+                and name != report.get("failed_case")
+            ],
+        )
 
     text = json.dumps(report, indent=2, ensure_ascii=False)
     if args.output:
