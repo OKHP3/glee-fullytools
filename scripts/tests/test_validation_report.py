@@ -5,10 +5,12 @@ from __future__ import annotations
 import importlib.util
 import json
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 from datetime import date, datetime, timezone
 from pathlib import Path
 import tempfile
+from threading import Barrier
 import unittest
 from unittest import mock
 
@@ -21,9 +23,87 @@ _SPEC.loader.exec_module(validate_site)
 
 
 class ValidationReportTests(unittest.TestCase):
+    def test_concurrent_writers_publish_one_complete_payload_without_staged_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            audit_dir = Path(directory)
+            report_path = audit_dir / "validation-report-2026-09-10.json"
+            reports = [
+                {
+                    "generated_at": f"2026-09-10T17:0{index}:00Z",
+                    "run_date": "2026-09-10",
+                    "report_type": "site-validation",
+                    "provenance": {"validated_commit": str(index + 1) * 40},
+                    "scanned": 1,
+                    "total_issues": 1,
+                    "total_warnings": 0,
+                    "pages": [{
+                        "path": "index.html",
+                        "issues": [finding],
+                        "warnings": [],
+                    }],
+                    "global_issues": [],
+                    "global_warnings": [],
+                    "organization_identity_issues": [],
+                }
+                for index, finding in enumerate((
+                    "First writer finding: café",
+                    "Second writer finding: 日本語 " + "different evidence " * 100,
+                ))
+            ]
+            submitted_bytes = [
+                json.dumps(report, indent=2, ensure_ascii=False).encode("utf-8")
+                for report in reports
+            ]
+            real_replace = Path.replace
+
+            def check_overlapping_stages():
+                # The barrier action runs before either real replacement: both
+                # writers have flushed and closed their separate staged files.
+                staged_paths = list(audit_dir.glob(f".{report_path.name}.*.tmp"))
+                self.assertEqual(len(staged_paths), 2)
+                self.assertCountEqual(
+                    [path.read_bytes() for path in staged_paths], submitted_bytes
+                )
+                self.assertFalse(report_path.exists())
+                self.assertEqual(set(audit_dir.iterdir()), set(staged_paths))
+
+            ready_to_replace = Barrier(2, action=check_overlapping_stages, timeout=10)
+
+            def coordinated_replace(path, destination):
+                self.assertEqual(destination, report_path)
+                self.assertEqual(path.parent, audit_dir)
+                self.assertTrue(path.name.startswith(f".{report_path.name}."))
+                self.assertEqual(path.suffix, ".tmp")
+                ready_to_replace.wait()
+                return real_replace(path, destination)
+
+            # Synchronize only the commit boundary; serialization, staging,
+            # replacement and cleanup all use real filesystem operations.
+            with mock.patch.object(
+                Path, "replace", autospec=True, side_effect=coordinated_replace,
+            ) as replacement, ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [
+                    executor.submit(validate_site._write_validation_report, report_path, report)
+                    for report in reports
+                ]
+                for future in futures:
+                    self.assertIs(future.result(timeout=15), True)
+                self.assertEqual(replacement.call_count, 2)
+
+            # Either writer may win, but a truncated or mixed report may not.
+            saved_bytes = report_path.read_bytes()
+            self.assertIn(saved_bytes, submitted_bytes)
+            self.assertIn(json.loads(saved_bytes), reports)
+            self.assertEqual(set(audit_dir.iterdir()), {report_path})
+
     def test_main_keeps_filename_and_run_date_consistent_across_midnight(self):
-        for issues in ([], ["fixture page issue"]):
-            with self.subTest(issues=issues), tempfile.TemporaryDirectory() as directory:
+        cases = (
+            (issues, scenario)
+            for issues in ([], ["fixture page issue"])
+            for scenario in ("first publication", "changed findings", "unchanged findings")
+        )
+        for issues, scenario in cases:
+            with self.subTest(issues=issues, scenario=scenario), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / "assets").mkdir()
                 page_path = root / "index.html"
@@ -33,6 +113,39 @@ class ValidationReportTests(unittest.TestCase):
                 current_date = date(2026, 12, 31)
                 generation_time = datetime(2027, 1, 1, tzinfo=timezone.utc)
                 validated_commit = "abcdef0123456789abcdef0123456789abcdef01"
+                old_timestamp = "2026-12-31T23:55:00Z"
+                expected_report = {
+                    "generated_at": "2027-01-01T00:00:00Z",
+                    "run_date": "2026-12-31",
+                    "report_type": "site-validation",
+                    "provenance": {"validated_commit": validated_commit},
+                    "scanned": 1,
+                    "total_issues": len(issues),
+                    "total_warnings": 0,
+                    "pages": [{"issues": issues, "warnings": [], "path": "index.html"}],
+                    "global_issues": [],
+                    "global_warnings": [],
+                    "organization_identity_issues": [],
+                }
+                original_bytes = None
+                if scenario != "first publication":
+                    existing_issues = (
+                        ["previous page issue"] if scenario == "changed findings" else issues
+                    )
+                    existing_report = {
+                        **expected_report,
+                        "generated_at": old_timestamp,
+                        "total_issues": len(existing_issues),
+                        "pages": [{
+                            "issues": existing_issues, "warnings": [], "path": "index.html",
+                        }],
+                    }
+                    # Noncanonical formatting makes a timestamp-preserving rewrite detectable.
+                    original_bytes = (
+                        json.dumps(existing_report, sort_keys=True) + "\n"
+                    ).encode("utf-8")
+                    audit_dir.mkdir()
+                    report_path.write_bytes(original_bytes)
                 clean_checks = {
                     "_check_organization_identity_approval": [],
                     "_check_css_lines_drift": None,
@@ -85,6 +198,9 @@ class ValidationReportTests(unittest.TestCase):
                         validate_site.tempfile, "NamedTemporaryFile",
                         wraps=tempfile.NamedTemporaryFile,
                     ))
+                    replacement = stack.enter_context(mock.patch.object(
+                        Path, "replace", autospec=True, side_effect=Path.replace,
+                    ))
 
                     # One run, with real serialization, staging and replacement.
                     self.assertEqual(validate_site.main(validated_commit), int(bool(issues)))
@@ -93,7 +209,32 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(
                         report_path.name, f"validation-report-{report['run_date']}.json"
                     )
-                    self.assertEqual(report["generated_at"], "2027-01-01T00:00:00Z")
+                    if scenario == "unchanged findings":
+                        self.assertEqual(report_path.read_bytes(), original_bytes)
+                        self.assertEqual(report["generated_at"], old_timestamp)
+                        expected_report["generated_at"] = old_timestamp
+                        staging.assert_not_called()
+                        replacement.assert_not_called()
+                    else:
+                        self.assertEqual(report["generated_at"], "2027-01-01T00:00:00Z")
+                        self.assertEqual(
+                            report_path.read_text(encoding="utf-8"),
+                            json.dumps(expected_report, indent=2, ensure_ascii=False),
+                        )
+                        if scenario == "changed findings":
+                            self.assertNotEqual(report_path.read_bytes(), original_bytes)
+                        staging.assert_called_once_with(
+                            mode="w", encoding="utf-8", dir=audit_dir,
+                            prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                        )
+                        replacement.assert_called_once()
+                        staged_path, destination = replacement.call_args.args
+                        self.assertEqual(destination, report_path)
+                        self.assertEqual(staged_path.parent, audit_dir)
+                        self.assertTrue(staged_path.name.startswith(f".{report_path.name}."))
+                        self.assertEqual(staged_path.suffix, ".tmp")
+                        self.assertFalse(staged_path.exists())
+                    self.assertEqual(report, expected_report)
                     self.assertEqual(report["provenance"]["validated_commit"], validated_commit)
                     self.assertEqual(report["scanned"], 1)
                     self.assertEqual(report["total_issues"], len(issues))
@@ -103,9 +244,8 @@ class ValidationReportTests(unittest.TestCase):
                     self.assertEqual(current_date, date(2027, 1, 1))
                     calendar.today.assert_called_once_with()
                     clock.now.assert_called_once_with(timezone.utc)
-                    staging.assert_called_once_with(
-                        mode="w", encoding="utf-8", dir=audit_dir,
-                        prefix=f".{report_path.name}.", suffix=".tmp", delete=False,
+                    self.assertFalse(
+                        (audit_dir / "validation-report-2027-01-01.json").exists()
                     )
                     self.assertEqual(set(audit_dir.iterdir()), {report_path})
                     output.assert_any_call(f"  detail:   {report_path.relative_to(root)}")

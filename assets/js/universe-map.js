@@ -15,7 +15,7 @@ async function renderVisible() {
   const visible = elements.filter(element => (!element.closest('details') || element.closest('details').open) && !element.dataset.rendered);
   if (!visible.length) return;
   try {
-    runtime ||= (await import('/assets/vendor/mermaid/mermaid.esm.min.mjs')).default;
+    runtime ||= (await import('/assets/vendor/mermaid/mermaid.esm.min.mjs?v=12.2.0')).default;
     const styles = getComputedStyle(document.documentElement);
     const token = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
     runtime.initialize({

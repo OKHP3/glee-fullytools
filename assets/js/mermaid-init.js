@@ -230,7 +230,7 @@ let mermaidPromise = null;
 
 function loadMermaid() {
   if (!mermaidPromise) {
-    mermaidPromise = import("/assets/vendor/mermaid/mermaid.esm.min.mjs").then(
+    mermaidPromise = import("/assets/vendor/mermaid/mermaid.esm.min.mjs?v=12.2.0").then(
       ({ default: mermaid }) => {
         mermaid.initialize({
           startOnLoad: false,
