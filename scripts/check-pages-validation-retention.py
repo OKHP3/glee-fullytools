@@ -3,16 +3,32 @@
 
 from datetime import datetime, timedelta, timezone
 import argparse
+import hashlib
+from http.client import IncompleteRead
 import json
 from pathlib import Path
 import re
 import sys
+import tempfile
 from urllib.parse import quote, urlencode, urljoin
 from urllib.request import Request, urlopen
+import zipfile
+import zlib
 
 
 REQUIRED_RETENTION = timedelta(days=90)
 API_VERSION = "2022-11-28"
+DOWNLOAD_CHUNK_SIZE = 64 * 1024
+MAX_ARTIFACT_BYTES = 512 * 1024 * 1024
+MAX_ARCHIVE_ENTRIES = 10_000
+MAX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
+REQUIRED_EVIDENCE_FILES = {
+    "assets/audit/color-scheme-init-chromium.json",
+    "assets/audit/color-scheme-init-firefox.json",
+    "assets/audit/color-scheme-init-webkit.json",
+    "assets/audit/color-scheme-evidence-index.md",
+    "assets/docs/audit-report.md",
+}
 # The source revision that first requested 90-day Pages evidence retention.
 # Earlier successful releases did not promise this artifact lifetime.
 RETENTION_POLICY_COMMIT = "edf2d3509e6b51cdd42ad36cd9ca1dd111cfd08e"
@@ -101,13 +117,21 @@ def verify_artifact_download(
     api_url: str,
     token: str,
     *,
+    expected_digest: str | None = None,
     open_url=None,
 ) -> None:
-    """Confirm GitHub can serve the artifact without reading its archive body."""
+    """Stream and validate an evidence ZIP using bounded temporary storage."""
     url = (
         f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
         f"{artifact_id}/zip"
     )
+    digest_match = None
+    if expected_digest is not None:
+        digest_match = re.fullmatch(r"sha256:([0-9a-fA-F]{64})", expected_digest)
+        if not digest_match:
+            raise ValueError(
+                f"GitHub artifact metadata has an invalid digest: {expected_digest!r}"
+            )
     request = Request(
         url,
         headers={
@@ -126,8 +150,93 @@ def verify_artifact_download(
                 raise ValueError(
                     f"artifact download endpoint returned HTTP {status}"
                 )
-    except (OSError, TimeoutError, ValueError) as error:
+            headers = getattr(response, "headers", {})
+            content_length = headers.get("Content-Length")
+            try:
+                expected_length = (
+                    int(content_length) if content_length is not None else None
+                )
+            except (TypeError, ValueError) as error:
+                raise ValueError(
+                    "artifact download has an invalid Content-Length"
+                ) from error
+            if expected_length is not None and expected_length < 0:
+                raise ValueError("artifact download has a negative Content-Length")
+
+            downloaded = 0
+            digest = hashlib.sha256()
+            with tempfile.TemporaryFile(mode="w+b") as archive:
+                while True:
+                    chunk = response.read(DOWNLOAD_CHUNK_SIZE)
+                    if not chunk:
+                        break
+                    downloaded += len(chunk)
+                    if downloaded > MAX_ARTIFACT_BYTES:
+                        raise ValueError(
+                            "artifact download exceeds the 512 MiB size limit"
+                        )
+                    archive.write(chunk)
+                    digest.update(chunk)
+                if expected_length is not None and downloaded != expected_length:
+                    raise ValueError(
+                        "artifact download is incomplete "
+                        f"({downloaded} of {expected_length} bytes)"
+                    )
+                if (
+                    digest_match
+                    and digest.hexdigest().lower()
+                    != digest_match.group(1).lower()
+                ):
+                    raise ValueError(
+                        "artifact download does not match GitHub's SHA-256 digest"
+                    )
+                validate_artifact_archive(archive)
+    except (
+        OSError,
+        TimeoutError,
+        ValueError,
+        zipfile.BadZipFile,
+        EOFError,
+        IncompleteRead,
+        zlib.error,
+    ) as error:
         raise ValueError(f"artifact download failed: {error}") from error
+
+
+def validate_artifact_archive(archive) -> None:
+    """Check ZIP structure, CRCs, and the required review reports."""
+    try:
+        archive.seek(0)
+        with zipfile.ZipFile(archive) as zipped:
+            entries = zipped.infolist()
+            if len(entries) > MAX_ARCHIVE_ENTRIES:
+                raise ValueError(
+                    f"artifact archive has more than {MAX_ARCHIVE_ENTRIES} entries"
+                )
+            expanded_size = sum(entry.file_size for entry in entries)
+            if expanded_size > MAX_UNCOMPRESSED_BYTES:
+                raise ValueError(
+                    "artifact archive expands beyond the 512 MiB size limit"
+                )
+            names = {entry.filename for entry in entries}
+            missing = sorted(REQUIRED_EVIDENCE_FILES - names)
+            if missing:
+                raise ValueError(
+                    "artifact archive is missing required evidence files: "
+                    + ", ".join(missing)
+                )
+            damaged = zipped.testzip()
+            if damaged is not None:
+                raise ValueError(f"artifact archive has a damaged file: {damaged}")
+    except (
+        zipfile.BadZipFile,
+        EOFError,
+        RuntimeError,
+        OSError,
+        zlib.error,
+        NotImplementedError,
+    ) as error:
+        raise ValueError(f"artifact archive is corrupt or incomplete: {error}") from error
 
 
 def _list_all(
@@ -269,6 +378,11 @@ def monitor_repository(
                         artifact_id,
                         api_url,
                         token,
+                        expected_digest=(
+                            artifact.get("digest")
+                            if isinstance(artifact.get("digest"), str)
+                            else None
+                        ),
                         open_url=open_url,
                     )
                 except (OSError, TimeoutError, ValueError) as error:

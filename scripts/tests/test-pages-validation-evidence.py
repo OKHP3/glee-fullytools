@@ -2,6 +2,8 @@
 """Contract tests for complete, commit-linked Pages validation evidence."""
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
+import hashlib
+from io import BytesIO
 import importlib.util
 import json
 import os
@@ -10,7 +12,9 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from unittest.mock import patch
 from urllib.request import HTTPRedirectHandler
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -58,14 +62,36 @@ THEME_CASE_LABELS = ("`light`", "`dark`", "`disabled_storage`")
 
 
 class FakeDownloadResponse:
-    def __init__(self, status):
+    def __init__(self, status, body=b"", headers=None):
         self.status = status
+        self._body = BytesIO(body)
+        self.headers = headers or {}
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         return False
+
+    def read(self, size=-1):
+        return self._body.read(size)
+
+
+def valid_artifact_archive(missing_file=None):
+    contents = {
+        "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
+        "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
+        "assets/audit/color-scheme-init-webkit.json": b'{"browser":"webkit"}',
+        "assets/audit/color-scheme-evidence-index.md": b"# Browser theme evidence",
+        "assets/docs/audit-report.md": b"# Audit report",
+    }
+    if missing_file is not None:
+        contents.pop(missing_file)
+    archive = BytesIO()
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
+        for name, content in contents.items():
+            zipped.writestr(name, content)
+    return archive.getvalue()
 
 
 def browser_theme_index() -> str:
@@ -580,6 +606,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "id": 501,
             "name": f"pages-validation-{commit}",
             "expired": False,
+            "digest": "sha256:" + hashlib.sha256(valid_artifact_archive()).hexdigest(),
             "created_at": "2026-10-01T12:01:00Z",
             "expires_at": "2026-12-30T12:00:00Z",
             "workflow_run": {"id": 51, "head_sha": commit},
@@ -602,7 +629,12 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         def open_url(request, timeout):
             requested_downloads.append((request.full_url, request.get_method(), timeout))
-            return FakeDownloadResponse(200)
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200,
+                body,
+                {"Content-Length": str(len(body))},
+            )
 
         checked = retention_checker.monitor_repository(
             "owner/repo",
@@ -631,7 +663,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 "https://artifact-storage.example/download.zip",
             )
             self.assertIsNone(redirected.get_header("Authorization"))
-            return FakeDownloadResponse(200)
+            return FakeDownloadResponse(200, valid_artifact_archive())
 
         retention_checker.verify_artifact_download(
             "owner/repo", 701, "https://api.github.com", "test-token",
@@ -677,6 +709,84 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             rf"run 71 \| commit {commit} \| review deadline "
             r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
             r"unavailable: artifact download failed: HTTP Error 403: Forbidden",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+    def test_downloaded_archive_must_contain_all_review_evidence(self):
+        incomplete_archive = valid_artifact_archive(
+            "assets/audit/color-scheme-init-firefox.json"
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "missing required evidence files: "
+            "assets/audit/color-scheme-init-firefox.json",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(
+                    200, incomplete_archive
+                ),
+            )
+
+    def test_downloaded_archive_size_is_capped_before_temporary_write(self):
+        with patch.object(retention_checker, "MAX_ARTIFACT_BYTES", 8):
+            with self.assertRaisesRegex(ValueError, "exceeds the 512 MiB size limit"):
+                retention_checker.verify_artifact_download(
+                    "owner/repo",
+                    701,
+                    "https://api.github.com",
+                    "test-token",
+                    open_url=lambda request, timeout: FakeDownloadResponse(
+                        200, b"x" * 9
+                    ),
+                )
+
+    def test_retention_monitor_reports_a_damaged_archive_with_review_details(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "9" * 40
+        run = {
+            "id": 79,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 709,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 79, "head_sha": commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/79/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            return FakeDownloadResponse(200, b"PK\x03\x04 truncated archive")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            rf"run 79 \| commit {commit} \| review deadline "
+            r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
+            r"unavailable: artifact download failed: artifact archive is corrupt or incomplete",
         ):
             retention_checker.monitor_repository(
                 "owner/repo",
