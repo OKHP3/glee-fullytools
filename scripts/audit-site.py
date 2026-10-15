@@ -222,6 +222,9 @@ BARE_LINK_TEXTS = frozenset({
 
 def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str | None:
     """Validate local og:image paths and signatures without fetching URLs."""
+    if not url.strip():
+        return "og:image declaration is missing a non-empty content URL"
+
     try:
         parsed = urlsplit(url)
         expected_origin = urlsplit(origin)
