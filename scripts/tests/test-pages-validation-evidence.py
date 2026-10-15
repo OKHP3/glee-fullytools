@@ -81,7 +81,7 @@ class FakeDownloadResponse:
         return self._body.read(size)
 
 
-def valid_artifact_archive(missing_file=None):
+def valid_artifact_archive(missing_file=None, additional_files=None):
     contents = {
         "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
         "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
@@ -89,6 +89,7 @@ def valid_artifact_archive(missing_file=None):
         "assets/audit/color-scheme-evidence-index.md": b"# Browser theme evidence",
         "assets/docs/audit-report.md": b"# Audit report",
     }
+    contents.update(additional_files or {})
     if missing_file is not None:
         contents.pop(missing_file)
     archive = BytesIO()
@@ -1073,6 +1074,39 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_historical_archive_with_dated_audit_reports_is_accepted(self):
+        # Successful October 6 evidence archives include release-specific audit
+        # reports beyond the stable set required by the retention checker.
+        historical_archive = valid_artifact_archive(
+            additional_files={
+                "assets/audit/links-report-2026-10-05.json": b"{}",
+                "assets/audit/links-report-2026-10-06.json": b"{}",
+                "assets/audit/resilience-qa-2026-10-06.json": b"{}",
+                "assets/audit/validation-report-2026-10-06.json": b"{}",
+                "assets/audit/viewport-qa-full-2026-10-06.json": b"{}",
+            }
+        )
+
+        retention_checker.validate_artifact_archive(BytesIO(historical_archive))
+
+    def test_archive_with_damaged_file_contents_is_rejected(self):
+        damaged_archive = bytearray(valid_artifact_archive())
+        with zipfile.ZipFile(BytesIO(damaged_archive)) as zipped:
+            entry = zipped.getinfo("assets/audit/color-scheme-init-chromium.json")
+            name_length = int.from_bytes(
+                damaged_archive[entry.header_offset + 26:entry.header_offset + 28],
+                "little",
+            )
+            extra_length = int.from_bytes(
+                damaged_archive[entry.header_offset + 28:entry.header_offset + 30],
+                "little",
+            )
+            data_offset = entry.header_offset + 30 + name_length + extra_length
+        damaged_archive[data_offset] ^= 0xFF
+
+        with self.assertRaisesRegex(ValueError, "corrupt or incomplete|damaged file"):
+            retention_checker.validate_artifact_archive(BytesIO(damaged_archive))
 
     def test_downloaded_archive_size_is_capped_before_temporary_write(self):
         with patch.object(retention_checker, "MAX_ARTIFACT_BYTES", 8):
