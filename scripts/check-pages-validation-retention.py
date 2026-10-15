@@ -12,7 +12,7 @@ import sys
 import tempfile
 from urllib.error import HTTPError, URLError
 import time
-from urllib.parse import quote, urlencode, urljoin
+from urllib.parse import quote, urlencode, urljoin, urlsplit
 from urllib.request import Request, urlopen
 import zipfile
 import zlib
@@ -485,6 +485,21 @@ def _list_all(
     return items
 
 
+def _actions_run_url(api_url: str, repository: str, run_id: int) -> str:
+    """Build the web URL for an Actions run from the configured GitHub API host."""
+    parsed_api_url = urlsplit(api_url)
+    api_host = parsed_api_url.hostname
+    if not api_host:
+        raise ValueError("GitHub API URL must include a host")
+    if api_host.lower() == "api.github.com":
+        web_host = "github.com"
+    else:
+        web_host = f"[{api_host}]" if ":" in api_host else api_host
+        if parsed_api_url.port:
+            web_host += f":{parsed_api_url.port}"
+    return f"https://{web_host}/{repository}/actions/runs/{run_id}"
+
+
 def monitor_repository(
     repository: str,
     api_url: str,
@@ -524,7 +539,7 @@ def monitor_repository(
         commit = run.get("head_sha")
         has_numeric_run_id = type(run_id) is int and run_id > 0
         run_link = (
-            f" | GitHub Actions: https://github.com/{repository}/actions/runs/{run_id}"
+            f" | GitHub Actions: {_actions_run_url(api_url, repository, run_id)}"
             if has_numeric_run_id
             else ""
         )

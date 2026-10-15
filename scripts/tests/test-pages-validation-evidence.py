@@ -1218,6 +1218,40 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             report,
         )
 
+    def test_retention_monitor_uses_enterprise_host_for_run_links(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        run = {
+            "id": 71,
+            "head_sha": "a" * 40,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url:
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "configured-owner/configured-repo",
+                "https://github.enterprise.example/api/v3",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        self.assertIn(
+            "GitHub Actions: "
+            "https://github.enterprise.example/configured-owner/"
+            "configured-repo/actions/runs/71",
+            str(error.exception),
+        )
+
     def test_retention_monitor_links_invalid_metadata_only_when_run_id_is_numeric(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
         runs = [
