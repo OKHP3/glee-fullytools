@@ -117,6 +117,51 @@ class AuditSiteTests(unittest.TestCase):
                 self.assertIn(url, finding)
                 self.assertIn("safe file inside", finding)
 
+    def test_invalid_local_og_image_url_alias_is_checked_after_valid_image(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets" / "social"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/social/hero.png">'
+                '<meta property="og:image:url" content="/%2e%2e/outside.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("/%2e%2e/outside.png", findings[0])
+            self.assertIn("safe file inside", findings[0])
+
+    def test_external_og_image_url_alias_is_not_resolved_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:url" '
+                'content="https://external.test/image.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(findings, [])
+            resolve.assert_not_called()
+
     def test_external_images_in_any_position_are_not_resolved_locally(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"

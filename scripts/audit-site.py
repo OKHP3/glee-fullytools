@@ -155,7 +155,7 @@ class PageParser(HTMLParser):
                 self.headings.append(int(tag[1]))
         elif tag == "meta":
             key = a.get("name") or a.get("property") or a.get("http-equiv")
-            if key and key.lower() == "og:image":
+            if key and key.lower() in {"og:image", "og:image:url"}:
                 self.og_images.append(a.get("content", "") or "")
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
