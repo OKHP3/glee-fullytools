@@ -13,6 +13,7 @@ import tempfile
 import textwrap
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
 import zipfile
 
@@ -670,6 +671,188 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             open_url=open_url,
         )
 
+    def test_artifact_download_recovers_after_temporary_transport_failure(self):
+        attempts = []
+
+        def open_url(request, timeout):
+            attempts.append(request.full_url)
+            if len(attempts) == 1:
+                raise URLError("temporary connection reset")
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=open_url,
+            )
+
+        self.assertEqual(len(attempts), 2)
+        sleep.assert_called_once_with(1)
+
+    def test_artifact_download_recovers_after_temporary_server_error(self):
+        attempts = []
+
+        def open_url(request, timeout):
+            attempts.append(request.full_url)
+            if len(attempts) == 1:
+                raise HTTPError(request.full_url, 503, "Service Unavailable", {}, None)
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=open_url,
+            )
+
+        self.assertEqual(len(attempts), 2)
+        sleep.assert_called_once_with(1)
+
+    def test_artifact_download_retries_interrupted_response_body(self):
+        attempts = []
+        body = valid_artifact_archive()
+
+        class InterruptedResponse(FakeDownloadResponse):
+            def read(self, size=-1):
+                raise ConnectionResetError("connection reset during transfer")
+
+        def open_url(request, timeout):
+            attempts.append(request.full_url)
+            if len(attempts) == 1:
+                return InterruptedResponse(200, body)
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=open_url,
+            )
+
+        self.assertEqual(len(attempts), 2)
+        sleep.assert_called_once_with(1)
+
+    def test_artifact_download_honors_rate_limit_headers(self):
+        body = valid_artifact_archive()
+        cases = (
+            (403, {"retry-after": "4"}, 4),
+            (403, {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "1005"}, 6),
+            (429, {"Retry-After": "7"}, 7),
+            (429, {}, 60),
+            (403, {}, 60),
+        )
+        for status, headers, delay in cases:
+            with self.subTest(status=status, headers=headers):
+                calls = []
+                errors = []
+
+                def open_url(request, timeout):
+                    calls.append(1)
+                    if len(calls) == 1:
+                        error = HTTPError(request.full_url, status, "Throttled", headers,
+                                          BytesIO(b'{"message":"API rate limit exceeded"}'))
+                        errors.append(error)
+                        raise error
+                    self.assertTrue(errors[0].closed)
+                    return FakeDownloadResponse(200, body)
+
+                with patch.object(retention_checker.time, "sleep") as sleep:
+                    with patch.object(retention_checker.time, "time", return_value=1000):
+                        retention_checker.verify_artifact_download(
+                            "owner/repo", 701, "https://api.github.com",
+                            "test-token", open_url=open_url,
+                        )
+                self.assertEqual(len(calls), 2)
+                sleep.assert_called_once_with(delay)
+
+    def test_artifact_download_defers_rate_limits_beyond_wait_budget(self):
+        for headers in ({"Retry-After": "120"}, {}):
+            calls = []
+            errors = []
+
+            def open_url(request, timeout):
+                calls.append(1)
+                error = HTTPError(request.full_url, 429, "Throttled", headers, BytesIO())
+                errors.append(error)
+                raise error
+
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                with self.assertRaisesRegex(ValueError, "retry deferred"):
+                    retention_checker.verify_artifact_download(
+                        "owner/repo", 701, "https://api.github.com",
+                        "test-token", open_url=open_url,
+                    )
+            self.assertEqual(len(calls), 1 if headers else 2)
+            self.assertTrue(all(error.closed for error in errors))
+            self.assertEqual(sleep.call_count, 0 if headers else 1)
+
+    def test_artifact_download_closes_http_error_responses(self):
+        for status in (503, 403):
+            with self.subTest(status=status):
+                error_body = BytesIO(b"temporary or permanent API error")
+                errors = []
+                attempts = []
+
+                def open_url(request, timeout):
+                    attempts.append(request.full_url)
+                    if len(attempts) == 1:
+                        error = HTTPError(request.full_url, status, "API error", {}, error_body)
+                        errors.append(error)
+                        raise error
+                    self.assertTrue(error_body.closed)
+                    return FakeDownloadResponse(200, valid_artifact_archive())
+
+                with patch.object(retention_checker.time, "sleep"):
+                    if status == 403:
+                        with self.assertRaises(ValueError):
+                            retention_checker.verify_artifact_download(
+                                "owner/repo", 701, "https://api.github.com",
+                                "test-token", open_url=open_url,
+                            )
+                    else:
+                        retention_checker.verify_artifact_download(
+                            "owner/repo", 701, "https://api.github.com",
+                            "test-token", open_url=open_url,
+                        )
+                self.assertTrue(error_body.closed)
+
+    def test_artifact_download_does_not_retry_permanent_http_access_errors(self):
+        attempts = []
+
+        def open_url(request, timeout):
+            attempts.append(request.full_url)
+            raise HTTPError(request.full_url, 403, "Forbidden", {}, None)
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaisesRegex(
+                ValueError, "artifact download failed: HTTP Error 403: Forbidden"
+            ):
+                retention_checker.verify_artifact_download(
+                    "owner/repo",
+                    701,
+                    "https://api.github.com",
+                    "test-token",
+                    open_url=open_url,
+                )
+
+        self.assertEqual(len(attempts), 1)
+        sleep.assert_not_called()
+
     def test_retention_monitor_reports_artifact_download_failure_with_review_details(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
         commit = "f" * 40
@@ -697,27 +880,35 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 return {"artifacts": [artifact]}, None
             self.fail(f"Unexpected GitHub API request: {url}")
 
+        attempts = []
+
         def open_url(request, timeout):
             self.assertEqual(
                 request.full_url,
                 "https://api.github.com/repos/owner/repo/actions/artifacts/701/zip",
             )
-            raise OSError("HTTP Error 403: Forbidden")
+            attempts.append(request.full_url)
+            raise URLError("temporary connection reset")
 
-        with self.assertRaisesRegex(
-            ValueError,
-            rf"run 71 \| commit {commit} \| review deadline "
-            r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
-            r"unavailable: artifact download failed: HTTP Error 403: Forbidden",
-        ):
-            retention_checker.monitor_repository(
-                "owner/repo",
-                "https://api.github.com",
-                "test-token",
-                now=now,
-                fetch_page=fetch,
-                open_url=open_url,
-            )
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaisesRegex(
+                ValueError,
+                rf"run 71 \| commit {commit} \| review deadline "
+                r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
+                r"unavailable: artifact download failed after 3 attempts: "
+                r"temporary transport error: <urlopen error temporary connection reset>",
+            ):
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                    open_url=open_url,
+                )
+
+        self.assertEqual(len(attempts), 3)
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2])
 
     def test_downloaded_archive_must_contain_all_review_evidence(self):
         incomplete_archive = valid_artifact_archive(
