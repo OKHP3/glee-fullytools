@@ -414,6 +414,25 @@ jobs:
                   output.write(summary)
           PY
 
+      - name: Upload failed browser theme reports (diagnostic only)
+        id: upload_theme_failure_diagnostics
+        if: ${{ always() && steps.theme_browser_checks.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-theme-failure-diagnostics-${{ github.sha }}
+          path: assets/audit/color-scheme-init-*.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Link browser theme failure diagnostics
+        if: ${{ always() && steps.theme_browser_checks.outcome == 'failure' }}
+        env:
+          DIAGNOSTIC_ARTIFACT_NAME: pages-theme-failure-diagnostics-${{ github.sha }}
+          RUN_ARTIFACTS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts
+        run: |
+          echo "**Diagnostic only—not validated release evidence.** Download the full browser JSON from the [Pages run artifacts]($RUN_ARTIFACTS_URL): \`$DIAGNOSTIC_ARTIFACT_NAME\`." \
+            >> "$GITHUB_STEP_SUMMARY"
+
       - name: Verify browser-specific theme evidence
         id: theme_evidence
         run: |

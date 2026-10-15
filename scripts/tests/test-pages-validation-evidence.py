@@ -27,6 +27,8 @@ UPLOAD_STEP = "- name: Upload validation reports"
 THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
 THEME_BROWSER_STEP = "- name: Run color-scheme bootstrap regression in all installed engines"
 THEME_FAILURE_DIAGNOSTIC_STEP = "- name: Summarize browser theme failures (diagnostic only)"
+THEME_FAILURE_UPLOAD_STEP = "- name: Upload failed browser theme reports (diagnostic only)"
+THEME_FAILURE_LINK_STEP = "- name: Link browser theme failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -155,6 +157,8 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             UPLOAD_STEP,
             THEME_BROWSER_STEP,
             THEME_FAILURE_DIAGNOSTIC_STEP,
+            THEME_FAILURE_UPLOAD_STEP,
+            THEME_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -213,6 +217,45 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Browser failure summaries must be failure-only, diagnostic, and "
             "separate from validated release evidence"
+        )
+    diagnostic_upload_position = positions[THEME_FAILURE_UPLOAD_STEP]
+    diagnostic_link_position = positions[THEME_FAILURE_LINK_STEP]
+    if not (
+        diagnostic_position < diagnostic_upload_position
+        < diagnostic_link_position < theme_position
+    ):
+        raise AssertionError(
+            "Failed browser JSON must be uploaded and linked before verified theme evidence"
+        )
+    diagnostic_upload_block = workflow[diagnostic_upload_position:diagnostic_link_position]
+    if (
+        "always() && steps.theme_browser_checks.outcome == 'failure'"
+        not in diagnostic_upload_block
+        or "uses: actions/upload-artifact@v7" not in diagnostic_upload_block
+        or "name: pages-theme-failure-diagnostics-${{ github.sha }}"
+        not in diagnostic_upload_block
+        or "path: assets/audit/color-scheme-init-*.json"
+        not in diagnostic_upload_block
+        or "if-no-files-found: warn" not in diagnostic_upload_block
+        or "retention-days: 14" not in diagnostic_upload_block
+        or "pages-validation" in diagnostic_upload_block
+        or "glee-public-site" in diagnostic_upload_block
+    ):
+        raise AssertionError(
+            "Failed browser JSON must be available in a separate diagnostic-only artifact"
+        )
+    diagnostic_link_block = workflow[diagnostic_link_position:theme_position]
+    if (
+        "always() && steps.theme_browser_checks.outcome == 'failure'"
+        not in diagnostic_link_block
+        or "GITHUB_STEP_SUMMARY" not in diagnostic_link_block
+        or "Diagnostic only" not in diagnostic_link_block
+        or "not validated release evidence" not in diagnostic_link_block
+        or "actions/runs/${{ github.run_id }}#artifacts" not in diagnostic_link_block
+    ):
+        raise AssertionError(
+            "Failed browser run summary must link the downloadable diagnostic artifact "
+            "without presenting it as validated evidence"
         )
     theme_block = workflow[theme_position:staging_position]
     if "Browser-specific color-scheme evidence is incomplete" not in theme_block:
