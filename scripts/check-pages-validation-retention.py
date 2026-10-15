@@ -23,6 +23,8 @@ API_VERSION = "2022-11-28"
 DOWNLOAD_CHUNK_SIZE = 64 * 1024
 DOWNLOAD_MAX_ATTEMPTS = 3
 DOWNLOAD_RETRY_BACKOFF_SECONDS = 1
+METADATA_MAX_ATTEMPTS = 3
+METADATA_RETRY_BACKOFF_SECONDS = 1
 MAX_ARTIFACT_BYTES = 512 * 1024 * 1024
 MAX_ARCHIVE_ENTRIES = 10_000
 MAX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
@@ -171,6 +173,35 @@ class _RetryableDownloadError(Exception):
 
 def _is_retryable_http_status(status: int) -> bool:
     return status in (408, 429) or 500 <= status <= 599
+
+
+def _fetch_metadata_page(
+    url: str,
+    token: str,
+    fetch_page=None,
+) -> tuple[dict[str, object], str | None]:
+    """Fetch a metadata page, retrying temporary API and transport failures."""
+    fetch = fetch_page or api_page
+    for attempt in range(1, METADATA_MAX_ATTEMPTS + 1):
+        try:
+            return fetch(url, token)
+        except HTTPError as error:
+            if not _is_retryable_http_status(error.code):
+                raise ValueError(
+                    f"GitHub metadata request failed with HTTP {error.code}: {error}"
+                ) from error
+            if attempt == METADATA_MAX_ATTEMPTS:
+                raise ValueError(
+                    f"GitHub metadata request failed after {attempt} attempts "
+                    f"(HTTP {error.code}): {error}"
+                ) from error
+        except (URLError, TimeoutError, OSError) as error:
+            if attempt == METADATA_MAX_ATTEMPTS:
+                raise ValueError(
+                    f"GitHub metadata request failed after {attempt} attempts: {error}"
+                ) from error
+        time.sleep(METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1)))
+    raise AssertionError("metadata retry loop exited unexpectedly")
 
 
 def _verify_artifact_download_once(
@@ -333,10 +364,9 @@ def _list_all(
     token: str,
     fetch_page=None,
 ) -> list[dict[str, object]]:
-    fetch = fetch_page or api_page
     items: list[dict[str, object]] = []
     while url:
-        payload, next_url = fetch(url, token)
+        payload, next_url = _fetch_metadata_page(url, token, fetch_page)
         page_items = payload.get(collection_key)
         if not isinstance(page_items, list):
             raise ValueError(
@@ -420,7 +450,7 @@ def monitor_repository(
                 f"{api_url.rstrip('/')}/repos/{repository}/compare/"
                 f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
             )
-            comparison, _ = (fetch_page or api_page)(compare_url, token)
+            comparison, _ = _fetch_metadata_page(compare_url, token, fetch_page)
             policy_status = (
                 comparison.get("status") if isinstance(comparison, dict) else None
             )

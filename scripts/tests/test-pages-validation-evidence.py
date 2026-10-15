@@ -517,6 +517,139 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 fetch_page=fetch,
             )
 
+    def test_retention_monitor_retries_temporary_metadata_failures(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "a" * 40
+        run = {
+            "id": 44,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 440,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 44, "head_sha": commit},
+        }
+        attempts = {"runs": 0, "compare": 0, "artifacts": 0}
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                attempts["runs"] += 1
+                if attempts["runs"] == 1:
+                    raise URLError("temporary connection reset")
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                attempts["compare"] += 1
+                if attempts["compare"] == 1:
+                    raise HTTPError(url, 503, "Service Unavailable", {}, None)
+                return {"status": "ahead"}, None
+            if "/runs/44/artifacts?" in url:
+                attempts["artifacts"] += 1
+                if attempts["artifacts"] == 1:
+                    raise URLError("temporary connection reset")
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+        self.assertEqual(checked, 1)
+        self.assertEqual(attempts, {"runs": 2, "compare": 2, "artifacts": 2})
+        self.assertEqual(sleep.call_count, 3)
+
+    def test_retention_monitor_reports_permanent_metadata_failure_for_run(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "b" * 40
+        run = {
+            "id": 45,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/45/artifacts?" in url:
+                artifact_requests.append(url)
+                raise HTTPError(url, 403, "Forbidden", {}, None)
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaises(ValueError) as raised:
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                )
+
+        message = str(raised.exception)
+        self.assertIn(f"run 45 | commit {commit} | review deadline ", message)
+        self.assertIn("GitHub metadata request failed with HTTP 403", message)
+        self.assertEqual(len(artifact_requests), 1)
+        sleep.assert_not_called()
+
+    def test_retention_monitor_stops_retrying_temporary_metadata_failure(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 46,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/46/artifacts?" in url:
+                artifact_requests.append(url)
+                raise HTTPError(url, 503, "Service Unavailable", {}, None)
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaises(ValueError) as raised:
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                )
+
+        message = str(raised.exception)
+        self.assertIn(f"run 46 | commit {commit} | review deadline ", message)
+        self.assertIn(
+            "GitHub metadata request failed after 3 attempts (HTTP 503)", message
+        )
+        self.assertEqual(len(artifact_requests), 3)
+        self.assertEqual(sleep.call_count, 2)
+
     def test_retention_monitor_reports_every_active_run_with_invalid_or_missing_evidence(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
         first_commit = "a" * 40
