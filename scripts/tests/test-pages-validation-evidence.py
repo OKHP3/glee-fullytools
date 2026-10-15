@@ -1257,6 +1257,233 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             failure.exception.failed_routes,
         )
 
+    def test_browser_route_reports_every_independent_theme_assertion_failure(self):
+        class FakePage:
+            url = "https://example.test/theme-regression/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=True, status=200)
+
+            def evaluate(self, *_args):
+                return {
+                    "scheme": "light",
+                    "savedPreference": "dark",
+                    "readyState": "interactive",
+                    "colorSchemeScript": False,
+                }
+
+            def wait_for_load_state(self, *_args):
+                pass
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        def check_route(route):
+            return {
+                "route_evidence": [
+                    color_scheme_checker._check_saved_preference_context(
+                        object(),
+                        "https://example.test/",
+                        "dark",
+                        [route],
+                    )
+                ]
+            }
+
+        with (
+            patch.object(
+                color_scheme_checker, "load_context", return_value=FakeContext()
+            ),
+            patch.object(
+                color_scheme_checker,
+                "paint_timing",
+                return_value={
+                    "asset_response_end": None,
+                    "domcontentloaded_start": None,
+                    "first_paint": 3.0,
+                    "first_paint_status": "observed",
+                },
+            ),
+            self.assertRaises(color_scheme_checker.RouteCheckFailure) as failure,
+        ):
+            color_scheme_checker.collect_route_evidence(
+                ["/theme-regression/"], check_route
+            )
+
+        route_failure = failure.exception.failed_routes[0]
+        self.assertEqual(route_failure["route"], "/theme-regression/")
+        self.assertIn("4 independent theme check(s) failed", route_failure["error"])
+        for detail in (
+            "initial DOM scheme: expected saved 'dark' preference",
+            "external color-scheme asset: page does not load",
+            "incomplete color-scheme bootstrap event trace",
+            "missing browser timing for color-scheme bootstrap",
+            "color-scheme asset has no resource timing entry",
+        ):
+            self.assertIn(detail, route_failure["error"])
+
+    def test_navigation_failure_does_not_run_theme_assertions(self):
+        calls = {"evaluate": 0, "wait_for_load": 0}
+
+        class FakePage:
+            url = "https://example.test/broken/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=False, status=503)
+
+            def evaluate(self, *_args):
+                calls["evaluate"] += 1
+                raise AssertionError("theme assertions must not run")
+
+            def wait_for_load_state(self, *_args):
+                calls["wait_for_load"] += 1
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        with patch.object(
+            color_scheme_checker, "load_context", return_value=FakeContext()
+        ):
+            with self.assertRaisesRegex(
+                AssertionError, "did not load with saved dark preference"
+            ):
+                color_scheme_checker._check_saved_preference_context(
+                    object(), "https://example.test/", "dark", ["/broken/"]
+                )
+
+        self.assertEqual(calls, {"evaluate": 0, "wait_for_load": 0})
+
+    def test_theme_setup_failure_does_not_run_follow_on_assertions(self):
+        calls = {"wait_for_load": 0}
+
+        class FakePage:
+            url = "https://example.test/setup-error/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=True, status=200)
+
+            def evaluate(self, *_args):
+                raise RuntimeError("DOM inspection unavailable")
+
+            def wait_for_load_state(self, *_args):
+                calls["wait_for_load"] += 1
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        with patch.object(
+            color_scheme_checker, "load_context", return_value=FakeContext()
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError, "could not collect theme evidence before assertions"
+            ) as failure:
+                color_scheme_checker._check_saved_preference_context(
+                    object(), "https://example.test/", "dark", ["/setup-error/"]
+                )
+
+        self.assertIn("DOM inspection unavailable", str(failure.exception))
+        self.assertEqual(calls["wait_for_load"], 0)
+
+    def test_browser_gate_fails_when_aggregated_theme_assertions_fail(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        combined_failure = color_scheme_checker.RouteCheckFailure(
+            [
+                {
+                    "route": "/theme-regression/",
+                    "error": (
+                        "/theme-regression/: 2 independent theme check(s) failed: "
+                        "initial DOM scheme: expected dark, got light; "
+                        "external asset: bootstrap script is missing"
+                    ),
+                }
+            ]
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "browser_routes",
+                    return_value=["/theme-regression/"],
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    side_effect=combined_failure,
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit) as exit_result,
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(exit_result.exception.code, 1)
+            self.assertEqual(report["status"], "FAIL")
+            self.assertEqual(report["failure_stage"], "theme_check")
+            self.assertIn("2 independent theme check(s) failed", report["error"])
+            self.assertEqual(report["failed_routes"][0]["route"], "/theme-regression/")
+            stdout.close()
+
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
         with tempfile.TemporaryDirectory() as directory:

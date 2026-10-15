@@ -18,7 +18,7 @@ import json
 import os
 from pathlib import Path
 import sys
-from typing import Literal
+from typing import Callable, Literal
 from urllib.parse import urljoin, urlsplit
 
 
@@ -111,44 +111,88 @@ def bootstrap_events(
     timing: dict[str, object],
 ) -> dict[str, object]:
     """Prove completion on the browser clock; retain protocol events as evidence."""
-    asset_events = [
-        (kind, index)
-        for index, (kind, _) in enumerate(events)
-        if kind in {"request", "finished"}
-    ]
-    try:
-        dcl_index = next(
+    request_index = next(
+        (
+            index
+            for index, (kind, url) in enumerate(events)
+            if kind == "request" and urlsplit(url or "").path == ASSET_PATH
+        ),
+        None,
+    )
+    finished_index = next(
+        (
+            index
+            for index, (kind, url) in enumerate(events)
+            if kind == "finished" and urlsplit(url or "").path == ASSET_PATH
+        ),
+        None,
+    )
+    dcl_index = next(
+        (
             index
             for index, (kind, url) in enumerate(events)
             if kind == "domcontentloaded" and urlsplit(url or "").path == route
-        )
-        request_index = next(
-            index for kind, index in asset_events if kind == "request"
-        )
-        finished_index = next(
-            index for kind, index in asset_events if kind == "finished"
-        )
-    except StopIteration as error:
-        raise AssertionError(
-            f"{route}: incomplete color-scheme bootstrap event trace: {events}"
-        ) from error
-
-    assert request_index < dcl_index, (
-        f"{route}: external color-scheme asset was not requested "
-        "before DOMContentLoaded"
+        ),
+        None,
     )
+    checks: list[tuple[str, Callable[[], None]]] = [
+        (
+            "complete bootstrap event trace",
+            lambda: require_condition(
+                request_index is not None
+                and finished_index is not None
+                and dcl_index is not None,
+                f"incomplete color-scheme bootstrap event trace: {events}",
+            ),
+        )
+    ]
+    if request_index is not None and dcl_index is not None:
+        checks.append(
+            (
+                "asset request before DOMContentLoaded",
+                lambda: require_condition(
+                    request_index < dcl_index,
+                    "external color-scheme asset was not requested before "
+                    "DOMContentLoaded",
+                ),
+            )
+        )
+
     # WebKit can deliver requestfinished after its DOMContentLoaded callback.
     # Resource and navigation timing share the document's time origin, so they
     # prove actual completion independently of protocol callback delivery order.
     response_end = timing.get("asset_response_end")
     dcl_start = timing.get("domcontentloaded_start")
-    assert response_end is not None and dcl_start is not None and (
-        response_end > 0 and dcl_start > 0
-    ), f"{route}: missing browser timing for color-scheme bootstrap: {timing}"
-    assert response_end <= dcl_start, (
-        f"{route}: external color-scheme asset did not finish "
-        f"before DOMContentLoaded: timing={timing}; events={events}"
+    checks.append(
+        (
+            "bootstrap timing available",
+            lambda: require_condition(
+                response_end is not None and dcl_start is not None,
+                f"missing browser timing for color-scheme bootstrap: {timing}",
+            ),
+        )
     )
+    if response_end is not None and dcl_start is not None:
+        checks.extend(
+            [
+                (
+                    "positive bootstrap timing",
+                    lambda: require_condition(
+                        response_end > 0 and dcl_start > 0,
+                        f"missing browser timing for color-scheme bootstrap: {timing}",
+                    ),
+                ),
+                (
+                    "asset completion before DOMContentLoaded",
+                    lambda: require_condition(
+                        response_end <= dcl_start,
+                        "external color-scheme asset did not finish before "
+                        f"DOMContentLoaded: timing={timing}; events={events}",
+                    ),
+                ),
+            ]
+        )
+    assert_independent_checks(route, checks)
     return {
         "event_order": [kind for kind, _ in events],
         "asset_request_index": request_index,
@@ -202,25 +246,58 @@ def assert_paint_order(
 ) -> None:
     """Require the bootstrap resource to finish before first paint when exposed."""
     status = timing["first_paint_status"]
-    assert status in {"observed", "unsupported", "unavailable_after_load"}, (
-        f"{route}: unknown first-paint timing status: {timing}"
-    )
+    checks: list[tuple[str, Callable[[], None]]] = [
+        (
+            "recognized first-paint status",
+            lambda: require_condition(
+                status in {"observed", "unsupported", "unavailable_after_load"},
+                f"unknown first-paint timing status: {timing}",
+            ),
+        )
+    ]
     if status == "observed":
-        assert timing["first_paint"] is not None, (
-            f"{route}: first-paint status was observed without a timing value: "
-            f"{timing}"
+        first_paint = timing["first_paint"]
+        response_end = timing["asset_response_end"]
+        checks.extend(
+            [
+                (
+                    "first-paint timing present",
+                    lambda: require_condition(
+                        first_paint is not None,
+                        f"first-paint status was observed without a timing value: {timing}",
+                    ),
+                ),
+                (
+                    "asset response timing present",
+                    lambda: require_condition(
+                        response_end is not None,
+                        "color-scheme asset has no resource timing entry despite "
+                        f"first-paint being available: {timing}",
+                    ),
+                ),
+            ]
         )
-        assert timing["asset_response_end"] is not None, (
-            f"{route}: color-scheme asset has no resource timing entry "
-            "despite first-paint being available"
+        if first_paint is not None and response_end is not None:
+            checks.append(
+                (
+                    "asset completed before first paint",
+                    lambda: require_condition(
+                        response_end <= first_paint,
+                        f"color-scheme asset finished after first-paint: {timing}",
+                    ),
+                )
+            )
+    elif status in {"unsupported", "unavailable_after_load"}:
+        checks.append(
+            (
+                "first-paint value matches availability",
+                lambda: require_condition(
+                    timing["first_paint"] is None,
+                    f"first-paint timing was present with status {status}: {timing}",
+                ),
+            )
         )
-        assert timing["asset_response_end"] <= timing["first_paint"], (
-            f"{route}: color-scheme asset finished after first-paint: {timing}"
-        )
-    else:
-        assert timing["first_paint"] is None, (
-            f"{route}: first-paint timing was present with status {status}: {timing}"
-        )
+    assert_independent_checks(route, checks)
 
 
 def public_routes() -> list[str]:
@@ -260,6 +337,30 @@ class RouteCheckFailure(AssertionError):
             f"{failure['route']}: {failure['error']}" for failure in failures
         )
         super().__init__(f"Theme checks failed on {len(failures)} route(s): {details}")
+
+
+def assert_independent_checks(
+    route: str,
+    checks: list[tuple[str, Callable[[], None]]],
+) -> None:
+    """Run independent assertions and report every failed check for a route."""
+    failures: list[str] = []
+    for name, check in checks:
+        try:
+            check()
+        except AssertionError as error:
+            failures.append(f"{name}: {error}")
+    if failures:
+        details = "; ".join(failures)
+        raise AssertionError(
+            f"{route}: {len(failures)} independent theme check(s) failed: "
+            f"{details}"
+        )
+
+
+def require_condition(condition: object, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
 
 
 def collect_route_evidence(routes: list[str], check) -> list[dict[str, object]]:
@@ -312,38 +413,65 @@ def _check_saved_preference_context(
         results: list[dict[str, object]] = []
         for route in routes:
             events.clear()
-            response = page.goto(
-                urljoin(base_url, route),
-                wait_until="domcontentloaded",
-            )
+            try:
+                response = page.goto(
+                    urljoin(base_url, route),
+                    wait_until="domcontentloaded",
+                )
+            except Exception as error:
+                raise RuntimeError(
+                    f"{route}: navigation failed before theme assertions: {error}"
+                ) from error
             assert response is not None and response.ok, (
                 f"{route} did not load with saved {preference} preference: "
                 f"{response.status if response else 'no response'}"
             )
 
-            initial = page.evaluate(
-                """() => ({
-                  scheme: document.documentElement.getAttribute('data-color-scheme'),
-                  savedPreference: localStorage.getItem('glee-color-scheme'),
-                  readyState: document.readyState,
-                  colorSchemeScript: Boolean(document.querySelector(
-                    'head > script[src*="color-scheme-init.js"]'
-                  ))
-                })"""
-            )
-            assert initial["scheme"] == preference, (
-                f"{route} did not apply saved {preference} preference at "
-                f"initial DOM assertion: {initial}; events={events}; "
-                f"timing={paint_timing(page)}"
-            )
-            assert initial["colorSchemeScript"], (
-                f"{route} does not load the external color-scheme asset"
-            )
+            try:
+                initial = page.evaluate(
+                    """() => ({
+                      scheme: document.documentElement.getAttribute('data-color-scheme'),
+                      savedPreference: localStorage.getItem('glee-color-scheme'),
+                      readyState: document.readyState,
+                      colorSchemeScript: Boolean(document.querySelector(
+                        'head > script[src*="color-scheme-init.js"]'
+                      ))
+                    })"""
+                )
+                page.wait_for_load_state("load")
+                timing = paint_timing(page)
+            except Exception as error:
+                raise RuntimeError(
+                    f"{route}: could not collect theme evidence before "
+                    f"assertions: {error}"
+                ) from error
 
-            page.wait_for_load_state("load")
-            timing = paint_timing(page)
-            event_evidence = bootstrap_events(events, route, timing)
-            assert_paint_order(route, timing)
+            event_evidence: dict[str, object] = {}
+
+            def check_bootstrap_events():
+                event_evidence.update(bootstrap_events(events, route, timing))
+
+            assert_independent_checks(
+                route,
+                [
+                    (
+                        "initial DOM scheme",
+                        lambda: require_condition(
+                            initial["scheme"] == preference,
+                            f"expected saved {preference!r} preference, got {initial}",
+                        ),
+                    ),
+                    (
+                        "external color-scheme asset",
+                        lambda: require_condition(
+                            initial["colorSchemeScript"],
+                            "page does not load the external color-scheme asset",
+                        ),
+                    ),
+                    ("bootstrap events and timing", check_bootstrap_events),
+                    ("first-paint order", lambda: assert_paint_order(route, timing)),
+                ],
+            )
 
             results.append({
                 "route": route,
@@ -473,46 +601,93 @@ def _check_disabled_storage_context(
         for route in routes:
             events.clear()
             page_errors.clear()
-            response = page.goto(
-                urljoin(base_url, route),
-                wait_until="domcontentloaded",
-            )
+            try:
+                response = page.goto(
+                    urljoin(base_url, route),
+                    wait_until="domcontentloaded",
+                )
+            except Exception as error:
+                raise RuntimeError(
+                    f"{route}: navigation failed before theme assertions: {error}"
+                ) from error
             assert response is not None and response.ok, (
                 f"{route} failed when storage was disabled: "
                 f"{response.status if response else 'no response'}"
             )
-            assert page.locator("h1").is_visible(), (
-                f"{route} did not retain visible primary content "
-                "with disabled storage"
-            )
-            if route == "/":
-                assert page.locator(".glee-color-toggle").is_visible(), (
-                    "Glee color control did not remain usable with disabled storage"
+            try:
+                h1_visible = page.locator("h1").is_visible()
+                color_toggle_visible = (
+                    page.locator(".glee-color-toggle").is_visible()
+                    if route == "/" else None
                 )
-            assert not page_errors, (
-                f"{route} raised page errors with disabled storage: {page_errors}"
-            )
-            initial = page.evaluate(
-                """() => ({
-                  scheme: document.documentElement.getAttribute('data-color-scheme'),
-                  readyState: document.readyState,
-                  colorSchemeScript: Boolean(document.querySelector(
-                    'head > script[src*="color-scheme-init.js"]'
-                  ))
-                })"""
-            )
-            assert initial["readyState"] in {"interactive", "complete"}, (
-                f"{route} did not reach DOMContentLoaded with disabled storage: "
-                f"{initial}"
-            )
-            page.wait_for_load_state("load")
-            timing = paint_timing(page)
-            event_evidence = bootstrap_events(events, route, timing)
-            assert_paint_order(route, timing)
-            assert not page_errors, (
-                f"{route} raised page errors after load with disabled storage: "
-                f"{page_errors}"
-            )
+                page_errors_before_load = list(page_errors)
+                initial = page.evaluate(
+                    """() => ({
+                      scheme: document.documentElement.getAttribute('data-color-scheme'),
+                      readyState: document.readyState,
+                      colorSchemeScript: Boolean(document.querySelector(
+                        'head > script[src*="color-scheme-init.js"]'
+                      ))
+                    })"""
+                )
+                page.wait_for_load_state("load")
+                timing = paint_timing(page)
+            except Exception as error:
+                raise RuntimeError(
+                    f"{route}: could not collect disabled-storage theme "
+                    f"evidence before assertions: {error}"
+                ) from error
+
+            event_evidence: dict[str, object] = {}
+
+            def check_bootstrap_events():
+                event_evidence.update(bootstrap_events(events, route, timing))
+
+            checks: list[tuple[str, Callable[[], None]]] = [
+                (
+                    "visible primary content",
+                    lambda: require_condition(
+                        h1_visible,
+                        "page did not retain visible primary content with disabled storage",
+                    ),
+                ),
+                (
+                    "page errors before load",
+                    lambda: require_condition(
+                        not page_errors_before_load,
+                        "page raised errors with disabled storage before load: "
+                        f"{page_errors_before_load}",
+                    ),
+                ),
+                (
+                    "page errors after load",
+                    lambda: require_condition(
+                        not page_errors,
+                        f"page raised errors after load with disabled storage: "
+                        f"{page_errors}",
+                    ),
+                ),
+                (
+                    "DOMContentLoaded readiness",
+                    lambda: require_condition(
+                        initial["readyState"] in {"interactive", "complete"},
+                        f"page did not reach DOMContentLoaded: {initial}",
+                    ),
+                ),
+                ("bootstrap events and timing", check_bootstrap_events),
+                ("first-paint order", lambda: assert_paint_order(route, timing)),
+            ]
+            if route == "/":
+                checks.append(
+                    (
+                        "usable Glee color control",
+                        lambda: require_condition(
+                            color_toggle_visible,
+                            "Glee color control did not remain usable with disabled storage",
+                        ),
+                    )
+                )
+            assert_independent_checks(route, checks)
             recovery = (
                 check_utility_recovery(page, base_url, route, page_errors)
                 if route in UTILITY_ROUTES else None
