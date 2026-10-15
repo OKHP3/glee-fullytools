@@ -144,6 +144,8 @@ def verify_artifact_download(
                 ) from error
             time.sleep(DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1)))
         except HTTPError as error:
+            # Release the error response before sleeping, retrying, or failing.
+            error.close()
             if _is_retryable_http_status(error.code):
                 if attempt == DOWNLOAD_MAX_ATTEMPTS:
                     raise ValueError(

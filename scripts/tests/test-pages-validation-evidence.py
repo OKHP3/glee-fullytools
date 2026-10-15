@@ -747,6 +747,36 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(len(attempts), 2)
         sleep.assert_called_once_with(1)
 
+    def test_artifact_download_closes_http_error_responses(self):
+        for status in (503, 403):
+            with self.subTest(status=status):
+                error_body = BytesIO(b"temporary or permanent API error")
+                errors = []
+                attempts = []
+
+                def open_url(request, timeout):
+                    attempts.append(request.full_url)
+                    if len(attempts) == 1:
+                        error = HTTPError(request.full_url, status, "API error", {}, error_body)
+                        errors.append(error)
+                        raise error
+                    self.assertTrue(error_body.closed)
+                    return FakeDownloadResponse(200, valid_artifact_archive())
+
+                with patch.object(retention_checker.time, "sleep"):
+                    if status == 403:
+                        with self.assertRaises(ValueError):
+                            retention_checker.verify_artifact_download(
+                                "owner/repo", 701, "https://api.github.com",
+                                "test-token", open_url=open_url,
+                            )
+                    else:
+                        retention_checker.verify_artifact_download(
+                            "owner/repo", 701, "https://api.github.com",
+                            "test-token", open_url=open_url,
+                        )
+                self.assertTrue(error_body.closed)
+
     def test_artifact_download_does_not_retry_permanent_http_access_errors(self):
         attempts = []
 
