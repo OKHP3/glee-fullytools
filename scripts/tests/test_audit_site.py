@@ -81,12 +81,19 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn(str(report.resolve()), console.getvalue())
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
 
-    def og_image_findings(self, root: Path, url: str, *later_urls: str) -> list[str]:
+    def og_image_findings(
+        self, root: Path, url: str, *later_urls: str, image_type: str = ""
+    ) -> list[str]:
         page = root / "content" / "index.html"
         page.parent.mkdir(parents=True, exist_ok=True)
         page.write_text(
             "\n".join(
                 f'<meta property="og:image" content="{image_url}">'
+                + (
+                    f'<meta property="og:image:type" content="{image_type}">'
+                    if image_type
+                    else ""
+                )
                 for image_url in (url, *later_urls)
             ),
             encoding="utf-8",
@@ -98,6 +105,93 @@ class AuditSiteTests(unittest.TestCase):
                 issue for issue in _MODULE.audit_page(page)
                 if issue.startswith("og:image")
             ]
+
+    def test_matching_local_og_image_type_is_accepted(self) -> None:
+        mime_types = {
+            "png": "image/png",
+            "jpg": "image/jpeg",
+            "gif": "image/gif",
+            "webp": "image/webp",
+        }
+        for extension, mime_type in mime_types.items():
+            with (
+                self.subTest(extension=extension),
+                tempfile.TemporaryDirectory() as directory,
+            ):
+                root = Path(directory) / "repo"
+                image_dir = root / "assets" / "social"
+                image_dir.mkdir(parents=True)
+                (image_dir / f"hero.{extension}").write_bytes(
+                    IMAGE_SIGNATURES[extension]
+                )
+
+                findings = self.og_image_findings(
+                    root,
+                    f"{ORIGIN}/assets/social/hero.{extension}",
+                    image_type=mime_type,
+                )
+
+                self.assertEqual(findings, [])
+
+    def test_mismatching_local_og_image_type_is_actionable(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+
+            findings = self.og_image_findings(
+                root,
+                f"{ORIGIN}/assets/social/hero.png",
+                image_type="image/svg+xml",
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("og:image:type declares `image/svg+xml`", findings[0])
+            self.assertIn("local file is PNG", findings[0])
+            self.assertIn("expected `image/png`", findings[0])
+
+    def test_external_og_image_type_is_not_checked_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            external_url = "https://external.test/image.png"
+            with patch.object(
+                _MODULE, "link_target", wraps=_MODULE.link_target
+            ) as resolve:
+                findings = self.og_image_findings(
+                    root, external_url, image_type="image/svg+xml"
+                )
+
+            self.assertEqual(findings, [])
+            resolve.assert_not_called()
+
+    def test_each_local_og_image_type_is_compared_with_its_own_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            (image_dir / "share.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/social/hero.png">'
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image" content="/assets/social/share.jpg">'
+                '<meta property="og:image:type" content="image/png">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("share.jpg", findings[0])
+            self.assertIn("expected `image/jpeg`", findings[0])
 
     def test_every_later_local_og_image_is_checked(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

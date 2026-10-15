@@ -128,7 +128,8 @@ class PageParser(HTMLParser):
         self.headings: List[int] = []   # ordered heading levels outside <footer>
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
-        self.og_images: List[str] = []
+        self.og_images: List[Dict[str, str]] = []
+        self._current_og_image: int | None = None
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
         self.external_links: List[Dict[str, str]] = []
@@ -156,7 +157,15 @@ class PageParser(HTMLParser):
         elif tag == "meta":
             key = a.get("name") or a.get("property") or a.get("http-equiv")
             if key and key.lower() in {"og:image", "og:image:url"}:
-                self.og_images.append(a.get("content", "") or "")
+                self.og_images.append(
+                    {"url": a.get("content", "") or "", "type": ""}
+                )
+                self._current_og_image = len(self.og_images) - 1
+            elif key and key.lower() == "og:image:type":
+                if self._current_og_image is not None:
+                    self.og_images[self._current_og_image]["type"] = (
+                        a.get("content", "") or ""
+                    )
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
         elif tag == "link" and a.get("rel", "").lower() == "canonical":
@@ -220,7 +229,9 @@ BARE_LINK_TEXTS = frozenset({
 })
 
 
-def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str | None:
+def _og_image_issue(
+    url: str, declared_type: str, source_dir: Path, root: Path, origin: str
+) -> str | None:
     """Validate local og:image paths and signatures without fetching URLs."""
     if not url.strip():
         return "og:image declaration is missing a non-empty content URL"
@@ -249,12 +260,33 @@ def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str 
             header = image_file.read(12)
     except OSError:
         return f"og:image file could not be inspected: {url}"
-    if not any(matches(header) for matches in SOCIAL_IMAGE_SIGNATURES.values()):
+    detected_format = next(
+        (
+            image_format
+            for image_format, matches in SOCIAL_IMAGE_SIGNATURES.items()
+            if matches(header)
+        ),
+        None,
+    )
+    if detected_format is None:
         supported = ", ".join(SOCIAL_IMAGE_SIGNATURES)
         return (
             "og:image file does not have a supported image signature "
             f"({supported}): {url}"
         )
+    declared_type = declared_type.strip().lower()
+    if declared_type:
+        expected_type = {
+            "PNG": "image/png",
+            "JPEG": "image/jpeg",
+            "GIF": "image/gif",
+            "WebP": "image/webp",
+        }[detected_format]
+        if declared_type != expected_type:
+            return (
+                f"og:image:type declares `{declared_type}`, but the local file "
+                f"is {detected_format} (expected `{expected_type}`): {url}"
+            )
     return None
 
 
@@ -363,8 +395,10 @@ def audit_page(path: Path) -> List[str]:
     # Check every declared social image, including later tags. The parser
     # handles attribute order, quotes and character references consistently.
     # External images remain outside the local filesystem audit.
-    for url in p.og_images:
-        image_issue = _og_image_issue(url, path.parent, ROOT, site_origin())
+    for image in p.og_images:
+        image_issue = _og_image_issue(
+            image["url"], image["type"], path.parent, ROOT, site_origin()
+        )
         if image_issue:
             issues.append(image_issue)
 
