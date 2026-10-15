@@ -81,7 +81,9 @@ class FakeDownloadResponse:
         return self._body.read(size)
 
 
-def valid_artifact_archive(missing_file=None, additional_files=None):
+def valid_artifact_archive(
+    missing_file=None, additional_files=None, duplicate_files=None
+):
     contents = {
         "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
         "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
@@ -95,6 +97,8 @@ def valid_artifact_archive(missing_file=None, additional_files=None):
     archive = BytesIO()
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
         for name, content in contents.items():
+            zipped.writestr(name, content)
+        for name, content in duplicate_files or []:
             zipped.writestr(name, content)
     return archive.getvalue()
 
@@ -1072,6 +1076,28 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 "test-token",
                 open_url=lambda request, timeout: FakeDownloadResponse(
                     200, incomplete_archive
+                ),
+            )
+
+    def test_downloaded_archive_with_duplicate_required_report_is_rejected(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        with self.assertWarns(UserWarning):
+            ambiguous_archive = valid_artifact_archive(
+                duplicate_files=[(report_path, b'{"browser":"different"}')]
+            )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "artifact archive has duplicate required evidence files: "
+            "assets/audit/color-scheme-init-chromium.json",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(
+                    200, ambiguous_archive
                 ),
             )
 

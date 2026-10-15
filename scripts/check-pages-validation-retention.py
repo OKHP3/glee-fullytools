@@ -337,6 +337,20 @@ def validate_artifact_archive(archive) -> None:
                 raise ValueError(
                     "artifact archive expands beyond the 512 MiB size limit"
                 )
+            required_counts: dict[str, int] = {}
+            for entry in entries:
+                if entry.filename in REQUIRED_EVIDENCE_FILES:
+                    required_counts[entry.filename] = (
+                        required_counts.get(entry.filename, 0) + 1
+                    )
+            duplicates = sorted(
+                name for name, count in required_counts.items() if count > 1
+            )
+            if duplicates:
+                raise ValueError(
+                    "artifact archive has duplicate required evidence files: "
+                    + ", ".join(duplicates)
+                )
             names = {entry.filename for entry in entries}
             missing = sorted(REQUIRED_EVIDENCE_FILES - names)
             if missing:
