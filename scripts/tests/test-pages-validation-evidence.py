@@ -3,7 +3,7 @@
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 import hashlib
-from io import BytesIO
+from io import BytesIO, StringIO
 import importlib.util
 import json
 import os
@@ -17,6 +17,7 @@ from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
 import zipfile
+from contextlib import redirect_stdout
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -819,15 +820,18 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 {"Content-Length": str(len(body))},
             )
 
-        checked = retention_checker.monitor_repository(
-            "owner/repo",
-            "https://api.github.com",
-            "test-token",
-            now=now,
-            fetch_page=fetch,
-            open_url=open_url,
-        )
+        output = StringIO()
+        with redirect_stdout(output):
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
         self.assertEqual(checked, 1)
+        self.assertEqual(output.getvalue(), "")
         self.assertEqual(requested_runs, [51])
         self.assertEqual(
             requested_downloads,
@@ -866,7 +870,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
 
         with patch.object(retention_checker.time, "sleep") as sleep:
-            retention_checker.verify_artifact_download(
+            retries = retention_checker.verify_artifact_download(
                 "owner/repo",
                 701,
                 "https://api.github.com",
@@ -875,7 +879,65 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
 
         self.assertEqual(len(attempts), 2)
+        self.assertEqual(retries, 1)
         sleep.assert_called_once_with(1)
+
+    def test_retention_monitor_reports_recovered_artifact_download_without_secrets(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 52,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 702,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 52, "head_sha": commit},
+        }
+        attempts = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/52/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            attempts.append(request)
+            if len(attempts) == 1:
+                raise URLError("temporary connection reset")
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        output = StringIO()
+        with patch.object(retention_checker.time, "sleep"), redirect_stdout(output):
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+        self.assertEqual(checked, 1)
+        self.assertEqual(len(attempts), 2)
+        message = output.getvalue()
+        self.assertIn("after 1 retry (run 52", message)
+        self.assertIn(f"run 52, artifact pages-validation-{commit}, ID 702", message)
+        self.assertNotIn("test-token", message)
+        self.assertNotIn("https://", message)
+        self.assertNotIn("artifact-storage", message)
 
     def test_artifact_download_recovers_after_temporary_server_error(self):
         attempts = []

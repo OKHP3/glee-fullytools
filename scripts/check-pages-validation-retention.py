@@ -125,7 +125,7 @@ def verify_artifact_download(
     *,
     expected_digest: str | None = None,
     open_url=None,
-) -> None:
+) -> int:
     """Stream and validate an evidence ZIP using bounded temporary storage."""
     open_request = open_url or urlopen
     for attempt in range(1, DOWNLOAD_MAX_ATTEMPTS + 1):
@@ -138,7 +138,7 @@ def verify_artifact_download(
                 expected_digest=expected_digest,
                 open_request=open_request,
             )
-            return
+            return attempt - 1
         except _RetryableDownloadError as error:
             if attempt == DOWNLOAD_MAX_ATTEMPTS:
                 raise ValueError(
@@ -511,7 +511,7 @@ def monitor_repository(
                     )
                     if expires_at <= current_time:
                         raise ValueError("GitHub reports that the artifact expired early")
-                    verify_artifact_download(
+                    retry_count = verify_artifact_download(
                         repository,
                         artifact_id,
                         api_url,
@@ -523,6 +523,13 @@ def monitor_repository(
                         ),
                         open_url=open_url,
                     )
+                    if retry_count:
+                        retry_label = "retry" if retry_count == 1 else "retries"
+                        print(
+                            f"Recovered artifact download after {retry_count} "
+                            f"{retry_label} (run {run_id}, artifact "
+                            f"{expected_name}, ID {artifact_id})."
+                        )
                 except (OSError, TimeoutError, ValueError) as error:
                     errors.append(str(error))
                 else:
