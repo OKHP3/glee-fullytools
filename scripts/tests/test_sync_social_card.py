@@ -36,6 +36,23 @@ class SyncSocialCardTests(unittest.TestCase):
         self.assertEqual(repeated, updated)
         self.assertEqual(repeated_changes, 0)
 
+    def test_mixed_duplicate_og_image_types_rewrites_only_stale_value(self) -> None:
+        """A stale SVG duplicate is fixed while the existing PNG stays intact."""
+        source = (
+            '<meta property="og:image:type" content="image/svg+xml">\n'
+            '<meta property="og:image:type" content="image/png">'
+        )
+
+        updated, changes, _ = _MODULE.transform_page(source)
+
+        self.assertEqual(
+            updated,
+            source.replace('content="image/svg+xml"', 'content="image/png"', 1),
+        )
+        self.assertEqual(source.count('<meta property="og:image:type"'), 2)
+        self.assertEqual(updated.count('<meta property="og:image:type"'), 2)
+        self.assertEqual(changes, 1)
+
     def test_missing_og_image_type_is_not_inserted_or_required(self) -> None:
         """The synchronizer updates existing declarations without adding tags."""
         source = (
