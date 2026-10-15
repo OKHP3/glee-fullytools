@@ -20,11 +20,77 @@ assert _SPEC.loader is not None
 _SPEC.loader.exec_module(_MODULE)
 
 ORIGIN = "https://glee-fully.tools"
+
+
+def social_image_fixture(
+    extension: str, width: int = 1200, height: int = 630, *,
+    webp_encoding: str = "VP8X",
+) -> bytes:
+    if extension == "png":
+        return (
+            b"\x89PNG\r\n\x1a\n"
+            + (13).to_bytes(4, "big")
+            + b"IHDR"
+            + width.to_bytes(4, "big")
+            + height.to_bytes(4, "big")
+            + b"\x08\x02\x00\x00\x00"
+        )
+    if extension == "jpg":
+        frame = (
+            b"\x08"
+            + height.to_bytes(2, "big")
+            + width.to_bytes(2, "big")
+            + b"\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00"
+        )
+        return b"\xff\xd8\xff\xc0" + (len(frame) + 2).to_bytes(2, "big") + frame
+    if extension == "gif":
+        return (
+            b"GIF89a"
+            + width.to_bytes(2, "little")
+            + height.to_bytes(2, "little")
+            + b"\x00\x00\x00"
+        )
+    if extension == "webp":
+        if webp_encoding == "VP8X":
+            data = (
+                b"\x00\x00\x00\x00"
+                + (width - 1).to_bytes(3, "little")
+                + (height - 1).to_bytes(3, "little")
+            )
+        elif webp_encoding == "VP8 ":
+            data = (
+                b"\x00\x00\x00\x9d\x01\x2a"
+                + width.to_bytes(2, "little")
+                + height.to_bytes(2, "little")
+            )
+        elif webp_encoding == "VP8L":
+            width_minus_one = width - 1
+            height_minus_one = height - 1
+            data = bytes(
+                (
+                    0x2F,
+                    width_minus_one & 0xFF,
+                    ((width_minus_one >> 8) & 0x3F)
+                    | ((height_minus_one & 0x03) << 6),
+                    (height_minus_one >> 2) & 0xFF,
+                    (height_minus_one >> 10) & 0x0F,
+                )
+            )
+        else:
+            raise ValueError(f"Unsupported WebP encoding: {webp_encoding}")
+        chunk = (
+            webp_encoding.encode("ascii")
+            + len(data).to_bytes(4, "little")
+            + data
+        )
+        body = b"WEBP" + chunk
+        return b"RIFF" + len(body).to_bytes(4, "little") + body
+    raise ValueError(f"Unsupported fixture format: {extension}")
+
+
 IMAGE_SIGNATURES = {
-    "png": b"\x89PNG\r\n\x1a\n\x00\x00\x00\r",
-    "jpg": b"\xff\xd8\xff\xdb\x00\x43\x00\x00\x00\x00\x00\x00",
-    "gif": b"GIF89a\x00\x00\x00\x00\x00\x00",
-    "webp": b"RIFF\x00\x00\x00\x00WEBP",
+    extension: social_image_fixture(extension)
+    for extension in ("png", "jpg", "gif", "webp")
 }
 
 
@@ -413,6 +479,79 @@ class AuditSiteTests(unittest.TestCase):
                 with self.subTest(extension=extension):
                     url = f"{ORIGIN}/assets/social/card.{extension}"
                     self.assertEqual(self.og_image_findings(root, url), [])
+
+    def test_all_webp_encodings_report_dimensions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for encoding in ("VP8X", "VP8 ", "VP8L"):
+                with self.subTest(encoding=encoding):
+                    filename = f"{encoding.strip().lower()}.webp"
+                    (image_dir / filename).write_bytes(
+                        social_image_fixture("webp", webp_encoding=encoding)
+                    )
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/{filename}"
+                    )
+                    self.assertEqual(findings, [])
+
+    def test_undersized_local_social_image_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "small.png").write_bytes(
+                social_image_fixture("png", width=600, height=315)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/small.png"
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("og:image is 600x315", findings[0])
+            self.assertIn("minimum is 1200x630", findings[0])
+
+    def test_local_social_image_with_unsuitable_aspect_ratio_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "square.jpg").write_bytes(
+                social_image_fixture("jpg", width=1200, height=1200)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/square.jpg"
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("aspect ratio is 1.000:1", findings[0])
+            self.assertIn("expected 1.85:1–1.96:1", findings[0])
+
+    def test_truncated_supported_social_image_is_reported_as_malformed(self) -> None:
+        malformed_images = {
+            "png": b"\x89PNG\r\n\x1a\n",
+            "jpg": b"\xff\xd8\xff",
+            "gif": b"GIF89a",
+            "webp": b"RIFF\x00\x00\x00\x00WEBP",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for extension, data in malformed_images.items():
+                with self.subTest(extension=extension):
+                    (image_dir / f"broken.{extension}").write_bytes(data)
+
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/broken.{extension}"
+                    )
+
+                    self.assertEqual(len(findings), 1)
+                    self.assertIn("dimensions could not be inspected", findings[0])
+                    self.assertIn("malformed or truncated", findings[0])
 
     def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
