@@ -310,14 +310,27 @@ jobs:
               )
               if status == "FAIL":
                   failed_case = report.get("failed_case")
-                  case = (
-                      failed_case
-                      if isinstance(failed_case, str) and failed_case in case_order
-                      else "not identified"
-                  )
+                  case = failed_case if (
+                      isinstance(failed_case, str) and failed_case in case_order
+                  ) else "not identified"
+                  failure_stage = report.get("failure_stage")
+                  if case != "not identified":
+                      failure_label = f"theme check failed in `{case}`"
+                  elif failure_stage == "browser_startup":
+                      failure_label = (
+                          "browser startup/setup failed before theme checks began"
+                      )
+                  elif failure_stage == "theme_checks":
+                      failure_label = (
+                          "theme-check execution failed without an identified case"
+                      )
+                  else:
+                      failure_label = (
+                          "browser failure stage and case were not identified"
+                      )
                   detail = one_line(report.get("error", ""))
                   suffix = f" — {detail}" if detail else ""
-                  lines.append(f"- **{engine}:** failed in `{case}`{suffix}.")
+                  lines.append(f"- **{engine}:** {failure_label}{suffix}.")
                   lines.append(
                       "  - Completed before failure (diagnostic only; not "
                       f"validated evidence): {completed}."

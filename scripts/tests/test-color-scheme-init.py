@@ -587,6 +587,7 @@ def capture_case(report: dict[str, object], name: str, check) -> None:
         result = check()
     except Exception as error:
         report["diagnostic_only"] = True
+        report["failure_stage"] = "theme_check"
         report["failed_case"] = name
         if name in THEME_CASES:
             report["not_run_cases"] = list(
@@ -631,6 +632,7 @@ def main() -> None:
         "base_url": base_url,
         "browser": args.browser,
         "cases": {},
+        "failure_stage": "browser_startup",
     }
     try:
         from playwright.sync_api import sync_playwright
@@ -643,6 +645,7 @@ def main() -> None:
                 launch_options["executable_path"] = args.executable_path
             browser = getattr(playwright, args.browser).launch(**launch_options)
             report["browser_version"] = browser.version
+            report["failure_stage"] = "theme_checks"
             try:
                 for preference in THEME_CASES[:2]:
                     capture_case(
@@ -665,6 +668,7 @@ def main() -> None:
     except Exception as error:
         report["status"] = "FAIL"
         report["diagnostic_only"] = True
+        report.setdefault("failure_stage", "browser_startup")
         report.setdefault("error", str(error))
         report.setdefault(
             "not_run_cases",

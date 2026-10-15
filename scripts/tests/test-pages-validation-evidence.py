@@ -12,6 +12,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from types import ModuleType, SimpleNamespace
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
@@ -1154,10 +1155,68 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             color_scheme_checker.capture_case(report, "dark", fail_dark_case)
 
         self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
+        self.assertEqual(report["failure_stage"], "theme_check")
         self.assertEqual(report["failed_case"], "dark")
         self.assertEqual(report["not_run_cases"], ["disabled_storage"])
         self.assertEqual(report["error"], "dark preference was not applied")
         self.assertTrue(report["diagnostic_only"])
+
+    def test_browser_launch_failure_is_reported_before_theme_checks_begin(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        def fail_launch(**_kwargs):
+            raise RuntimeError("browser could not be launched")
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=fail_launch)
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit),
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["failure_stage"], "browser_startup")
+            self.assertNotIn("failed_case", report)
+            self.assertEqual(
+                report["not_run_cases"],
+                ["light", "dark", "disabled_storage"],
+            )
+            self.assertEqual(report["error"], "browser could not be launched")
+            stdout.close()
 
     def test_browser_route_checks_collect_all_failures(self):
         checked = []
@@ -1210,6 +1269,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "browser": "chromium",
                         "status": "FAIL",
                         "diagnostic_only": True,
+                        "failure_stage": "browser_startup",
                         "not_run_cases": [
                             "light",
                             "dark",
@@ -1227,6 +1287,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "browser_version": "138.0",
                         "status": "FAIL",
                         "diagnostic_only": True,
+                        "failure_stage": "theme_check",
                         "failed_case": "dark",
                         "cases": {"light": {"routes": 1}},
                         "failed_routes": [
@@ -1256,13 +1317,16 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             summary = summary_path.read_text(encoding="utf-8")
-            self.assertIn("failed in `not identified`", summary)
+            self.assertIn(
+                "browser startup/setup failed before theme checks began",
+                summary,
+            )
             self.assertIn(
                 "Not run: `light`, `dark`, `disabled_storage`",
                 summary,
             )
             self.assertIn("Firefox (138.0)", summary)
-            self.assertIn("failed in `dark`", summary)
+            self.assertIn("theme check failed in `dark`", summary)
             self.assertIn(
                 "Completed before failure (diagnostic only; not validated "
                 "evidence): `light`.",
