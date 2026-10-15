@@ -747,6 +747,60 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(len(attempts), 2)
         sleep.assert_called_once_with(1)
 
+    def test_artifact_download_honors_rate_limit_headers(self):
+        body = valid_artifact_archive()
+        cases = (
+            (403, {"retry-after": "4"}, 4),
+            (403, {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "1005"}, 6),
+            (429, {"Retry-After": "7"}, 7),
+            (429, {}, 60),
+            (403, {}, 60),
+        )
+        for status, headers, delay in cases:
+            with self.subTest(status=status, headers=headers):
+                calls = []
+                errors = []
+
+                def open_url(request, timeout):
+                    calls.append(1)
+                    if len(calls) == 1:
+                        error = HTTPError(request.full_url, status, "Throttled", headers,
+                                          BytesIO(b'{"message":"API rate limit exceeded"}'))
+                        errors.append(error)
+                        raise error
+                    self.assertTrue(errors[0].closed)
+                    return FakeDownloadResponse(200, body)
+
+                with patch.object(retention_checker.time, "sleep") as sleep:
+                    with patch.object(retention_checker.time, "time", return_value=1000):
+                        retention_checker.verify_artifact_download(
+                            "owner/repo", 701, "https://api.github.com",
+                            "test-token", open_url=open_url,
+                        )
+                self.assertEqual(len(calls), 2)
+                sleep.assert_called_once_with(delay)
+
+    def test_artifact_download_defers_rate_limits_beyond_wait_budget(self):
+        for headers in ({"Retry-After": "120"}, {}):
+            calls = []
+            errors = []
+
+            def open_url(request, timeout):
+                calls.append(1)
+                error = HTTPError(request.full_url, 429, "Throttled", headers, BytesIO())
+                errors.append(error)
+                raise error
+
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                with self.assertRaisesRegex(ValueError, "retry deferred"):
+                    retention_checker.verify_artifact_download(
+                        "owner/repo", 701, "https://api.github.com",
+                        "test-token", open_url=open_url,
+                    )
+            self.assertEqual(len(calls), 1 if headers else 2)
+            self.assertTrue(all(error.closed for error in errors))
+            self.assertEqual(sleep.call_count, 0 if headers else 1)
+
     def test_artifact_download_closes_http_error_responses(self):
         for status in (503, 403):
             with self.subTest(status=status):

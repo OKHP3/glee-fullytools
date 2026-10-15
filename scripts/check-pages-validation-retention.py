@@ -8,6 +8,7 @@ from http.client import IncompleteRead
 import json
 from pathlib import Path
 import re
+import math
 import sys
 import tempfile
 from urllib.error import HTTPError, URLError
@@ -22,6 +23,7 @@ REQUIRED_RETENTION = timedelta(days=90)
 API_VERSION = "2022-11-28"
 DOWNLOAD_CHUNK_SIZE = 64 * 1024
 DOWNLOAD_MAX_ATTEMPTS = 3
+DOWNLOAD_MAX_RETRY_WAIT_SECONDS = 60
 DOWNLOAD_RETRY_BACKOFF_SECONDS = 1
 MAX_ARTIFACT_BYTES = 512 * 1024 * 1024
 MAX_ARCHIVE_ENTRIES = 10_000
@@ -126,6 +128,7 @@ def verify_artifact_download(
 ) -> None:
     """Stream and validate an evidence ZIP using bounded temporary storage."""
     open_request = open_url or urlopen
+    retry_wait = 0
     for attempt in range(1, DOWNLOAD_MAX_ATTEMPTS + 1):
         try:
             _verify_artifact_download_once(
@@ -142,18 +145,28 @@ def verify_artifact_download(
                 raise ValueError(
                     f"artifact download failed after {attempt} attempts: {error}"
                 ) from error
-            time.sleep(DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1)))
+            delay = DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
+            time.sleep(delay)
+            retry_wait += delay
         except HTTPError as error:
-            # Release the error response before sleeping, retrying, or failing.
-            error.close()
-            if _is_retryable_http_status(error.code):
-                if attempt == DOWNLOAD_MAX_ATTEMPTS:
-                    raise ValueError(
-                        f"artifact download failed after {attempt} attempts: {error}"
-                    ) from error
-                time.sleep(DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1)))
-                continue
-            raise ValueError(f"artifact download failed: {error}") from error
+            try:
+                delay = _http_download_retry_delay(error, attempt)
+            finally:
+                # Release the response before sleeping, retrying, or failing.
+                error.close()
+            if delay is None:
+                raise ValueError(f"artifact download failed: {error}") from error
+            if attempt == DOWNLOAD_MAX_ATTEMPTS:
+                raise ValueError(
+                    f"artifact download failed after {attempt} attempts: {error}"
+                ) from error
+            if delay > DOWNLOAD_MAX_RETRY_WAIT_SECONDS - retry_wait:
+                raise ValueError(
+                    "artifact download rate-limited; retry deferred because the "
+                    "server's requested wait exceeds the remaining 60-second retry budget"
+                ) from error
+            time.sleep(delay)
+            retry_wait += delay
         except (
             ValueError,
             zipfile.BadZipFile,
@@ -173,6 +186,46 @@ class _RetryableDownloadError(Exception):
 
 def _is_retryable_http_status(status: int) -> bool:
     return status in (408, 429) or 500 <= status <= 599
+
+
+def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
+    """Honor GitHub throttles without retrying ordinary authorization failures.
+
+    https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api#rate-limit-errors
+    """
+    headers = {key.lower(): value for key, value in (error.headers or {}).items()}
+    throttled = error.code == 429 or (
+        error.code == 403
+        and ("retry-after" in headers or headers.get("x-ratelimit-remaining") == "0")
+    )
+    if error.code == 403 and not throttled:
+        # Secondary throttles may identify themselves only in the error message.
+        try:
+            message = error.read(4096).lower()
+        except (OSError, IncompleteRead):
+            message = b""
+        throttled = b"rate limit" in message or b"rate-limit" in message
+    if not throttled and not _is_retryable_http_status(error.code):
+        return None
+    if "retry-after" in headers:
+        try:
+            delay = float(headers["retry-after"])
+            if not math.isfinite(delay) or delay < 0:
+                raise ValueError("invalid retry interval")
+            return delay
+        except (TypeError, ValueError) as invalid:
+            raise ValueError("artifact download retry deferred: invalid Retry-After") from invalid
+    if throttled:
+        if headers.get("x-ratelimit-remaining") == "0":
+            try:
+                reset = float(headers["x-ratelimit-reset"])
+                if not math.isfinite(reset):
+                    raise ValueError("invalid reset time")
+                return max(0, math.ceil(reset - time.time()) + 1)
+            except (KeyError, TypeError, ValueError) as invalid:
+                raise ValueError("artifact download retry deferred: invalid rate-limit reset") from invalid
+        return 60 * (2 ** (attempt - 1))
+    return DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
 
 
 def _verify_artifact_download_once(
@@ -217,10 +270,9 @@ def _verify_artifact_download_once(
         with response_context as response:
             status = getattr(response, "status", 200)
             if status != 200:
-                if _is_retryable_http_status(status):
-                    raise _RetryableDownloadError(
-                        f"artifact download endpoint returned temporary HTTP {status}"
-                    )
+                if _is_retryable_http_status(status) or status == 403:
+                    raise HTTPError(url, status, "Artifact download HTTP error",
+                                    getattr(response, "headers", {}), None)
                 raise ValueError(
                     f"artifact download endpoint returned HTTP {status}"
                 )
