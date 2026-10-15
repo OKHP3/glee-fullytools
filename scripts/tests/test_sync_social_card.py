@@ -16,6 +16,41 @@ _SPEC.loader.exec_module(_MODULE)
 
 
 class SyncSocialCardTests(unittest.TestCase):
+    def test_stale_existing_og_image_types_are_synchronized_and_idempotent(self) -> None:
+        """Existing JPEG and SVG declarations for the shared PNG become PNG."""
+        source = (
+            '<meta property="og:image:type" content="image/jpeg">\n'
+            '<meta property="og:image:type" content="image/svg+xml">'
+        )
+
+        updated, changes, seen = _MODULE.transform_page(source)
+        repeated, repeated_changes, _ = _MODULE.transform_page(updated)
+
+        self.assertEqual(
+            updated,
+            '<meta property="og:image:type" content="image/png">\n'
+            '<meta property="og:image:type" content="image/png">',
+        )
+        self.assertEqual(changes, 2)
+        self.assertIn(("property", "og:image:type"), seen)
+        self.assertEqual(repeated, updated)
+        self.assertEqual(repeated_changes, 0)
+
+    def test_missing_og_image_type_is_not_inserted_or_required(self) -> None:
+        """The synchronizer updates existing declarations without adding tags."""
+        source = (
+            '<meta property="og:image" content="'
+            + _MODULE.CARD_URL
+            + '">'
+        )
+
+        updated, changes, seen = _MODULE.transform_page(source)
+
+        self.assertEqual(updated, source)
+        self.assertEqual(changes, 0)
+        self.assertNotIn(("property", "og:image:type"), seen)
+        self.assertNotIn(("property", "og:image:type"), _MODULE.REQUIRED)
+
     def test_offline_fallback_is_not_a_social_preview_page(self) -> None:
         """The noindex offline shell must not be required to carry OG metadata."""
         with tempfile.TemporaryDirectory() as directory:
