@@ -20,11 +20,77 @@ assert _SPEC.loader is not None
 _SPEC.loader.exec_module(_MODULE)
 
 ORIGIN = "https://glee-fully.tools"
+
+
+def social_image_fixture(
+    extension: str, width: int = 1200, height: int = 630, *,
+    webp_encoding: str = "VP8X",
+) -> bytes:
+    if extension == "png":
+        return (
+            b"\x89PNG\r\n\x1a\n"
+            + (13).to_bytes(4, "big")
+            + b"IHDR"
+            + width.to_bytes(4, "big")
+            + height.to_bytes(4, "big")
+            + b"\x08\x02\x00\x00\x00"
+        )
+    if extension == "jpg":
+        frame = (
+            b"\x08"
+            + height.to_bytes(2, "big")
+            + width.to_bytes(2, "big")
+            + b"\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00"
+        )
+        return b"\xff\xd8\xff\xc0" + (len(frame) + 2).to_bytes(2, "big") + frame
+    if extension == "gif":
+        return (
+            b"GIF89a"
+            + width.to_bytes(2, "little")
+            + height.to_bytes(2, "little")
+            + b"\x00\x00\x00"
+        )
+    if extension == "webp":
+        if webp_encoding == "VP8X":
+            data = (
+                b"\x00\x00\x00\x00"
+                + (width - 1).to_bytes(3, "little")
+                + (height - 1).to_bytes(3, "little")
+            )
+        elif webp_encoding == "VP8 ":
+            data = (
+                b"\x00\x00\x00\x9d\x01\x2a"
+                + width.to_bytes(2, "little")
+                + height.to_bytes(2, "little")
+            )
+        elif webp_encoding == "VP8L":
+            width_minus_one = width - 1
+            height_minus_one = height - 1
+            data = bytes(
+                (
+                    0x2F,
+                    width_minus_one & 0xFF,
+                    ((width_minus_one >> 8) & 0x3F)
+                    | ((height_minus_one & 0x03) << 6),
+                    (height_minus_one >> 2) & 0xFF,
+                    (height_minus_one >> 10) & 0x0F,
+                )
+            )
+        else:
+            raise ValueError(f"Unsupported WebP encoding: {webp_encoding}")
+        chunk = (
+            webp_encoding.encode("ascii")
+            + len(data).to_bytes(4, "little")
+            + data
+        )
+        body = b"WEBP" + chunk
+        return b"RIFF" + len(body).to_bytes(4, "little") + body
+    raise ValueError(f"Unsupported fixture format: {extension}")
+
+
 IMAGE_SIGNATURES = {
-    "png": b"\x89PNG\r\n\x1a\n\x00\x00\x00\r",
-    "jpg": b"\xff\xd8\xff\xdb\x00\x43\x00\x00\x00\x00\x00\x00",
-    "gif": b"GIF89a\x00\x00\x00\x00\x00\x00",
-    "webp": b"RIFF\x00\x00\x00\x00WEBP",
+    extension: social_image_fixture(extension)
+    for extension in ("png", "jpg", "gif", "webp")
 }
 
 
@@ -81,12 +147,19 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn(str(report.resolve()), console.getvalue())
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
 
-    def og_image_findings(self, root: Path, url: str, *later_urls: str) -> list[str]:
+    def og_image_findings(
+        self, root: Path, url: str, *later_urls: str, image_type: str = ""
+    ) -> list[str]:
         page = root / "content" / "index.html"
         page.parent.mkdir(parents=True, exist_ok=True)
         page.write_text(
             "\n".join(
                 f'<meta property="og:image" content="{image_url}">'
+                + (
+                    f'<meta property="og:image:type" content="{image_type}">'
+                    if image_type
+                    else ""
+                )
                 for image_url in (url, *later_urls)
             ),
             encoding="utf-8",
@@ -98,6 +171,93 @@ class AuditSiteTests(unittest.TestCase):
                 issue for issue in _MODULE.audit_page(page)
                 if issue.startswith("og:image")
             ]
+
+    def test_matching_local_og_image_type_is_accepted(self) -> None:
+        mime_types = {
+            "png": "image/png",
+            "jpg": "image/jpeg",
+            "gif": "image/gif",
+            "webp": "image/webp",
+        }
+        for extension, mime_type in mime_types.items():
+            with (
+                self.subTest(extension=extension),
+                tempfile.TemporaryDirectory() as directory,
+            ):
+                root = Path(directory) / "repo"
+                image_dir = root / "assets" / "social"
+                image_dir.mkdir(parents=True)
+                (image_dir / f"hero.{extension}").write_bytes(
+                    IMAGE_SIGNATURES[extension]
+                )
+
+                findings = self.og_image_findings(
+                    root,
+                    f"{ORIGIN}/assets/social/hero.{extension}",
+                    image_type=mime_type,
+                )
+
+                self.assertEqual(findings, [])
+
+    def test_mismatching_local_og_image_type_is_actionable(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+
+            findings = self.og_image_findings(
+                root,
+                f"{ORIGIN}/assets/social/hero.png",
+                image_type="image/svg+xml",
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("og:image:type declares `image/svg+xml`", findings[0])
+            self.assertIn("local file is PNG", findings[0])
+            self.assertIn("expected `image/png`", findings[0])
+
+    def test_external_og_image_type_is_not_checked_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            external_url = "https://external.test/image.png"
+            with patch.object(
+                _MODULE, "link_target", wraps=_MODULE.link_target
+            ) as resolve:
+                findings = self.og_image_findings(
+                    root, external_url, image_type="image/svg+xml"
+                )
+
+            self.assertEqual(findings, [])
+            resolve.assert_not_called()
+
+    def test_each_local_og_image_type_is_compared_with_its_own_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            (image_dir / "share.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/social/hero.png">'
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image" content="/assets/social/share.jpg">'
+                '<meta property="og:image:type" content="image/png">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("share.jpg", findings[0])
+            self.assertIn("expected `image/jpeg`", findings[0])
 
     def test_every_later_local_og_image_is_checked(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -116,6 +276,76 @@ class AuditSiteTests(unittest.TestCase):
             for finding, url in zip(findings, invalid):
                 self.assertIn(url, finding)
                 self.assertIn("safe file inside", finding)
+
+    def test_invalid_local_og_image_url_alias_is_checked_after_valid_image(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets" / "social"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/social/hero.png">'
+                '<meta property="og:image:url" content="/%2e%2e/outside.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("/%2e%2e/outside.png", findings[0])
+            self.assertIn("safe file inside", findings[0])
+
+    def test_later_og_images_with_missing_or_blank_content_are_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image">'
+                '<meta property="og:image" content="">'
+                '<meta property="og:image" content="   ">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 3)
+            self.assertTrue(all("missing a non-empty content URL" in x for x in findings))
+
+    def test_external_og_image_url_alias_is_not_resolved_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:url" '
+                'content="https://external.test/image.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(findings, [])
+            resolve.assert_not_called()
 
     def test_external_images_in_any_position_are_not_resolved_locally(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -249,6 +479,79 @@ class AuditSiteTests(unittest.TestCase):
                 with self.subTest(extension=extension):
                     url = f"{ORIGIN}/assets/social/card.{extension}"
                     self.assertEqual(self.og_image_findings(root, url), [])
+
+    def test_all_webp_encodings_report_dimensions(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for encoding in ("VP8X", "VP8 ", "VP8L"):
+                with self.subTest(encoding=encoding):
+                    filename = f"{encoding.strip().lower()}.webp"
+                    (image_dir / filename).write_bytes(
+                        social_image_fixture("webp", webp_encoding=encoding)
+                    )
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/{filename}"
+                    )
+                    self.assertEqual(findings, [])
+
+    def test_undersized_local_social_image_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "small.png").write_bytes(
+                social_image_fixture("png", width=600, height=315)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/small.png"
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("og:image is 600x315", findings[0])
+            self.assertIn("minimum is 1200x630", findings[0])
+
+    def test_local_social_image_with_unsuitable_aspect_ratio_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "square.jpg").write_bytes(
+                social_image_fixture("jpg", width=1200, height=1200)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/square.jpg"
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("aspect ratio is 1.000:1", findings[0])
+            self.assertIn("expected 1.85:1–1.96:1", findings[0])
+
+    def test_truncated_supported_social_image_is_reported_as_malformed(self) -> None:
+        malformed_images = {
+            "png": b"\x89PNG\r\n\x1a\n",
+            "jpg": b"\xff\xd8\xff",
+            "gif": b"GIF89a",
+            "webp": b"RIFF\x00\x00\x00\x00WEBP",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for extension, data in malformed_images.items():
+                with self.subTest(extension=extension):
+                    (image_dir / f"broken.{extension}").write_bytes(data)
+
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/broken.{extension}"
+                    )
+
+                    self.assertEqual(len(findings), 1)
+                    self.assertIn("dimensions could not be inspected", findings[0])
+                    self.assertIn("malformed or truncated", findings[0])
 
     def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

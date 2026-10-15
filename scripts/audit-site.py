@@ -101,6 +101,13 @@ EXPECTED_BG_COLOR = "#f5f0ea"
 # Social-preview support is intentionally limited to widely supported raster
 # formats. SVG and other formats are excluded because major sharing platforms
 # do not consistently render them as social cards.
+# The site's shared sharing card is 1200x630. Require at least that many pixels
+# in each dimension and allow small crop/rounding differences around its 1.90:1
+# shape (1.85:1–1.96:1).
+SOCIAL_IMAGE_MIN_WIDTH = 1200
+SOCIAL_IMAGE_MIN_HEIGHT = 630
+SOCIAL_IMAGE_MIN_ASPECT_RATIO = 1.85
+SOCIAL_IMAGE_MAX_ASPECT_RATIO = 1.96
 SOCIAL_IMAGE_SIGNATURES = {
     "PNG": lambda header: header.startswith(b"\x89PNG\r\n\x1a\n"),
     "JPEG": lambda header: header.startswith(b"\xff\xd8\xff"),
@@ -109,6 +116,109 @@ SOCIAL_IMAGE_SIGNATURES = {
         len(header) >= 12 and header[:4] == b"RIFF" and header[8:12] == b"WEBP"
     ),
 }
+
+
+def _social_image_dimensions(image_file, image_format: str) -> Tuple[int, int] | None:
+    """Read raster dimensions from a local image header; return None if malformed."""
+    image_file.seek(0)
+    if image_format == "PNG":
+        header = image_file.read(24)
+        if (
+            len(header) < 24
+            or header[:8] != b"\x89PNG\r\n\x1a\n"
+            or int.from_bytes(header[8:12], "big") != 13
+            or header[12:16] != b"IHDR"
+        ):
+            return None
+        width = int.from_bytes(header[16:20], "big")
+        height = int.from_bytes(header[20:24], "big")
+    elif image_format == "GIF":
+        header = image_file.read(13)
+        if len(header) < 13 or header[:6] not in (b"GIF87a", b"GIF89a"):
+            return None
+        width = int.from_bytes(header[6:8], "little")
+        height = int.from_bytes(header[8:10], "little")
+    elif image_format == "WebP":
+        header = image_file.read(30)
+        if len(header) < 20 or header[:4] != b"RIFF" or header[8:12] != b"WEBP":
+            return None
+        chunk_type = header[12:16]
+        chunk_size = int.from_bytes(header[16:20], "little")
+        riff_size = int.from_bytes(header[4:8], "little")
+        if riff_size < 12 + chunk_size:
+            return None
+        if chunk_type == b"VP8X" and chunk_size >= 10 and len(header) >= 30:
+            width = 1 + int.from_bytes(header[24:27], "little")
+            height = 1 + int.from_bytes(header[27:30], "little")
+        elif (
+            chunk_type == b"VP8 "
+            and chunk_size >= 10
+            and len(header) >= 30
+        ):
+            if header[23:26] != b"\x9d\x01\x2a":
+                return None
+            width = int.from_bytes(header[26:28], "little") & 0x3FFF
+            height = int.from_bytes(header[28:30], "little") & 0x3FFF
+        elif (
+            chunk_type == b"VP8L"
+            and chunk_size >= 5
+            and len(header) >= 25
+        ):
+            if header[20] != 0x2F:
+                return None
+            width = 1 + header[21] + ((header[22] & 0x3F) << 8)
+            height = 1 + (header[22] >> 6) + (header[23] << 2) + (
+                (header[24] & 0x0F) << 10
+            )
+        else:
+            return None
+    elif image_format == "JPEG":
+        # JPEG dimensions are stored in a Start Of Frame segment, which may
+        # follow variable-sized metadata segments.
+        image_file.seek(2)
+        while True:
+            marker_prefix = image_file.read(1)
+            if marker_prefix != b"\xff":
+                if not marker_prefix:
+                    return None
+                continue
+            marker_byte = image_file.read(1)
+            while marker_byte == b"\xff":
+                marker_byte = image_file.read(1)
+            if not marker_byte:
+                return None
+            marker = marker_byte[0]
+            if marker in {0xD8, 0xD9, 0x01} or 0xD0 <= marker <= 0xD7:
+                if marker == 0xD9:
+                    return None
+                continue
+            if marker == 0xDA:  # Start Of Scan before dimensions is malformed.
+                return None
+            length_bytes = image_file.read(2)
+            if len(length_bytes) != 2:
+                return None
+            segment_length = int.from_bytes(length_bytes, "big")
+            if segment_length < 2:
+                return None
+            segment = image_file.read(segment_length - 2)
+            if len(segment) != segment_length - 2:
+                return None
+            is_start_of_frame = marker in {
+                0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
+                0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF,
+            }
+            if is_start_of_frame:
+                if len(segment) < 5:
+                    return None
+                height = int.from_bytes(segment[1:3], "big")
+                width = int.from_bytes(segment[3:5], "big")
+                break
+    else:  # pragma: no cover - callers use SOCIAL_IMAGE_SIGNATURES
+        return None
+
+    if width <= 0 or height <= 0:
+        return None
+    return width, height
 
 
 def iter_html_files() -> List[Path]:
@@ -128,7 +238,8 @@ class PageParser(HTMLParser):
         self.headings: List[int] = []   # ordered heading levels outside <footer>
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
-        self.og_images: List[str] = []
+        self.og_images: List[Dict[str, str]] = []
+        self._current_og_image: int | None = None
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
         self.external_links: List[Dict[str, str]] = []
@@ -155,8 +266,16 @@ class PageParser(HTMLParser):
                 self.headings.append(int(tag[1]))
         elif tag == "meta":
             key = a.get("name") or a.get("property") or a.get("http-equiv")
-            if key and key.lower() == "og:image":
-                self.og_images.append(a.get("content", "") or "")
+            if key and key.lower() in {"og:image", "og:image:url"}:
+                self.og_images.append(
+                    {"url": a.get("content", "") or "", "type": ""}
+                )
+                self._current_og_image = len(self.og_images) - 1
+            elif key and key.lower() == "og:image:type":
+                if self._current_og_image is not None:
+                    self.og_images[self._current_og_image]["type"] = (
+                        a.get("content", "") or ""
+                    )
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
         elif tag == "link" and a.get("rel", "").lower() == "canonical":
@@ -220,39 +339,86 @@ BARE_LINK_TEXTS = frozenset({
 })
 
 
-def _og_image_issue(url: str, source_dir: Path, root: Path, origin: str) -> str | None:
+def _og_image_issues(
+    url: str, declared_type: str, source_dir: Path, root: Path, origin: str
+) -> List[str]:
     """Validate local og:image paths and signatures without fetching URLs."""
+    if not url.strip():
+        return ["og:image declaration is missing a non-empty content URL"]
+
     try:
         parsed = urlsplit(url)
         expected_origin = urlsplit(origin)
     except ValueError:
-        return f"og:image URL is malformed or unsafe: {url}"
+        return [f"og:image URL is malformed or unsafe: {url}"]
 
     if parsed.scheme or parsed.netloc:
         actual_origin = (parsed.scheme or expected_origin.scheme, parsed.netloc)
         if actual_origin != (expected_origin.scheme, expected_origin.netloc):
-            return None
+            return []
 
     target = link_target(url, source_dir, root, origin)
     if target is None:
-        return (
+        return [(
             "og:image path does not resolve to a safe file inside "
             f"the repository: {url}"
-        )
+        )]
     if target.suffix.lower() in {".html", ".htm"}:
-        return f"og:image path resolves to an HTML page, not an image file: {url}"
+        return [f"og:image path resolves to an HTML page, not an image file: {url}"]
     try:
         with target.open("rb") as image_file:
             header = image_file.read(12)
     except OSError:
-        return f"og:image file could not be inspected: {url}"
-    if not any(matches(header) for matches in SOCIAL_IMAGE_SIGNATURES.values()):
+        return [f"og:image file could not be inspected: {url}"]
+    detected_format = next(
+        (
+            image_format
+            for image_format, matches in SOCIAL_IMAGE_SIGNATURES.items()
+            if matches(header)
+        ),
+        None,
+    )
+    if detected_format is None:
         supported = ", ".join(SOCIAL_IMAGE_SIGNATURES)
-        return (
+        return [(
             "og:image file does not have a supported image signature "
             f"({supported}): {url}"
+        )]
+    try:
+        with target.open("rb") as image_file:
+            dimensions = _social_image_dimensions(image_file, detected_format)
+    except OSError:
+        return [f"og:image file could not be inspected: {url}"]
+    if dimensions is None:
+        return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
+    width, height = dimensions
+    issues = []
+    if width < SOCIAL_IMAGE_MIN_WIDTH or height < SOCIAL_IMAGE_MIN_HEIGHT:
+        issues.append(
+            f"og:image is {width}x{height}; minimum is "
+            f"{SOCIAL_IMAGE_MIN_WIDTH}x{SOCIAL_IMAGE_MIN_HEIGHT}: {url}"
         )
-    return None
+    aspect_ratio = width / height
+    if not SOCIAL_IMAGE_MIN_ASPECT_RATIO <= aspect_ratio <= SOCIAL_IMAGE_MAX_ASPECT_RATIO:
+        issues.append(
+            f"og:image aspect ratio is {aspect_ratio:.3f}:1; expected "
+            f"{SOCIAL_IMAGE_MIN_ASPECT_RATIO:.2f}:1–"
+            f"{SOCIAL_IMAGE_MAX_ASPECT_RATIO:.2f}:1: {url}"
+        )
+    declared_type = declared_type.strip().lower()
+    if declared_type:
+        expected_type = {
+            "PNG": "image/png",
+            "JPEG": "image/jpeg",
+            "GIF": "image/gif",
+            "WebP": "image/webp",
+        }[detected_format]
+        if declared_type != expected_type:
+            issues.append(
+                f"og:image:type declares `{declared_type}`, but the local file "
+                f"is {detected_format} (expected `{expected_type}`): {url}"
+            )
+    return issues
 
 
 def audit_page(path: Path) -> List[str]:
@@ -360,10 +526,11 @@ def audit_page(path: Path) -> List[str]:
     # Check every declared social image, including later tags. The parser
     # handles attribute order, quotes and character references consistently.
     # External images remain outside the local filesystem audit.
-    for url in p.og_images:
-        image_issue = _og_image_issue(url, path.parent, ROOT, site_origin())
-        if image_issue:
-            issues.append(image_issue)
+    for image in p.og_images:
+        image_issues = _og_image_issues(
+            image["url"], image["type"], path.parent, ROOT, site_origin()
+        )
+        issues.extend(image_issues)
 
     title = p.title.strip()
     if not title:

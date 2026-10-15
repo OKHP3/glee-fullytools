@@ -3,7 +3,7 @@
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 import hashlib
-from io import BytesIO
+from io import BytesIO, StringIO
 import importlib.util
 import json
 import os
@@ -12,10 +12,12 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from types import ModuleType, SimpleNamespace
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
 import zipfile
+from contextlib import redirect_stdout
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -26,6 +28,8 @@ UPLOAD_STEP = "- name: Upload validation reports"
 THEME_VERIFY_STEP = "- name: Verify browser-specific theme evidence"
 THEME_BROWSER_STEP = "- name: Run color-scheme bootstrap regression in all installed engines"
 THEME_FAILURE_DIAGNOSTIC_STEP = "- name: Summarize browser theme failures (diagnostic only)"
+THEME_FAILURE_UPLOAD_STEP = "- name: Upload failed browser theme reports (diagnostic only)"
+THEME_FAILURE_LINK_STEP = "- name: Link browser theme failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -78,7 +82,9 @@ class FakeDownloadResponse:
         return self._body.read(size)
 
 
-def valid_artifact_archive(missing_file=None):
+def valid_artifact_archive(
+    missing_file=None, additional_files=None, duplicate_files=None
+):
     contents = {
         "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
         "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
@@ -86,11 +92,14 @@ def valid_artifact_archive(missing_file=None):
         "assets/audit/color-scheme-evidence-index.md": b"# Browser theme evidence",
         "assets/docs/audit-report.md": b"# Audit report",
     }
+    contents.update(additional_files or {})
     if missing_file is not None:
         contents.pop(missing_file)
     archive = BytesIO()
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
         for name, content in contents.items():
+            zipped.writestr(name, content)
+        for name, content in duplicate_files or []:
             zipped.writestr(name, content)
     return archive.getvalue()
 
@@ -154,6 +163,8 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             UPLOAD_STEP,
             THEME_BROWSER_STEP,
             THEME_FAILURE_DIAGNOSTIC_STEP,
+            THEME_FAILURE_UPLOAD_STEP,
+            THEME_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -212,6 +223,45 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Browser failure summaries must be failure-only, diagnostic, and "
             "separate from validated release evidence"
+        )
+    diagnostic_upload_position = positions[THEME_FAILURE_UPLOAD_STEP]
+    diagnostic_link_position = positions[THEME_FAILURE_LINK_STEP]
+    if not (
+        diagnostic_position < diagnostic_upload_position
+        < diagnostic_link_position < theme_position
+    ):
+        raise AssertionError(
+            "Failed browser JSON must be uploaded and linked before verified theme evidence"
+        )
+    diagnostic_upload_block = workflow[diagnostic_upload_position:diagnostic_link_position]
+    if (
+        "always() && steps.theme_browser_checks.outcome == 'failure'"
+        not in diagnostic_upload_block
+        or "uses: actions/upload-artifact@v7" not in diagnostic_upload_block
+        or "name: pages-theme-failure-diagnostics-${{ github.sha }}"
+        not in diagnostic_upload_block
+        or "path: assets/audit/color-scheme-init-*.json"
+        not in diagnostic_upload_block
+        or "if-no-files-found: warn" not in diagnostic_upload_block
+        or "retention-days: 14" not in diagnostic_upload_block
+        or "pages-validation" in diagnostic_upload_block
+        or "glee-public-site" in diagnostic_upload_block
+    ):
+        raise AssertionError(
+            "Failed browser JSON must be available in a separate diagnostic-only artifact"
+        )
+    diagnostic_link_block = workflow[diagnostic_link_position:theme_position]
+    if (
+        "always() && steps.theme_browser_checks.outcome == 'failure'"
+        not in diagnostic_link_block
+        or "GITHUB_STEP_SUMMARY" not in diagnostic_link_block
+        or "Diagnostic only" not in diagnostic_link_block
+        or "not validated release evidence" not in diagnostic_link_block
+        or "actions/runs/${{ github.run_id }}#artifacts" not in diagnostic_link_block
+    ):
+        raise AssertionError(
+            "Failed browser run summary must link the downloadable diagnostic artifact "
+            "without presenting it as validated evidence"
         )
     theme_block = workflow[theme_position:staging_position]
     if "Browser-specific color-scheme evidence is incomplete" not in theme_block:
@@ -434,11 +484,135 @@ class PagesValidationEvidenceTests(unittest.TestCase):
     def test_scheduled_retention_workflow_is_read_only_and_daily(self):
         workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('cron: "17 12 * * *"', workflow)
+        self.assertIn("timeout-minutes: 10", workflow)
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
+        self.assertEqual(retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 7 * 60)
+        self.assertGreaterEqual(
+            10 * 60 - retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 3 * 60
+        )
+
+    def test_shared_monitor_budget_identifies_runs_left_unchecked(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 44,
+                "head_sha": "a" * 40,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 45,
+                "head_sha": "b" * 40,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+        elapsed = [0.0]
+        sleeps = []
+        budget = retention_checker._RuntimeBudget(
+            3,
+            clock=lambda: elapsed[0],
+            sleeper=lambda seconds: (
+                sleeps.append(seconds),
+                elapsed.__setitem__(0, elapsed[0] + seconds),
+            ),
+        )
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/44/artifacts?" in url:
+                return {
+                    "artifacts": [{
+                        "id": 440,
+                        "name": f"pages-validation-{'a' * 40}",
+                        "expired": False,
+                        "created_at": "2026-10-01T12:01:00Z",
+                        "expires_at": "2026-12-30T12:00:00Z",
+                        "workflow_run": {"id": 44, "head_sha": "a" * 40},
+                    }]
+                }, None
+            if "/runs/45/artifacts?" in url:
+                return {
+                    "artifacts": [{
+                        "id": 450,
+                        "name": f"pages-validation-{'b' * 40}",
+                        "expired": False,
+                        "created_at": "2026-10-02T12:01:00Z",
+                        "expires_at": "2026-12-31T12:00:00Z",
+                        "workflow_run": {"id": 45, "head_sha": "b" * 40},
+                    }]
+                }, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        download_ids = []
+        download_timeouts = []
+
+        def open_url(request, timeout):
+            download_ids.append(int(request.full_url.rsplit("/", 2)[-2]))
+            download_timeouts.append(timeout)
+            raise URLError("temporary connection reset")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+                budget=budget,
+            )
+
+        message = str(raised.exception)
+        self.assertIn(
+            f"run 44 | commit {'a' * 40} | review deadline "
+            "2026-12-30T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds",
+            message,
+        )
+        self.assertIn(
+            f"run 45 | commit {'b' * 40} | review deadline "
+            "2026-12-31T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds",
+            message,
+        )
+        self.assertEqual(download_ids, [440, 440])
+        self.assertEqual(download_timeouts, [3, 2])
+        self.assertEqual(sleeps, [1, 2])
+
+    def test_archive_failure_at_runtime_deadline_cannot_count_as_verified(self):
+        elapsed = [0.0]
+        commit = "a" * 40
+        run = {"id": 44, "head_sha": commit, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        artifact = {"id": 440, "name": f"pages-validation-{commit}", "expired": False,
+                    "created_at": "2026-10-01T12:01:00Z", "expires_at": "2026-12-30T12:00:00Z",
+                    "workflow_run": {"id": 44, "head_sha": commit}}
+
+        def fetch(url, token):
+            if "/workflows/" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            return {"artifacts": [artifact]}, None
+
+        def invalid_archive(*args, **kwargs):
+            elapsed[0] = 3
+            raise ValueError("corrupt archive")
+
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        with patch.object(retention_checker, "verify_artifact_download", side_effect=invalid_archive):
+            with self.assertRaisesRegex(ValueError, "run 44.*evidence not checked.*budget exhausted"):
+                retention_checker.monitor_repository(
+                    "owner/repo", "https://api.github.com", "token",
+                    now=datetime(2026, 10, 13, tzinfo=timezone.utc), fetch_page=fetch, budget=budget,
+                )
 
     def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
         legacy_run = {
@@ -516,6 +690,192 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 now=now,
                 fetch_page=fetch,
             )
+
+    def test_retention_monitor_retries_temporary_metadata_failures(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "a" * 40
+        run = {
+            "id": 44,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 440,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 44, "head_sha": commit},
+        }
+        attempts = {"runs": 0, "compare": 0, "artifacts": 0}
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                attempts["runs"] += 1
+                if attempts["runs"] == 1:
+                    raise URLError("temporary connection reset")
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                attempts["compare"] += 1
+                if attempts["compare"] == 1:
+                    raise HTTPError(url, 503, "Service Unavailable", {}, None)
+                return {"status": "ahead"}, None
+            if "/runs/44/artifacts?" in url:
+                attempts["artifacts"] += 1
+                if attempts["artifacts"] == 1:
+                    raise URLError("temporary connection reset")
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+        self.assertEqual(checked, 1)
+        self.assertEqual(attempts, {"runs": 2, "compare": 2, "artifacts": 2})
+        self.assertEqual(sleep.call_count, 3)
+
+    def test_metadata_retries_honor_server_wait_and_close_error(self):
+        for status, headers, delay in (
+            (429, {"Retry-After": "7"}, 7),
+            (403, {"Retry-After": "8"}, 8),
+            (503, {"Retry-After": "9"}, 9),
+        ):
+            with self.subTest(status=status):
+                body = BytesIO(b"temporary failure")
+                error = HTTPError("https://api.github.com/test", status, "Retry", headers, body)
+                attempts = []
+
+                def fetch(url, token):
+                    attempts.append(url)
+                    if len(attempts) == 1:
+                        raise error
+                    self.assertTrue(body.closed)
+                    return {"ok": True}, None
+
+                with patch.object(retention_checker.time, "sleep") as sleep:
+                    self.assertEqual(
+                        retention_checker._fetch_metadata_page("https://api.github.com/test", "token", fetch),
+                        ({"ok": True}, None),
+                    )
+                sleep.assert_called_once_with(delay)
+                self.assertTrue(body.closed)
+
+    def test_metadata_server_wait_beyond_budget_defers_without_retry(self):
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "120"}, body)
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+                with self.assertRaisesRegex(ValueError, "metadata.*retry deferred"):
+                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+        self.assertEqual(fetch.call_count, 1)
+        sleep.assert_not_called()
+        self.assertTrue(body.closed)
+
+    def test_metadata_retry_cannot_outlive_shared_runtime_budget(self):
+        clock = [0.0]
+
+        def wait(seconds):
+            clock[0] += seconds
+
+        budget = retention_checker._RuntimeBudget(5, clock=lambda: clock[0], sleeper=wait)
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "7"}, body)
+        with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+            with self.assertRaises(retention_checker._RetryBudgetExceeded):
+                retention_checker._fetch_metadata_page("https://api.github.com/test", "token", budget=budget)
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual(clock[0], 5)
+        self.assertTrue(body.closed)
+
+    def test_retention_monitor_reports_permanent_metadata_failure_for_run(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "b" * 40
+        run = {
+            "id": 45,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/45/artifacts?" in url:
+                artifact_requests.append(url)
+                raise HTTPError(url, 403, "Forbidden", {}, None)
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaises(ValueError) as raised:
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                )
+
+        message = str(raised.exception)
+        self.assertIn(f"run 45 | commit {commit} | review deadline ", message)
+        self.assertIn("GitHub metadata request failed with HTTP 403", message)
+        self.assertEqual(len(artifact_requests), 1)
+        sleep.assert_not_called()
+
+    def test_retention_monitor_stops_retrying_temporary_metadata_failure(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 46,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact_requests = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/46/artifacts?" in url:
+                artifact_requests.append(url)
+                raise HTTPError(url, 503, "Service Unavailable", {}, None)
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaises(ValueError) as raised:
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                )
+
+        message = str(raised.exception)
+        self.assertIn(f"run 46 | commit {commit} | review deadline ", message)
+        self.assertIn(
+            "GitHub metadata request failed after 3 attempts (HTTP 503)", message
+        )
+        self.assertEqual(len(artifact_requests), 3)
+        self.assertEqual(sleep.call_count, 2)
 
     def test_retention_monitor_reports_every_active_run_with_invalid_or_missing_evidence(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
@@ -637,15 +997,18 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 {"Content-Length": str(len(body))},
             )
 
-        checked = retention_checker.monitor_repository(
-            "owner/repo",
-            "https://api.github.com",
-            "test-token",
-            now=now,
-            fetch_page=fetch,
-            open_url=open_url,
-        )
+        output = StringIO()
+        with redirect_stdout(output):
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
         self.assertEqual(checked, 1)
+        self.assertEqual(output.getvalue(), "")
         self.assertEqual(requested_runs, [51])
         self.assertEqual(
             requested_downloads,
@@ -684,7 +1047,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
 
         with patch.object(retention_checker.time, "sleep") as sleep:
-            retention_checker.verify_artifact_download(
+            retries = retention_checker.verify_artifact_download(
                 "owner/repo",
                 701,
                 "https://api.github.com",
@@ -693,7 +1056,65 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
 
         self.assertEqual(len(attempts), 2)
+        self.assertEqual(retries, 1)
         sleep.assert_called_once_with(1)
+
+    def test_retention_monitor_reports_recovered_artifact_download_without_secrets(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 52,
+            "head_sha": commit,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        artifact = {
+            "id": 702,
+            "name": f"pages-validation-{commit}",
+            "expired": False,
+            "created_at": "2026-10-01T12:01:00Z",
+            "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 52, "head_sha": commit},
+        }
+        attempts = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/52/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            attempts.append(request)
+            if len(attempts) == 1:
+                raise URLError("temporary connection reset")
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        output = StringIO()
+        with patch.object(retention_checker.time, "sleep"), redirect_stdout(output):
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+        self.assertEqual(checked, 1)
+        self.assertEqual(len(attempts), 2)
+        message = output.getvalue()
+        self.assertIn("after 1 retry (run 52", message)
+        self.assertIn(f"run 52, artifact pages-validation-{commit}, ID 702", message)
+        self.assertNotIn("test-token", message)
+        self.assertNotIn("https://", message)
+        self.assertNotIn("artifact-storage", message)
 
     def test_artifact_download_recovers_after_temporary_server_error(self):
         attempts = []
@@ -910,6 +1331,163 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(len(attempts), 3)
         self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2])
 
+    def test_retention_monitor_links_each_affected_run(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 71,
+                "head_sha": "a" * 40,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 72,
+                "head_sha": "b" * 40,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url or "/runs/72/artifacts?" in url:
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "configured-owner/configured-repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        report = str(error.exception)
+        self.assertIn(
+            "run 71 | commit " + "a" * 40 + " | review deadline "
+            "2026-12-30T12:00:00+00:00: validation artifact is missing | "
+            "GitHub Actions: "
+            "https://github.com/configured-owner/configured-repo/actions/runs/71",
+            report,
+        )
+        self.assertIn(
+            "run 72 | commit " + "b" * 40 + " | review deadline "
+            "2026-12-31T12:00:00+00:00: validation artifact is missing | "
+            "GitHub Actions: "
+            "https://github.com/configured-owner/configured-repo/actions/runs/72",
+            report,
+        )
+
+    def test_retention_monitor_uses_enterprise_host_for_run_links(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        run = {
+            "id": 71,
+            "head_sha": "a" * 40,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url:
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "configured-owner/configured-repo",
+                "https://github.enterprise.example/api/v3",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        self.assertIn(
+            "GitHub Actions: "
+            "https://github.enterprise.example/configured-owner/"
+            "configured-repo/actions/runs/71",
+            str(error.exception),
+        )
+
+    def test_retention_monitor_links_invalid_metadata_only_when_run_id_is_numeric(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 81,
+                "head_sha": None,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 82,
+                "head_sha": "b" * 40,
+                "created_at": "not-a-timestamp",
+                "conclusion": "success",
+            },
+            {
+                "id": True,
+                "head_sha": "c" * 40,
+                "created_at": "2026-10-03T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "head_sha": "d" * 40,
+                "created_at": "2026-10-04T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            self.fail(f"Invalid run metadata must not trigger more API requests: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        report = str(error.exception)
+        self.assertIn(
+            "review deadline 2026-12-30T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA | "
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/81",
+            report,
+        )
+        self.assertIn(
+            "run 82 | commit " + "b" * 40
+            + " | review deadline unknown: artifact metadata has invalid "
+            "workflow run created_at: 'not-a-timestamp' | GitHub Actions: "
+            "https://github.com/owner/repo/actions/runs/82",
+            report,
+        )
+        self.assertIn(
+            "run unknown | commit " + "c" * 40
+            + " | review deadline 2027-01-01T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA",
+            report,
+        )
+        self.assertIn(
+            "run unknown | commit " + "d" * 40
+            + " | review deadline 2027-01-02T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA",
+            report,
+        )
+        self.assertNotIn("actions/runs/True", report)
+        self.assertNotIn("actions/runs/unknown", report)
+        self.assertNotIn("actions/runs/None", report)
+
     def test_downloaded_archive_must_contain_all_review_evidence(self):
         incomplete_archive = valid_artifact_archive(
             "assets/audit/color-scheme-init-firefox.json"
@@ -929,6 +1507,61 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_downloaded_archive_with_duplicate_required_report_is_rejected(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        with self.assertWarns(UserWarning):
+            ambiguous_archive = valid_artifact_archive(
+                duplicate_files=[(report_path, b'{"browser":"different"}')]
+            )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "artifact archive has duplicate required evidence files: "
+            "assets/audit/color-scheme-init-chromium.json",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(
+                    200, ambiguous_archive
+                ),
+            )
+
+    def test_historical_archive_with_dated_audit_reports_is_accepted(self):
+        # Successful October 6 evidence archives include release-specific audit
+        # reports beyond the stable set required by the retention checker.
+        historical_archive = valid_artifact_archive(
+            additional_files={
+                "assets/audit/links-report-2026-10-05.json": b"{}",
+                "assets/audit/links-report-2026-10-06.json": b"{}",
+                "assets/audit/resilience-qa-2026-10-06.json": b"{}",
+                "assets/audit/validation-report-2026-10-06.json": b"{}",
+                "assets/audit/viewport-qa-full-2026-10-06.json": b"{}",
+            }
+        )
+
+        retention_checker.validate_artifact_archive(BytesIO(historical_archive))
+
+    def test_archive_with_damaged_file_contents_is_rejected(self):
+        damaged_archive = bytearray(valid_artifact_archive())
+        with zipfile.ZipFile(BytesIO(damaged_archive)) as zipped:
+            entry = zipped.getinfo("assets/audit/color-scheme-init-chromium.json")
+            name_length = int.from_bytes(
+                damaged_archive[entry.header_offset + 26:entry.header_offset + 28],
+                "little",
+            )
+            extra_length = int.from_bytes(
+                damaged_archive[entry.header_offset + 28:entry.header_offset + 30],
+                "little",
+            )
+            data_offset = entry.header_offset + 30 + name_length + extra_length
+        damaged_archive[data_offset] ^= 0xFF
+
+        with self.assertRaisesRegex(ValueError, "corrupt or incomplete|damaged file"):
+            retention_checker.validate_artifact_archive(BytesIO(damaged_archive))
 
     def test_downloaded_archive_size_is_capped_before_temporary_write(self):
         with patch.object(retention_checker, "MAX_ARTIFACT_BYTES", 8):
@@ -1054,10 +1687,68 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             color_scheme_checker.capture_case(report, "dark", fail_dark_case)
 
         self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
+        self.assertEqual(report["failure_stage"], "theme_check")
         self.assertEqual(report["failed_case"], "dark")
         self.assertEqual(report["not_run_cases"], ["disabled_storage"])
         self.assertEqual(report["error"], "dark preference was not applied")
         self.assertTrue(report["diagnostic_only"])
+
+    def test_browser_launch_failure_is_reported_before_theme_checks_begin(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        def fail_launch(**_kwargs):
+            raise RuntimeError("browser could not be launched")
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=fail_launch)
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit),
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["failure_stage"], "browser_startup")
+            self.assertNotIn("failed_case", report)
+            self.assertEqual(
+                report["not_run_cases"],
+                ["light", "dark", "disabled_storage"],
+            )
+            self.assertEqual(report["error"], "browser could not be launched")
+            stdout.close()
 
     def test_browser_route_checks_collect_all_failures(self):
         checked = []
@@ -1098,6 +1789,233 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             failure.exception.failed_routes,
         )
 
+    def test_browser_route_reports_every_independent_theme_assertion_failure(self):
+        class FakePage:
+            url = "https://example.test/theme-regression/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=True, status=200)
+
+            def evaluate(self, *_args):
+                return {
+                    "scheme": "light",
+                    "savedPreference": "dark",
+                    "readyState": "interactive",
+                    "colorSchemeScript": False,
+                }
+
+            def wait_for_load_state(self, *_args):
+                pass
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        def check_route(route):
+            return {
+                "route_evidence": [
+                    color_scheme_checker._check_saved_preference_context(
+                        object(),
+                        "https://example.test/",
+                        "dark",
+                        [route],
+                    )
+                ]
+            }
+
+        with (
+            patch.object(
+                color_scheme_checker, "load_context", return_value=FakeContext()
+            ),
+            patch.object(
+                color_scheme_checker,
+                "paint_timing",
+                return_value={
+                    "asset_response_end": None,
+                    "domcontentloaded_start": None,
+                    "first_paint": 3.0,
+                    "first_paint_status": "observed",
+                },
+            ),
+            self.assertRaises(color_scheme_checker.RouteCheckFailure) as failure,
+        ):
+            color_scheme_checker.collect_route_evidence(
+                ["/theme-regression/"], check_route
+            )
+
+        route_failure = failure.exception.failed_routes[0]
+        self.assertEqual(route_failure["route"], "/theme-regression/")
+        self.assertIn("4 independent theme check(s) failed", route_failure["error"])
+        for detail in (
+            "initial DOM scheme: expected saved 'dark' preference",
+            "external color-scheme asset: page does not load",
+            "incomplete color-scheme bootstrap event trace",
+            "missing browser timing for color-scheme bootstrap",
+            "color-scheme asset has no resource timing entry",
+        ):
+            self.assertIn(detail, route_failure["error"])
+
+    def test_navigation_failure_does_not_run_theme_assertions(self):
+        calls = {"evaluate": 0, "wait_for_load": 0}
+
+        class FakePage:
+            url = "https://example.test/broken/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=False, status=503)
+
+            def evaluate(self, *_args):
+                calls["evaluate"] += 1
+                raise AssertionError("theme assertions must not run")
+
+            def wait_for_load_state(self, *_args):
+                calls["wait_for_load"] += 1
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        with patch.object(
+            color_scheme_checker, "load_context", return_value=FakeContext()
+        ):
+            with self.assertRaisesRegex(
+                AssertionError, "did not load with saved dark preference"
+            ):
+                color_scheme_checker._check_saved_preference_context(
+                    object(), "https://example.test/", "dark", ["/broken/"]
+                )
+
+        self.assertEqual(calls, {"evaluate": 0, "wait_for_load": 0})
+
+    def test_theme_setup_failure_does_not_run_follow_on_assertions(self):
+        calls = {"wait_for_load": 0}
+
+        class FakePage:
+            url = "https://example.test/setup-error/"
+
+            def on(self, *_args):
+                pass
+
+            def goto(self, *_args, **_kwargs):
+                return SimpleNamespace(ok=True, status=200)
+
+            def evaluate(self, *_args):
+                raise RuntimeError("DOM inspection unavailable")
+
+            def wait_for_load_state(self, *_args):
+                calls["wait_for_load"] += 1
+
+        class FakeContext:
+            def new_page(self):
+                return FakePage()
+
+            def close(self):
+                pass
+
+        with patch.object(
+            color_scheme_checker, "load_context", return_value=FakeContext()
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError, "could not collect theme evidence before assertions"
+            ) as failure:
+                color_scheme_checker._check_saved_preference_context(
+                    object(), "https://example.test/", "dark", ["/setup-error/"]
+                )
+
+        self.assertIn("DOM inspection unavailable", str(failure.exception))
+        self.assertEqual(calls["wait_for_load"], 0)
+
+    def test_browser_gate_fails_when_aggregated_theme_assertions_fail(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        combined_failure = color_scheme_checker.RouteCheckFailure(
+            [
+                {
+                    "route": "/theme-regression/",
+                    "error": (
+                        "/theme-regression/: 2 independent theme check(s) failed: "
+                        "initial DOM scheme: expected dark, got light; "
+                        "external asset: bootstrap script is missing"
+                    ),
+                }
+            ]
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "browser_routes",
+                    return_value=["/theme-regression/"],
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    side_effect=combined_failure,
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit) as exit_result,
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(exit_result.exception.code, 1)
+            self.assertEqual(report["status"], "FAIL")
+            self.assertEqual(report["failure_stage"], "theme_check")
+            self.assertIn("2 independent theme check(s) failed", report["error"])
+            self.assertEqual(report["failed_routes"][0]["route"], "/theme-regression/")
+            stdout.close()
+
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
         with tempfile.TemporaryDirectory() as directory:
@@ -1110,6 +2028,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "browser": "chromium",
                         "status": "FAIL",
                         "diagnostic_only": True,
+                        "failure_stage": "browser_startup",
                         "not_run_cases": [
                             "light",
                             "dark",
@@ -1127,6 +2046,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "browser_version": "138.0",
                         "status": "FAIL",
                         "diagnostic_only": True,
+                        "failure_stage": "theme_check",
                         "failed_case": "dark",
                         "cases": {"light": {"routes": 1}},
                         "failed_routes": [
@@ -1156,18 +2076,22 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             summary = summary_path.read_text(encoding="utf-8")
-            self.assertIn("failed in `not identified`", summary)
+            self.assertIn(
+                "browser startup/setup failed before theme checks began",
+                summary,
+            )
             self.assertIn(
                 "Not run: `light`, `dark`, `disabled_storage`",
                 summary,
             )
             self.assertIn("Firefox (138.0)", summary)
-            self.assertIn("failed in `dark`", summary)
+            self.assertIn("theme check failed in `dark`", summary)
             self.assertIn(
                 "Completed before failure (diagnostic only; not validated "
                 "evidence): `light`.",
                 summary,
             )
+            self.assertNotIn("Report is inconsistent", summary)
             self.assertIn("Not run: `disabled_storage`", summary)
             self.assertIn("saved dark preference was not applied", summary)
             self.assertIn(
@@ -1187,20 +2111,37 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
 
-    def test_failure_diagnostic_never_labels_later_cases_completed_before_failure(self):
+    def test_failure_diagnostic_flags_cases_listed_after_failure(self):
         code = theme_failure_diagnostic_code(self.workflow)
-        for failed_case, expected in (("dark", "`light`"), (None, "none")):
-            with self.subTest(failed_case=failed_case), tempfile.TemporaryDirectory() as directory:
+        reports = (
+            (
+                "consistent partial report",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}},
+                    "not_run_cases": ["disabled_storage"],
+                },
+                False,
+            ),
+            (
+                "later case listed after failure",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}, "disabled_storage": {}},
+                    "not_run_cases": ["disabled_storage"],
+                },
+                True,
+            ),
+        )
+        for label, report, inconsistent in reports:
+            with self.subTest(report=label), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 audit = root / "assets" / "audit"
                 audit.mkdir(parents=True)
                 (audit / "color-scheme-init-firefox.json").write_text(
-                    json.dumps({
-                        "browser": "firefox", "status": "FAIL",
-                        "diagnostic_only": True, "failed_case": failed_case,
-                        "cases": {"light": {}, "disabled_storage": {}},
-                        "not_run_cases": ["disabled_storage"],
-                    }), encoding="utf-8",
+                    json.dumps(report), encoding="utf-8",
                 )
                 summary_path = root / "summary.md"
                 result = subprocess.run(
@@ -1212,9 +2153,19 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 summary = summary_path.read_text(encoding="utf-8")
                 completed = next(line for line in summary.splitlines()
                                  if "Completed before failure" in line)
-                self.assertTrue(completed.endswith(f": {expected}."), completed)
+                self.assertTrue(completed.endswith(": `light`."), completed)
                 self.assertNotIn("disabled_storage", completed)
                 self.assertIn("Not run: `disabled_storage`", summary)
+                self.assertEqual("Report is inconsistent" in summary, inconsistent)
+                if inconsistent:
+                    self.assertIn(
+                        "lists `disabled_storage` after failed case `dark`",
+                        summary,
+                    )
+                    self.assertIn(
+                        "must not be treated as completed, passed, or validated evidence",
+                        summary,
+                    )
 
     def test_failed_route_details_cannot_become_validated_theme_evidence(self):
         diagnostic_code = theme_failure_diagnostic_code(self.workflow)

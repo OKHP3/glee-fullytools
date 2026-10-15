@@ -13,7 +13,7 @@ import sys
 import tempfile
 from urllib.error import HTTPError, URLError
 import time
-from urllib.parse import quote, urlencode, urljoin
+from urllib.parse import quote, urlencode, urljoin, urlsplit
 from urllib.request import Request, urlopen
 import zipfile
 import zlib
@@ -25,6 +25,15 @@ DOWNLOAD_CHUNK_SIZE = 64 * 1024
 DOWNLOAD_MAX_ATTEMPTS = 3
 DOWNLOAD_MAX_RETRY_WAIT_SECONDS = 60
 DOWNLOAD_RETRY_BACKOFF_SECONDS = 1
+METADATA_MAX_ATTEMPTS = 3
+METADATA_RETRY_BACKOFF_SECONDS = 1
+METADATA_MAX_RETRY_WAIT_SECONDS = 60
+# The scheduled workflow has a 10-minute hard timeout. Keep the monitor's
+# shared wall-clock budget to 7 minutes so checkout, startup, and reporting
+# retain at least 3 minutes of margin. Every API/download attempt and retry wait
+# uses this same budget across all active runs.
+MONITOR_RUNTIME_BUDGET_SECONDS = 7 * 60
+REQUEST_TIMEOUT_SECONDS = 30
 MAX_ARTIFACT_BYTES = 512 * 1024 * 1024
 MAX_ARCHIVE_ENTRIES = 10_000
 MAX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
@@ -50,6 +59,44 @@ def parse_timestamp(value: object, field: str) -> datetime:
     if parsed.tzinfo is None:
         raise ValueError(f"artifact metadata {field} must include a timezone")
     return parsed
+
+
+class _RetryBudgetExceeded(TimeoutError):
+    def __init__(self, seconds: float):
+        self.seconds = seconds
+        super().__init__(
+            f"shared monitor time budget exhausted after {seconds:g} seconds"
+        )
+
+
+class _RuntimeBudget:
+    """Shared wall-clock allowance for all monitor requests and retry waits."""
+
+    def __init__(self, seconds: float, *, clock=None, sleeper=None):
+        self.seconds = seconds
+        self._clock = clock or time.monotonic
+        self._sleep = sleeper or time.sleep
+        self.deadline = self._clock() + seconds
+
+    def remaining(self) -> float:
+        return max(0.0, self.deadline - self._clock())
+
+    def request_timeout(self) -> float:
+        remaining = self.remaining()
+        if remaining <= 0:
+            raise _RetryBudgetExceeded(self.seconds)
+        return min(REQUEST_TIMEOUT_SECONDS, remaining)
+
+    def ensure_available(self) -> None:
+        if self.remaining() <= 0:
+            raise _RetryBudgetExceeded(self.seconds)
+
+    def wait(self, seconds: float) -> None:
+        remaining = self.remaining()
+        if remaining <= 0:
+            raise _RetryBudgetExceeded(self.seconds)
+        self._sleep(min(seconds, remaining))
+        self.ensure_available()
 
 
 def validate_artifact(
@@ -95,7 +142,9 @@ def validate_artifact(
         )
 
 
-def api_page(url: str, token: str) -> tuple[dict[str, object], str | None]:
+def api_page(
+    url: str, token: str, *, timeout: float = REQUEST_TIMEOUT_SECONDS
+) -> tuple[dict[str, object], str | None]:
     """Fetch one GitHub API page and return its next-page URL, if any."""
     request = Request(
         url,
@@ -106,7 +155,7 @@ def api_page(url: str, token: str) -> tuple[dict[str, object], str | None]:
             "User-Agent": "Glee-fully-Pages-evidence-retention-check",
         },
     )
-    with urlopen(request, timeout=30) as response:
+    with urlopen(request, timeout=timeout) as response:
         payload = json.loads(response.read().decode("utf-8"))
         if not isinstance(payload, dict):
             raise ValueError("GitHub API response must be a JSON object")
@@ -125,12 +174,15 @@ def verify_artifact_download(
     *,
     expected_digest: str | None = None,
     open_url=None,
-) -> None:
+    budget: _RuntimeBudget | None = None,
+) -> int:
     """Stream and validate an evidence ZIP using bounded temporary storage."""
     open_request = open_url or urlopen
     retry_wait = 0
     for attempt in range(1, DOWNLOAD_MAX_ATTEMPTS + 1):
         try:
+            if budget is not None:
+                budget.ensure_available()
             _verify_artifact_download_once(
                 repository,
                 artifact_id,
@@ -138,15 +190,23 @@ def verify_artifact_download(
                 token,
                 expected_digest=expected_digest,
                 open_request=open_request,
+                budget=budget,
             )
-            return
+            if budget is not None:
+                budget.ensure_available()
+            return attempt - 1
+        except _RetryBudgetExceeded:
+            raise
         except _RetryableDownloadError as error:
             if attempt == DOWNLOAD_MAX_ATTEMPTS:
                 raise ValueError(
                     f"artifact download failed after {attempt} attempts: {error}"
                 ) from error
             delay = DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
-            time.sleep(delay)
+            if budget is None:
+                time.sleep(delay)
+            else:
+                budget.wait(delay)
             retry_wait += delay
         except HTTPError as error:
             try:
@@ -165,7 +225,10 @@ def verify_artifact_download(
                     "artifact download rate-limited; retry deferred because the "
                     "server's requested wait exceeds the remaining 60-second retry budget"
                 ) from error
-            time.sleep(delay)
+            if budget is None:
+                time.sleep(delay)
+            else:
+                budget.wait(delay)
             retry_wait += delay
         except (
             ValueError,
@@ -188,7 +251,64 @@ def _is_retryable_http_status(status: int) -> bool:
     return status in (408, 429) or 500 <= status <= 599
 
 
-def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
+def _fetch_metadata_page(
+    url: str,
+    token: str,
+    fetch_page=None,
+    budget: _RuntimeBudget | None = None,
+) -> tuple[dict[str, object], str | None]:
+    """Fetch a metadata page, retrying temporary API and transport failures."""
+    fetch = fetch_page or api_page
+    retry_wait = 0
+    for attempt in range(1, METADATA_MAX_ATTEMPTS + 1):
+        delay = METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
+        try:
+            if budget is None:
+                return fetch(url, token)
+            budget.ensure_available()
+            if fetch_page is None:
+                result = api_page(url, token, timeout=budget.request_timeout())
+            else:
+                result = fetch(url, token)
+            budget.ensure_available()
+            return result
+        except _RetryBudgetExceeded:
+            raise
+        except HTTPError as error:
+            try:
+                delay = _http_download_retry_delay(error, attempt, label="GitHub metadata request")
+            finally:
+                error.close()
+            if delay is None:
+                raise ValueError(
+                    f"GitHub metadata request failed with HTTP {error.code}: {error}"
+                ) from error
+            if attempt == METADATA_MAX_ATTEMPTS:
+                raise ValueError(
+                    f"GitHub metadata request failed after {attempt} attempts "
+                    f"(HTTP {error.code}): {error}"
+                ) from error
+            if delay > METADATA_MAX_RETRY_WAIT_SECONDS - retry_wait:
+                raise ValueError(
+                    "GitHub metadata retry deferred: server wait exceeds the "
+                    "remaining 60-second retry budget"
+                ) from error
+        except (URLError, TimeoutError, OSError) as error:
+            if attempt == METADATA_MAX_ATTEMPTS:
+                raise ValueError(
+                    f"GitHub metadata request failed after {attempt} attempts: {error}"
+                ) from error
+        if budget is None:
+            time.sleep(delay)
+        else:
+            budget.wait(delay)
+        retry_wait += delay
+    raise AssertionError("metadata retry loop exited unexpectedly")
+
+
+def _http_download_retry_delay(
+    error: HTTPError, attempt: int, *, label: str = "artifact download"
+) -> float | None:
     """Honor GitHub throttles without retrying ordinary authorization failures.
 
     https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api#rate-limit-errors
@@ -214,7 +334,7 @@ def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
                 raise ValueError("invalid retry interval")
             return delay
         except (TypeError, ValueError) as invalid:
-            raise ValueError("artifact download retry deferred: invalid Retry-After") from invalid
+            raise ValueError(f"{label} retry deferred: invalid Retry-After") from invalid
     if throttled:
         if headers.get("x-ratelimit-remaining") == "0":
             try:
@@ -223,7 +343,7 @@ def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
                     raise ValueError("invalid reset time")
                 return max(0, math.ceil(reset - time.time()) + 1)
             except (KeyError, TypeError, ValueError) as invalid:
-                raise ValueError("artifact download retry deferred: invalid rate-limit reset") from invalid
+                raise ValueError(f"{label} retry deferred: invalid rate-limit reset") from invalid
         return 60 * (2 ** (attempt - 1))
     return DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
 
@@ -236,6 +356,7 @@ def _verify_artifact_download_once(
     *,
     expected_digest: str | None,
     open_request,
+    budget: _RuntimeBudget | None = None,
 ) -> None:
     url = (
         f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
@@ -260,8 +381,15 @@ def _verify_artifact_download_once(
     request.add_unredirected_header("Authorization", f"Bearer {token}")
     try:
         try:
-            response_context = open_request(request, timeout=30)
+            timeout = (
+                budget.request_timeout()
+                if budget is not None
+                else REQUEST_TIMEOUT_SECONDS
+            )
+            response_context = open_request(request, timeout=timeout)
         except HTTPError:
+            raise
+        except _RetryBudgetExceeded:
             raise
         except (OSError, TimeoutError, URLError) as error:
             raise _RetryableDownloadError(
@@ -293,6 +421,8 @@ def _verify_artifact_download_once(
             digest = hashlib.sha256()
             with tempfile.TemporaryFile(mode="w+b") as archive:
                 while True:
+                    if budget is not None:
+                        budget.ensure_available()
                     try:
                         chunk = response.read(DOWNLOAD_CHUNK_SIZE)
                     except (
@@ -305,6 +435,8 @@ def _verify_artifact_download_once(
                         raise _RetryableDownloadError(
                             f"temporary interruption while reading artifact: {error}"
                         ) from error
+                    if budget is not None:
+                        budget.ensure_available()
                     if not chunk:
                         break
                     downloaded += len(chunk)
@@ -360,6 +492,20 @@ def validate_artifact_archive(archive) -> None:
                 raise ValueError(
                     "artifact archive expands beyond the 512 MiB size limit"
                 )
+            required_counts: dict[str, int] = {}
+            for entry in entries:
+                if entry.filename in REQUIRED_EVIDENCE_FILES:
+                    required_counts[entry.filename] = (
+                        required_counts.get(entry.filename, 0) + 1
+                    )
+            duplicates = sorted(
+                name for name, count in required_counts.items() if count > 1
+            )
+            if duplicates:
+                raise ValueError(
+                    "artifact archive has duplicate required evidence files: "
+                    + ", ".join(duplicates)
+                )
             names = {entry.filename for entry in entries}
             missing = sorted(REQUIRED_EVIDENCE_FILES - names)
             if missing:
@@ -386,11 +532,11 @@ def _list_all(
     collection_key: str,
     token: str,
     fetch_page=None,
+    budget: _RuntimeBudget | None = None,
 ) -> list[dict[str, object]]:
-    fetch = fetch_page or api_page
     items: list[dict[str, object]] = []
     while url:
-        payload, next_url = fetch(url, token)
+        payload, next_url = _fetch_metadata_page(url, token, fetch_page, budget)
         page_items = payload.get(collection_key)
         if not isinstance(page_items, list):
             raise ValueError(
@@ -405,6 +551,21 @@ def _list_all(
     return items
 
 
+def _actions_run_url(api_url: str, repository: str, run_id: int) -> str:
+    """Build the web URL for an Actions run from the configured GitHub API host."""
+    parsed_api_url = urlsplit(api_url)
+    api_host = parsed_api_url.hostname
+    if not api_host:
+        raise ValueError("GitHub API URL must include a host")
+    if api_host.lower() == "api.github.com":
+        web_host = "github.com"
+    else:
+        web_host = f"[{api_host}]" if ":" in api_host else api_host
+        if parsed_api_url.port:
+            web_host += f":{parsed_api_url.port}"
+    return f"https://{web_host}/{repository}/actions/runs/{run_id}"
+
+
 def monitor_repository(
     repository: str,
     api_url: str,
@@ -413,8 +574,10 @@ def monitor_repository(
     now: datetime | None = None,
     fetch_page=None,
     open_url=None,
+    budget: _RuntimeBudget | None = None,
 ) -> int:
     """Fail if a successful Pages run loses its evidence inside the 90-day window."""
+    budget = budget or _RuntimeBudget(MONITOR_RUNTIME_BUDGET_SECONDS)
     current_time = now or datetime.now(timezone.utc)
     if current_time.tzinfo is None:
         raise ValueError("monitor time must include a timezone")
@@ -431,7 +594,7 @@ def monitor_repository(
         f"{api_url.rstrip('/')}/repos/{repository}/actions/workflows/"
         f"{workflow_path}/runs?{query}"
     )
-    runs = _list_all(runs_url, "workflow_runs", token, fetch_page)
+    runs = _list_all(runs_url, "workflow_runs", token, fetch_page, budget)
     checked = 0
     failures: list[str] = []
 
@@ -440,26 +603,42 @@ def monitor_repository(
             continue
         run_id = run.get("id")
         commit = run.get("head_sha")
+        has_numeric_run_id = type(run_id) is int and run_id > 0
+        run_link = (
+            f" | GitHub Actions: {_actions_run_url(api_url, repository, run_id)}"
+            if has_numeric_run_id
+            else ""
+        )
         try:
             run_created_at = parse_timestamp(
                 run.get("created_at"), "workflow run created_at"
             )
         except ValueError as error:
             failures.append(
-                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"run {run_id if has_numeric_run_id else 'unknown'} | "
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
-                f"review deadline unknown: {error}"
+                f"review deadline unknown: {error}{run_link}"
             )
             continue
         deadline = run_created_at + REQUIRED_RETENTION
         if deadline <= current_time:
             continue
-        if not isinstance(run_id, int) or not isinstance(commit, str) or not commit:
+        if not has_numeric_run_id or not isinstance(commit, str) or not commit:
             failures.append(
-                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"run {run_id if has_numeric_run_id else 'unknown'} | "
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
                 f"review deadline {deadline.isoformat()}: "
                 "successful Pages run is missing a numeric id or commit SHA"
+                f"{run_link}"
+            )
+            continue
+
+        if budget.remaining() <= 0:
+            failures.append(
+                f"run {run_id} | commit {commit} | "
+                f"review deadline {deadline.isoformat()}: evidence not checked; "
+                f"shared monitor time budget exhausted after "
+                f"{budget.seconds:g} seconds{run_link}"
             )
             continue
 
@@ -468,7 +647,9 @@ def monitor_repository(
                 f"{api_url.rstrip('/')}/repos/{repository}/compare/"
                 f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
             )
-            comparison, _ = (fetch_page or api_page)(compare_url, token)
+            comparison, _ = _fetch_metadata_page(
+                compare_url, token, fetch_page, budget
+            )
             policy_status = (
                 comparison.get("status") if isinstance(comparison, dict) else None
             )
@@ -485,7 +666,7 @@ def monitor_repository(
                 f"/artifacts?include_expired=true&per_page=100"
             )
             artifacts = _list_all(
-                artifacts_url, "artifacts", token, fetch_page
+                artifacts_url, "artifacts", token, fetch_page, budget
             )
             expected_name = f"pages-validation-{commit}"
             matching = [
@@ -515,7 +696,7 @@ def monitor_repository(
                     )
                     if expires_at <= current_time:
                         raise ValueError("GitHub reports that the artifact expired early")
-                    verify_artifact_download(
+                    retry_count = verify_artifact_download(
                         repository,
                         artifact_id,
                         api_url,
@@ -526,9 +707,20 @@ def monitor_repository(
                             else None
                         ),
                         open_url=open_url,
+                        budget=budget,
                     )
+                    if retry_count:
+                        retry_label = "retry" if retry_count == 1 else "retries"
+                        print(
+                            f"Recovered artifact download after {retry_count} "
+                            f"{retry_label} (run {run_id}, artifact "
+                            f"{expected_name}, ID {artifact_id})."
+                        )
                 except (OSError, TimeoutError, ValueError) as error:
+                    if isinstance(error, _RetryBudgetExceeded):
+                        raise
                     errors.append(str(error))
+                    budget.ensure_available()
                 else:
                     break
             else:
@@ -536,9 +728,14 @@ def monitor_repository(
                     f"validation artifact is invalid or unavailable: {'; '.join(errors)}"
                 )
         except (OSError, TimeoutError, ValueError) as error:
+            detail = (
+                f"evidence not checked; {error}"
+                if isinstance(error, _RetryBudgetExceeded)
+                else str(error)
+            )
             failures.append(
                 f"run {run_id} | commit {commit} | "
-                f"review deadline {deadline.isoformat()}: {error}"
+                f"review deadline {deadline.isoformat()}: {detail}{run_link}"
             )
             continue
         checked += 1
