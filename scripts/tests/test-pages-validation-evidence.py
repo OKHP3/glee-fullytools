@@ -1268,6 +1268,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 "evidence): `light`.",
                 summary,
             )
+            self.assertNotIn("Report is inconsistent", summary)
             self.assertIn("Not run: `disabled_storage`", summary)
             self.assertIn("saved dark preference was not applied", summary)
             self.assertIn(
@@ -1287,20 +1288,37 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
 
-    def test_failure_diagnostic_never_labels_later_cases_completed_before_failure(self):
+    def test_failure_diagnostic_flags_cases_listed_after_failure(self):
         code = theme_failure_diagnostic_code(self.workflow)
-        for failed_case, expected in (("dark", "`light`"), (None, "none")):
-            with self.subTest(failed_case=failed_case), tempfile.TemporaryDirectory() as directory:
+        reports = (
+            (
+                "consistent partial report",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}},
+                    "not_run_cases": ["disabled_storage"],
+                },
+                False,
+            ),
+            (
+                "later case listed after failure",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}, "disabled_storage": {}},
+                    "not_run_cases": ["disabled_storage"],
+                },
+                True,
+            ),
+        )
+        for label, report, inconsistent in reports:
+            with self.subTest(report=label), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 audit = root / "assets" / "audit"
                 audit.mkdir(parents=True)
                 (audit / "color-scheme-init-firefox.json").write_text(
-                    json.dumps({
-                        "browser": "firefox", "status": "FAIL",
-                        "diagnostic_only": True, "failed_case": failed_case,
-                        "cases": {"light": {}, "disabled_storage": {}},
-                        "not_run_cases": ["disabled_storage"],
-                    }), encoding="utf-8",
+                    json.dumps(report), encoding="utf-8",
                 )
                 summary_path = root / "summary.md"
                 result = subprocess.run(
@@ -1312,9 +1330,19 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 summary = summary_path.read_text(encoding="utf-8")
                 completed = next(line for line in summary.splitlines()
                                  if "Completed before failure" in line)
-                self.assertTrue(completed.endswith(f": {expected}."), completed)
+                self.assertTrue(completed.endswith(": `light`."), completed)
                 self.assertNotIn("disabled_storage", completed)
                 self.assertIn("Not run: `disabled_storage`", summary)
+                self.assertEqual("Report is inconsistent" in summary, inconsistent)
+                if inconsistent:
+                    self.assertIn(
+                        "lists `disabled_storage` after failed case `dark`",
+                        summary,
+                    )
+                    self.assertIn(
+                        "must not be treated as completed, passed, or validated evidence",
+                        summary,
+                    )
 
     def test_failed_route_details_cannot_become_validated_theme_evidence(self):
         diagnostic_code = theme_failure_diagnostic_code(self.workflow)

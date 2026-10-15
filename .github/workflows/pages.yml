@@ -292,6 +292,17 @@ jobs:
                       if isinstance(failed_case, str) and failed_case in case_order
                       else ()
                   )
+              later_reported_cases = []
+              if (
+                  status == "FAIL"
+                  and isinstance(failed_case, str)
+                  and failed_case in case_order
+              ):
+                  later_reported_cases = [
+                      candidate for candidate in case_order
+                      if case_order.index(candidate) > case_order.index(failed_case)
+                      and candidate in cases
+                  ]
               completed_cases = [case for case in completed_order if case in cases]
               completed = (
                   ", ".join(f"`{case}`" for case in completed_cases)
@@ -311,6 +322,16 @@ jobs:
                       "  - Completed before failure (diagnostic only; not "
                       f"validated evidence): {completed}."
                   )
+                  if later_reported_cases:
+                      later = ", ".join(
+                          f"`{candidate}`" for candidate in later_reported_cases
+                      )
+                      lines.append(
+                          "  - **Report is inconsistent:** it lists "
+                          f"{later} after failed case `{case}`. These entries "
+                          "are ignored and must not be treated as completed, "
+                          "passed, or validated evidence."
+                      )
                   failed_routes = report.get("failed_routes")
                   if isinstance(failed_routes, list) and failed_routes:
                       lines.append(
