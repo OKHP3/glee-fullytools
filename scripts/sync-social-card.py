@@ -43,6 +43,7 @@ TARGETS = {
     ("property", "og:image:width"): "1200",
     ("property", "og:image:height"): "630",
     ("property", "og:image:alt"): CARD_ALT,
+    ("property", "og:image:type"): "image/png",
     ("name", "twitter:image"): CARD_URL,
     ("name", "twitter:image:alt"): CARD_ALT,
 }
