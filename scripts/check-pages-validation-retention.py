@@ -386,6 +386,11 @@ def monitor_repository(
             continue
         run_id = run.get("id")
         commit = run.get("head_sha")
+        run_link = (
+            f" | GitHub Actions: https://github.com/{repository}/actions/runs/{run_id}"
+            if isinstance(run_id, int)
+            else ""
+        )
         try:
             run_created_at = parse_timestamp(
                 run.get("created_at"), "workflow run created_at"
@@ -394,7 +399,7 @@ def monitor_repository(
             failures.append(
                 f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
-                f"review deadline unknown: {error}"
+                f"review deadline unknown: {error}{run_link}"
             )
             continue
         deadline = run_created_at + REQUIRED_RETENTION
@@ -406,6 +411,7 @@ def monitor_repository(
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
                 f"review deadline {deadline.isoformat()}: "
                 "successful Pages run is missing a numeric id or commit SHA"
+                f"{run_link}"
             )
             continue
 
@@ -484,7 +490,7 @@ def monitor_repository(
         except (OSError, TimeoutError, ValueError) as error:
             failures.append(
                 f"run {run_id} | commit {commit} | "
-                f"review deadline {deadline.isoformat()}: {error}"
+                f"review deadline {deadline.isoformat()}: {error}{run_link}"
             )
             continue
         checked += 1

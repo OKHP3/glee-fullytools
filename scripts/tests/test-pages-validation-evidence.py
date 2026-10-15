@@ -826,6 +826,57 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(len(attempts), 3)
         self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2])
 
+    def test_retention_monitor_links_each_affected_run(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 71,
+                "head_sha": "a" * 40,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 72,
+                "head_sha": "b" * 40,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/71/artifacts?" in url or "/runs/72/artifacts?" in url:
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "configured-owner/configured-repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        report = str(error.exception)
+        self.assertIn(
+            "run 71 | commit " + "a" * 40 + " | review deadline "
+            "2026-12-30T12:00:00+00:00: validation artifact is missing | "
+            "GitHub Actions: "
+            "https://github.com/configured-owner/configured-repo/actions/runs/71",
+            report,
+        )
+        self.assertIn(
+            "run 72 | commit " + "b" * 40 + " | review deadline "
+            "2026-12-31T12:00:00+00:00: validation artifact is missing | "
+            "GitHub Actions: "
+            "https://github.com/configured-owner/configured-repo/actions/runs/72",
+            report,
+        )
+
     def test_downloaded_archive_must_contain_all_review_evidence(self):
         incomplete_archive = valid_artifact_archive(
             "assets/audit/color-scheme-init-firefox.json"
