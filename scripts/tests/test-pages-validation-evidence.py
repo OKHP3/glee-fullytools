@@ -1218,6 +1218,78 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             report,
         )
 
+    def test_retention_monitor_links_invalid_metadata_only_when_run_id_is_numeric(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 81,
+                "head_sha": None,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 82,
+                "head_sha": "b" * 40,
+                "created_at": "not-a-timestamp",
+                "conclusion": "success",
+            },
+            {
+                "id": True,
+                "head_sha": "c" * 40,
+                "created_at": "2026-10-03T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "head_sha": "d" * 40,
+                "created_at": "2026-10-04T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            self.fail(f"Invalid run metadata must not trigger more API requests: {url}")
+
+        with self.assertRaises(ValueError) as error:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+            )
+
+        report = str(error.exception)
+        self.assertIn(
+            "review deadline 2026-12-30T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA | "
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/81",
+            report,
+        )
+        self.assertIn(
+            "run 82 | commit " + "b" * 40
+            + " | review deadline unknown: artifact metadata has invalid "
+            "workflow run created_at: 'not-a-timestamp' | GitHub Actions: "
+            "https://github.com/owner/repo/actions/runs/82",
+            report,
+        )
+        self.assertIn(
+            "run unknown | commit " + "c" * 40
+            + " | review deadline 2027-01-01T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA",
+            report,
+        )
+        self.assertIn(
+            "run unknown | commit " + "d" * 40
+            + " | review deadline 2027-01-02T12:00:00+00:00: "
+            "successful Pages run is missing a numeric id or commit SHA",
+            report,
+        )
+        self.assertNotIn("actions/runs/True", report)
+        self.assertNotIn("actions/runs/unknown", report)
+        self.assertNotIn("actions/runs/None", report)
+
     def test_downloaded_archive_must_contain_all_review_evidence(self):
         incomplete_archive = valid_artifact_archive(
             "assets/audit/color-scheme-init-firefox.json"

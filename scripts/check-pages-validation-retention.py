@@ -522,9 +522,10 @@ def monitor_repository(
             continue
         run_id = run.get("id")
         commit = run.get("head_sha")
+        has_numeric_run_id = type(run_id) is int and run_id > 0
         run_link = (
             f" | GitHub Actions: https://github.com/{repository}/actions/runs/{run_id}"
-            if isinstance(run_id, int)
+            if has_numeric_run_id
             else ""
         )
         try:
@@ -533,7 +534,7 @@ def monitor_repository(
             )
         except ValueError as error:
             failures.append(
-                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"run {run_id if has_numeric_run_id else 'unknown'} | "
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
                 f"review deadline unknown: {error}{run_link}"
             )
@@ -541,9 +542,9 @@ def monitor_repository(
         deadline = run_created_at + REQUIRED_RETENTION
         if deadline <= current_time:
             continue
-        if not isinstance(run_id, int) or not isinstance(commit, str) or not commit:
+        if not has_numeric_run_id or not isinstance(commit, str) or not commit:
             failures.append(
-                f"run {run_id if isinstance(run_id, int) else 'unknown'} | "
+                f"run {run_id if has_numeric_run_id else 'unknown'} | "
                 f"commit {commit if isinstance(commit, str) and commit else 'unknown'} | "
                 f"review deadline {deadline.isoformat()}: "
                 "successful Pages run is missing a numeric id or commit SHA"
