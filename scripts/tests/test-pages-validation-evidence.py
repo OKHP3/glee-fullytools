@@ -587,6 +587,33 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(download_timeouts, [3, 2])
         self.assertEqual(sleeps, [1, 2])
 
+    def test_archive_failure_at_runtime_deadline_cannot_count_as_verified(self):
+        elapsed = [0.0]
+        commit = "a" * 40
+        run = {"id": 44, "head_sha": commit, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        artifact = {"id": 440, "name": f"pages-validation-{commit}", "expired": False,
+                    "created_at": "2026-10-01T12:01:00Z", "expires_at": "2026-12-30T12:00:00Z",
+                    "workflow_run": {"id": 44, "head_sha": commit}}
+
+        def fetch(url, token):
+            if "/workflows/" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            return {"artifacts": [artifact]}, None
+
+        def invalid_archive(*args, **kwargs):
+            elapsed[0] = 3
+            raise ValueError("corrupt archive")
+
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        with patch.object(retention_checker, "verify_artifact_download", side_effect=invalid_archive):
+            with self.assertRaisesRegex(ValueError, "run 44.*evidence not checked.*budget exhausted"):
+                retention_checker.monitor_repository(
+                    "owner/repo", "https://api.github.com", "token",
+                    now=datetime(2026, 10, 13, tzinfo=timezone.utc), fetch_page=fetch, budget=budget,
+                )
+
     def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
         legacy_run = {
             "id": 32620098281,
@@ -720,6 +747,59 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(checked, 1)
         self.assertEqual(attempts, {"runs": 2, "compare": 2, "artifacts": 2})
         self.assertEqual(sleep.call_count, 3)
+
+    def test_metadata_retries_honor_server_wait_and_close_error(self):
+        for status, headers, delay in (
+            (429, {"Retry-After": "7"}, 7),
+            (403, {"Retry-After": "8"}, 8),
+            (503, {"Retry-After": "9"}, 9),
+        ):
+            with self.subTest(status=status):
+                body = BytesIO(b"temporary failure")
+                error = HTTPError("https://api.github.com/test", status, "Retry", headers, body)
+                attempts = []
+
+                def fetch(url, token):
+                    attempts.append(url)
+                    if len(attempts) == 1:
+                        raise error
+                    self.assertTrue(body.closed)
+                    return {"ok": True}, None
+
+                with patch.object(retention_checker.time, "sleep") as sleep:
+                    self.assertEqual(
+                        retention_checker._fetch_metadata_page("https://api.github.com/test", "token", fetch),
+                        ({"ok": True}, None),
+                    )
+                sleep.assert_called_once_with(delay)
+                self.assertTrue(body.closed)
+
+    def test_metadata_server_wait_beyond_budget_defers_without_retry(self):
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "120"}, body)
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+                with self.assertRaisesRegex(ValueError, "metadata.*retry deferred"):
+                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+        self.assertEqual(fetch.call_count, 1)
+        sleep.assert_not_called()
+        self.assertTrue(body.closed)
+
+    def test_metadata_retry_cannot_outlive_shared_runtime_budget(self):
+        clock = [0.0]
+
+        def wait(seconds):
+            clock[0] += seconds
+
+        budget = retention_checker._RuntimeBudget(5, clock=lambda: clock[0], sleeper=wait)
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "7"}, body)
+        with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+            with self.assertRaises(retention_checker._RetryBudgetExceeded):
+                retention_checker._fetch_metadata_page("https://api.github.com/test", "token", budget=budget)
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual(clock[0], 5)
+        self.assertTrue(body.closed)
 
     def test_retention_monitor_reports_permanent_metadata_failure_for_run(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)

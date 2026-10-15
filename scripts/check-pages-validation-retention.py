@@ -27,6 +27,7 @@ DOWNLOAD_MAX_RETRY_WAIT_SECONDS = 60
 DOWNLOAD_RETRY_BACKOFF_SECONDS = 1
 METADATA_MAX_ATTEMPTS = 3
 METADATA_RETRY_BACKOFF_SECONDS = 1
+METADATA_MAX_RETRY_WAIT_SECONDS = 60
 # The scheduled workflow has a 10-minute hard timeout. Keep the monitor's
 # shared wall-clock budget to 7 minutes so checkout, startup, and reporting
 # retain at least 3 minutes of margin. Every API/download attempt and retry wait
@@ -258,7 +259,9 @@ def _fetch_metadata_page(
 ) -> tuple[dict[str, object], str | None]:
     """Fetch a metadata page, retrying temporary API and transport failures."""
     fetch = fetch_page or api_page
+    retry_wait = 0
     for attempt in range(1, METADATA_MAX_ATTEMPTS + 1):
+        delay = METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
         try:
             if budget is None:
                 return fetch(url, token)
@@ -272,7 +275,11 @@ def _fetch_metadata_page(
         except _RetryBudgetExceeded:
             raise
         except HTTPError as error:
-            if not _is_retryable_http_status(error.code):
+            try:
+                delay = _http_download_retry_delay(error, attempt, label="GitHub metadata request")
+            finally:
+                error.close()
+            if delay is None:
                 raise ValueError(
                     f"GitHub metadata request failed with HTTP {error.code}: {error}"
                 ) from error
@@ -281,20 +288,27 @@ def _fetch_metadata_page(
                     f"GitHub metadata request failed after {attempt} attempts "
                     f"(HTTP {error.code}): {error}"
                 ) from error
+            if delay > METADATA_MAX_RETRY_WAIT_SECONDS - retry_wait:
+                raise ValueError(
+                    "GitHub metadata retry deferred: server wait exceeds the "
+                    "remaining 60-second retry budget"
+                ) from error
         except (URLError, TimeoutError, OSError) as error:
             if attempt == METADATA_MAX_ATTEMPTS:
                 raise ValueError(
                     f"GitHub metadata request failed after {attempt} attempts: {error}"
                 ) from error
-        delay = METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
         if budget is None:
             time.sleep(delay)
         else:
             budget.wait(delay)
+        retry_wait += delay
     raise AssertionError("metadata retry loop exited unexpectedly")
 
 
-def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
+def _http_download_retry_delay(
+    error: HTTPError, attempt: int, *, label: str = "artifact download"
+) -> float | None:
     """Honor GitHub throttles without retrying ordinary authorization failures.
 
     https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api#rate-limit-errors
@@ -320,7 +334,7 @@ def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
                 raise ValueError("invalid retry interval")
             return delay
         except (TypeError, ValueError) as invalid:
-            raise ValueError("artifact download retry deferred: invalid Retry-After") from invalid
+            raise ValueError(f"{label} retry deferred: invalid Retry-After") from invalid
     if throttled:
         if headers.get("x-ratelimit-remaining") == "0":
             try:
@@ -329,7 +343,7 @@ def _http_download_retry_delay(error: HTTPError, attempt: int) -> float | None:
                     raise ValueError("invalid reset time")
                 return max(0, math.ceil(reset - time.time()) + 1)
             except (KeyError, TypeError, ValueError) as invalid:
-                raise ValueError("artifact download retry deferred: invalid rate-limit reset") from invalid
+                raise ValueError(f"{label} retry deferred: invalid rate-limit reset") from invalid
         return 60 * (2 ** (attempt - 1))
     return DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
 
@@ -706,8 +720,7 @@ def monitor_repository(
                     if isinstance(error, _RetryBudgetExceeded):
                         raise
                     errors.append(str(error))
-                    if budget.remaining() <= 0:
-                        break
+                    budget.ensure_available()
                 else:
                     break
             else:
