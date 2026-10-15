@@ -484,11 +484,108 @@ class PagesValidationEvidenceTests(unittest.TestCase):
     def test_scheduled_retention_workflow_is_read_only_and_daily(self):
         workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('cron: "17 12 * * *"', workflow)
+        self.assertIn("timeout-minutes: 10", workflow)
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
+        self.assertEqual(retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 7 * 60)
+        self.assertGreaterEqual(
+            10 * 60 - retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 3 * 60
+        )
+
+    def test_shared_monitor_budget_identifies_runs_left_unchecked(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        runs = [
+            {
+                "id": 44,
+                "head_sha": "a" * 40,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            },
+            {
+                "id": 45,
+                "head_sha": "b" * 40,
+                "created_at": "2026-10-02T12:00:00Z",
+                "conclusion": "success",
+            },
+        ]
+        elapsed = [0.0]
+        sleeps = []
+        budget = retention_checker._RuntimeBudget(
+            3,
+            clock=lambda: elapsed[0],
+            sleeper=lambda seconds: (
+                sleeps.append(seconds),
+                elapsed.__setitem__(0, elapsed[0] + seconds),
+            ),
+        )
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": runs}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/44/artifacts?" in url:
+                return {
+                    "artifacts": [{
+                        "id": 440,
+                        "name": f"pages-validation-{'a' * 40}",
+                        "expired": False,
+                        "created_at": "2026-10-01T12:01:00Z",
+                        "expires_at": "2026-12-30T12:00:00Z",
+                        "workflow_run": {"id": 44, "head_sha": "a" * 40},
+                    }]
+                }, None
+            if "/runs/45/artifacts?" in url:
+                return {
+                    "artifacts": [{
+                        "id": 450,
+                        "name": f"pages-validation-{'b' * 40}",
+                        "expired": False,
+                        "created_at": "2026-10-02T12:01:00Z",
+                        "expires_at": "2026-12-31T12:00:00Z",
+                        "workflow_run": {"id": 45, "head_sha": "b" * 40},
+                    }]
+                }, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        download_ids = []
+        download_timeouts = []
+
+        def open_url(request, timeout):
+            download_ids.append(int(request.full_url.rsplit("/", 2)[-2]))
+            download_timeouts.append(timeout)
+            raise URLError("temporary connection reset")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+                budget=budget,
+            )
+
+        message = str(raised.exception)
+        self.assertIn(
+            f"run 44 | commit {'a' * 40} | review deadline "
+            "2026-12-30T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds",
+            message,
+        )
+        self.assertIn(
+            f"run 45 | commit {'b' * 40} | review deadline "
+            "2026-12-31T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds",
+            message,
+        )
+        self.assertEqual(download_ids, [440, 440])
+        self.assertEqual(download_timeouts, [3, 2])
+        self.assertEqual(sleeps, [1, 2])
 
     def test_retention_monitor_does_not_require_evidence_from_pre_policy_release(self):
         legacy_run = {
