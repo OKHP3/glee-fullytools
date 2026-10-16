@@ -3,6 +3,7 @@
 // Focused browser evidence for the public FoundRy feature page.
 // This intentionally does not replace the site's full validation or viewport suites.
 import assert from 'node:assert/strict';
+import { waitForFocusedSkipLink } from './focus-geometry.mjs';
 import { createServer } from 'node:http';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, extname, resolve, sep } from 'node:path';
@@ -439,12 +440,7 @@ async function run() {
         const skip = page.locator('.skip-to-content');
         assert.equal(await skip.evaluate(node => node === document.activeElement), true, 'skip link is not the first keyboard target');
         assertIndicator(await inspect());
-        await page.waitForFunction(() => {
-          const rect = document.querySelector('.skip-to-content').getBoundingClientRect();
-          return rect.x >= 0 && rect.x < innerWidth && rect.y >= 0 && rect.y < innerHeight;
-        });
-        const box = await skip.boundingBox();
-        assert.ok(box && box.x >= 0 && box.y >= 0 && box.x < viewport.width && box.y < viewport.height, 'focused skip link is off screen');
+        const skipFocus = await waitForFocusedSkipLink(page, viewport);
 
         // Negative control changes only the loopback browser fixture, never source.
         const priorStyle = await skip.getAttribute('style');
@@ -459,6 +455,22 @@ async function run() {
           await skip.evaluate((node, prior) => prior === null ? node.removeAttribute('style') : node.setAttribute('style', prior), priorStyle);
         }
         assertIndicator(await inspect());
+        // A truly off-screen focused link must still fail, even by a fraction
+        // of a pixel. Change only this loopback fixture and restore it exactly.
+        try {
+          await skip.evaluate(node => {
+            node.style.setProperty('transition', 'none', 'important');
+            node.style.setProperty('transform', 'translateY(-1px)', 'important');
+          });
+          await assert.rejects(
+            waitForFocusedSkipLink(page, viewport, { timeout: 200 }),
+            /focused skip link did not settle on screen/,
+            'off-screen negative fixture was not detected',
+          );
+        } finally {
+          await skip.evaluate((node, prior) => prior === null ? node.removeAttribute('style') : node.setAttribute('style', prior), priorStyle);
+        }
+        await waitForFocusedSkipLink(page, viewport);
         const navToggle = page.locator('.nav-toggle');
         assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
         const closed = await traverseEligibleControls('menu closed');
@@ -481,7 +493,7 @@ async function run() {
           assert.equal(await navToggle.getAttribute('aria-expanded'), 'false');
           assert.equal(await navToggle.evaluate(node => node === document.activeElement), true, 'Escape did not restore focus');
           assertIndicator(await inspect());
-          return { closed, open, negativeControl: 'detected missing indicator' };
+          return { closed, open, skipFocus, negativeControl: 'detected missing indicator', offscreenNegativeControl: 'detected off-screen focused link' };
         } finally {
           if (await navToggle.getAttribute('aria-expanded') === 'true') {
             await page.keyboard.press('Escape');
