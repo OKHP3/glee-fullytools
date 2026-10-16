@@ -500,6 +500,30 @@ def storage_error_name(page) -> str:
     )
 
 
+def link_traversal_key(context) -> str:
+    """Verify link traversal on a separate page, independent of recovery targets.
+
+    Mac WebKit follows the host's keyboard-navigation preference: plain Tab
+    can skip links while Option+Tab includes them. Never retry a failed target
+    with another key; doing so could conceal an actual focus regression.
+    """
+    probe = context.new_page()
+    try:
+        probe.set_content(
+            '<button id="before">Before</button>'
+            '<a id="link" href="#destination">Link</a><button>After</button>'
+        )
+        for key in ("Tab", "Alt+Tab"):
+            # Focus only the synthetic starting button, never a recovery action.
+            probe.locator("#before").focus()
+            probe.keyboard.press(key)
+            if probe.evaluate("() => document.activeElement.id === 'link'"):
+                return key
+        raise AssertionError("browser has no verified link traversal key")
+    finally:
+        probe.close()
+
+
 def check_utility_recovery(
     page, base_url: str, route: str, page_errors, *, alternate: bool = False,
 ) -> dict:
@@ -522,13 +546,14 @@ def check_utility_recovery(
         f"{route}: storage was not blocked before keyboard recovery"
     )
 
+    tab_key = link_traversal_key(page.context)
     # Bounded real keyboard traversal catches tabindex=-1, inert, and focus traps.
     for tab_count in range(1, 101):
-        page.keyboard.press("Tab")
+        page.keyboard.press(tab_key)
         if action.evaluate("element => element === document.activeElement"):
             break
     else:
-        raise AssertionError(f"{route}: recovery action was not reachable with Tab")
+        raise AssertionError(f"{route}: recovery action was not reachable with {tab_key}")
 
     with page.expect_navigation(wait_until="load") as navigation:
         page.keyboard.press("Enter")
@@ -554,6 +579,7 @@ def check_utility_recovery(
         "destination": destination,
         "keyboard_reachable": True,
         "tab_presses": tab_count,
+        "traversal_key": tab_key,
         "activation_key": "Enter",
         "destination_status": response.status,
         "destination_h1_visible": True,
