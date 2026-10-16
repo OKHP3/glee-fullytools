@@ -19,10 +19,75 @@ class TechnologyVersionsTests(unittest.TestCase):
         self.assertEqual(versions.comparison("3.11", "3.14.7"), "newer-line")
         self.assertEqual(versions.comparison("not locked", "1.0.0"), "unresolved-current")
 
-    def test_prerelease_latest_tag_is_unknown(self):
-        item = versions.row("example", "npm", "1.0.0", "fixture", "test:npm")
-        versions.check([item], "22.19.0", lambda _: {"version": "2.0.0-rc.1"})
-        self.assertEqual(item["status"], "unknown")
+    def test_prerelease_latest_tag_uses_highest_stable_and_preserves_channel(self):
+        source = "https://registry.npmjs.org/example/latest"
+        item = versions.row("example", "npm", "1.0.0", "fixture", source)
+        responses = {
+            source: {"version": "2.0.0-rc.1"},
+            "https://registry.npmjs.org/example": {
+                "dist-tags": {"latest": "2.0.0-rc.1"},
+                "versions": {"1.0.0": {}, "1.9.2": {}, "2.0.0-rc.1": {}},
+            },
+        }
+        versions.check([item], "22.19.0", lambda url: responses[url])
+        self.assertEqual(item["latest_stable"], "1.9.2")
+        self.assertEqual(item["latest_channel"], "2.0.0-rc.1")
+        self.assertEqual(item["latest_channel_source"], source)
+        self.assertEqual(item["latest_stable_source"], "https://registry.npmjs.org/example")
+        self.assertEqual(item["status"], "update")
+
+    def test_prerelease_fallback_failure_is_local_to_that_package(self):
+        prerelease = versions.row("example", "npm", "1.0.0", "fixture",
+                                  "https://registry.npmjs.org/example/latest")
+        stable = versions.row("other", "npm", "1.0.0", "fixture",
+                              "https://registry.npmjs.org/other/latest")
+
+        def fixture(url):
+            if url.endswith("/example/latest"):
+                return {"version": "2.0.0-rc.1"}
+            if url.endswith("/other/latest"):
+                return {"version": "1.1.0"}
+            if url == "https://registry.npmjs.org/example":
+                raise OSError("fallback metadata unavailable")
+            return {"version": "22.19.0"}
+
+        versions.check([prerelease, stable], "22.19.0", fixture)
+        self.assertEqual(prerelease["status"], "unknown")
+        self.assertIn("fallback metadata unavailable", prerelease["error"])
+        self.assertEqual(stable["latest_stable"], "1.1.0")
+        self.assertEqual(stable["status"], "update")
+
+    def test_invalid_prerelease_metadata_fails_closed(self):
+        for package_metadata in (
+            {"dist-tags": {"latest": "2.0.0-rc.2"},
+             "versions": {"1.0.0": {}, "2.0.0-rc.1": {}}},
+            {"dist-tags": {"latest": "2.0.0-rc.1"},
+             "versions": {"2.0.0-rc.1": {}}},
+        ):
+            with self.subTest(package_metadata=package_metadata):
+                item = versions.row("example", "npm", "1.0.0", "fixture",
+                                    "https://registry.npmjs.org/example/latest")
+                responses = {
+                    item["source"]: {"version": "2.0.0-rc.1"},
+                    "https://registry.npmjs.org/example": package_metadata,
+                }
+                versions.check([item], "22.19.0", lambda url: responses[url])
+                self.assertEqual(item["status"], "unknown")
+
+    def test_malformed_npm_metadata_does_not_abort_unrelated_rows(self):
+        malformed = versions.row("bad", "npm", "1.0.0", "fixture",
+                                  "https://registry.npmjs.org/bad/latest")
+        stable = versions.row("good", "npm", "1.0.0", "fixture",
+                              "https://registry.npmjs.org/good/latest")
+        responses = {
+            malformed["source"]: ["not", "a", "package document"],
+            stable["source"]: {"version": "1.1.0"},
+        }
+        versions.check([malformed, stable], "22.19.0", lambda url: responses.get(url, {}))
+        self.assertEqual(malformed["status"], "unknown")
+        self.assertIn("malformed metadata", malformed["error"])
+        self.assertEqual(stable["latest_stable"], "1.1.0")
+        self.assertEqual(stable["status"], "update")
 
     def test_registry_failure_does_not_look_current(self):
         def offline(_):

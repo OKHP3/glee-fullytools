@@ -121,6 +121,8 @@ def resolve(item, payloads, node_pin):
     if isinstance(data, Exception):
         raise ValueError(str(data))
     kind = item["kind"]
+    if kind not in ("node", "python") and not isinstance(data, dict):
+        raise ValueError("Upstream returned malformed metadata")
     if kind == "node":
         stable = [x for x in data if STABLE.fullmatch(x["version"])]
         latest = max(stable, key=lambda x: version(x["version"]))["version"].lstrip("v")
@@ -139,6 +141,29 @@ def resolve(item, payloads, node_pin):
         stable = [v for v, files in data["releases"].items()
                   if STABLE.fullmatch(v) and any(not f.get("yanked", False) for f in files)]
         latest = max(stable, key=version)
+    elif kind == "npm" and not STABLE.fullmatch(data["version"]):
+        # The npm /latest endpoint follows the package's latest dist-tag, which
+        # can intentionally point at a prerelease. Preserve that channel value,
+        # then compare against the highest exact stable version in the package
+        # document instead of reporting a missing stable release.
+        package_url = item["source"][:-len("/latest")]
+        package = payloads[package_url]
+        if isinstance(package, Exception):
+            raise ValueError(str(package))
+        if not isinstance(package, dict):
+            raise ValueError("npm package metadata is malformed")
+        dist_tags = package.get("dist-tags")
+        versions = package.get("versions")
+        if not isinstance(dist_tags, dict) or not isinstance(versions, dict):
+            raise ValueError("npm package metadata is missing dist-tags or versions")
+        channel_latest = dist_tags.get("latest", data["version"])
+        if channel_latest != data["version"]:
+            raise ValueError("npm latest endpoint disagrees with package dist-tags")
+        stable = [v for v in versions if STABLE.fullmatch(v)]
+        latest = max(stable, key=version)
+        item["latest_channel"] = channel_latest
+        item["latest_channel_source"] = item["source"]
+        item["latest_stable_source"] = package_url
     else:
         latest = data["version"]
         if kind == "npm-bundled":
@@ -162,6 +187,19 @@ def check(rows, node_pin, fetcher=fetch):
             return url, error
     with ThreadPoolExecutor(max_workers=6) as pool:
         payloads = dict(pool.map(safe_fetch, urls))
+    # Fetch full npm metadata only when /latest points to a prerelease. The
+    # normal path stays small while prerelease channels retain stable evidence.
+    npm_fallbacks = {
+        item["source"][:-len("/latest")]
+        for item in rows
+        if item["kind"] == "npm"
+        and item["source"].endswith("/latest")
+        and not isinstance(payloads.get(item["source"]), Exception)
+        and isinstance(payloads[item["source"]], dict)
+        and not STABLE.fullmatch(str(payloads[item["source"]].get("version", "")))
+    }
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        payloads.update(dict(pool.map(safe_fetch, sorted(npm_fallbacks))))
     for item in rows:
         try:
             resolve(item, payloads, node_pin)
@@ -186,7 +224,12 @@ def markdown(report):
                 continue
             details = item["evidence"].replace("|", "\\|")
             extra = f"; LTS {item['latest_lts']}" if "latest_lts" in item else ""
-            lines.append(f"| {item['name']} ({item['kind']}) | {item['current']} | {item.get('latest_stable') or 'UNKNOWN'}{extra} | {item['status']} | {details}; [release feed]({item['source']}) |")
+            if "latest_channel" in item:
+                extra += (f"; latest channel {item['latest_channel']} (prerelease; "
+                         f"[channel feed]({item['latest_channel_source']}))")
+            evidence_source = item.get("latest_stable_source", item["source"])
+            source_label = "stable release evidence" if "latest_stable_source" in item else "release feed"
+            lines.append(f"| {item['name']} ({item['kind']}) | {item['current']} | {item.get('latest_stable') or 'UNKNOWN'}{extra} | {item['status']} | {details}; [{source_label}]({evidence_source}) |")
     errors = [x for x in report["technologies"] if x["status"] == "unknown"]
     if errors:
         lines += ["", "## Incomplete checks", ""] + [f"- {x['name']}: {x['error']}" for x in errors]

@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Test version selection and failure reporting
+      - name: Test stable fallback for prerelease npm tags and failure reporting
         run: python3 scripts/tests/test-technology-versions.py
 
       - name: Refresh all version evidence
