@@ -19,10 +19,20 @@ class TechnologyVersionsTests(unittest.TestCase):
         self.assertEqual(versions.comparison("3.11", "3.14.7"), "newer-line")
         self.assertEqual(versions.comparison("not locked", "1.0.0"), "unresolved-current")
 
-    def test_prerelease_latest_tag_is_unknown(self):
-        item = versions.row("example", "npm", "1.0.0", "fixture", "test:npm")
-        versions.check([item], "22.19.0", lambda _: {"version": "2.0.0-rc.1"})
-        self.assertEqual(item["status"], "unknown")
+    def test_prerelease_latest_tag_uses_highest_stable_and_preserves_channel(self):
+        source = "https://registry.npmjs.org/example/latest"
+        item = versions.row("example", "npm", "1.0.0", "fixture", source)
+        responses = {
+            source: {"version": "2.0.0-rc.1"},
+            "https://registry.npmjs.org/example": {
+                "dist-tags": {"latest": "2.0.0-rc.1"},
+                "versions": {"1.0.0": {}, "1.9.2": {}, "2.0.0-rc.1": {}},
+            },
+        }
+        versions.check([item], "22.19.0", lambda url: responses[url])
+        self.assertEqual(item["latest_stable"], "1.9.2")
+        self.assertEqual(item["latest_channel"], "2.0.0-rc.1")
+        self.assertEqual(item["status"], "update")
 
     def test_registry_failure_does_not_look_current(self):
         def offline(_):

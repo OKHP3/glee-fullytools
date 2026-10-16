@@ -139,6 +139,21 @@ def resolve(item, payloads, node_pin):
         stable = [v for v, files in data["releases"].items()
                   if STABLE.fullmatch(v) and any(not f.get("yanked", False) for f in files)]
         latest = max(stable, key=version)
+    elif kind == "npm" and not STABLE.fullmatch(data["version"]):
+        # The npm /latest endpoint follows the package's latest dist-tag, which
+        # can intentionally point at a prerelease. Preserve that channel value,
+        # then compare against the highest exact stable version in the package
+        # document instead of reporting a missing stable release.
+        package_url = item["source"][:-len("/latest")]
+        package = payloads[package_url]
+        if isinstance(package, Exception):
+            raise ValueError(str(package))
+        channel_latest = package.get("dist-tags", {}).get("latest", data["version"])
+        if channel_latest != data["version"]:
+            raise ValueError("npm latest endpoint disagrees with package dist-tags")
+        stable = [v for v in package.get("versions", {}) if STABLE.fullmatch(v)]
+        latest = max(stable, key=version)
+        item["latest_channel"] = channel_latest
     else:
         latest = data["version"]
         if kind == "npm-bundled":
@@ -162,6 +177,18 @@ def check(rows, node_pin, fetcher=fetch):
             return url, error
     with ThreadPoolExecutor(max_workers=6) as pool:
         payloads = dict(pool.map(safe_fetch, urls))
+    # Fetch full npm metadata only when /latest points to a prerelease. The
+    # normal path stays small while prerelease channels retain stable evidence.
+    npm_fallbacks = {
+        item["source"][:-len("/latest")]
+        for item in rows
+        if item["kind"] == "npm"
+        and not isinstance(payloads.get(item["source"]), Exception)
+        and not STABLE.fullmatch(str(payloads[item["source"]].get("version", "")))
+        and item["source"].endswith("/latest")
+    }
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        payloads.update(dict(pool.map(safe_fetch, sorted(npm_fallbacks))))
     for item in rows:
         try:
             resolve(item, payloads, node_pin)
@@ -186,6 +213,8 @@ def markdown(report):
                 continue
             details = item["evidence"].replace("|", "\\|")
             extra = f"; LTS {item['latest_lts']}" if "latest_lts" in item else ""
+            if "latest_channel" in item:
+                extra += f"; latest channel {item['latest_channel']} (prerelease)"
             lines.append(f"| {item['name']} ({item['kind']}) | {item['current']} | {item.get('latest_stable') or 'UNKNOWN'}{extra} | {item['status']} | {details}; [release feed]({item['source']}) |")
     errors = [x for x in report["technologies"] if x["status"] == "unknown"]
     if errors:
