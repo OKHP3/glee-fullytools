@@ -44,7 +44,7 @@ from pathlib import Path
 
 # --- Canonical values (ADR 0007) --------------------------------------------
 
-NODE_VERSION = "22.19.0"
+NODE_VERSION = "22.23.3"
 
 # Package manifests own exact versions; duplicate literals blocked Dependabot.
 # ADR 0008 retains required tools and checks manifest/lock agreement instead.
