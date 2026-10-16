@@ -121,6 +121,8 @@ def resolve(item, payloads, node_pin):
     if isinstance(data, Exception):
         raise ValueError(str(data))
     kind = item["kind"]
+    if kind not in ("node", "python") and not isinstance(data, dict):
+        raise ValueError("Upstream returned malformed metadata")
     if kind == "node":
         stable = [x for x in data if STABLE.fullmatch(x["version"])]
         latest = max(stable, key=lambda x: version(x["version"]))["version"].lstrip("v")
@@ -148,10 +150,16 @@ def resolve(item, payloads, node_pin):
         package = payloads[package_url]
         if isinstance(package, Exception):
             raise ValueError(str(package))
-        channel_latest = package.get("dist-tags", {}).get("latest", data["version"])
+        if not isinstance(package, dict):
+            raise ValueError("npm package metadata is malformed")
+        dist_tags = package.get("dist-tags")
+        versions = package.get("versions")
+        if not isinstance(dist_tags, dict) or not isinstance(versions, dict):
+            raise ValueError("npm package metadata is missing dist-tags or versions")
+        channel_latest = dist_tags.get("latest", data["version"])
         if channel_latest != data["version"]:
             raise ValueError("npm latest endpoint disagrees with package dist-tags")
-        stable = [v for v in package.get("versions", {}) if STABLE.fullmatch(v)]
+        stable = [v for v in versions if STABLE.fullmatch(v)]
         latest = max(stable, key=version)
         item["latest_channel"] = channel_latest
         item["latest_channel_source"] = item["source"]
@@ -185,9 +193,10 @@ def check(rows, node_pin, fetcher=fetch):
         item["source"][:-len("/latest")]
         for item in rows
         if item["kind"] == "npm"
-        and not isinstance(payloads.get(item["source"]), Exception)
-        and not STABLE.fullmatch(str(payloads[item["source"]].get("version", "")))
         and item["source"].endswith("/latest")
+        and not isinstance(payloads.get(item["source"]), Exception)
+        and isinstance(payloads[item["source"]], dict)
+        and not STABLE.fullmatch(str(payloads[item["source"]].get("version", "")))
     }
     with ThreadPoolExecutor(max_workers=6) as pool:
         payloads.update(dict(pool.map(safe_fetch, sorted(npm_fallbacks))))

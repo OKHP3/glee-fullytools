@@ -74,6 +74,21 @@ class TechnologyVersionsTests(unittest.TestCase):
                 versions.check([item], "22.19.0", lambda url: responses[url])
                 self.assertEqual(item["status"], "unknown")
 
+    def test_malformed_npm_metadata_does_not_abort_unrelated_rows(self):
+        malformed = versions.row("bad", "npm", "1.0.0", "fixture",
+                                  "https://registry.npmjs.org/bad/latest")
+        stable = versions.row("good", "npm", "1.0.0", "fixture",
+                              "https://registry.npmjs.org/good/latest")
+        responses = {
+            malformed["source"]: ["not", "a", "package document"],
+            stable["source"]: {"version": "1.1.0"},
+        }
+        versions.check([malformed, stable], "22.19.0", lambda url: responses.get(url, {}))
+        self.assertEqual(malformed["status"], "unknown")
+        self.assertIn("malformed metadata", malformed["error"])
+        self.assertEqual(stable["latest_stable"], "1.1.0")
+        self.assertEqual(stable["status"], "update")
+
     def test_registry_failure_does_not_look_current(self):
         def offline(_):
             raise OSError("offline")
