@@ -154,6 +154,8 @@ def resolve(item, payloads, node_pin):
         stable = [v for v in package.get("versions", {}) if STABLE.fullmatch(v)]
         latest = max(stable, key=version)
         item["latest_channel"] = channel_latest
+        item["latest_channel_source"] = item["source"]
+        item["latest_stable_source"] = package_url
     else:
         latest = data["version"]
         if kind == "npm-bundled":
@@ -214,8 +216,11 @@ def markdown(report):
             details = item["evidence"].replace("|", "\\|")
             extra = f"; LTS {item['latest_lts']}" if "latest_lts" in item else ""
             if "latest_channel" in item:
-                extra += f"; latest channel {item['latest_channel']} (prerelease)"
-            lines.append(f"| {item['name']} ({item['kind']}) | {item['current']} | {item.get('latest_stable') or 'UNKNOWN'}{extra} | {item['status']} | {details}; [release feed]({item['source']}) |")
+                extra += (f"; latest channel {item['latest_channel']} (prerelease; "
+                         f"[channel feed]({item['latest_channel_source']}))")
+            evidence_source = item.get("latest_stable_source", item["source"])
+            source_label = "stable release evidence" if "latest_stable_source" in item else "release feed"
+            lines.append(f"| {item['name']} ({item['kind']}) | {item['current']} | {item.get('latest_stable') or 'UNKNOWN'}{extra} | {item['status']} | {details}; [{source_label}]({evidence_source}) |")
     errors = [x for x in report["technologies"] if x["status"] == "unknown"]
     if errors:
         lines += ["", "## Incomplete checks", ""] + [f"- {x['name']}: {x['error']}" for x in errors]
