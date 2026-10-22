@@ -610,9 +610,11 @@ def _list_all(
     budget: _RuntimeBudget | None = None,
     *,
     context: str = "metadata lookup",
+    malformed_entries: list[str] | None = None,
 ) -> list[dict[str, object]]:
     items: list[dict[str, object]] = []
     page_number = 0
+    entry_count = 0
     while url:
         page_number += 1
         payload, next_url = _fetch_metadata_page(
@@ -627,11 +629,24 @@ def _list_all(
             raise ValueError(
                 f"GitHub API response is missing the {collection_key} list"
             )
-        if any(not isinstance(item, dict) for item in page_items):
+        invalid_items = [
+            index for index, item in enumerate(page_items)
+            if not isinstance(item, dict)
+        ]
+        if invalid_items and malformed_entries is None:
             raise ValueError(
                 f"GitHub API {collection_key} entries must be JSON objects"
             )
-        items.extend(page_items)
+        for index, item in enumerate(page_items):
+            if isinstance(item, dict):
+                items.append(item)
+            else:
+                assert malformed_entries is not None
+                malformed_entries.append(
+                    f"GitHub API {collection_key} entry "
+                    f"{entry_count + index + 1} is not a JSON object"
+                )
+        entry_count += len(page_items)
         url = next_url
     return items
 
@@ -679,6 +694,7 @@ def monitor_repository(
         f"{api_url.rstrip('/')}/repos/{repository}/actions/workflows/"
         f"{workflow_path}/runs?{query}"
     )
+    malformed_runs: list[str] = []
     try:
         runs = _list_all(
             runs_url,
@@ -687,6 +703,7 @@ def monitor_repository(
             fetch_page,
             budget,
             context="workflow runs listing",
+            malformed_entries=malformed_runs,
         )
     except _RetryBudgetExceeded as error:
         raise ValueError(
@@ -694,7 +711,7 @@ def monitor_repository(
             f"deadlines, and Actions links are unavailable: {error}"
         ) from error
     checked = 0
-    failures: list[str] = []
+    failures: list[str] = malformed_runs.copy()
 
     for run in runs:
         if run.get("conclusion") != "success":

@@ -1457,6 +1457,56 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )],
         )
 
+    def test_retention_monitor_reports_malformed_run_entries_and_checks_valid_runs(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        run = {
+            "id": 54,
+            "head_sha": "e" * 40,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+
+        for malformed_first in (True, False):
+            with self.subTest(malformed_first=malformed_first):
+                requested_runs = []
+
+                def fetch(url, token):
+                    if "/workflows/pages.yml/runs?" in url:
+                        entries = ["malformed run", run]
+                        if not malformed_first:
+                            entries.reverse()
+                        return {"workflow_runs": entries}, None
+                    if "/compare/" in url:
+                        return {"status": "ahead"}, None
+                    if "/runs/54/artifacts?" in url:
+                        requested_runs.append(54)
+                        return {"artifacts": []}, None
+                    self.fail(f"Unexpected GitHub API request: {url}")
+
+                with self.assertRaises(ValueError) as error:
+                    retention_checker.monitor_repository(
+                        "owner/repo",
+                        "https://api.github.com",
+                        "test-token",
+                        now=now,
+                        fetch_page=fetch,
+                    )
+
+                report = str(error.exception)
+                malformed_entry_number = 1 if malformed_first else 2
+                self.assertIn(
+                    f"workflow_runs entry {malformed_entry_number} is not a JSON object",
+                    report,
+                )
+                self.assertIn(
+                    "run 54 | commit " + "e" * 40
+                    + " | review deadline 2026-12-30T12:00:00+00:00: "
+                    "validation artifact is missing | GitHub Actions: "
+                    "https://github.com/owner/repo/actions/runs/54",
+                    report,
+                )
+                self.assertEqual(requested_runs, [54])
+
     def test_artifact_authorization_is_not_forwarded_to_download_storage(self):
         def open_url(request, timeout):
             self.assertEqual(request.get_header("Authorization"), "Bearer test-token")
