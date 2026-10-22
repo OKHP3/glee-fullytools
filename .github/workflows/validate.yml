@@ -125,6 +125,9 @@ jobs:
           python3 scripts/tests/test_sync_css_version.py
           python3 -m unittest scripts.tests.test_browser_acceptance_fixture
 
+      - name: Run owner-transferred Replit regression fixtures
+        run: python3 scripts/tests/test-closeout-replit-regressions.py
+
       - name: Run post-merge hook regressions
         run: python3 scripts/tests/test-post-merge.py
 
