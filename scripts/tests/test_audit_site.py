@@ -199,6 +199,34 @@ class AuditSiteTests(unittest.TestCase):
 
                 self.assertEqual(findings, [])
 
+    def test_each_og_image_type_without_a_preceding_image_url_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image:type" content="image/webp">'
+                '<meta property="og:image" content="">'
+                '<meta property="og:image:type" content="image/jpeg">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue
+                    for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image:type")
+                ]
+
+            self.assertEqual(len(findings), 3)
+            for image_type in ("image/png", "image/webp", "image/jpeg"):
+                with self.subTest(image_type=image_type):
+                    self.assertTrue(
+                        any(f"declares `{image_type}`" in finding for finding in findings)
+                    )
+
     def test_mismatching_local_og_image_type_is_actionable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
