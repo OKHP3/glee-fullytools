@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import math
+import stat
 import sys
 import tempfile
 from urllib.error import HTTPError, URLError
@@ -510,6 +511,17 @@ def validate_artifact_archive(archive) -> None:
                     required_counts[entry.filename] = (
                         required_counts.get(entry.filename, 0) + 1
                     )
+                    mode = entry.external_attr >> 16
+                    file_type = stat.S_IFMT(mode)
+                    if (
+                        entry.is_dir()
+                        or entry.external_attr & 0x10
+                        or file_type not in (0, stat.S_IFREG)
+                    ):
+                        raise ValueError(
+                            "required evidence entry is not a regular file: "
+                            f"{entry.filename}"
+                        )
             duplicates = sorted(
                 name for name, count in required_counts.items() if count > 1
             )

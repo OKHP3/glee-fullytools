@@ -114,6 +114,27 @@ def valid_artifact_archive(
     return archive.getvalue()
 
 
+def artifact_archive_with_special_required_entry(report_path, entry_attributes):
+    """Build a complete artifact whose named required entry has a special type."""
+    contents = {
+        "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
+        "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
+        "assets/audit/color-scheme-init-webkit.json": b'{"browser":"webkit"}',
+        "assets/audit/color-scheme-evidence-index.md": b"# Browser theme evidence",
+        "assets/docs/audit-report.md": b"# Audit report",
+    }
+    archive = BytesIO()
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
+        for name, content in contents.items():
+            if name == report_path:
+                entry = zipfile.ZipInfo(name)
+                entry.external_attr = entry_attributes
+                zipped.writestr(entry, content)
+            else:
+                zipped.writestr(name, content)
+    return archive.getvalue()
+
+
 def browser_theme_index() -> str:
     """Return a valid minimal index for exercising the uploaded-artifact gate."""
     rows = [
@@ -1715,6 +1736,24 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_required_evidence_entry_cannot_be_a_directory_or_symlink(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        for entry_attributes, label in (
+            ((0o040000 | 0o755) << 16, "Unix directory"),
+            ((0o120000 | 0o777) << 16, "symbolic link"),
+            (0x10, "DOS directory attribute"),
+            ((0o010000 | 0o600) << 16, "FIFO"),
+        ):
+            with self.subTest(entry_type=label):
+                archive = artifact_archive_with_special_required_entry(
+                    report_path, entry_attributes
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"required evidence entry is not a regular file: {report_path}",
+                ):
+                    retention_checker.validate_artifact_archive(BytesIO(archive))
 
     def test_downloaded_archive_with_duplicate_required_report_is_rejected(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"
