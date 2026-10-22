@@ -834,18 +834,23 @@ def main() -> None:
         "browser": args.browser,
         "cases": {},
         "failure_stage": "browser_startup",
+        "setup_step": "loading_playwright",
     }
     try:
         from playwright.sync_api import sync_playwright
 
+        report["setup_step"] = "preparing_routes"
         routes = browser_routes()
         report["route_count"] = len(routes)
+        report["setup_step"] = "entering_browser_manager"
         with sync_playwright() as playwright:
+            report["setup_step"] = "launching_browser"
             launch_options = {"headless": True}
             if args.executable_path:
                 launch_options["executable_path"] = args.executable_path
             browser = getattr(playwright, args.browser).launch(**launch_options)
             report["browser_version"] = browser.version
+            report.pop("setup_step", None)
             report["failure_stage"] = "theme_checks"
             try:
                 for preference in THEME_CASES[:2]:

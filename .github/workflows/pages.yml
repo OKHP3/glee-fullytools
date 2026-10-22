@@ -239,6 +239,12 @@ jobs:
               ("webkit", "WebKit"),
           )
           case_order = ("light", "dark", "disabled_storage")
+          setup_step_labels = {
+              "loading_playwright": "loading Playwright",
+              "preparing_routes": "preparing routes",
+              "entering_browser_manager": "entering the browser manager",
+              "launching_browser": "launching the browser engine",
+          }
           lines = [
               "## Browser theme failure diagnostics (not validated release evidence)",
               "",
@@ -345,6 +351,16 @@ jobs:
                   detail = one_line(report.get("error", ""))
                   suffix = f" — {detail}" if detail else ""
                   lines.append(f"- **{engine}:** {failure_label}{suffix}.")
+                  setup_step = report.get("setup_step")
+                  if (
+                      failure_stage == "browser_startup"
+                      and isinstance(setup_step, str)
+                      and setup_step in setup_step_labels
+                  ):
+                      lines.append(
+                          "  - Setup step reached (diagnostic only; not validated "
+                          f"evidence): `{setup_step_labels[setup_step]}`."
+                      )
                   lines.append(
                       "  - Completed before failure (diagnostic only; not "
                       f"validated evidence): {completed}."
