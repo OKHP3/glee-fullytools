@@ -301,6 +301,38 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn("/%2e%2e/outside.png", findings[0])
             self.assertIn("safe file inside", findings[0])
 
+    def test_valid_local_og_image_url_alias_satisfies_required_image_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            images = root / "assets" / "social"
+            images.mkdir(parents=True)
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:url" content="/assets/social/hero.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            self.assertNotIn("Missing og:image", issues)
+            self.assertFalse(any(issue.startswith("og:image") for issue in issues))
+
+    def test_missing_og_image_and_url_alias_reports_required_image_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            page = root / "index.html"
+            page.write_text("<html></html>", encoding="utf-8")
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            self.assertIn("Missing og:image", issues)
+
     def test_later_og_images_with_missing_or_blank_content_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
