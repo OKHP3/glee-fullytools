@@ -774,13 +774,66 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 sleep.assert_called_once_with(delay)
                 self.assertTrue(body.closed)
 
-    def test_metadata_server_wait_beyond_budget_defers_without_retry(self):
+    def test_metadata_retry_after_http_date_is_honored(self):
+        body = BytesIO(b"temporary failure")
+        error = HTTPError(
+            "https://api.github.com/test",
+            429,
+            "Retry",
+            {"Retry-After": "Thu, 01 Jan 1970 00:00:07 GMT"},
+            body,
+        )
+        attempts = []
+
+        def fetch(url, token):
+            attempts.append(url)
+            if len(attempts) == 1:
+                raise error
+            return {"ok": True}, None
+
+        with patch.object(retention_checker.time, "time", return_value=0):
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                self.assertEqual(
+                    retention_checker._fetch_metadata_page(
+                        "https://api.github.com/test", "token", fetch
+                    ),
+                    ({"ok": True}, None),
+                )
+        sleep.assert_called_once_with(7)
+        self.assertTrue(body.closed)
+
+    def test_metadata_retry_after_is_capped_at_explicit_maximum(self):
         body = BytesIO(b"throttled")
         error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "120"}, body)
-        with patch.object(retention_checker.time, "sleep") as sleep:
-            with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
-                with self.assertRaisesRegex(ValueError, "metadata.*retry deferred"):
-                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+        with patch.object(
+            retention_checker, "api_page", side_effect=[error, ({"ok": True}, None)]
+        ) as fetch:
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                self.assertEqual(
+                    retention_checker._fetch_metadata_page(
+                        "https://api.github.com/test", "token"
+                    ),
+                    ({"ok": True}, None),
+                )
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(
+            retention_checker.MAX_RETRY_AFTER_SECONDS,
+            retention_checker.METADATA_MAX_RETRY_WAIT_SECONDS,
+        )
+        sleep.assert_called_once_with(retention_checker.MAX_RETRY_AFTER_SECONDS)
+        self.assertTrue(body.closed)
+
+    def test_metadata_malformed_retry_after_fails_without_retry(self):
+        body = BytesIO(b"throttled")
+        error = HTTPError(
+            "https://api.github.com/test", 429, "Retry", {"Retry-After": "later"}, body
+        )
+        with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                with self.assertRaisesRegex(ValueError, "invalid Retry-After"):
+                    retention_checker._fetch_metadata_page(
+                        "https://api.github.com/test", "token"
+                    )
         self.assertEqual(fetch.call_count, 1)
         sleep.assert_not_called()
         self.assertTrue(body.closed)
@@ -1201,7 +1254,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 self.assertEqual(len(calls), 2)
                 sleep.assert_called_once_with(delay)
 
-    def test_artifact_download_defers_rate_limits_beyond_wait_budget(self):
+    def test_artifact_download_bounds_repeated_rate_limit_waits(self):
         for headers in ({"Retry-After": "120"}, {}):
             calls = []
             errors = []
@@ -1218,9 +1271,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "owner/repo", 701, "https://api.github.com",
                         "test-token", open_url=open_url,
                     )
-            self.assertEqual(len(calls), 1 if headers else 2)
+            self.assertEqual(len(calls), 2)
             self.assertTrue(all(error.closed for error in errors))
-            self.assertEqual(sleep.call_count, 0 if headers else 1)
+            sleep.assert_called_once_with(retention_checker.DOWNLOAD_MAX_RETRY_WAIT_SECONDS)
 
     def test_artifact_download_closes_http_error_responses(self):
         for status in (503, 403):

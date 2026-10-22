@@ -2,6 +2,7 @@
 """Verify GitHub's effective retention period for the Pages evidence artifact."""
 
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 import argparse
 import hashlib
 from http.client import IncompleteRead
@@ -28,6 +29,7 @@ DOWNLOAD_RETRY_BACKOFF_SECONDS = 1
 METADATA_MAX_ATTEMPTS = 3
 METADATA_RETRY_BACKOFF_SECONDS = 1
 METADATA_MAX_RETRY_WAIT_SECONDS = 60
+MAX_RETRY_AFTER_SECONDS = 60
 # The scheduled workflow has a 10-minute hard timeout. Keep the monitor's
 # shared wall-clock budget to 7 minutes so checkout, startup, and reporting
 # retain at least 3 minutes of margin. Every API/download attempt and retry wait
@@ -329,10 +331,20 @@ def _http_download_retry_delay(
         return None
     if "retry-after" in headers:
         try:
-            delay = float(headers["retry-after"])
+            retry_after = headers["retry-after"].strip()
+            if retry_after.isdigit():
+                delay = float(retry_after)
+            else:
+                retry_at = parsedate_to_datetime(retry_after)
+                if retry_at.tzinfo is None:
+                    raise ValueError("Retry-After date must include a timezone")
+                delay = max(
+                    0,
+                    (retry_at - datetime.fromtimestamp(time.time(), timezone.utc)).total_seconds(),
+                )
             if not math.isfinite(delay) or delay < 0:
                 raise ValueError("invalid retry interval")
-            return delay
+            return min(delay, MAX_RETRY_AFTER_SECONDS)
         except (TypeError, ValueError) as invalid:
             raise ValueError(f"{label} retry deferred: invalid Retry-After") from invalid
     if throttled:
