@@ -814,18 +814,129 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertIn(
             f"run 44 | commit {'a' * 40} | review deadline "
             "2026-12-30T12:00:00+00:00: evidence not checked; "
-            "shared monitor time budget exhausted after 3 seconds",
+            "shared monitor time budget exhausted after 3 seconds during "
+            "artifact download for run 44 (artifact 440)",
             message,
         )
         self.assertIn(
             f"run 45 | commit {'b' * 40} | review deadline "
             "2026-12-31T12:00:00+00:00: evidence not checked; "
-            "shared monitor time budget exhausted after 3 seconds",
+            "shared monitor time budget exhausted after 3 seconds during "
+            "artifact download for run 44 (artifact 440)",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/44",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/45",
             message,
         )
         self.assertEqual(download_ids, [440, 440])
         self.assertEqual(download_timeouts, [3, 2])
         self.assertEqual(sleeps, [1, 2])
+
+    def test_metadata_budget_exhaustion_names_stage_and_preserves_run_details(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 46,
+            "head_sha": commit,
+            "created_at": "2026-10-03T12:00:00Z",
+            "conclusion": "success",
+        }
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                elapsed[0] = 3
+                return {"status": "ahead"}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                budget=budget,
+            )
+
+        message = str(raised.exception)
+        self.assertIn(
+            f"run 46 | commit {commit} | review deadline "
+            "2027-01-01T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds during "
+            "run 46 retention-policy ancestry",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/46",
+            message,
+        )
+
+    def test_artifact_listing_budget_exhaustion_names_stage(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "d" * 40
+        run = {
+            "id": 47,
+            "head_sha": commit,
+            "created_at": "2026-10-04T12:00:00Z",
+            "conclusion": "success",
+        }
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/47/artifacts?" in url:
+                elapsed[0] = 3
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "run 47.*evidence not checked.*budget exhausted after 3 seconds "
+            "during run 47 artifact listing",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                budget=budget,
+            )
+
+    def test_run_listing_budget_exhaustion_names_stage(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            elapsed[0] = 3
+            return {"workflow_runs": []}, None
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "workflow runs listing.*run identifiers, review deadlines, and "
+            "Actions links are unavailable.*during workflow runs listing",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+                fetch_page=fetch,
+                budget=budget,
+            )
 
     def test_archive_failure_at_runtime_deadline_cannot_count_as_verified(self):
         elapsed = [0.0]
@@ -993,7 +1104,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         output = retry_output.getvalue()
         self.assertIn(
             "Recovered GitHub metadata lookup after 1 retry "
-            "(workflow runs, page 1).",
+            "(workflow runs listing, page 1).",
             output,
         )
         self.assertIn(

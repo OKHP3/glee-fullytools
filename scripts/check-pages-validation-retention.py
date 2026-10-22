@@ -65,10 +65,13 @@ def parse_timestamp(value: object, field: str) -> datetime:
 
 
 class _RetryBudgetExceeded(TimeoutError):
-    def __init__(self, seconds: float):
+    def __init__(self, seconds: float, stage: str | None = None):
         self.seconds = seconds
+        self.stage = stage
+        stage_detail = f" during {stage}" if stage else ""
         super().__init__(
             f"shared monitor time budget exhausted after {seconds:g} seconds"
+            f"{stage_detail}"
         )
 
 
@@ -80,26 +83,33 @@ class _RuntimeBudget:
         self._clock = clock or time.monotonic
         self._sleep = sleeper or time.sleep
         self.deadline = self._clock() + seconds
+        self.last_stage: str | None = None
 
     def remaining(self) -> float:
         return max(0.0, self.deadline - self._clock())
 
-    def request_timeout(self) -> float:
+    def request_timeout(self, stage: str | None = None) -> float:
+        if stage:
+            self.last_stage = stage
         remaining = self.remaining()
         if remaining <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, stage or self.last_stage)
         return min(REQUEST_TIMEOUT_SECONDS, remaining)
 
-    def ensure_available(self) -> None:
+    def ensure_available(self, stage: str | None = None) -> None:
+        if stage:
+            self.last_stage = stage
         if self.remaining() <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, stage or self.last_stage)
 
-    def wait(self, seconds: float) -> None:
+    def wait(self, seconds: float, stage: str | None = None) -> None:
+        if stage:
+            self.last_stage = stage
         remaining = self.remaining()
         if remaining <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, stage or self.last_stage)
         self._sleep(min(seconds, remaining))
-        self.ensure_available()
+        self.ensure_available(stage)
 
 
 def validate_artifact(
@@ -178,6 +188,7 @@ def verify_artifact_download(
     expected_digest: str | None = None,
     open_url=None,
     budget: _RuntimeBudget | None = None,
+    stage: str = "artifact download",
 ) -> int:
     """Stream and validate an evidence ZIP using bounded temporary storage."""
     open_request = open_url or urlopen
@@ -185,7 +196,7 @@ def verify_artifact_download(
     for attempt in range(1, DOWNLOAD_MAX_ATTEMPTS + 1):
         try:
             if budget is not None:
-                budget.ensure_available()
+                budget.ensure_available(stage)
             _verify_artifact_download_once(
                 repository,
                 artifact_id,
@@ -194,9 +205,10 @@ def verify_artifact_download(
                 expected_digest=expected_digest,
                 open_request=open_request,
                 budget=budget,
+                stage=stage,
             )
             if budget is not None:
-                budget.ensure_available()
+                budget.ensure_available(stage)
             return attempt - 1
         except _RetryBudgetExceeded:
             raise
@@ -209,7 +221,7 @@ def verify_artifact_download(
             if budget is None:
                 time.sleep(delay)
             else:
-                budget.wait(delay)
+                budget.wait(delay, stage)
             retry_wait += delay
         except HTTPError as error:
             try:
@@ -231,7 +243,7 @@ def verify_artifact_download(
             if budget is None:
                 time.sleep(delay)
             else:
-                budget.wait(delay)
+                budget.wait(delay, stage)
             retry_wait += delay
         except (
             ValueError,
@@ -271,12 +283,14 @@ def _fetch_metadata_page(
             if budget is None:
                 result = fetch(url, token)
             else:
-                budget.ensure_available()
+                budget.ensure_available(context)
                 if fetch_page is None:
-                    result = api_page(url, token, timeout=budget.request_timeout())
+                    result = api_page(
+                        url, token, timeout=budget.request_timeout(context)
+                    )
                 else:
                     result = fetch(url, token)
-                budget.ensure_available()
+                budget.ensure_available(context)
             if attempt > 1:
                 retries = attempt - 1
                 retry_label = "retry" if retries == 1 else "retries"
@@ -314,7 +328,7 @@ def _fetch_metadata_page(
         if budget is None:
             time.sleep(delay)
         else:
-            budget.wait(delay)
+            budget.wait(delay, context)
         retry_wait += delay
     raise AssertionError("metadata retry loop exited unexpectedly")
 
@@ -380,6 +394,7 @@ def _verify_artifact_download_once(
     expected_digest: str | None,
     open_request,
     budget: _RuntimeBudget | None = None,
+    stage: str = "artifact download",
 ) -> None:
     url = (
         f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
@@ -405,7 +420,7 @@ def _verify_artifact_download_once(
     try:
         try:
             timeout = (
-                budget.request_timeout()
+                budget.request_timeout(stage)
                 if budget is not None
                 else REQUEST_TIMEOUT_SECONDS
             )
@@ -445,7 +460,7 @@ def _verify_artifact_download_once(
             with tempfile.TemporaryFile(mode="w+b") as archive:
                 while True:
                     if budget is not None:
-                        budget.ensure_available()
+                        budget.ensure_available(stage)
                     try:
                         chunk = response.read(DOWNLOAD_CHUNK_SIZE)
                     except (
@@ -459,7 +474,7 @@ def _verify_artifact_download_once(
                             f"temporary interruption while reading artifact: {error}"
                         ) from error
                     if budget is not None:
-                        budget.ensure_available()
+                        budget.ensure_available(stage)
                     if not chunk:
                         break
                     downloaded += len(chunk)
@@ -664,14 +679,20 @@ def monitor_repository(
         f"{api_url.rstrip('/')}/repos/{repository}/actions/workflows/"
         f"{workflow_path}/runs?{query}"
     )
-    runs = _list_all(
-        runs_url,
-        "workflow_runs",
-        token,
-        fetch_page,
-        budget,
-        context="workflow runs",
-    )
+    try:
+        runs = _list_all(
+            runs_url,
+            "workflow_runs",
+            token,
+            fetch_page,
+            budget,
+            context="workflow runs listing",
+        )
+    except _RetryBudgetExceeded as error:
+        raise ValueError(
+            "could not finish workflow runs listing; run identifiers, review "
+            f"deadlines, and Actions links are unavailable: {error}"
+        ) from error
     checked = 0
     failures: list[str] = []
 
@@ -711,11 +732,12 @@ def monitor_repository(
             continue
 
         if budget.remaining() <= 0:
+            exhausted_stage = budget.last_stage or "workflow runs listing"
             failures.append(
                 f"run {run_id} | commit {commit} | "
                 f"review deadline {deadline.isoformat()}: evidence not checked; "
                 f"shared monitor time budget exhausted after "
-                f"{budget.seconds:g} seconds{run_link}"
+                f"{budget.seconds:g} seconds during {exhausted_stage}{run_link}"
             )
             continue
 
@@ -794,6 +816,8 @@ def monitor_repository(
                         ),
                         open_url=open_url,
                         budget=budget,
+                        stage=f"artifact download for run {run_id} "
+                        f"(artifact {artifact_id})",
                     )
                     if retry_count:
                         retry_label = "retry" if retry_count == 1 else "retries"
