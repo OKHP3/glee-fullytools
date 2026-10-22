@@ -2158,6 +2158,170 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         ):
             self.assertIn(detail, route_failure["error"])
 
+    def test_utility_recovery_reports_independent_failures_together(self):
+        expected_url = "https://example.test/"
+
+        class FakeAction:
+            def count(self):
+                return 1
+
+            def is_visible(self):
+                return True
+
+            def inner_text(self):
+                return "Wrong label"
+
+            def evaluate(self, expression):
+                if expression == "element => element.href":
+                    return "https://example.test/wrong-destination/"
+                return True
+
+        class FakeHeading:
+            def is_visible(self):
+                return False
+
+        class FakeNavigation:
+            value = SimpleNamespace(ok=True, status=200)
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        class FakeKeyboard:
+            def press(self, key):
+                if key == "Enter":
+                    page.url = expected_url
+
+        class FakePage:
+            context = object()
+            url = "https://example.test/404.html"
+            keyboard = FakeKeyboard()
+
+            def locator(self, selector):
+                return FakeHeading() if selector == "h1" else FakeAction()
+
+            def expect_navigation(self, **_kwargs):
+                return FakeNavigation()
+
+        page = FakePage()
+        with (
+            patch.object(color_scheme_checker, "link_traversal_key", return_value="Tab"),
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=["SecurityError", "NotAllowedError"],
+            ),
+            self.assertRaises(AssertionError) as failure,
+        ):
+            color_scheme_checker.check_utility_recovery(
+                page,
+                "https://example.test/",
+                "/404.html",
+                ["uncaught page error"],
+            )
+
+        report = str(failure.exception)
+        self.assertIn("5 independent keyboard recovery check(s) failed", report)
+        for detail in (
+            "primary recovery label",
+            "primary recovery action no longer says 'Return home'",
+            "primary recovery destination",
+            "recovery action must point to /",
+            "destination primary content",
+            "destination storage denial",
+            "page errors during keyboard recovery",
+        ):
+            self.assertIn(detail, report)
+
+    def test_utility_recovery_setup_failure_stops_follow_on_checks(self):
+        class FakeAction:
+            def count(self):
+                return 0
+
+        class FakePage:
+            context = object()
+
+            def locator(self, _selector):
+                return FakeAction()
+
+        with (
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=AssertionError("storage check must not run"),
+            ),
+            patch.object(
+                color_scheme_checker,
+                "link_traversal_key",
+                side_effect=AssertionError("keyboard setup must not run"),
+            ),
+            self.assertRaisesRegex(
+                AssertionError,
+                "/404.html: expected one visible primary recovery action",
+            ),
+        ):
+            color_scheme_checker.check_utility_recovery(
+                FakePage(), "https://example.test/", "/404.html", []
+            )
+
+    def test_utility_recovery_navigation_failure_skips_destination_checks(self):
+        class FakeAction:
+            def count(self):
+                return 1
+
+            def is_visible(self):
+                return True
+
+            def inner_text(self):
+                return "Return home"
+
+            def evaluate(self, _expression):
+                return True
+
+        class FakeNavigation:
+            value = SimpleNamespace(ok=False, status=503)
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        class FakeKeyboard:
+            def press(self, _key):
+                pass
+
+        class FakePage:
+            context = object()
+            url = "https://example.test/404.html"
+            keyboard = FakeKeyboard()
+
+            def locator(self, selector):
+                if selector == "h1":
+                    raise AssertionError("destination checks must not run")
+                return FakeAction()
+
+            def expect_navigation(self, **_kwargs):
+                return FakeNavigation()
+
+        with (
+            patch.object(color_scheme_checker, "link_traversal_key", return_value="Tab"),
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=["SecurityError"],
+            ),
+            self.assertRaisesRegex(
+                AssertionError,
+                "keyboard recovery failed: 503",
+            ),
+        ):
+            color_scheme_checker.check_utility_recovery(
+                FakePage(), "https://example.test/", "/404.html", []
+            )
+
     def test_navigation_failure_does_not_run_theme_assertions(self):
         calls = {"evaluate": 0, "wait_for_load": 0}
 

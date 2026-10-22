@@ -524,6 +524,22 @@ def link_traversal_key(context) -> str:
         probe.close()
 
 
+def _run_recovery_check(failures: list[str], name: str, check) -> None:
+    try:
+        check()
+    except AssertionError as error:
+        failures.append(f"{name}: {error}")
+
+
+def _raise_recovery_failures(route: str, failures: list[str]) -> None:
+    if failures:
+        details = "; ".join(failures)
+        raise AssertionError(
+            f"{route}: {len(failures)} independent keyboard recovery "
+            f"check(s) failed: {details}"
+        )
+
+
 def check_utility_recovery(
     page, base_url: str, route: str, page_errors, *, alternate: bool = False,
 ) -> dict:
@@ -532,48 +548,101 @@ def check_utility_recovery(
     selector, label, destination = actions[route]
     action_kind = "alternate" if alternate else "primary"
     action = page.locator(selector)
-    assert action.count() == 1 and action.is_visible(), (
-        f"{route}: expected one visible {action_kind} recovery action"
-    )
-    assert action.inner_text().strip() == label, (
-        f"{route}: {action_kind} recovery action no longer says {label!r}"
+    if action.count() != 1 or not action.is_visible():
+        raise AssertionError(
+            f"{route}: expected one visible {action_kind} recovery action"
+        )
+    if storage_error_name(page) != "SecurityError":
+        raise AssertionError(
+            f"{route}: storage was not blocked before keyboard recovery"
+        )
+    try:
+        tab_key = link_traversal_key(page.context)
+    except Exception as error:
+        raise AssertionError(
+            f"{route}: could not set up keyboard recovery: {error}"
+        ) from error
+
+    failures: list[str] = []
+    _run_recovery_check(
+        failures,
+        f"{action_kind} recovery label",
+        lambda: require_condition(
+            action.inner_text().strip() == label,
+            f"{route}: {action_kind} recovery action no longer says {label!r}",
+        ),
     )
     expected_url = urljoin(base_url, destination)
-    assert action.evaluate("element => element.href") == expected_url, (
-        f"{route}: recovery action must point to {destination}"
-    )
-    assert storage_error_name(page) == "SecurityError", (
-        f"{route}: storage was not blocked before keyboard recovery"
+    _run_recovery_check(
+        failures,
+        f"{action_kind} recovery destination",
+        lambda: require_condition(
+            action.evaluate("element => element.href") == expected_url,
+            f"{route}: recovery action must point to {destination}",
+        ),
     )
 
-    tab_key = link_traversal_key(page.context)
     # Bounded real keyboard traversal catches tabindex=-1, inert, and focus traps.
     for tab_count in range(1, 101):
         page.keyboard.press(tab_key)
         if action.evaluate("element => element === document.activeElement"):
             break
     else:
-        raise AssertionError(f"{route}: recovery action was not reachable with {tab_key}")
+        failures.append(
+            f"keyboard reachability: {route}: recovery action was not reachable "
+            f"with {tab_key}"
+        )
+        _raise_recovery_failures(route, failures)
 
-    with page.expect_navigation(wait_until="load") as navigation:
-        page.keyboard.press("Enter")
-    response = navigation.value
-    assert response is not None and response.ok, (
-        f"{route}: keyboard recovery failed: "
-        f"{response.status if response else 'no response'}"
+    try:
+        with page.expect_navigation(wait_until="load") as navigation:
+            page.keyboard.press("Enter")
+        response = navigation.value
+    except Exception as error:
+        failures.append(f"keyboard navigation: {route}: keyboard recovery failed: {error}")
+        _raise_recovery_failures(route, failures)
+
+    navigation_failed = False
+    if response is None or not response.ok:
+        failures.append(
+            f"keyboard navigation: {route}: keyboard recovery failed: "
+            f"{response.status if response else 'no response'}"
+        )
+        navigation_failed = True
+    if page.url != expected_url:
+        failures.append(
+            f"keyboard destination: {route}: recovery reached {page.url}, "
+            f"expected {expected_url}"
+        )
+        navigation_failed = True
+    if navigation_failed:
+        _raise_recovery_failures(route, failures)
+
+    _run_recovery_check(
+        failures,
+        "destination primary content",
+        lambda: require_condition(
+            page.locator("h1").is_visible(),
+            f"{route}: recovery destination has no visible primary content",
+        ),
     )
-    assert page.url == expected_url, (
-        f"{route}: keyboard recovery reached {page.url}, expected {expected_url}"
+    _run_recovery_check(
+        failures,
+        "destination storage denial",
+        lambda: require_condition(
+            storage_error_name(page) == "SecurityError",
+            f"{route}: storage denial did not persist on the recovery destination",
+        ),
     )
-    assert page.locator("h1").is_visible(), (
-        f"{route}: recovery destination has no visible primary content"
+    _run_recovery_check(
+        failures,
+        "page errors",
+        lambda: require_condition(
+            not page_errors,
+            f"{route}: page errors during keyboard recovery: {page_errors}",
+        ),
     )
-    assert storage_error_name(page) == "SecurityError", (
-        f"{route}: storage denial did not persist on the recovery destination"
-    )
-    assert not page_errors, (
-        f"{route}: page errors during keyboard recovery: {page_errors}"
-    )
+    _raise_recovery_failures(route, failures)
     return {
         "action": label,
         "destination": destination,
