@@ -204,7 +204,32 @@ jobs:
         run: python3 scripts/tests/test-universe-browser.py
 
       - name: Run browser responsive and asset QA
-        run: python3 scripts/run-viewport-qa.py
+        id: responsive_asset_qa
+        run: |
+          report_date="$(python3 -c 'import datetime; print(datetime.date.today().isoformat())')"
+          report_path="assets/audit/viewport-qa-full-${report_date}.json"
+          rm -f "$report_path"
+          printf 'report_path=%s\n' "$report_path" >> "$GITHUB_OUTPUT"
+          python3 scripts/run-viewport-qa.py
+
+      - name: Upload failed responsive QA report (diagnostic only)
+        id: upload_responsive_qa_failure_diagnostics
+        if: ${{ always() && steps.responsive_asset_qa.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-responsive-qa-failure-diagnostics-${{ github.sha }}
+          path: ${{ steps.responsive_asset_qa.outputs.report_path }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Link responsive QA failure diagnostics
+        if: ${{ always() && steps.responsive_asset_qa.outcome == 'failure' }}
+        env:
+          DIAGNOSTIC_ARTIFACT_NAME: pages-responsive-qa-failure-diagnostics-${{ github.sha }}
+          RUN_ARTIFACTS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts
+        run: |
+          echo "**Diagnostic only—not validated release evidence.** Download the responsive and asset QA JSON from the [Pages run artifacts]($RUN_ARTIFACTS_URL): \`$DIAGNOSTIC_ARTIFACT_NAME\`." \
+            >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run visitor, privacy, and rendered contrast acceptance
         run: python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output assets/audit/browser-acceptance.json

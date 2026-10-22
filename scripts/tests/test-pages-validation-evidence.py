@@ -30,6 +30,11 @@ THEME_BROWSER_STEP = "- name: Run color-scheme bootstrap regression in all insta
 THEME_FAILURE_DIAGNOSTIC_STEP = "- name: Summarize browser theme failures (diagnostic only)"
 THEME_FAILURE_UPLOAD_STEP = "- name: Upload failed browser theme reports (diagnostic only)"
 THEME_FAILURE_LINK_STEP = "- name: Link browser theme failure diagnostics"
+RESPONSIVE_QA_STEP = "- name: Run browser responsive and asset QA"
+RESPONSIVE_FAILURE_UPLOAD_STEP = (
+    "- name: Upload failed responsive QA report (diagnostic only)"
+)
+RESPONSIVE_FAILURE_LINK_STEP = "- name: Link responsive QA failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -165,6 +170,9 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             THEME_FAILURE_DIAGNOSTIC_STEP,
             THEME_FAILURE_UPLOAD_STEP,
             THEME_FAILURE_LINK_STEP,
+            RESPONSIVE_QA_STEP,
+            RESPONSIVE_FAILURE_UPLOAD_STEP,
+            RESPONSIVE_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -276,6 +284,79 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Browser-specific theme evidence must include light, dark, and disabled-storage cases"
         )
+
+    responsive_position = positions[RESPONSIVE_QA_STEP]
+    responsive_upload_position = positions[RESPONSIVE_FAILURE_UPLOAD_STEP]
+    responsive_link_position = positions[RESPONSIVE_FAILURE_LINK_STEP]
+    visitor_acceptance_position = workflow.find(
+        "- name: Run visitor, privacy, and rendered contrast acceptance"
+    )
+    if not (
+        responsive_position
+        < responsive_upload_position
+        < responsive_link_position
+        < visitor_acceptance_position
+        < staging_position
+    ):
+        raise AssertionError(
+            "Failed responsive QA reports must be uploaded and linked immediately "
+            "after the QA gate, before validation evidence staging"
+        )
+    responsive_block = workflow[responsive_position:responsive_upload_position]
+    if (
+        "id: responsive_asset_qa" not in responsive_block
+        or 'report_path="assets/audit/viewport-qa-full-${report_date}.json"'
+        not in responsive_block
+        or "rm -f \"$report_path\"" not in responsive_block
+        or "report_path=%s\\n" not in responsive_block
+        or "scripts/run-viewport-qa.py" not in responsive_block
+    ):
+        raise AssertionError(
+            "Responsive QA must expose and clear its exact current-run report path"
+        )
+    responsive_upload_block = workflow[
+        responsive_upload_position:responsive_link_position
+    ]
+    if (
+        "always() && steps.responsive_asset_qa.outcome == 'failure'"
+        not in responsive_upload_block
+        or "uses: actions/upload-artifact@v7" not in responsive_upload_block
+        or "name: pages-responsive-qa-failure-diagnostics-${{ github.sha }}"
+        not in responsive_upload_block
+        or "path: ${{ steps.responsive_asset_qa.outputs.report_path }}"
+        not in responsive_upload_block
+        or "if-no-files-found: warn" not in responsive_upload_block
+        or "retention-days: 14" not in responsive_upload_block
+        or "pages-validation" in responsive_upload_block
+        or "glee-public-site" in responsive_upload_block
+    ):
+        raise AssertionError(
+            "Failed responsive QA JSON must be available in a separate "
+            "failure-only diagnostic artifact"
+        )
+    responsive_link_block = workflow[
+        responsive_link_position:visitor_acceptance_position
+    ]
+    if (
+        "always() && steps.responsive_asset_qa.outcome == 'failure'"
+        not in responsive_link_block
+        or "GITHUB_STEP_SUMMARY" not in responsive_link_block
+        or "Diagnostic only" not in responsive_link_block
+        or "not validated release evidence" not in responsive_link_block
+        or "actions/runs/${{ github.run_id }}#artifacts"
+        not in responsive_link_block
+        or "pages-responsive-qa-failure-diagnostics-${{ github.sha }}"
+        not in responsive_link_block
+    ):
+        raise AssertionError(
+            "Failed responsive QA summary must link the diagnostic artifact "
+            "without presenting it as validated evidence"
+        )
+    if "if: ${{ success() &&" not in staging_block:
+        raise AssertionError(
+            "Failed responsive QA must remain excluded from complete validation evidence"
+        )
+
     if THEME_GATE not in staging_block:
         raise AssertionError(
             "Complete evidence staging must require successful browser-specific theme verification"
