@@ -260,6 +260,8 @@ def _fetch_metadata_page(
     token: str,
     fetch_page=None,
     budget: _RuntimeBudget | None = None,
+    *,
+    context: str = "metadata lookup",
 ) -> tuple[dict[str, object], str | None]:
     """Fetch a metadata page, retrying temporary API and transport failures."""
     fetch = fetch_page or api_page
@@ -268,13 +270,21 @@ def _fetch_metadata_page(
         delay = METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
         try:
             if budget is None:
-                return fetch(url, token)
-            budget.ensure_available()
-            if fetch_page is None:
-                result = api_page(url, token, timeout=budget.request_timeout())
-            else:
                 result = fetch(url, token)
-            budget.ensure_available()
+            else:
+                budget.ensure_available()
+                if fetch_page is None:
+                    result = api_page(url, token, timeout=budget.request_timeout())
+                else:
+                    result = fetch(url, token)
+                budget.ensure_available()
+            if attempt > 1:
+                retries = attempt - 1
+                retry_label = "retry" if retries == 1 else "retries"
+                print(
+                    f"Recovered GitHub metadata lookup after {retries} "
+                    f"{retry_label} ({context})."
+                )
             return result
         except _RetryBudgetExceeded:
             raise
@@ -584,10 +594,20 @@ def _list_all(
     token: str,
     fetch_page=None,
     budget: _RuntimeBudget | None = None,
+    *,
+    context: str = "metadata lookup",
 ) -> list[dict[str, object]]:
     items: list[dict[str, object]] = []
+    page_number = 0
     while url:
-        payload, next_url = _fetch_metadata_page(url, token, fetch_page, budget)
+        page_number += 1
+        payload, next_url = _fetch_metadata_page(
+            url,
+            token,
+            fetch_page,
+            budget,
+            context=f"{context}, page {page_number}",
+        )
         page_items = payload.get(collection_key)
         if not isinstance(page_items, list):
             raise ValueError(
@@ -645,7 +665,14 @@ def monitor_repository(
         f"{api_url.rstrip('/')}/repos/{repository}/actions/workflows/"
         f"{workflow_path}/runs?{query}"
     )
-    runs = _list_all(runs_url, "workflow_runs", token, fetch_page, budget)
+    runs = _list_all(
+        runs_url,
+        "workflow_runs",
+        token,
+        fetch_page,
+        budget,
+        context="workflow runs",
+    )
     checked = 0
     failures: list[str] = []
 
@@ -699,7 +726,11 @@ def monitor_repository(
                 f"{RETENTION_POLICY_COMMIT}...{quote(commit, safe='')}"
             )
             comparison, _ = _fetch_metadata_page(
-                compare_url, token, fetch_page, budget
+                compare_url,
+                token,
+                fetch_page,
+                budget,
+                context=f"run {run_id} retention-policy ancestry",
             )
             policy_status = (
                 comparison.get("status") if isinstance(comparison, dict) else None
@@ -717,7 +748,12 @@ def monitor_repository(
                 f"/artifacts?include_expired=true&per_page=100"
             )
             artifacts = _list_all(
-                artifacts_url, "artifacts", token, fetch_page, budget
+                artifacts_url,
+                "artifacts",
+                token,
+                fetch_page,
+                budget,
+                context=f"run {run_id} artifact listing",
             )
             expected_name = f"pages-validation-{commit}"
             matching = [

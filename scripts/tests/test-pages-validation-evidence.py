@@ -934,7 +934,10 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 200, body, {"Content-Length": str(len(body))}
             )
 
-        with patch.object(retention_checker.time, "sleep") as sleep:
+        retry_output = StringIO()
+        with patch.object(retention_checker.time, "sleep") as sleep, redirect_stdout(
+            retry_output
+        ):
             checked = retention_checker.monitor_repository(
                 "owner/repo",
                 "https://api.github.com",
@@ -947,6 +950,37 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(checked, 1)
         self.assertEqual(attempts, {"runs": 2, "compare": 2, "artifacts": 2})
         self.assertEqual(sleep.call_count, 3)
+        output = retry_output.getvalue()
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(workflow runs, page 1).",
+            output,
+        )
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(run 44 retention-policy ancestry).",
+            output,
+        )
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(run 44 artifact listing, page 1).",
+            output,
+        )
+        self.assertNotIn("test-token", output)
+        self.assertNotIn("https://", output)
+
+    def test_metadata_first_attempt_success_is_quiet(self):
+        output = StringIO()
+        with redirect_stdout(output):
+            result = retention_checker._fetch_metadata_page(
+                "https://api.github.com/test",
+                "test-token",
+                lambda url, token: ({"ok": True}, None),
+                context="run 44 retention-policy ancestry",
+            )
+
+        self.assertEqual(result, ({"ok": True}, None))
+        self.assertEqual(output.getvalue(), "")
 
     def test_metadata_retries_honor_server_wait_and_close_error(self):
         for status, headers, delay in (
