@@ -579,8 +579,15 @@ def audit_page(path: Path) -> List[str]:
                 issues.append(f"Missing {required}")
             elif not p.metas[required].strip():
                 issues.append(f"Blank {required}")
-        if not ({"og:image", "og:image:url"} & p.metas.keys()):
+        has_social_image = bool({"og:image", "og:image:url"} & p.metas.keys())
+        if not has_social_image:
             issues.append("Missing og:image")
+        else:
+            image_alt = p.metas.get("og:image:alt")
+            if image_alt is None:
+                issues.append("Missing og:image:alt")
+            elif not image_alt.strip():
+                issues.append("Blank og:image:alt")
 
     # image hygiene
     for img in p.images:

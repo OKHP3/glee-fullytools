@@ -393,6 +393,56 @@ class AuditSiteTests(unittest.TestCase):
                 any(issue.startswith("Blank og:") for issue in issues)
             )
 
+    def test_open_graph_image_alt_is_required_nonblank_and_populated_values_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            image = '<meta property="og:image" content="https://example.test/share.png">'
+
+            page.write_text(image, encoding="utf-8")
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+            self.assertIn("Missing og:image:alt", issues)
+
+            for value in ("", "   ", "\n\t"):
+                with self.subTest(value=value):
+                    page.write_text(
+                        image + f'<meta property="og:image:alt" content="{value}">',
+                        encoding="utf-8",
+                    )
+                    with patch.object(_MODULE, "ROOT", root), patch.object(
+                        _MODULE, "site_origin", return_value=ORIGIN
+                    ):
+                        issues = _MODULE.audit_page(page)
+                    self.assertIn("Blank og:image:alt", issues)
+                    self.assertNotIn("Missing og:image:alt", issues)
+
+            page.write_text(
+                image + '<meta property="og:image:alt" content="A bright yellow umbrella">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+            self.assertNotIn("Missing og:image:alt", issues)
+            self.assertNotIn("Blank og:image:alt", issues)
+
+    def test_open_graph_image_alt_is_not_required_without_a_social_image(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text("<html></html>", encoding="utf-8")
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            self.assertNotIn("Missing og:image:alt", issues)
+            self.assertNotIn("Blank og:image:alt", issues)
+
     def test_later_og_images_with_missing_or_blank_content_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
