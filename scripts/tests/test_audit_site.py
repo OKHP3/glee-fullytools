@@ -355,6 +355,44 @@ class AuditSiteTests(unittest.TestCase):
 
             self.assertIn("Missing og:image", issues)
 
+    def test_blank_open_graph_text_metadata_is_reported_and_populated_values_pass(self) -> None:
+        fields = ("og:title", "og:description", "og:url")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+
+            for field in fields:
+                for value in ("", "   ", "\n\t"):
+                    with self.subTest(field=field, value=value):
+                        tags = "".join(
+                            f'<meta property="{name}" content="'
+                            f'{"Populated value" if name != field else value}">'
+                            for name in fields
+                        )
+                        page.write_text(tags, encoding="utf-8")
+                        with patch.object(_MODULE, "ROOT", root), patch.object(
+                            _MODULE, "site_origin", return_value=ORIGIN
+                        ):
+                            issues = _MODULE.audit_page(page)
+
+                        self.assertIn(f"Blank {field}", issues)
+
+            page.write_text(
+                "".join(
+                    f'<meta property="{field}" content="Populated value">'
+                    for field in fields
+                ),
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            self.assertFalse(
+                any(issue.startswith("Blank og:") for issue in issues)
+            )
+
     def test_later_og_images_with_missing_or_blank_content_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"

@@ -577,6 +577,8 @@ def audit_page(path: Path) -> List[str]:
         for required in ("og:title", "og:description", "og:url"):
             if required not in p.metas:
                 issues.append(f"Missing {required}")
+            elif not p.metas[required].strip():
+                issues.append(f"Blank {required}")
         if not ({"og:image", "og:image:url"} & p.metas.keys()):
             issues.append("Missing og:image")
 
