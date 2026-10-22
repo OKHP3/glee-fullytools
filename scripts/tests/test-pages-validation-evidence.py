@@ -1761,6 +1761,70 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 ),
             )
 
+    def test_downloaded_archive_rejects_aliases_for_required_report_paths(self):
+        canonical_path = "assets/audit/color-scheme-init-chromium.json"
+        aliases = (
+            r"assets\audit\color-scheme-init-chromium.json",
+            "assets/./audit/color-scheme-init-chromium.json",
+            "assets//audit/color-scheme-init-chromium.json",
+            "./assets/audit/color-scheme-init-chromium.json",
+            "/assets/audit/color-scheme-init-chromium.json",
+            "assets/tmp/../audit/color-scheme-init-chromium.json",
+            "ASSETS/audit/color-scheme-init-chromium.json",
+        )
+
+        for alias in aliases:
+            with self.subTest(alias=alias):
+                archive = valid_artifact_archive(
+                    missing_file=canonical_path,
+                    additional_files={alias: b'{"browser":"chromium"}'},
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "artifact archive has an ambiguous required evidence "
+                    "path alias",
+                ):
+                    retention_checker.verify_artifact_download(
+                        "owner/repo",
+                        701,
+                        "https://api.github.com",
+                        "test-token",
+                        open_url=lambda request, timeout: FakeDownloadResponse(
+                            200, archive
+                        ),
+                    )
+
+    def test_downloaded_archive_accepts_canonical_required_report_paths(self):
+        archive = valid_artifact_archive()
+        retries = retention_checker.verify_artifact_download(
+            "owner/repo",
+            701,
+            "https://api.github.com",
+            "test-token",
+            open_url=lambda request, timeout: FakeDownloadResponse(200, archive),
+        )
+        self.assertEqual(retries, 0)
+
+    def test_downloaded_archive_rejects_alias_even_when_canonical_report_exists(self):
+        archive = valid_artifact_archive(
+            additional_files={
+                "assets\\audit\\color-scheme-init-chromium.json":
+                    b'{"browser":"different"}'
+            }
+        )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "artifact archive has an ambiguous required evidence path alias",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(200, archive),
+            )
+
     def test_encrypted_required_evidence_entry_is_rejected_as_invalid_archive(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"
         encrypted_archive = artifact_archive_with_encrypted_required_entry(report_path)

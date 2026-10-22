@@ -8,6 +8,7 @@ import hashlib
 from http.client import IncompleteRead
 import json
 from pathlib import Path
+import posixpath
 import re
 import math
 import stat
@@ -507,6 +508,31 @@ def validate_artifact_archive(archive) -> None:
                 )
             path_counts: dict[str, int] = {}
             for entry in entries:
+                # Required files must use their exact ZIP spelling. ZIP readers
+                # disagree about backslashes, leading slashes, and redundant
+                # dot components, so reject any alternate name that resolves
+                # to a required path instead of accepting reader-dependent
+                # aliases.
+                normalized_name = posixpath.normpath(
+                    entry.filename.replace("\\", "/")
+                ).lstrip("/")
+                required_path_match = next(
+                    (
+                        required_path
+                        for required_path in REQUIRED_EVIDENCE_FILES
+                        if normalized_name.casefold() == required_path.casefold()
+                    ),
+                    None,
+                )
+                if (
+                    required_path_match is not None
+                    and entry.filename != required_path_match
+                ):
+                    raise ValueError(
+                        "artifact archive has an ambiguous required evidence "
+                        f"path alias: {entry.filename!r} resolves to "
+                        f"{required_path_match}"
+                    )
                 path_counts[entry.filename] = path_counts.get(entry.filename, 0) + 1
                 if entry.filename in REQUIRED_EVIDENCE_FILES:
                     mode = entry.external_attr >> 16
