@@ -505,12 +505,10 @@ def validate_artifact_archive(archive) -> None:
                 raise ValueError(
                     "artifact archive expands beyond the 512 MiB size limit"
                 )
-            required_counts: dict[str, int] = {}
+            path_counts: dict[str, int] = {}
             for entry in entries:
+                path_counts[entry.filename] = path_counts.get(entry.filename, 0) + 1
                 if entry.filename in REQUIRED_EVIDENCE_FILES:
-                    required_counts[entry.filename] = (
-                        required_counts.get(entry.filename, 0) + 1
-                    )
                     mode = entry.external_attr >> 16
                     file_type = stat.S_IFMT(mode)
                     if (
@@ -527,12 +525,10 @@ def validate_artifact_archive(archive) -> None:
                             "artifact archive contains an encrypted required "
                             f"evidence file: {entry.filename}"
                         )
-            duplicates = sorted(
-                name for name, count in required_counts.items() if count > 1
-            )
+            duplicates = sorted(name for name, count in path_counts.items() if count > 1)
             if duplicates:
                 raise ValueError(
-                    "artifact archive has duplicate required evidence files: "
+                    "artifact archive has duplicate paths: "
                     + ", ".join(duplicates)
                 )
             names = {entry.filename for entry in entries}

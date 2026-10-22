@@ -1799,8 +1799,41 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ValueError,
-            "artifact archive has duplicate required evidence files: "
+            "artifact archive has duplicate paths: "
             "assets/audit/color-scheme-init-chromium.json",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(
+                    200, ambiguous_archive
+                ),
+            )
+
+    def test_downloaded_archive_with_duplicate_optional_files_is_rejected(self):
+        duplicate_paths = (
+            "assets/audit/optional-summary.json",
+            "assets/docs/optional-notes.md",
+        )
+        with self.assertWarns(UserWarning):
+            ambiguous_archive = valid_artifact_archive(
+                duplicate_files=[
+                    (path, b"first copy")
+                    for path in duplicate_paths
+                ]
+                + [
+                    (path, b"second copy")
+                    for path in duplicate_paths
+                ]
+            )
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "artifact archive has duplicate paths: "
+            "assets/audit/optional-summary.json, "
+            "assets/docs/optional-notes.md",
         ):
             retention_checker.verify_artifact_download(
                 "owner/repo",
