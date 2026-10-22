@@ -1376,7 +1376,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         def open_url(request, timeout):
             attempts.append(request)
-            if len(attempts) == 1:
+            if len(attempts) <= 2:
                 raise URLError("temporary connection reset")
             body = valid_artifact_archive()
             return FakeDownloadResponse(
@@ -1395,9 +1395,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )
 
         self.assertEqual(checked, 1)
-        self.assertEqual(len(attempts), 2)
+        self.assertEqual(len(attempts), 3)
         message = output.getvalue()
-        self.assertIn("after 1 retry (run 52", message)
+        self.assertIn("after 2 retries (run 52", message)
         self.assertIn(f"run 52, artifact pages-validation-{commit}, ID 702", message)
         self.assertNotIn("test-token", message)
         self.assertNotIn("https://", message)
@@ -1598,25 +1598,35 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             attempts.append(request.full_url)
             raise URLError("temporary connection reset")
 
+        output = StringIO()
         with patch.object(retention_checker.time, "sleep") as sleep:
-            with self.assertRaisesRegex(
-                ValueError,
-                rf"run 71 \| commit {commit} \| review deadline "
-                r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
-                r"unavailable: artifact download failed after 3 attempts: "
-                r"temporary transport error: <urlopen error temporary connection reset>",
-            ):
-                retention_checker.monitor_repository(
-                    "owner/repo",
-                    "https://api.github.com",
-                    "test-token",
-                    now=now,
-                    fetch_page=fetch,
-                    open_url=open_url,
-                )
+            with redirect_stdout(output):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    rf"run 71 \| commit {commit} \| review deadline "
+                    r"2026-12-30T12:00:00\+00:00: validation artifact is invalid or "
+                    r"unavailable: artifact download failed after 3 attempts: "
+                    r"temporary transport error: <urlopen error temporary connection reset>",
+                ) as raised:
+                    retention_checker.monitor_repository(
+                        "owner/repo",
+                        "https://api.github.com",
+                        "test-token",
+                        now=now,
+                        fetch_page=fetch,
+                        open_url=open_url,
+                    )
 
         self.assertEqual(len(attempts), 3)
         self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2])
+        self.assertNotIn("Recovered artifact download", output.getvalue())
+        self.assertNotIn("test-token", output.getvalue())
+        self.assertNotIn("https://", output.getvalue())
+        self.assertNotIn("test-token", str(raised.exception))
+        self.assertNotIn(
+            "https://api.github.com/repos/owner/repo/actions/artifacts/701/zip",
+            str(raised.exception),
+        )
 
     def test_retention_monitor_links_each_affected_run(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
