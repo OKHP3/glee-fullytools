@@ -1717,6 +1717,146 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         )
         self.assertEqual(calls, [first, second])
 
+    def test_retention_monitor_retries_a_later_workflow_runs_page_once(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        second_runs_page = "https://api.github.com/second-runs-page"
+        runs = [
+            {
+                "id": run_id,
+                "head_sha": commit,
+                "created_at": "2026-10-01T12:00:00Z",
+                "conclusion": "success",
+            }
+            for run_id, commit in ((71, "a" * 40), (72, "b" * 40))
+        ]
+        runs_page_attempts = 0
+        compare_calls = []
+        artifact_calls = []
+        download_calls = []
+
+        def artifact_for(run):
+            return {
+                "id": run["id"] * 10,
+                "name": f"pages-validation-{run['head_sha']}",
+                "expired": False,
+                "created_at": "2026-10-01T12:01:00Z",
+                "expires_at": "2026-12-30T12:00:00Z",
+                "workflow_run": {
+                    "id": run["id"],
+                    "head_sha": run["head_sha"],
+                },
+            }
+
+        def fetch(url, token):
+            nonlocal runs_page_attempts
+            if url == second_runs_page:
+                runs_page_attempts += 1
+                if runs_page_attempts == 1:
+                    raise URLError("temporary connection reset")
+                return {"workflow_runs": [runs[1]]}, None
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [runs[0]]}, second_runs_page
+            if "/compare/" in url:
+                run = runs[0] if runs[0]["head_sha"] in url else runs[1]
+                compare_calls.append(run["id"])
+                return {"status": "ahead"}, None
+            if "/artifacts?" in url:
+                run = runs[0] if "/runs/71/" in url else runs[1]
+                artifact_calls.append(run["id"])
+                return {"artifacts": [artifact_for(run)]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        def open_url(request, timeout):
+            download_calls.append(request.full_url.rsplit("/", 2)[-2])
+            body = valid_artifact_archive()
+            return FakeDownloadResponse(
+                200, body, {"Content-Length": str(len(body))}
+            )
+
+        with patch.object(retention_checker.time, "sleep"):
+            checked = retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                open_url=open_url,
+            )
+
+        self.assertEqual(checked, 2)
+        self.assertEqual(runs_page_attempts, 2)
+        self.assertEqual(compare_calls, [71, 72])
+        self.assertEqual(artifact_calls, [71, 72])
+        self.assertEqual(download_calls, ["710", "720"])
+
+    def test_list_all_retries_later_artifact_page_without_duplicate_items(self):
+        first = "https://api.github.com/first-artifact-page"
+        second = "https://api.github.com/second-artifact-page"
+        calls = []
+        second_page_attempts = 0
+        pages = {
+            first: [{"id": 730}],
+            second: [{"id": 731}, {"id": 732}],
+        }
+
+        def fetch(url, token):
+            nonlocal second_page_attempts
+            calls.append(url)
+            if url == second:
+                second_page_attempts += 1
+                if second_page_attempts == 1:
+                    raise HTTPError(url, 503, "Service Unavailable", {}, None)
+            return {"artifacts": pages[url]}, second if url == first else None
+
+        with patch.object(retention_checker.time, "sleep"):
+            artifacts = retention_checker._list_all(
+                first, "artifacts", "test-token", fetch
+            )
+
+        self.assertEqual([artifact["id"] for artifact in artifacts], [730, 731, 732])
+        self.assertEqual(calls, [first, second, second])
+        self.assertEqual(second_page_attempts, 2)
+
+    def test_retention_monitor_reports_permanent_later_artifact_page_failure(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        run = {
+            "id": 74,
+            "head_sha": "d" * 40,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+        second_artifacts_page = "https://api.github.com/second-artifacts-page"
+        artifact_page_attempts = 0
+
+        def fetch(url, token):
+            nonlocal artifact_page_attempts
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/74/artifacts?" in url:
+                return {"artifacts": []}, second_artifacts_page
+            if url == second_artifacts_page:
+                artifact_page_attempts += 1
+                raise HTTPError(url, 403, "Forbidden", {}, None)
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with patch.object(retention_checker.time, "sleep") as sleep:
+            with self.assertRaises(ValueError) as raised:
+                retention_checker.monitor_repository(
+                    "owner/repo",
+                    "https://api.github.com",
+                    "test-token",
+                    now=now,
+                    fetch_page=fetch,
+                )
+
+        message = str(raised.exception)
+        self.assertIn(f"run 74 | commit {run['head_sha']} | review deadline ", message)
+        self.assertIn("GitHub metadata request failed with HTTP 403", message)
+        self.assertEqual(artifact_page_attempts, 1)
+        sleep.assert_not_called()
+
     @classmethod
     def setUpClass(cls):
         cls.workflow = WORKFLOW.read_text(encoding="utf-8")
