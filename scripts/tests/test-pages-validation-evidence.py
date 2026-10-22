@@ -35,6 +35,11 @@ RESPONSIVE_FAILURE_UPLOAD_STEP = (
     "- name: Upload failed responsive QA report (diagnostic only)"
 )
 RESPONSIVE_FAILURE_LINK_STEP = "- name: Link responsive QA failure diagnostics"
+VISITOR_ACCEPTANCE_STEP = "- name: Run visitor, privacy, and rendered contrast acceptance"
+VISITOR_FAILURE_UPLOAD_STEP = (
+    "- name: Upload failed visitor acceptance report (diagnostic only)"
+)
+VISITOR_FAILURE_LINK_STEP = "- name: Link visitor acceptance failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -173,6 +178,9 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             RESPONSIVE_QA_STEP,
             RESPONSIVE_FAILURE_UPLOAD_STEP,
             RESPONSIVE_FAILURE_LINK_STEP,
+            VISITOR_ACCEPTANCE_STEP,
+            VISITOR_FAILURE_UPLOAD_STEP,
+            VISITOR_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -302,6 +310,68 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             "Failed responsive QA reports must be uploaded and linked immediately "
             "after the QA gate, before validation evidence staging"
         )
+    visitor_acceptance_position = positions[VISITOR_ACCEPTANCE_STEP]
+    visitor_upload_position = positions[VISITOR_FAILURE_UPLOAD_STEP]
+    visitor_link_position = positions[VISITOR_FAILURE_LINK_STEP]
+    resilient_qa_position = workflow.find("- name: Run resilient web behavior QA")
+    if not (
+        visitor_acceptance_position
+        < visitor_upload_position
+        < visitor_link_position
+        < resilient_qa_position
+        < staging_position
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance reports must be uploaded and linked "
+            "immediately after the acceptance gate, before validation staging"
+        )
+    visitor_gate_block = workflow[
+        visitor_acceptance_position:visitor_upload_position
+    ]
+    if (
+        "id: visitor_acceptance" not in visitor_gate_block
+        or 'report_path="assets/audit/browser-acceptance.json"'
+        not in visitor_gate_block
+        or 'rm -f "$report_path"' not in visitor_gate_block
+        or "report_path=%s\\n" not in visitor_gate_block
+        or "scripts/tests/test_browser_acceptance.py" not in visitor_gate_block
+    ):
+        raise AssertionError(
+            "Visitor acceptance must expose and clear its exact current-run report path"
+        )
+    visitor_upload_block = workflow[visitor_upload_position:visitor_link_position]
+    if (
+        "always() && steps.visitor_acceptance.outcome == 'failure'"
+        not in visitor_upload_block
+        or "uses: actions/upload-artifact@v7" not in visitor_upload_block
+        or "name: pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}"
+        not in visitor_upload_block
+        or "path: ${{ steps.visitor_acceptance.outputs.report_path }}"
+        not in visitor_upload_block
+        or "if-no-files-found: warn" not in visitor_upload_block
+        or "retention-days: 14" not in visitor_upload_block
+        or "pages-validation" in visitor_upload_block
+        or "glee-public-site" in visitor_upload_block
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance JSON must be available in a separate "
+            "failure-only diagnostic artifact"
+        )
+    visitor_link_block = workflow[visitor_link_position:resilient_qa_position]
+    if (
+        "always() && steps.visitor_acceptance.outcome == 'failure'"
+        not in visitor_link_block
+        or "GITHUB_STEP_SUMMARY" not in visitor_link_block
+        or "Diagnostic only" not in visitor_link_block
+        or "not validated release evidence" not in visitor_link_block
+        or "actions/runs/${{ github.run_id }}#artifacts" not in visitor_link_block
+        or "pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}"
+        not in visitor_link_block
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance summary must link the diagnostic artifact "
+            "without presenting it as validated evidence"
+        )
     responsive_block = workflow[responsive_position:responsive_upload_position]
     if (
         "id: responsive_asset_qa" not in responsive_block
@@ -355,6 +425,10 @@ def assert_validation_evidence_contract(workflow: str) -> None:
     if "if: ${{ success() &&" not in staging_block:
         raise AssertionError(
             "Failed responsive QA must remain excluded from complete validation evidence"
+        )
+    if '(audit_dir / "browser-acceptance.json").unlink(missing_ok=True)' not in staging_block:
+        raise AssertionError(
+            "Visitor acceptance diagnostics must be excluded from validated release evidence"
         )
 
     if THEME_GATE not in staging_block:
@@ -3729,6 +3803,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             (audit / "links-report-2026-10-02.json").write_text(
                 '{"audit": true}', encoding="utf-8"
             )
+            (audit / "browser-acceptance.json").write_text(
+                '{"failures": 1}', encoding="utf-8"
+            )
             docs = root / "assets" / "docs"
             docs.mkdir(parents=True)
             (docs / "audit-report.md").write_text(
@@ -3768,6 +3845,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 (staged_audit / "validation-report-2026-10-01.json").exists()
             )
             self.assertTrue((staged_audit / "links-report-2026-10-02.json").is_file())
+            self.assertFalse((staged_audit / "browser-acceptance.json").exists())
             staged_summary = (
                 artifact / "assets" / "docs" / "audit-report.md"
             ).read_text(encoding="utf-8")

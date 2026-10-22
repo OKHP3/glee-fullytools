@@ -340,6 +340,15 @@ def run_checks(browser, expect, args) -> list[dict]:
     return results
 
 
+def write_report(report: dict, output: Path | None) -> str:
+    """Serialize the complete report and persist it even when checks failed."""
+    text = json.dumps(report, indent=2, ensure_ascii=False)
+    if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text + "\n", encoding="utf-8")
+    return text
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://localhost:5000")
@@ -361,10 +370,7 @@ def main() -> int:
     except Exception as error:
         report["results"].append({"name": "browser gate setup or execution", "status": "FAIL", "error": str(error)})
     report["failures"] = sum(item["status"] != "PASS" for item in report["results"])
-    text = json.dumps(report, indent=2, ensure_ascii=False)
-    if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(text + "\n", encoding="utf-8")
+    text = write_report(report, args.output)
     print(text)
     return 1 if report["failures"] else 0
 

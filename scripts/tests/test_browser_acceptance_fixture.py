@@ -1,8 +1,13 @@
 import unittest
 import importlib.util
+import json
+import tempfile
 from pathlib import Path
 
-from scripts.tests.test_browser_acceptance import adapt_local_http_navigation
+from scripts.tests.test_browser_acceptance import (
+    adapt_local_http_navigation,
+    write_report,
+)
 
 spec = importlib.util.spec_from_file_location(
     "color_scheme_test", Path(__file__).with_name("test-color-scheme-init.py")
@@ -123,6 +128,23 @@ class LocalHttpNavigationFixtureTests(unittest.TestCase):
             self.base + "/", self.base, "text/html", self.html,
             is_navigation=False,
         ))
+
+
+class BrowserAcceptanceReportTests(unittest.TestCase):
+    def test_failed_report_is_written_in_full_for_diagnostics(self):
+        report = {
+            "browser": "chromium",
+            "results": [
+                {"name": "visitor journey", "status": "FAIL", "error": "assertion"}
+            ],
+            "failures": 1,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "nested" / "browser-acceptance.json"
+            serialized = write_report(report, output)
+
+            self.assertEqual(output.read_text(encoding="utf-8"), serialized + "\n")
+            self.assertEqual(json.loads(output.read_text(encoding="utf-8")), report)
 
 
 if __name__ == "__main__":

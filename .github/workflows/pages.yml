@@ -232,7 +232,30 @@ jobs:
             >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run visitor, privacy, and rendered contrast acceptance
-        run: python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output assets/audit/browser-acceptance.json
+        id: visitor_acceptance
+        run: |
+          report_path="assets/audit/browser-acceptance.json"
+          rm -f "$report_path"
+          printf 'report_path=%s\n' "$report_path" >> "$GITHUB_OUTPUT"
+          python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output "$report_path"
+
+      - name: Upload failed visitor acceptance report (diagnostic only)
+        if: ${{ always() && steps.visitor_acceptance.outcome == 'failure' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}
+          path: ${{ steps.visitor_acceptance.outputs.report_path }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Link visitor acceptance failure diagnostics
+        if: ${{ always() && steps.visitor_acceptance.outcome == 'failure' }}
+        env:
+          DIAGNOSTIC_ARTIFACT_NAME: pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}
+          RUN_ARTIFACTS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts
+        run: |
+          echo "**Diagnostic only—not validated release evidence.** Download the visitor, privacy, and rendered-contrast JSON from the [Pages run artifacts]($RUN_ARTIFACTS_URL): \`$DIAGNOSTIC_ARTIFACT_NAME\`." \
+            >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run resilient web behavior QA
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
@@ -716,6 +739,7 @@ jobs:
           for report in audit_dir.glob("validation-report-*.json"):
               if report.name != current_report:
                   report.unlink()
+          (audit_dir / "browser-acceptance.json").unlink(missing_ok=True)
 
           audit_summary = Path("assets/docs/audit-report.md")
           if audit_summary.is_file():
