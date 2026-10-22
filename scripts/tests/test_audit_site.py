@@ -227,6 +227,65 @@ class AuditSiteTests(unittest.TestCase):
                         any(f"declares `{image_type}`" in finding for finding in findings)
                     )
 
+    def test_conflicting_og_image_types_are_reported_with_values_and_image_url(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "share.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            image_url = f"{ORIGIN}/assets/social/share.png"
+            page.write_text(
+                f'<meta property="og:image" content="{image_url}">'
+                '<meta property="og:image:type" content="image/jpeg">'
+                '<meta property="og:image:type" content="image/png">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [
+                issue for issue in issues
+                if issue.startswith("Conflicting og:image:type")
+            ]
+            self.assertEqual(len(findings), 1)
+            self.assertIn("image/jpeg", findings[0])
+            self.assertIn("image/png", findings[0])
+            self.assertIn(image_url, findings[0])
+            self.assertTrue(
+                any(
+                    "declares `image/jpeg`" in issue
+                    for issue in issues
+                )
+            )
+
+    def test_repeated_identical_og_image_types_are_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" '
+                'content="https://external.test/share.png">'
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image:type" content="image/png">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("Conflicting og:image:type")
+                ]
+
+            self.assertEqual(findings, [])
+
     def test_mismatching_local_og_image_type_is_actionable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"

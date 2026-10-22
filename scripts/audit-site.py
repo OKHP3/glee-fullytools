@@ -71,7 +71,7 @@ from urllib.parse import urlsplit
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, TypedDict
 from xml.etree import ElementTree as ET
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -225,6 +225,12 @@ def iter_html_files() -> List[Path]:
     return collect_html_files(ROOT)
 
 
+class SocialImageMetadata(TypedDict):
+    url: str
+    type: str
+    types: List[str]
+
+
 class PageParser(HTMLParser):
     """Lightweight extractor for the bits we need to audit."""
 
@@ -238,7 +244,7 @@ class PageParser(HTMLParser):
         self.headings: List[int] = []   # ordered heading levels outside <footer>
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
-        self.og_images: List[Dict[str, str]] = []
+        self.og_images: List[SocialImageMetadata] = []
         self.orphan_og_image_types: List[str] = []
         self._current_og_image: int | None = None
         self.canonical = ""
@@ -273,14 +279,17 @@ class PageParser(HTMLParser):
                 "og:image:secure_url",
             }:
                 self.og_images.append(
-                    {"url": a.get("content", "") or "", "type": ""}
+                    {"url": a.get("content", "") or "", "type": "", "types": []}
                 )
                 self._current_og_image = len(self.og_images) - 1
             elif key and key.lower() == "og:image:type":
                 if self._current_og_image is not None:
                     image = self.og_images[self._current_og_image]
                     if image["url"].strip():
-                        image["type"] = a.get("content", "") or ""
+                        declared_type = a.get("content", "") or ""
+                        image["types"].append(declared_type)
+                        if not image["type"].strip() and declared_type.strip():
+                            image["type"] = declared_type
                     else:
                         self.orphan_og_image_types.append(
                             a.get("content", "") or ""
@@ -546,6 +555,19 @@ def audit_page(path: Path) -> List[str]:
         )
 
     for image in p.og_images:
+        declared_types = []
+        seen_types = set()
+        for declared_type in image["types"]:
+            normalized_type = declared_type.strip().lower()
+            if normalized_type and normalized_type not in seen_types:
+                seen_types.add(normalized_type)
+                declared_types.append(declared_type.strip())
+        if len(declared_types) > 1:
+            issues.append(
+                "Conflicting og:image:type declarations "
+                f"({', '.join(f'`{value}`' for value in declared_types)}) "
+                f"for image URL: {image['url']}"
+            )
         image_issues = _og_image_issues(
             image["url"], image["type"], path.parent, ROOT, site_origin()
         )
