@@ -229,6 +229,8 @@ class SocialImageMetadata(TypedDict):
     url: str
     type: str
     types: List[str]
+    widths: List[str]
+    heights: List[str]
 
 
 class PageParser(HTMLParser):
@@ -279,7 +281,13 @@ class PageParser(HTMLParser):
                 "og:image:secure_url",
             }:
                 self.og_images.append(
-                    {"url": a.get("content", "") or "", "type": "", "types": []}
+                    {
+                        "url": a.get("content", "") or "",
+                        "type": "",
+                        "types": [],
+                        "widths": [],
+                        "heights": [],
+                    }
                 )
                 self._current_og_image = len(self.og_images) - 1
             elif key and key.lower() == "og:image:type":
@@ -298,6 +306,19 @@ class PageParser(HTMLParser):
                     self.orphan_og_image_types.append(
                         a.get("content", "") or ""
                     )
+            elif key and key.lower() in {
+                "og:image:width",
+                "og:image:height",
+            }:
+                if self._current_og_image is not None:
+                    image = self.og_images[self._current_og_image]
+                    if image["url"].strip():
+                        dimension = (
+                            "width"
+                            if key.lower() == "og:image:width"
+                            else "height"
+                        )
+                        image[f"{dimension}s"].append(a.get("content", "") or "")
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
         elif tag == "link" and a.get("rel", "").lower() == "canonical":
@@ -362,7 +383,13 @@ BARE_LINK_TEXTS = frozenset({
 
 
 def _og_image_issues(
-    url: str, declared_type: str, source_dir: Path, root: Path, origin: str
+    url: str,
+    declared_type: str,
+    declared_widths: List[str],
+    declared_heights: List[str],
+    source_dir: Path,
+    root: Path,
+    origin: str,
 ) -> List[str]:
     """Validate local og:image paths and signatures without fetching URLs."""
     if not url.strip():
@@ -415,6 +442,30 @@ def _og_image_issues(
         return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
     width, height = dimensions
     issues = []
+    for dimension_name, declared_values, actual_value in (
+        ("width", declared_widths, width),
+        ("height", declared_heights, height),
+    ):
+        property_name = f"og:image:{dimension_name}"
+        if not declared_values:
+            issues.append(
+                f"{property_name} declaration is missing for local image: {url}"
+            )
+            continue
+        for declared_value in declared_values:
+            normalized_value = declared_value.strip()
+            if not re.fullmatch(r"[0-9]+", normalized_value) or int(
+                normalized_value or "0"
+            ) <= 0:
+                issues.append(
+                    f"{property_name} declaration is malformed "
+                    f"`{declared_value}` for local image: {url}"
+                )
+            elif int(normalized_value) != actual_value:
+                issues.append(
+                    f"{property_name} declares {normalized_value}, but the "
+                    f"local image is {actual_value}px: {url}"
+                )
     if width < SOCIAL_IMAGE_MIN_WIDTH or height < SOCIAL_IMAGE_MIN_HEIGHT:
         issues.append(
             f"og:image is {width}x{height}; minimum is "
@@ -569,7 +620,13 @@ def audit_page(path: Path) -> List[str]:
                 f"for image URL: {image['url']}"
             )
         image_issues = _og_image_issues(
-            image["url"], image["type"], path.parent, ROOT, site_origin()
+            image["url"],
+            image["type"],
+            image["widths"],
+            image["heights"],
+            path.parent,
+            ROOT,
+            site_origin(),
         )
         issues.extend(image_issues)
 

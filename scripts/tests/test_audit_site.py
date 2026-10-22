@@ -148,22 +148,36 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
 
     def og_image_findings(
-        self, root: Path, url: str, *later_urls: str, image_type: str = ""
+        self,
+        root: Path,
+        url: str,
+        *later_urls: str,
+        image_type: str = "",
+        declared_width: str | None = "1200",
+        declared_height: str | None = "630",
     ) -> list[str]:
         page = root / "content" / "index.html"
         page.parent.mkdir(parents=True, exist_ok=True)
-        page.write_text(
-            "\n".join(
+        image_tags = []
+        for image_url in (url, *later_urls):
+            image_tags.append(
                 f'<meta property="og:image" content="{image_url}">'
-                + (
+            )
+            if image_type:
+                image_tags.append(
                     f'<meta property="og:image:type" content="{image_type}">'
-                    if image_type
-                    else ""
                 )
-                for image_url in (url, *later_urls)
-            ),
-            encoding="utf-8",
-        )
+            if declared_width is not None:
+                image_tags.append(
+                    '<meta property="og:image:width" '
+                    f'content="{declared_width}">'
+                )
+            if declared_height is not None:
+                image_tags.append(
+                    '<meta property="og:image:height" '
+                    f'content="{declared_height}">'
+                )
+        page.write_text("\n".join(image_tags), encoding="utf-8")
         with patch.object(_MODULE, "ROOT", root), patch.object(
             _MODULE, "site_origin", return_value=ORIGIN
         ):
@@ -329,8 +343,12 @@ class AuditSiteTests(unittest.TestCase):
             page.write_text(
                 '<meta property="og:image" content="/assets/social/hero.png">'
                 '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
                 '<meta property="og:image" content="/assets/social/share.jpg">'
-                '<meta property="og:image:type" content="image/png">',
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">',
                 encoding="utf-8",
             )
 
@@ -373,6 +391,8 @@ class AuditSiteTests(unittest.TestCase):
             page = root / "index.html"
             page.write_text(
                 '<meta property="og:image" content="/assets/social/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
                 '<meta property="og:image:url" content="/%2e%2e/outside.png">',
                 encoding="utf-8",
             )
@@ -418,7 +438,9 @@ class AuditSiteTests(unittest.TestCase):
             (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             page = root / "index.html"
             page.write_text(
-                '<meta property="og:image:url" content="/assets/social/hero.png">',
+                '<meta property="og:image:url" content="/assets/social/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">',
                 encoding="utf-8",
             )
             with patch.object(_MODULE, "ROOT", root), patch.object(
@@ -539,6 +561,8 @@ class AuditSiteTests(unittest.TestCase):
             page = root / "index.html"
             page.write_text(
                 '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
                 '<meta property="og:image">'
                 '<meta property="og:image" content="">'
                 '<meta property="og:image" content="   ">',
@@ -623,6 +647,8 @@ class AuditSiteTests(unittest.TestCase):
             (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
             page.write_text(
                 '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
                 "<META content='/assets/missing.png?v=1&amp;width=2' PROPERTY='og:image'>"
                 '<!-- <meta property="og:image" content="/ignored.png"> -->',
                 encoding="utf-8",
@@ -643,6 +669,8 @@ class AuditSiteTests(unittest.TestCase):
             page = root / "index.html"
             page.write_text(
                 '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
                 '<meta name="og:image" content="/assets/missing.png">'
                 '<meta name="og:image" content="/%2e%2e/outside.png">'
                 '<meta name="og:image" content="https://external.test/image.png">',
@@ -748,6 +776,72 @@ class AuditSiteTests(unittest.TestCase):
                     )
                     self.assertEqual(findings, [])
 
+    def test_matching_og_image_dimensions_are_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(
+                social_image_fixture("png", width=1200, height=630)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/hero.png"
+            )
+
+            self.assertEqual(findings, [])
+
+    def test_missing_malformed_and_mismatched_og_image_dimensions_are_reported(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(
+                social_image_fixture("png", width=1200, height=630)
+            )
+            url = f"{ORIGIN}/assets/social/hero.png"
+
+            missing = self.og_image_findings(
+                root, url, declared_width=None, declared_height=None
+            )
+            self.assertEqual(len(missing), 2)
+            self.assertTrue(
+                any("og:image:width declaration is missing" in issue for issue in missing)
+            )
+            self.assertTrue(
+                any("og:image:height declaration is missing" in issue for issue in missing)
+            )
+
+            malformed = self.og_image_findings(
+                root, url, declared_width="wide", declared_height="0"
+            )
+            self.assertEqual(len(malformed), 2)
+            self.assertTrue(
+                any(
+                    "og:image:width declaration is malformed" in issue
+                    for issue in malformed
+                )
+            )
+            self.assertTrue(
+                any(
+                    "og:image:height declaration is malformed" in issue
+                    for issue in malformed
+                )
+            )
+
+            mismatched = self.og_image_findings(
+                root, url, declared_width="1201", declared_height="631"
+            )
+            self.assertEqual(len(mismatched), 2)
+            self.assertTrue(
+                any("og:image:width declares 1201" in issue for issue in mismatched)
+            )
+            self.assertTrue(
+                any("og:image:height declares 631" in issue for issue in mismatched)
+            )
+
     def test_undersized_local_social_image_is_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
@@ -758,7 +852,10 @@ class AuditSiteTests(unittest.TestCase):
             )
 
             findings = self.og_image_findings(
-                root, f"{ORIGIN}/assets/social/small.png"
+                root,
+                f"{ORIGIN}/assets/social/small.png",
+                declared_width="600",
+                declared_height="315",
             )
 
             self.assertEqual(len(findings), 1)
@@ -775,7 +872,10 @@ class AuditSiteTests(unittest.TestCase):
             )
 
             findings = self.og_image_findings(
-                root, f"{ORIGIN}/assets/social/square.jpg"
+                root,
+                f"{ORIGIN}/assets/social/square.jpg",
+                declared_width="1200",
+                declared_height="1200",
             )
 
             self.assertEqual(len(findings), 1)
