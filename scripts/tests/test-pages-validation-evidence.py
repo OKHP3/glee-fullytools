@@ -2327,6 +2327,16 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 },
                 True,
             ),
+            (
+                "failed case also listed as not run",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}},
+                    "not_run_cases": ["dark", "disabled_storage"],
+                },
+                True,
+            ),
         )
         for label, report, inconsistent in reports:
             with self.subTest(report=label), tempfile.TemporaryDirectory() as directory:
@@ -2350,7 +2360,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 self.assertNotIn("disabled_storage", completed)
                 self.assertIn("Not run: `disabled_storage`", summary)
                 self.assertEqual("Report is inconsistent" in summary, inconsistent)
-                if inconsistent:
+                if label == "later case listed after failure":
                     self.assertIn(
                         "lists `disabled_storage` after failed case `dark`",
                         summary,
@@ -2359,6 +2369,21 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "must not be treated as completed, passed, or validated evidence",
                         summary,
                     )
+                if label == "failed case also listed as not run":
+                    self.assertIn(
+                        "the failed case `dark` is also listed in `not_run_cases`",
+                        summary,
+                    )
+                    self.assertIn(
+                        "It is treated as failed, not completed, passed, or "
+                        "validated evidence.",
+                        summary,
+                    )
+                    completed = next(
+                        line for line in summary.splitlines()
+                        if "Completed before failure" in line
+                    )
+                    self.assertNotIn("`dark`", completed)
 
     def test_failure_diagnostic_marks_unsupported_case_results_as_malformed(self):
         code = theme_failure_diagnostic_code(self.workflow)

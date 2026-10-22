@@ -310,6 +310,13 @@ jobs:
                       if case_order.index(candidate) > case_order.index(failed_case)
                       and candidate in cases
                   ]
+              reported_not_run = report.get("not_run_cases")
+              failed_case_also_not_run = (
+                  status == "FAIL"
+                  and isinstance(failed_case, str)
+                  and isinstance(reported_not_run, list)
+                  and failed_case in reported_not_run
+              )
               completed_cases = [case for case in completed_order if case in cases]
               completed = (
                   ", ".join(f"`{case}`" for case in completed_cases)
@@ -352,6 +359,13 @@ jobs:
                           "are ignored and must not be treated as completed, "
                           "passed, or validated evidence."
                       )
+                  if failed_case_also_not_run:
+                      lines.append(
+                          "  - **Report is inconsistent:** the failed case "
+                          f"`{case}` is also listed in `not_run_cases`. It is "
+                          "treated as failed, not completed, passed, or "
+                          "validated evidence."
+                      )
                   failed_routes = report.get("failed_routes")
                   if isinstance(failed_routes, list) and failed_routes:
                       lines.append(
@@ -375,7 +389,6 @@ jobs:
                           if case_order.index(candidate) > case_order.index(case)
                       ]
                   else:
-                      reported_not_run = report.get("not_run_cases")
                       remaining = (
                           [candidate for candidate in reported_not_run
                            if candidate in case_order]
