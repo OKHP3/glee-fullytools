@@ -54,7 +54,7 @@ EXACT_RELEASE = re.compile(r"\d+\.\d+\.\d+$")
 NPM_FORBIDDEN = ()  # Existing optional QA packages are retained.
 
 # Universal Python QA pin: all three sites parse HTML from Python.
-PIP_REQUIRED = ("beautifulsoup4", "playwright")
+PIP_REQUIRED = ("beautifulsoup4", "Pillow", "playwright")
 
 DEPLOY_ACTION = "actions/deploy-pages@v5"
 

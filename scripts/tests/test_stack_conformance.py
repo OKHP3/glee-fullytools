@@ -115,9 +115,23 @@ class StackSafetyTests(unittest.TestCase):
     def test_python_updates_accept_exact_pins_and_reject_ranges(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for content, valid in (("beautifulsoup4==4.16.0\nplaywright==1.63.0\n", True),
-                                   ("beautifulsoup4>=4.15.0\nplaywright==1.63.0\n", False),
-                                   ("beautifulsoup4==4.15.0\nplaywright==1.64.0rc1\n", False)):
+            for content, valid in (
+                (
+                    "beautifulsoup4==4.16.0\nPillow==12.2.0\n"
+                    "playwright==1.63.0\n",
+                    True,
+                ),
+                (
+                    "beautifulsoup4>=4.15.0\nPillow==12.2.0\n"
+                    "playwright==1.63.0\n",
+                    False,
+                ),
+                (
+                    "beautifulsoup4==4.15.0\nPillow==12.2.0\n"
+                    "playwright==1.64.0rc1\n",
+                    False,
+                ),
+            ):
                 (root / "requirements-qa.txt").write_text(content)
                 report = checker.Report([])
                 checker.check_pip_deps(root, report)

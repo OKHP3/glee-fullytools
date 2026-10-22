@@ -9,8 +9,11 @@ import subprocess
 import tempfile
 import unittest
 from contextlib import ExitStack
+from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
+
+from PIL import Image
 
 
 _SCRIPT = Path(__file__).resolve().parent.parent / "audit-site.py"
@@ -23,9 +26,24 @@ ORIGIN = "https://glee-fully.tools"
 
 
 def social_image_fixture(
+    extension: str, width: int = 1200, height: int = 630,
+) -> bytes:
+    """Create a fully encoded image suitable for end-to-end auditor tests."""
+    image_format = {"png": "PNG", "jpg": "JPEG", "gif": "GIF", "webp": "WEBP"}[
+        extension
+    ]
+    buffer = BytesIO()
+    Image.new("RGB", (width, height), (120, 80, 200)).save(
+        buffer, format=image_format
+    )
+    return buffer.getvalue()
+
+
+def social_image_header_fixture(
     extension: str, width: int = 1200, height: int = 630, *,
     webp_encoding: str = "VP8X",
 ) -> bytes:
+    """Build header-only fixtures for directly testing dimension parsing."""
     if extension == "png":
         return (
             b"\x89PNG\r\n\x1a\n"
@@ -761,20 +779,13 @@ class AuditSiteTests(unittest.TestCase):
                     self.assertEqual(self.og_image_findings(root, url), [])
 
     def test_all_webp_encodings_report_dimensions(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory) / "repo"
-            image_dir = root / "assets" / "social"
-            image_dir.mkdir(parents=True)
-            for encoding in ("VP8X", "VP8 ", "VP8L"):
-                with self.subTest(encoding=encoding):
-                    filename = f"{encoding.strip().lower()}.webp"
-                    (image_dir / filename).write_bytes(
-                        social_image_fixture("webp", webp_encoding=encoding)
-                    )
-                    findings = self.og_image_findings(
-                        root, f"{ORIGIN}/assets/social/{filename}"
-                    )
-                    self.assertEqual(findings, [])
+        for encoding in ("VP8X", "VP8 ", "VP8L"):
+            with self.subTest(encoding=encoding):
+                image_file = BytesIO(
+                    social_image_header_fixture("webp", webp_encoding=encoding)
+                )
+                dimensions = _MODULE._social_image_dimensions(image_file, "WebP")
+                self.assertEqual(dimensions, (1200, 630))
 
     def test_matching_og_image_dimensions_are_accepted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -904,6 +915,74 @@ class AuditSiteTests(unittest.TestCase):
                     self.assertEqual(len(findings), 1)
                     self.assertIn("dimensions could not be inspected", findings[0])
                     self.assertIn("malformed or truncated", findings[0])
+
+    def test_images_with_intact_dimensions_but_damaged_payloads_are_rejected(self) -> None:
+        valid_image_bytes = {
+            extension: social_image_fixture(extension)
+            for extension in ("png", "jpg", "gif", "webp")
+        }
+        damaged_images = {}
+
+        png = valid_image_bytes["png"]
+        idat_payload = png.index(b"IDAT") + 4
+        damaged_images["png"] = (
+            png[:idat_payload]
+            + bytes((png[idat_payload] ^ 0xFF,))
+            + png[idat_payload + 1:]
+        )
+
+        jpeg = valid_image_bytes["jpg"]
+        scan_marker = jpeg.index(b"\xff\xda")
+        scan_header_length = int.from_bytes(
+            jpeg[scan_marker + 2:scan_marker + 4], "big"
+        )
+        scan_payload = scan_marker + 2 + scan_header_length
+        damaged_images["jpg"] = jpeg[:scan_payload + 10]
+
+        gif = valid_image_bytes["gif"]
+        image_descriptor = gif.index(b"\x2c")
+        descriptor = gif[image_descriptor:image_descriptor + 10]
+        local_table_size = (
+            3 * (2 ** ((descriptor[9] & 0x07) + 1))
+            if descriptor[9] & 0x80
+            else 0
+        )
+        lzw_payload = image_descriptor + 10 + local_table_size + 1
+        damaged_images["gif"] = gif[:lzw_payload + 2]
+
+        webp = valid_image_bytes["webp"]
+        damaged_images["webp"] = webp[:-5]
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for extension, data in damaged_images.items():
+                with self.subTest(extension=extension):
+                    path = image_dir / f"broken.{extension}"
+                    path.write_bytes(data)
+                    image_format = {
+                        "png": "PNG",
+                        "jpg": "JPEG",
+                        "gif": "GIF",
+                        "webp": "WebP",
+                    }[extension]
+                    with path.open("rb") as image_file:
+                        self.assertEqual(
+                            _MODULE._social_image_dimensions(
+                                image_file, image_format
+                            ),
+                            (1200, 630),
+                        )
+
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/broken.{extension}"
+                    )
+
+                    self.assertEqual(len(findings), 1)
+                    self.assertIn(
+                        "encoded image data could not be decoded", findings[0]
+                    )
 
     def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

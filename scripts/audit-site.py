@@ -34,7 +34,8 @@ Per-page checks actually emitted as issues:
     `id="foo"` on the same page
   * og:image URL (when it points to glee-fully.tools) resolves to a
     supported raster image (PNG, JPEG, GIF, or WebP) on disk, checked by
-    file signature (URL-decoded to handle %20 etc.)
+    file signature, dimensions, and full local decode (URL-decoded to
+    handle %20 etc.)
 
 Cross-file / repo-wide checks:
   * no leftover backup / OS-junk files (.bak, .orig, .swp, .DS_Store, ~)
@@ -65,14 +66,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import struct
 import subprocess
 import sys
+import warnings
 from urllib.parse import urlsplit
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Tuple, TypedDict
 from xml.etree import ElementTree as ET
+from PIL import Image
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
@@ -219,6 +223,34 @@ def _social_image_dimensions(image_file, image_format: str) -> Tuple[int, int] |
     if width <= 0 or height <= 0:
         return None
     return width, height
+
+
+def _social_image_decodes(image_path: Path, image_format: str) -> bool:
+    """Require every frame of a local social image to pass structural and pixel decoding."""
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(image_path) as image:
+                expected_format = {"WebP": "WEBP"}.get(image_format, image_format)
+                if image.format != expected_format:
+                    return False
+                image.verify()
+            with Image.open(image_path) as image:
+                for frame_number in range(getattr(image, "n_frames", 1)):
+                    image.seek(frame_number)
+                    image.load()
+    except (
+        EOFError,
+        OSError,
+        SyntaxError,
+        struct.error,
+        ValueError,
+        OverflowError,
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+    ):
+        return False
+    return True
 
 
 def iter_html_files() -> List[Path]:
@@ -391,7 +423,7 @@ def _og_image_issues(
     root: Path,
     origin: str,
 ) -> List[str]:
-    """Validate local og:image paths and signatures without fetching URLs."""
+    """Validate and decode local og:image files without fetching URLs."""
     if not url.strip():
         return ["og:image declaration is missing a non-empty content URL"]
 
@@ -440,6 +472,8 @@ def _og_image_issues(
         return [f"og:image file could not be inspected: {url}"]
     if dimensions is None:
         return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
+    if not _social_image_decodes(target, detected_format):
+        return [f"og:image encoded image data could not be decoded: {url}"]
     width, height = dimensions
     issues = []
     for dimension_name, declared_values, actual_value in (
