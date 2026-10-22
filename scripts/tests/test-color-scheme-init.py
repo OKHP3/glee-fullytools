@@ -869,7 +869,15 @@ def main() -> None:
                     ),
                 )
             finally:
-                browser.close()
+                try:
+                    browser.close()
+                except Exception as cleanup_error:
+                    if report.get("failure_stage") == "theme_check":
+                        report["cleanup_error"] = str(cleanup_error)
+                    else:
+                        report["failure_stage"] = "browser_cleanup"
+                        report["error"] = str(cleanup_error)
+                    raise
         report["status"] = "PASS"
     except Exception as error:
         report["status"] = "FAIL"

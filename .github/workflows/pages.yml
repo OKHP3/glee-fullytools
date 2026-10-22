@@ -291,15 +291,16 @@ jobs:
               reported_cases = report.get("cases")
               cases_are_valid = isinstance(reported_cases, dict)
               cases = reported_cases if cases_are_valid else {}
+              failure_stage = report.get("failure_stage")
               if not cases_are_valid:
                   lines.append(
                       f"- **{engine}:** case results are malformed "
                       "(expected an object); no cases are treated as completed, "
                       "passed, or validated evidence."
                   )
+              failed_case = report.get("failed_case")
               completed_order = case_order
-              if status == "FAIL":
-                  failed_case = report.get("failed_case")
+              if status == "FAIL" and failure_stage != "browser_cleanup":
                   completed_order = (
                       case_order[:case_order.index(failed_case)]
                       if isinstance(failed_case, str) and failed_case in case_order
@@ -333,7 +334,6 @@ jobs:
                   case = failed_case if (
                       isinstance(failed_case, str) and failed_case in case_order
                   ) else "not identified"
-                  failure_stage = report.get("failure_stage")
                   if case != "not identified":
                       failure_label = f"theme check failed in `{case}`"
                   elif failure_stage == "browser_startup":
@@ -344,6 +344,8 @@ jobs:
                       failure_label = (
                           "theme-check execution failed without an identified case"
                       )
+                  elif failure_stage == "browser_cleanup":
+                      failure_label = "browser cleanup failed while closing the browser"
                   else:
                       failure_label = (
                           "browser failure stage and case were not identified"
@@ -365,6 +367,12 @@ jobs:
                       "  - Completed before failure (diagnostic only; not "
                       f"validated evidence): {completed}."
                   )
+                  cleanup_error = report.get("cleanup_error")
+                  if isinstance(cleanup_error, str) and cleanup_error.strip():
+                      lines.append(
+                          "  - Browser cleanup also failed while closing the "
+                          f"browser: {one_line(cleanup_error)}."
+                      )
                   if later_reported_cases:
                       later = ", ".join(
                           f"`{candidate}`" for candidate in later_reported_cases
@@ -404,6 +412,16 @@ jobs:
                           candidate for candidate in case_order
                           if case_order.index(candidate) > case_order.index(case)
                       ]
+                  elif failure_stage == "browser_cleanup":
+                      remaining = (
+                          [candidate for candidate in reported_not_run
+                           if candidate in case_order]
+                          if isinstance(reported_not_run, list)
+                          else [
+                              candidate for candidate in case_order
+                              if candidate not in cases
+                          ]
+                      )
                   else:
                       remaining = (
                           [candidate for candidate in reported_not_run
