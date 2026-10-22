@@ -32,10 +32,9 @@ METADATA_MAX_ATTEMPTS = 3
 METADATA_RETRY_BACKOFF_SECONDS = 1
 METADATA_MAX_RETRY_WAIT_SECONDS = 60
 MAX_RETRY_AFTER_SECONDS = 60
-# The scheduled workflow has a 10-minute hard timeout. Keep the monitor's
-# shared wall-clock budget to 7 minutes so checkout, startup, and reporting
-# retain at least 3 minutes of margin. Every API/download attempt and retry wait
-# uses this same budget across all active runs.
+# Every API/download attempt and retry wait uses this shared budget across all
+# active runs. The workflow contract test checks it against the scheduled job's
+# timeout and requires at least three minutes for checkout, startup, and reporting.
 MONITOR_RUNTIME_BUDGET_SECONDS = 7 * 60
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_ARTIFACT_BYTES = 512 * 1024 * 1024

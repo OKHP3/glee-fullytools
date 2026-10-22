@@ -7,6 +7,7 @@ from io import BytesIO, StringIO
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -655,6 +656,33 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         )
 
 
+def assert_retention_timeout_contract(
+    workflow: str, monitor_budget_seconds: int, minimum_margin_seconds: int
+) -> None:
+    try:
+        monitor_job = workflow.split("  monitor:", 1)[1]
+    except IndexError as error:
+        raise AssertionError(
+            "scheduled retention workflow must define a monitor job"
+        ) from error
+    timeout_match = re.search(
+        r"(?m)^\s+timeout-minutes:\s*(\d+)\s*$", monitor_job
+    )
+    if timeout_match is None:
+        raise AssertionError(
+            "scheduled retention job must define timeout-minutes"
+        )
+    timeout_seconds = int(timeout_match.group(1)) * 60
+    margin_seconds = timeout_seconds - monitor_budget_seconds
+    if margin_seconds < minimum_margin_seconds:
+        raise AssertionError(
+            "scheduled retention job timeout must exceed the monitor budget "
+            f"by at least {minimum_margin_seconds} seconds "
+            f"(timeout={timeout_seconds}s, budget={monitor_budget_seconds}s, "
+            f"margin={margin_seconds}s)"
+        )
+
+
 class PagesValidationEvidenceTests(unittest.TestCase):
     def test_retention_checker_requires_repository_checkout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -684,16 +712,28 @@ class PagesValidationEvidenceTests(unittest.TestCase):
     def test_scheduled_retention_workflow_is_read_only_and_daily(self):
         workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('cron: "17 12 * * *"', workflow)
-        self.assertIn("timeout-minutes: 10", workflow)
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
-        self.assertEqual(retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 7 * 60)
-        self.assertGreaterEqual(
-            10 * 60 - retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 3 * 60
+        assert_retention_timeout_contract(
+            workflow,
+            retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS,
+            3 * 60,
         )
+
+    def test_retention_timeout_contract_explains_an_unsafe_margin(self):
+        workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
+        with self.assertRaisesRegex(
+            AssertionError,
+            "must exceed the monitor budget by at least 180 seconds",
+        ):
+            assert_retention_timeout_contract(
+                workflow,
+                monitor_budget_seconds=8 * 60 + 1,
+                minimum_margin_seconds=3 * 60,
+            )
 
     def test_shared_monitor_budget_identifies_runs_left_unchecked(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
