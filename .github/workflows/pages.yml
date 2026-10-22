@@ -298,9 +298,22 @@ jobs:
                       "(expected an object); no cases are treated as completed, "
                       "passed, or validated evidence."
                   )
+              reported_failures = report.get("case_failures")
+              case_failures = (
+                  reported_failures if isinstance(reported_failures, dict) else {}
+              )
+              failed_cases = [
+                  case for case in case_order
+                  if case in case_failures
+              ]
+              has_case_failure_details = bool(failed_cases)
               failed_case = report.get("failed_case")
               completed_order = case_order
-              if status == "FAIL" and failure_stage != "browser_cleanup":
+              if (
+                  status == "FAIL"
+                  and failure_stage != "browser_cleanup"
+                  and not has_case_failure_details
+              ):
                   completed_order = (
                       case_order[:case_order.index(failed_case)]
                       if isinstance(failed_case, str) and failed_case in case_order
@@ -309,6 +322,7 @@ jobs:
               later_reported_cases = []
               if (
                   status == "FAIL"
+                  and not has_case_failure_details
                   and isinstance(failed_case, str)
                   and failed_case in case_order
               ):
@@ -320,9 +334,13 @@ jobs:
               reported_not_run = report.get("not_run_cases")
               failed_case_also_not_run = (
                   status == "FAIL"
-                  and isinstance(failed_case, str)
                   and isinstance(reported_not_run, list)
-                  and failed_case in reported_not_run
+                  and (
+                      any(case in reported_not_run for case in failed_cases)
+                      if has_case_failure_details
+                      else isinstance(failed_case, str)
+                      and failed_case in reported_not_run
+                  )
               )
               completed_cases = [case for case in completed_order if case in cases]
               completed = (
@@ -330,11 +348,15 @@ jobs:
                   or "none"
               )
               if status == "FAIL":
-                  failed_case = report.get("failed_case")
                   case = failed_case if (
                       isinstance(failed_case, str) and failed_case in case_order
                   ) else "not identified"
-                  if case != "not identified":
+                  if has_case_failure_details:
+                      failure_label = (
+                          "theme checks failed in "
+                          + ", ".join(f"`{name}`" for name in failed_cases)
+                      )
+                  elif case != "not identified":
                       failure_label = f"theme check failed in `{case}`"
                   elif failure_stage == "browser_startup":
                       failure_label = (
@@ -364,8 +386,15 @@ jobs:
                           f"evidence): `{setup_step_labels[setup_step]}`."
                       )
                   lines.append(
-                      "  - Completed before failure (diagnostic only; not "
-                      f"validated evidence): {completed}."
+                      (
+                          "  - Completed theme cases (diagnostic only; not "
+                          f"validated evidence): {completed}."
+                      )
+                      if has_case_failure_details
+                      else (
+                          "  - Completed before failure (diagnostic only; not "
+                          f"validated evidence): {completed}."
+                      )
                   )
                   cleanup_error = report.get("cleanup_error")
                   if isinstance(cleanup_error, str) and cleanup_error.strip():
@@ -390,24 +419,58 @@ jobs:
                           "treated as failed, not completed, passed, or "
                           "validated evidence."
                       )
-                  failed_routes = report.get("failed_routes")
-                  if isinstance(failed_routes, list) and failed_routes:
-                      lines.append(
-                          "  - Affected pages (diagnostic only; not validated "
-                          "release evidence):"
-                      )
-                      for failure in failed_routes:
-                          if not isinstance(failure, dict):
-                              continue
-                          route = failure.get("route")
-                          if not isinstance(route, str) or not route.strip():
-                              continue
-                          detail = one_line(failure.get("error", ""))
-                          suffix = f": {detail}" if detail else ""
+                  if has_case_failure_details:
+                      failures_to_report = [
+                          (name, case_failures.get(name))
+                          for name in failed_cases
+                      ]
+                  else:
+                      failures_to_report = [
+                          (case, {
+                              "error": report.get("error", ""),
+                              "failed_routes": report.get("failed_routes"),
+                          })
+                      ] if case != "not identified" else []
+                  for failed_name, failure_record in failures_to_report:
+                      if not isinstance(failure_record, dict):
                           lines.append(
-                              f"    - `{one_line(route)}`{suffix}"
+                              f"  - Failed case `{failed_name}` has malformed "
+                              "failure details."
                           )
-                  if case != "not identified":
+                          continue
+                      if has_case_failure_details:
+                          detail = one_line(failure_record.get("error", ""))
+                          suffix = f": {detail}" if detail else ""
+                          lines.append(f"  - Failed case `{failed_name}`{suffix}.")
+                      failed_routes = failure_record.get("failed_routes")
+                      if isinstance(failed_routes, list) and failed_routes:
+                          lines.append(
+                              "  - Affected pages (diagnostic only; not validated "
+                              f"release evidence) for `{failed_name}`:"
+                          )
+                          for failure in failed_routes:
+                              if not isinstance(failure, dict):
+                                  continue
+                              route = failure.get("route")
+                              if not isinstance(route, str) or not route.strip():
+                                  continue
+                              detail = one_line(failure.get("error", ""))
+                              suffix = f": {detail}" if detail else ""
+                              lines.append(
+                                  f"    - `{one_line(route)}`{suffix}"
+                              )
+                  if has_case_failure_details:
+                      remaining = (
+                          [candidate for candidate in reported_not_run
+                           if candidate in case_order]
+                          if isinstance(reported_not_run, list)
+                          else [
+                              candidate for candidate in case_order
+                              if candidate not in cases
+                              and candidate not in case_failures
+                          ]
+                      )
+                  elif case != "not identified":
                       remaining = [
                           candidate for candidate in case_order
                           if case_order.index(candidate) > case_order.index(case)

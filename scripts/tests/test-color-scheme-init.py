@@ -852,22 +852,25 @@ def check_disabled_storage(browser, base_url, routes):
 
 
 def capture_case(report: dict[str, object], name: str, check) -> None:
-    """Keep completed cases and mark a failing case for diagnostic summaries."""
+    """Record one result without preventing independent theme cases from running."""
     try:
         result = check()
     except Exception as error:
         report["diagnostic_only"] = True
         report["failure_stage"] = "theme_check"
-        report["failed_case"] = name
-        if name in THEME_CASES:
-            report["not_run_cases"] = list(
-                THEME_CASES[THEME_CASES.index(name) + 1:]
-            )
+        failures = report.setdefault("case_failures", {})
+        if not isinstance(failures, dict):
+            raise TypeError("Browser report case_failures must be an object")
+        failure: dict[str, object] = {"error": str(error)}
         failed_routes = getattr(error, "failed_routes", None)
         if isinstance(failed_routes, list):
+            failure["failed_routes"] = failed_routes
+        failures[name] = failure
+        report.setdefault("failed_case", name)
+        report.setdefault("error", str(error))
+        if "failed_routes" not in report and isinstance(failed_routes, list):
             report["failed_routes"] = failed_routes
-        report["error"] = str(error)
-        raise
+        return
 
     cases = report.setdefault("cases", {})
     if not isinstance(cases, dict):
@@ -937,6 +940,10 @@ def main() -> None:
                         browser, base_url, ["/", *UTILITY_ROUTES]
                     ),
                 )
+                case_failures = report.get("case_failures", {})
+                if isinstance(case_failures, dict) and case_failures:
+                    report["failure_stage"] = "theme_check"
+                    report["not_run_cases"] = []
             finally:
                 try:
                     browser.close()
@@ -947,7 +954,9 @@ def main() -> None:
                         report["failure_stage"] = "browser_cleanup"
                         report["error"] = str(cleanup_error)
                     raise
-        report["status"] = "PASS"
+        report["status"] = (
+            "FAIL" if report.get("case_failures") else "PASS"
+        )
     except Exception as error:
         report["status"] = "FAIL"
         report["diagnostic_only"] = True

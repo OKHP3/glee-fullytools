@@ -1876,14 +1876,25 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         def fail_dark_case():
             raise AssertionError("dark preference was not applied")
 
-        with self.assertRaisesRegex(AssertionError, "dark preference was not applied"):
-            color_scheme_checker.capture_case(report, "dark", fail_dark_case)
+        color_scheme_checker.capture_case(report, "dark", fail_dark_case)
+        color_scheme_checker.capture_case(
+            report, "disabled_storage", lambda: {"storage_blocked": True}
+        )
 
-        self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
+        self.assertEqual(
+            report["cases"],
+            {
+                "light": {"preference_applied": True},
+                "disabled_storage": {"storage_blocked": True},
+            },
+        )
         self.assertEqual(report["failure_stage"], "theme_check")
         self.assertEqual(report["failed_case"], "dark")
-        self.assertEqual(report["not_run_cases"], ["disabled_storage"])
         self.assertEqual(report["error"], "dark preference was not applied")
+        self.assertEqual(
+            report["case_failures"],
+            {"dark": {"error": "dark preference was not applied"}},
+        )
         self.assertTrue(report["diagnostic_only"])
 
     def test_browser_launch_failure_is_reported_before_theme_checks_begin(self):
@@ -2071,18 +2082,17 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         )
 
         report = {"cases": {}}
-        with self.assertRaises(color_scheme_checker.RouteCheckFailure):
-            color_scheme_checker.capture_case(
-                report,
-                "dark",
-                lambda: color_scheme_checker.collect_route_evidence(
-                    ["/first/", "/second/"], check
-                ),
+        color_scheme_checker.capture_case(
+            report,
+            "dark",
+            lambda: color_scheme_checker.collect_route_evidence(
+                ["/first/", "/second/"], check
             )
+        )
         self.assertTrue(report["diagnostic_only"])
         self.assertEqual(report["failed_case"], "dark")
         self.assertEqual(
-            report["failed_routes"],
+            report["case_failures"]["dark"]["failed_routes"],
             failure.exception.failed_routes,
         )
 
@@ -2477,6 +2487,98 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(report["failed_routes"][0]["route"], "/theme-regression/")
             stdout.close()
 
+    def test_first_theme_failure_keeps_running_and_reports_later_case_results(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        attempted = []
+
+        def check_saved(_browser, _base_url, preference, _routes):
+            attempted.append(preference)
+            if preference == "light":
+                raise AssertionError("light preference regressed")
+            return {"routes": 1, "preference": preference}
+
+        def check_blocked(_browser, _base_url, _routes):
+            attempted.append("disabled_storage")
+            return {"routes": 1, "storage_blocked": True}
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(
+                    color_scheme_checker, "browser_routes", return_value=["/"]
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    side_effect=check_saved,
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_disabled_storage",
+                    side_effect=check_blocked,
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit) as exit_result,
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(exit_result.exception.code, 1)
+            self.assertEqual(attempted, ["light", "dark", "disabled_storage"])
+            self.assertEqual(report["status"], "FAIL")
+            self.assertEqual(report["failure_stage"], "theme_check")
+            self.assertEqual(
+                report["case_failures"],
+                {"light": {"error": "light preference regressed"}},
+            )
+            self.assertEqual(
+                report["cases"],
+                {
+                    "dark": {"routes": 1, "preference": "dark"},
+                    "disabled_storage": {"routes": 1, "storage_blocked": True},
+                },
+            )
+            self.assertEqual(report["not_run_cases"], [])
+            stdout.close()
+
     def test_browser_close_failure_preserves_completed_theme_cases(self):
         playwright_api = ModuleType("playwright.sync_api")
 
@@ -2643,6 +2745,11 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     "check_saved_preference",
                     side_effect=[{"routes": 1}, theme_failure],
                 ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_disabled_storage",
+                    return_value={"routes": 1},
+                ),
                 patch.object(sys, "stdout", stdout),
                 self.assertRaises(SystemExit),
             ):
@@ -2653,8 +2760,87 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(report["failed_case"], "dark")
             self.assertEqual(report["error"], "dark preference failed")
             self.assertEqual(report["cleanup_error"], "browser close failed")
-            self.assertEqual(report["not_run_cases"], ["disabled_storage"])
+            self.assertEqual(report["not_run_cases"], [])
+            self.assertEqual(
+                report["case_failures"]["dark"]["error"],
+                "dark preference failed",
+            )
+            self.assertIn("disabled_storage", report["cases"])
             stdout.close()
+
+    def test_theme_failure_summary_reports_each_failure_and_later_success(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps(
+                    {
+                        "browser": "firefox",
+                        "status": "FAIL",
+                        "diagnostic_only": True,
+                        "failure_stage": "theme_check",
+                        "failed_case": "light",
+                        "error": "saved light preference was not applied",
+                        "cases": {"dark": {"routes": 1}},
+                        "case_failures": {
+                            "light": {
+                                "error": "saved light preference was not applied",
+                                "failed_routes": [
+                                    {
+                                        "route": "/light-regression/",
+                                        "error": "expected light, got dark",
+                                    }
+                                ],
+                            },
+                            "disabled_storage": {
+                                "error": "storage remained accessible",
+                                "failed_routes": [
+                                    {
+                                        "route": "/storage-regression/",
+                                        "error": "expected SecurityError",
+                                    }
+                                ],
+                            },
+                        },
+                        "not_run_cases": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn(
+                "theme checks failed in `light`, `disabled_storage`",
+                summary,
+            )
+            self.assertIn(
+                "Failed case `light`: saved light preference was not applied.",
+                summary,
+            )
+            self.assertIn(
+                "Failed case `disabled_storage`: storage remained accessible.",
+                summary,
+            )
+            self.assertIn(
+                "Completed theme cases (diagnostic only; not validated evidence): "
+                "`dark`.",
+                summary,
+            )
+            self.assertIn("`/light-regression/`: expected light, got dark", summary)
+            self.assertIn("`/storage-regression/`: expected SecurityError", summary)
+            self.assertIn("Not run: none", summary)
+            self.assertNotIn("Report is inconsistent", summary)
 
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
