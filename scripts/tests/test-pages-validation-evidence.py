@@ -135,6 +135,30 @@ def artifact_archive_with_special_required_entry(report_path, entry_attributes):
     return archive.getvalue()
 
 
+def artifact_archive_with_encrypted_required_entry(report_path):
+    """Return an archive whose required member is marked as password-protected."""
+    archive = bytearray(valid_artifact_archive())
+    encoded_name = report_path.encode("utf-8")
+    with zipfile.ZipFile(BytesIO(archive)) as zipped:
+        entry = zipped.getinfo(report_path)
+        local_name_offset = entry.header_offset + 30
+        name_length = int.from_bytes(
+            archive[entry.header_offset + 26:entry.header_offset + 28], "little"
+        )
+        local_name = bytes(
+            archive[local_name_offset:local_name_offset + name_length]
+        )
+        if local_name != encoded_name:
+            raise AssertionError("local ZIP entry name does not match the target")
+        archive[entry.header_offset + 6] |= 0x1
+
+    central_name_offset = archive.find(encoded_name, local_name_offset + name_length)
+    if central_name_offset < 0:
+        raise AssertionError("central ZIP entry name was not found")
+    archive[central_name_offset - 38] |= 0x1
+    return bytes(archive)
+
+
 def browser_theme_index() -> str:
     """Return a valid minimal index for exercising the uploaded-artifact gate."""
     rows = [
@@ -1736,6 +1760,17 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_encrypted_required_evidence_entry_is_rejected_as_invalid_archive(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        encrypted_archive = artifact_archive_with_encrypted_required_entry(report_path)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            f"artifact archive contains an encrypted required evidence file: "
+            f"{report_path}",
+        ):
+            retention_checker.validate_artifact_archive(BytesIO(encrypted_archive))
 
     def test_required_evidence_entry_cannot_be_a_directory_or_symlink(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"

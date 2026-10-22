@@ -522,6 +522,11 @@ def validate_artifact_archive(archive) -> None:
                             "required evidence entry is not a regular file: "
                             f"{entry.filename}"
                         )
+                    if entry.flag_bits & 0x1:
+                        raise ValueError(
+                            "artifact archive contains an encrypted required "
+                            f"evidence file: {entry.filename}"
+                        )
             duplicates = sorted(
                 name for name, count in required_counts.items() if count > 1
             )
