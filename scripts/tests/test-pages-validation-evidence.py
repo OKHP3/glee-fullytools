@@ -785,6 +785,95 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         sleep.assert_not_called()
         self.assertTrue(body.closed)
 
+    def test_metadata_http_date_wait_and_budget_deferral(self):
+        for header, expected_delay in (
+            ("Thu, 01 Jan 1970 00:00:07 GMT", 7),
+            ("Thu, 01 Jan 1970 00:02:00 GMT", None),
+            ("Wed, 31 Dec 1969 23:59:59 GMT", 0),
+        ):
+            with self.subTest(header=header):
+                body = BytesIO(b"throttled")
+                error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": header}, body)
+                with patch.object(retention_checker.time, "time", return_value=0):
+                    with patch.object(retention_checker.time, "sleep") as sleep:
+                        with patch.object(retention_checker, "api_page", side_effect=[error, ({"ok": True}, None)]) as fetch:
+                            if expected_delay is None:
+                                with self.assertRaisesRegex(ValueError, "metadata.*retry deferred"):
+                                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+                                self.assertEqual(fetch.call_count, 1)
+                                sleep.assert_not_called()
+                            else:
+                                self.assertEqual(retention_checker._fetch_metadata_page("https://api.github.com/test", "token"), ({"ok": True}, None))
+                                self.assertEqual(fetch.call_count, 2)
+                                sleep.assert_called_once_with(expected_delay)
+                self.assertTrue(body.closed)
+
+    def test_metadata_http_date_respects_shared_runtime_budget(self):
+        clock = [0.0]
+        budget = retention_checker._RuntimeBudget(
+            5, clock=lambda: clock[0], sleeper=lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+        )
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "Thu, 01 Jan 1970 00:00:07 GMT"}, body)
+        with patch.object(retention_checker.time, "time", return_value=0):
+            with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+                with self.assertRaises(retention_checker._RetryBudgetExceeded):
+                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token", budget=budget)
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual(clock[0], 5)
+        self.assertTrue(body.closed)
+
+    def test_metadata_http_date_respects_remaining_retry_budget(self):
+        first = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "40"}, BytesIO())
+        second = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "Thu, 01 Jan 1970 00:00:30 GMT"}, BytesIO())
+        with patch.object(retention_checker.time, "time", return_value=0):
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                with patch.object(retention_checker, "api_page", side_effect=[first, second]) as fetch:
+                    with self.assertRaisesRegex(ValueError, "metadata.*retry deferred"):
+                        retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+        self.assertEqual(fetch.call_count, 2)
+        sleep.assert_called_once_with(40)
+        self.assertTrue(first.closed)
+        self.assertTrue(second.closed)
+
+    def test_retry_after_invalid_dates_defer_and_fractional_numbers_remain_valid(self):
+        for header in (
+            "not-a-date", "Thu, 01 Jan 1970 00:00:07", "nan", "-1",
+            "Sat, 31 Dec 2016 23:59:60 GMT",
+        ):
+            with self.subTest(header=header):
+                error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": header}, BytesIO())
+                with self.assertRaisesRegex(ValueError, "invalid Retry-After"):
+                    retention_checker._http_download_retry_delay(error, 1)
+                error.close()
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "0.5"}, BytesIO())
+        self.assertEqual(retention_checker._http_download_retry_delay(error, 1), 0.5)
+        error.close()
+
+    def test_retry_after_accepts_obsolete_http_dates_without_early_retry(self):
+        now = datetime(2026, 10, 27, tzinfo=timezone.utc)
+        target = datetime(2069, 11, 6, 8, 49, 37, tzinfo=timezone.utc)
+        cases = (
+            ("Wednesday, 06-Nov-69 08:49:37 GMT", (target - now).total_seconds()),
+            ("Wed Nov  6 08:49:37 2069", (target - now).total_seconds()),
+            ("Sunday, 06-Nov-94 08:49:37 GMT", 0),
+            ("Tuesday, 27-Oct-76 00:00:00 GMT", (datetime(2076, 10, 27, tzinfo=timezone.utc) - now).total_seconds()),
+            ("Tuesday, 27-Oct-76 00:00:01 GMT", 0),
+        )
+        for header, expected in cases:
+            with self.subTest(header=header):
+                error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": header}, BytesIO())
+                self.addCleanup(error.close)
+                with patch.object(retention_checker.time, "time", return_value=now.timestamp()):
+                    self.assertEqual(retention_checker._http_download_retry_delay(error, 1), expected)
+
+        late_century = datetime(2090, 10, 27, tzinfo=timezone.utc)
+        exactly_fifty = datetime(2140, 10, 27, tzinfo=timezone.utc)
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "Thursday, 27-Oct-40 00:00:00 GMT"}, BytesIO())
+        self.addCleanup(error.close)
+        with patch.object(retention_checker.time, "time", return_value=late_century.timestamp()):
+            self.assertEqual(retention_checker._http_download_retry_delay(error, 1), (exactly_fifty - late_century).total_seconds())
+
     def test_metadata_retry_cannot_outlive_shared_runtime_budget(self):
         clock = [0.0]
 
@@ -1221,6 +1310,44 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(len(calls), 1 if headers else 2)
             self.assertTrue(all(error.closed for error in errors))
             self.assertEqual(sleep.call_count, 0 if headers else 1)
+
+    def test_artifact_download_http_date_honors_or_defers_server_wait(self):
+        for header, expected_delay in (
+            ("Thu, 01 Jan 1970 00:00:07 GMT", 7),
+            ("Thu, 01 Jan 1970 00:02:00 GMT", None),
+        ):
+            with self.subTest(header=header):
+                body = BytesIO(b"throttled")
+                error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": header}, body)
+                response = FakeDownloadResponse(200, valid_artifact_archive())
+                with patch.object(retention_checker.time, "time", return_value=0):
+                    with patch.object(retention_checker.time, "sleep") as sleep:
+                        with patch.object(retention_checker, "_verify_artifact_download_once", side_effect=[error, response]) as download:
+                            if expected_delay is None:
+                                with self.assertRaisesRegex(ValueError, "retry deferred"):
+                                    retention_checker.verify_artifact_download("owner/repo", 701, "https://api.github.com", "token")
+                                self.assertEqual(download.call_count, 1)
+                                sleep.assert_not_called()
+                            else:
+                                self.assertEqual(retention_checker.verify_artifact_download("owner/repo", 701, "https://api.github.com", "token"), 1)
+                                self.assertEqual(download.call_count, 2)
+                                sleep.assert_called_once_with(expected_delay)
+                self.assertTrue(body.closed)
+
+    def test_artifact_download_http_date_respects_shared_runtime_budget(self):
+        clock = [0.0]
+        budget = retention_checker._RuntimeBudget(
+            5, clock=lambda: clock[0], sleeper=lambda seconds: clock.__setitem__(0, clock[0] + seconds)
+        )
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "Thu, 01 Jan 1970 00:00:07 GMT"}, body)
+        with patch.object(retention_checker.time, "time", return_value=0):
+            with patch.object(retention_checker, "_verify_artifact_download_once", side_effect=error) as download:
+                with self.assertRaises(retention_checker._RetryBudgetExceeded):
+                    retention_checker.verify_artifact_download("owner/repo", 701, "https://api.github.com", "token", budget=budget)
+        self.assertEqual(download.call_count, 1)
+        self.assertEqual(clock[0], 5)
+        self.assertTrue(body.closed)
 
     def test_artifact_download_closes_http_error_responses(self):
         for status in (503, 403):
