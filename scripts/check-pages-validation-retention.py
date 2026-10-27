@@ -3,6 +3,7 @@
 
 from datetime import datetime, timedelta, timezone
 import argparse
+from email.utils import parsedate_to_datetime
 import hashlib
 from http.client import IncompleteRead
 import json
@@ -329,11 +330,17 @@ def _http_download_retry_delay(
         return None
     if "retry-after" in headers:
         try:
-            delay = float(headers["retry-after"])
+            retry_after = headers["retry-after"]
+            try:
+                delay = float(retry_after)
+            except ValueError:
+                now = datetime.fromtimestamp(time.time(), timezone.utc)
+                retry_at = _parse_http_date(retry_after.strip(), now)
+                delay = max(0.0, (retry_at - now).total_seconds())
             if not math.isfinite(delay) or delay < 0:
                 raise ValueError("invalid retry interval")
             return delay
-        except (TypeError, ValueError) as invalid:
+        except (TypeError, ValueError, OverflowError, OSError) as invalid:
             raise ValueError(f"{label} retry deferred: invalid Retry-After") from invalid
     if throttled:
         if headers.get("x-ratelimit-remaining") == "0":
@@ -346,6 +353,50 @@ def _http_download_retry_delay(
                 raise ValueError(f"{label} retry deferred: invalid rate-limit reset") from invalid
         return 60 * (2 ** (attempt - 1))
     return DOWNLOAD_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
+
+
+def _parse_http_date(value: str, now: datetime) -> datetime:
+    """Parse the three HTTP-date forms with the RFC 850 rolling year rule."""
+    weekday = r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)"
+    long_weekday = r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)"
+    month = r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+    clock = r"[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    flags = re.IGNORECASE | re.ASCII
+
+    if re.fullmatch(
+        rf"{weekday}, [0-9]{{2}} {month} [0-9]{{4}} {clock} GMT", value, flags
+    ):
+        return parsedate_to_datetime(value)
+
+    obsolete = re.fullmatch(
+        rf"{long_weekday}, (?P<day>[0-9]{{2}})-(?P<month>{month})-"
+        rf"(?P<year>[0-9]{{2}}) (?P<clock>{clock}) GMT",
+        value,
+        flags,
+    )
+    if obsolete:
+        # Parse against a leap year first, then choose the century relative to
+        # the current date instead of email.utils' fixed two-digit-year pivot.
+        parts = parsedate_to_datetime(
+            f"{obsolete['day']} {obsolete['month']} 2000 {obsolete['clock']} GMT"
+        )
+        year = now.year - now.year % 100 + int(obsolete["year"])
+        candidate = (year, parts.month, parts.day, parts.hour, parts.minute, parts.second, 0)
+        current = (now.month, now.day, now.hour, now.minute, now.second, now.microsecond)
+        if candidate > (now.year + 50, *current):
+            year -= 100
+        elif candidate <= (now.year - 50, *current):
+            year += 100
+        return parts.replace(year=year)
+
+    if re.fullmatch(
+        rf"{weekday} {month} (?:[0-9]{{2}}| [0-9]) {clock} [0-9]{{4}}",
+        value,
+        flags,
+    ):
+        return parsedate_to_datetime(value).replace(tzinfo=timezone.utc)
+
+    raise ValueError("invalid HTTP-date")
 
 
 def _verify_artifact_download_once(
