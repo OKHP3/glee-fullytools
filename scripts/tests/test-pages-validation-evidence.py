@@ -788,6 +788,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
     def test_metadata_http_date_wait_and_budget_deferral(self):
         for header, expected_delay in (
             ("Thu, 01 Jan 1970 00:00:07 GMT", 7),
+            ("  Thu, 01 Jan 1970 00:00:07 GMT  ", 7),
             ("Thu, 01 Jan 1970 00:02:00 GMT", None),
             ("Wed, 31 Dec 1969 23:59:59 GMT", 0),
         ):
@@ -849,6 +850,17 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "0.5"}, BytesIO())
         self.assertEqual(retention_checker._http_download_retry_delay(error, 1), 0.5)
         error.close()
+
+    def test_metadata_malformed_retry_after_fails_without_retry(self):
+        body = BytesIO(b"throttled")
+        error = HTTPError("https://api.github.com/test", 429, "Retry", {"Retry-After": "later"}, body)
+        with patch.object(retention_checker, "api_page", side_effect=error) as fetch:
+            with patch.object(retention_checker.time, "sleep") as sleep:
+                with self.assertRaisesRegex(ValueError, "invalid Retry-After"):
+                    retention_checker._fetch_metadata_page("https://api.github.com/test", "token")
+        self.assertEqual(fetch.call_count, 1)
+        sleep.assert_not_called()
+        self.assertTrue(body.closed)
 
     def test_retry_after_accepts_obsolete_http_dates_without_early_retry(self):
         now = datetime(2026, 10, 27, tzinfo=timezone.utc)

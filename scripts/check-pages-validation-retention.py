@@ -335,7 +335,7 @@ def _http_download_retry_delay(
                 delay = float(retry_after)
             except ValueError:
                 now = datetime.fromtimestamp(time.time(), timezone.utc)
-                retry_at = _parse_http_date(retry_after, now)
+                retry_at = _parse_http_date(retry_after.strip(), now)
                 delay = max(0.0, (retry_at - now).total_seconds())
             if not math.isfinite(delay) or delay < 0:
                 raise ValueError("invalid retry interval")
