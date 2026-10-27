@@ -222,6 +222,9 @@ jobs:
       - name: Test returning-visitor search cache migration
         run: node --test scripts/tests/test-search-cache-migration.cjs
 
+      - name: Test search behavior and joined route names
+        run: node scripts/tests/test-search-accent.cjs
+
   review-action-versions:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
