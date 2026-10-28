@@ -64,6 +64,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
 import json
 import re
 import struct
@@ -118,6 +120,7 @@ SOCIAL_DECODE_MAX_FRAME_PIXELS = 20_000_000
 SOCIAL_DECODE_MAX_FRAMES = 32
 SOCIAL_DECODE_MAX_TOTAL_PIXELS = 80_000_000
 SOCIAL_DECODE_TIMEOUT_SECONDS = 5
+SOCIAL_DECODE_CACHE_LIMIT = 128
 
 SOCIAL_IMAGE_MIN_WIDTH = 1200
 SOCIAL_IMAGE_MIN_HEIGHT = 630
@@ -365,6 +368,65 @@ def _social_image_decodes(image_path: Path, image_format: str) -> str:
     return {10: "ok", 11: "invalid"}.get(result.returncode, "unverified")
 
 
+def _image_stat_identity(st) -> tuple:
+    return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+
+
+def _bounded_image_digest(path: Path):
+    """Hash a bounded stable file; do not claim atomicity against a concurrent writer."""
+    try:
+        digest = hashlib.sha256()
+        path_before = _image_stat_identity(path.stat())
+        with path.open("rb") as image_file:
+            before = _image_stat_identity(os.fstat(image_file.fileno()))
+            # Windows may report different ctime meanings for path stat and fstat.
+            # Compare ctime within each source, not across these two APIs.
+            if before[:4] != path_before[:4] or before[2] > SOCIAL_DECODE_MAX_BYTES:
+                return None
+            total = 0
+            while True:
+                chunk = image_file.read(1024 * 1024)
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > SOCIAL_DECODE_MAX_BYTES:
+                    return None
+                digest.update(chunk)
+            after = _image_stat_identity(os.fstat(image_file.fileno()))
+        path_after = _image_stat_identity(path.stat())
+        if (before != after or path_before != path_after or
+            total != after[2] or after[:4] != path_after[:4]):
+            return None
+        return digest.hexdigest(), path_after
+    except OSError:
+        return None
+
+
+def _cached_social_image_decodes(path: Path, image_format: str, cache: dict, initial_stat) -> str:
+    """Reuse only successful checks within this audit; concurrent ABA is not excluded."""
+    if Image is None or PILLOW_VERSION != "13.0.0":
+        return "unverified"
+    before = _bounded_image_digest(path)
+    if before is None or before[1] != _image_stat_identity(initial_stat):
+        return "unverified"
+    key = (str(path), image_format, PILLOW_VERSION, before,
+           SOCIAL_DECODE_MAX_BYTES, SOCIAL_DECODE_MAX_SIDE,
+           SOCIAL_DECODE_MAX_FRAME_PIXELS, SOCIAL_DECODE_MAX_FRAMES,
+           SOCIAL_DECODE_MAX_TOTAL_PIXELS, SOCIAL_DECODE_TIMEOUT_SECONDS)
+    if key in cache:
+        return "ok"
+    status = _social_image_decodes(path, image_format)
+    if status == "unverified":
+        return status
+    if _bounded_image_digest(path) != before:
+        return "unverified"
+    if status == "ok":
+        if len(cache) >= SOCIAL_DECODE_CACHE_LIMIT:
+            cache.pop(next(iter(cache)))
+        cache[key] = True
+    return status
+
+
 def iter_html_files() -> List[Path]:
     return collect_html_files(ROOT)
 
@@ -521,7 +583,7 @@ BARE_LINK_TEXTS = frozenset({
 def _og_image_issues(
     url: str, declared_type: str, source_dir: Path, root: Path, origin: str,
     *, declared_dimensions: Dict[str, List[str]] | None = None,
-    image_suffix: str = "",
+    image_suffix: str = "", decode_cache: dict | None = None,
 ) -> List[str]:
     """Validate and decode local og:image files without fetching URLs."""
     if not url.strip():
@@ -547,7 +609,8 @@ def _og_image_issues(
     if target.suffix.lower() in {".html", ".htm"}:
         return [f"og:image path resolves to an HTML page, not an image file: {url}"]
     try:
-        if target.stat().st_size > SOCIAL_DECODE_MAX_BYTES:
+        initial_stat = target.stat()
+        if initial_stat.st_size > SOCIAL_DECODE_MAX_BYTES:
             return ["og:image decode was not verified (resource limit or unavailable decoder)"]
         with target.open("rb") as image_file:
             header = image_file.read(12)
@@ -574,7 +637,9 @@ def _og_image_issues(
         return [f"og:image file could not be inspected: {url}"]
     if dimensions is None:
         return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
-    decode_status = _social_image_decodes(target, detected_format)
+    decode_status = _cached_social_image_decodes(
+        target, detected_format, decode_cache if decode_cache is not None else {}, initial_stat
+    )
     if decode_status == "unverified":
         return ["og:image decode was not verified (resource limit or unavailable decoder)"]
     if decode_status == "invalid":
@@ -627,7 +692,9 @@ def _og_image_issues(
     return issues
 
 
-def audit_page(path: Path) -> List[str]:
+def audit_page(path: Path, *, decode_cache: dict | None = None) -> List[str]:
+    if decode_cache is None:
+        decode_cache = {}
     rel = path.relative_to(ROOT).as_posix()
     src = path.read_text(encoding="utf-8", errors="replace")
     issues: List[str] = []
@@ -742,6 +809,7 @@ def audit_page(path: Path) -> List[str]:
         image_issues = _og_image_issues(
             image["url"], image["type"], path.parent, ROOT, site_origin(),
             declared_dimensions=p.og_image_dimensions[index],
+            decode_cache=decode_cache,
             image_suffix=f" (image {index + 1})" if len(p.og_images) > 1 else "",
         )
         issues.extend(image_issues)
@@ -750,7 +818,9 @@ def audit_page(path: Path) -> List[str]:
         # Validate its path and image separately without reassigning root MIME.
         issues.extend(
             issue.replace("og:image", "og:image:secure_url", 1)
-            for issue in _og_image_issues(url, "", path.parent, ROOT, site_origin())
+            for issue in _og_image_issues(
+                url, "", path.parent, ROOT, site_origin(), decode_cache=decode_cache
+            )
         )
 
     title = p.title.strip()
@@ -1016,9 +1086,10 @@ def main() -> int:
 
     html_files = iter_html_files()
     per_page: Dict[str, List[str]] = {}
+    decode_cache: dict = {}
     for path in html_files:
         rel = path.relative_to(ROOT).as_posix()
-        per_page[rel] = audit_page(path)
+        per_page[rel] = audit_page(path, decode_cache=decode_cache)
         if not args.quiet:
             count = len(per_page[rel])
             flag = "OK " if count == 0 else f"{count:>3}"

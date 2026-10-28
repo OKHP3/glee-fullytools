@@ -12,6 +12,7 @@ import unittest
 from contextlib import ExitStack
 from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from PIL import Image, __version__ as INSTALLED_PILLOW_VERSION
@@ -1594,6 +1595,221 @@ class AuditSiteTests(unittest.TestCase):
                     path = root / f"image.{extension}"
                     path.write_bytes(social_image_fixture(extension))
                     self.assertEqual(_MODULE._decode_social_image_in_worker(path, image_format), "ok")
+
+    def test_decode_cache_reuses_shared_image_but_keeps_page_metadata_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            pages = [root / "one.html", root / "two.html"]
+            pages[0].write_text(
+                '<meta property="og:image" content="/assets/card.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">', encoding="utf-8"
+            )
+            pages[1].write_text(
+                '<meta property="og:image:url" content="/assets/card.png">'
+                '<meta property="og:image:secure_url" content="/assets/card.png">'
+                '<meta property="og:image:type" content="image/jpeg">'
+                '<meta property="og:image:width" content="1201">'
+                '<meta property="og:image:height" content="630">', encoding="utf-8"
+            )
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", return_value="ok") as decode:
+                first = _MODULE.audit_page(pages[0], decode_cache=cache)
+                second = _MODULE.audit_page(pages[1], decode_cache=cache)
+
+            self.assertEqual(decode.call_count, 1)
+            self.assertFalse(any("does not match the local image" in issue for issue in first))
+            self.assertIn("og:image:width does not match the local image", second)
+            self.assertTrue(any("expected `image/png`" in issue for issue in second))
+
+    def test_decode_cache_rechecks_same_size_rewrite_and_mid_decode_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            path = assets / "card.png"
+            original = IMAGE_SIGNATURES["png"]
+            modified = original[:-1] + bytes([original[-1] ^ 1])
+            self.assertEqual(len(original), len(modified))
+            path.write_bytes(original)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", return_value="ok") as decode:
+                _MODULE.audit_page(page, decode_cache=cache)
+                path.write_bytes(modified)
+                _MODULE.audit_page(page, decode_cache=cache)
+                _MODULE.audit_page(page, decode_cache=cache)
+            self.assertEqual(decode.call_count, 2)
+
+            path.write_bytes(original)
+            cache = {}
+            def mutate_during_decode(*_args):
+                path.write_bytes(modified)
+                return "ok"
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes") as decode:
+                decode.side_effect = lambda *_args: mutate_during_decode() if decode.call_count == 1 else "ok"
+                first = _MODULE.audit_page(page, decode_cache=cache)
+                second = _MODULE.audit_page(page, decode_cache=cache)
+                third = _MODULE.audit_page(page, decode_cache=cache)
+            self.assertIn("og:image decode was not verified (resource limit or unavailable decoder)", first)
+            self.assertNotIn("og:image decode was not verified (resource limit or unavailable decoder)", second)
+            self.assertEqual(decode.call_count, 2)
+            self.assertFalse(any("decode was not verified" in issue for issue in third))
+
+    def test_decode_cache_retries_invalid_and_unverified_and_bounds_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            pages = []
+            for number in range(3):
+                (assets / f"card-{number}.png").write_bytes(IMAGE_SIGNATURES["png"])
+                page = root / f"page-{number}.html"
+                page.write_text(f'<meta property="og:image" content="/assets/card-{number}.png">', encoding="utf-8")
+                pages.append(page)
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", side_effect=["unverified", "invalid", "ok"]) as decode:
+                first = _MODULE.audit_page(pages[0], decode_cache=cache)
+                second = _MODULE.audit_page(pages[0], decode_cache=cache)
+                third = _MODULE.audit_page(pages[0], decode_cache=cache)
+                _MODULE.audit_page(pages[0], decode_cache=cache)
+            self.assertTrue(any("decode was not verified" in issue for issue in first))
+            self.assertTrue(any("encoded image data could not be decoded" in issue for issue in second))
+            self.assertFalse(any("decode was not verified" in issue for issue in third))
+            self.assertEqual(decode.call_count, 3)
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "SOCIAL_DECODE_CACHE_LIMIT", 2), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                for page in pages:
+                    _MODULE.audit_page(page, decode_cache=cache)
+                self.assertLessEqual(len(cache), 2)
+                _MODULE.audit_page(pages[0], decode_cache=cache)
+            self.assertEqual(decode.call_count, 4)
+            self.assertLessEqual(len(cache), 2)
+
+    def test_same_size_rewrite_with_restored_mtime_invalidates_cached_decode(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            path = assets / "card.png"
+            original = IMAGE_SIGNATURES["png"]
+            modified = original[:-1] + bytes([original[-1] ^ 1])
+            path.write_bytes(original)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            original_stat = path.stat()
+            actual_identity = _MODULE._image_stat_identity
+
+            def fixed_ctime(stat):
+                identity = actual_identity(stat)
+                return (*identity[:4], 0)
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_image_stat_identity", side_effect=fixed_ctime), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                _MODULE.audit_page(page, decode_cache=cache)
+                path.write_bytes(modified)
+                os.utime(path, ns=(original_stat.st_atime_ns, original_stat.st_mtime_ns))
+                self.assertEqual(path.stat().st_size, original_stat.st_size)
+                self.assertEqual(path.stat().st_mtime_ns, original_stat.st_mtime_ns)
+                self.assertEqual(fixed_ctime(path.stat()), fixed_ctime(original_stat))
+                _MODULE.audit_page(page, decode_cache=cache)
+                _MODULE.audit_page(page, decode_cache=cache)
+            self.assertEqual(decode.call_count, 2)
+
+    def test_decode_cache_accepts_stable_windows_ctime_reporting_difference(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            actual_fstat = os.fstat
+
+            def differing_fstat(fd):
+                original = actual_fstat(fd)
+                return SimpleNamespace(
+                    st_dev=original.st_dev, st_ino=original.st_ino,
+                    st_size=original.st_size, st_mtime_ns=original.st_mtime_ns,
+                    st_ctime_ns=original.st_ctime_ns + 100,
+                )
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE.os, "fstat", side_effect=differing_fstat), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                first = _MODULE.audit_page(page, decode_cache=cache)
+                second = _MODULE.audit_page(page, decode_cache=cache)
+
+            self.assertFalse(any("decode was not verified" in issue for issue in first + second))
+            self.assertEqual(decode.call_count, 1)
+
+    def test_decode_cache_is_fresh_for_separate_audit_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            pages = [root / "one.html", root / "two.html"]
+            for page in pages:
+                page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            with ExitStack() as stack:
+                for name, value in {
+                    "iter_html_files": pages,
+                    "reconcile_sitemap": ([], [], []),
+                    "reconcile_search_index": [],
+                    "check_search_index_freshness": [],
+                    "scan_repo_cruft": [],
+                }.items():
+                    stack.enter_context(patch.object(_MODULE, name, return_value=value))
+                stack.enter_context(patch.object(_MODULE, "ROOT", root))
+                stack.enter_context(patch.object(_MODULE, "site_origin", return_value=ORIGIN))
+                stack.enter_context(patch.object(_MODULE.sys, "argv", [str(_SCRIPT), "--quiet", "--report", "audit.md"]))
+                stack.enter_context(patch.object(_MODULE.sys, "stdout", io.StringIO()))
+                stack.enter_context(patch.object(_MODULE.sys, "stderr", io.StringIO()))
+                decode = stack.enter_context(patch.object(_MODULE, "_social_image_decodes", return_value="ok"))
+                self.assertEqual(_MODULE.main(), 0)
+                self.assertEqual(_MODULE.main(), 0)
+                self.assertEqual(decode.call_count, 2)
+
+    def test_decode_cache_does_not_fetch_or_decode_external_images(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="https://external.test/image.png">', encoding="utf-8")
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "link_target") as resolve, patch.object(
+                _MODULE, "_social_image_decodes"
+            ) as decode, patch("socket.socket.connect", side_effect=AssertionError("network")):
+                _MODULE.audit_page(page, decode_cache=cache)
+            resolve.assert_not_called()
+            decode.assert_not_called()
+            self.assertEqual(cache, {})
 
     def test_real_webp_lossy_lossless_and_extended_encodings_decode(self) -> None:
         variants = (
