@@ -5,12 +5,17 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import tempfile
 import unittest
 from contextlib import ExitStack
+from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
+
+from PIL import Image, __version__ as INSTALLED_PILLOW_VERSION
 
 
 _SCRIPT = Path(__file__).resolve().parent.parent / "audit-site.py"
@@ -18,14 +23,30 @@ _SPEC = importlib.util.spec_from_file_location("_audit_site", _SCRIPT)
 _MODULE = importlib.util.module_from_spec(_SPEC)
 assert _SPEC.loader is not None
 _SPEC.loader.exec_module(_MODULE)
+_REAL_SOCIAL_IMAGE_DECODES = _MODULE._social_image_decodes
 
 ORIGIN = "https://glee-fully.tools"
 
 
 def social_image_fixture(
+    extension: str, width: int = 1200, height: int = 630,
+) -> bytes:
+    """Create a fully encoded image suitable for end-to-end auditor tests."""
+    image_format = {"png": "PNG", "jpg": "JPEG", "gif": "GIF", "webp": "WEBP"}[
+        extension
+    ]
+    buffer = BytesIO()
+    Image.new("RGB", (width, height), (120, 80, 200)).save(
+        buffer, format=image_format
+    )
+    return buffer.getvalue()
+
+
+def social_image_header_fixture(
     extension: str, width: int = 1200, height: int = 630, *,
     webp_encoding: str = "VP8X",
 ) -> bytes:
+    """Build header-only fixtures for directly testing dimension parsing."""
     if extension == "png":
         return (
             b"\x89PNG\r\n\x1a\n"
@@ -94,7 +115,58 @@ IMAGE_SIGNATURES = {
 }
 
 
+def gif_fixture_locations(data: bytes) -> tuple[list[int], list[int]]:
+    """Locate complete image blocks and interior subblock positions in our fixture."""
+    assert data[:6] in (b"GIF87a", b"GIF89a")
+    offset = 13
+    if data[10] & 0x80:
+        offset += 3 * (1 << ((data[10] & 7) + 1))
+    frame_ends, interiors = [], []
+
+    def skip_subblocks(position: int, record_interiors: bool) -> int:
+        while True:
+            size = data[position]
+            position += 1
+            if size == 0:
+                return position
+            if record_interiors and size >= 3:
+                interiors.append(position + size // 2)
+            position += size
+            assert position <= len(data)
+
+    while offset < len(data):
+        marker = data[offset]
+        offset += 1
+        if marker == 0x3B:
+            return frame_ends, interiors
+        if marker == 0x21:
+            offset = skip_subblocks(offset + 1, False)
+        else:
+            assert marker == 0x2C
+            descriptor = data[offset:offset + 9]
+            assert len(descriptor) == 9
+            offset += 9
+            if descriptor[8] & 0x80:
+                offset += 3 * (1 << ((descriptor[8] & 7) + 1))
+            offset = skip_subblocks(offset + 1, True)
+            frame_ends.append(offset)
+    raise AssertionError("generated GIF lacks a trailer")
+
+
 class AuditSiteTests(unittest.TestCase):
+    def setUp(self) -> None:
+        # An unapproved local Pillow must not decode in a child. Existing tests
+        # use only generated fixtures; exercise their worker in-process here.
+        if _MODULE.PILLOW_VERSION != "13.0.0":
+            version = patch.object(_MODULE, "PILLOW_VERSION", "13.0.0")
+            version.start()
+            self.addCleanup(version.stop)
+            decoder = patch.object(
+                _MODULE, "_social_image_decodes", side_effect=_MODULE._decode_social_image_in_worker
+            )
+            decoder.start()
+            self.addCleanup(decoder.stop)
+
     def run_cli_fixture(self, root: Path, report: str, stdout) -> int:
         page = root / "caf\u00e9-\u2603" / "index.html"
         with ExitStack() as stack:
@@ -1194,20 +1266,13 @@ class AuditSiteTests(unittest.TestCase):
                     self.assertEqual(self.og_image_findings(root, url), [])
 
     def test_all_webp_encodings_report_dimensions(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory) / "repo"
-            image_dir = root / "assets" / "social"
-            image_dir.mkdir(parents=True)
-            for encoding in ("VP8X", "VP8 ", "VP8L"):
-                with self.subTest(encoding=encoding):
-                    filename = f"{encoding.strip().lower()}.webp"
-                    (image_dir / filename).write_bytes(
-                        social_image_fixture("webp", webp_encoding=encoding)
-                    )
-                    findings = self.og_image_findings(
-                        root, f"{ORIGIN}/assets/social/{filename}"
-                    )
-                    self.assertEqual(findings, [])
+        for encoding in ("VP8X", "VP8 ", "VP8L"):
+            with self.subTest(encoding=encoding):
+                image_file = BytesIO(
+                    social_image_header_fixture("webp", webp_encoding=encoding)
+                )
+                dimensions = _MODULE._social_image_dimensions(image_file, "WebP")
+                self.assertEqual(dimensions, (1200, 630))
 
     def test_matching_og_image_dimensions_are_accepted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1452,6 +1517,518 @@ class AuditSiteTests(unittest.TestCase):
                     self.assertEqual(len(findings), 1)
                     self.assertIn("dimensions could not be inspected", findings[0])
                     self.assertIn("malformed or truncated", findings[0])
+
+    def test_images_with_intact_dimensions_but_damaged_payloads_are_rejected(self) -> None:
+        valid_image_bytes = {
+            extension: social_image_fixture(extension)
+            for extension in ("png", "jpg", "gif", "webp")
+        }
+        damaged_images = {}
+
+        png = valid_image_bytes["png"]
+        idat_payload = png.index(b"IDAT") + 4
+        damaged_images["png"] = (
+            png[:idat_payload]
+            + bytes((png[idat_payload] ^ 0xFF,))
+            + png[idat_payload + 1:]
+        )
+
+        jpeg = valid_image_bytes["jpg"]
+        scan_marker = jpeg.index(b"\xff\xda")
+        scan_header_length = int.from_bytes(
+            jpeg[scan_marker + 2:scan_marker + 4], "big"
+        )
+        scan_payload = scan_marker + 2 + scan_header_length
+        damaged_images["jpg"] = jpeg[:scan_payload + 10]
+
+        gif = valid_image_bytes["gif"]
+        image_descriptor = gif.index(b"\x2c")
+        descriptor = gif[image_descriptor:image_descriptor + 10]
+        local_table_size = (
+            3 * (2 ** ((descriptor[9] & 0x07) + 1))
+            if descriptor[9] & 0x80
+            else 0
+        )
+        lzw_payload = image_descriptor + 10 + local_table_size + 1
+        damaged_images["gif"] = gif[:lzw_payload + 2]
+
+        webp = valid_image_bytes["webp"]
+        damaged_images["webp"] = webp[:-5]
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            for extension, data in damaged_images.items():
+                with self.subTest(extension=extension):
+                    path = image_dir / f"broken.{extension}"
+                    path.write_bytes(data)
+                    image_format = {
+                        "png": "PNG",
+                        "jpg": "JPEG",
+                        "gif": "GIF",
+                        "webp": "WebP",
+                    }[extension]
+                    with path.open("rb") as image_file:
+                        self.assertEqual(
+                            _MODULE._social_image_dimensions(
+                                image_file, image_format
+                            ),
+                            (1200, 630),
+                        )
+
+                    findings = self.og_image_findings(
+                        root, f"{ORIGIN}/assets/social/broken.{extension}"
+                    )
+
+                    self.assertEqual(len(findings), 1)
+                    self.assertIn(
+                        "encoded image data could not be decoded", findings[0]
+                    )
+
+    def test_real_local_raster_encodings_decode_successfully(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for extension, image_format in (("png", "PNG"), ("jpg", "JPEG"),
+                                            ("gif", "GIF"), ("webp", "WebP")):
+                with self.subTest(extension=extension):
+                    path = root / f"image.{extension}"
+                    path.write_bytes(social_image_fixture(extension))
+                    self.assertEqual(_MODULE._decode_social_image_in_worker(path, image_format), "ok")
+
+    def test_decode_cache_reuses_shared_image_but_keeps_page_metadata_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            pages = [root / "one.html", root / "two.html"]
+            pages[0].write_text(
+                '<meta property="og:image" content="/assets/card.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">', encoding="utf-8"
+            )
+            pages[1].write_text(
+                '<meta property="og:image:url" content="/assets/card.png">'
+                '<meta property="og:image:secure_url" content="/assets/card.png">'
+                '<meta property="og:image:type" content="image/jpeg">'
+                '<meta property="og:image:width" content="1201">'
+                '<meta property="og:image:height" content="630">', encoding="utf-8"
+            )
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", return_value="ok") as decode:
+                first = _MODULE.audit_page(pages[0], decode_cache=cache)
+                second = _MODULE.audit_page(pages[1], decode_cache=cache)
+
+            self.assertEqual(decode.call_count, 1)
+            self.assertFalse(any("does not match the local image" in issue for issue in first))
+            self.assertIn("og:image:width does not match the local image", second)
+            self.assertTrue(any("expected `image/png`" in issue for issue in second))
+
+    def test_decode_cache_rechecks_same_size_rewrite_and_mid_decode_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            path = assets / "card.png"
+            original = IMAGE_SIGNATURES["png"]
+            modified = original[:-1] + bytes([original[-1] ^ 1])
+            self.assertEqual(len(original), len(modified))
+            path.write_bytes(original)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", return_value="ok") as decode:
+                _MODULE.audit_page(page, decode_cache=cache)
+                path.write_bytes(modified)
+                _MODULE.audit_page(page, decode_cache=cache)
+                _MODULE.audit_page(page, decode_cache=cache)
+            self.assertEqual(decode.call_count, 2)
+
+            path.write_bytes(original)
+            cache = {}
+            def mutate_during_decode(*_args):
+                path.write_bytes(modified)
+                return "ok"
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes") as decode:
+                decode.side_effect = lambda *_args: mutate_during_decode() if decode.call_count == 1 else "ok"
+                first = _MODULE.audit_page(page, decode_cache=cache)
+                second = _MODULE.audit_page(page, decode_cache=cache)
+                third = _MODULE.audit_page(page, decode_cache=cache)
+            self.assertIn("og:image decode was not verified (resource limit or unavailable decoder)", first)
+            self.assertNotIn("og:image decode was not verified (resource limit or unavailable decoder)", second)
+            self.assertEqual(decode.call_count, 2)
+            self.assertFalse(any("decode was not verified" in issue for issue in third))
+
+    def test_decode_cache_retries_invalid_and_unverified_and_bounds_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            pages = []
+            for number in range(3):
+                (assets / f"card-{number}.png").write_bytes(IMAGE_SIGNATURES["png"])
+                page = root / f"page-{number}.html"
+                page.write_text(f'<meta property="og:image" content="/assets/card-{number}.png">', encoding="utf-8")
+                pages.append(page)
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_social_image_decodes", side_effect=["unverified", "invalid", "ok"]) as decode:
+                first = _MODULE.audit_page(pages[0], decode_cache=cache)
+                second = _MODULE.audit_page(pages[0], decode_cache=cache)
+                third = _MODULE.audit_page(pages[0], decode_cache=cache)
+                _MODULE.audit_page(pages[0], decode_cache=cache)
+            self.assertTrue(any("decode was not verified" in issue for issue in first))
+            self.assertTrue(any("encoded image data could not be decoded" in issue for issue in second))
+            self.assertFalse(any("decode was not verified" in issue for issue in third))
+            self.assertEqual(decode.call_count, 3)
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "SOCIAL_DECODE_CACHE_LIMIT", 2), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                for page in pages:
+                    _MODULE.audit_page(page, decode_cache=cache)
+                self.assertLessEqual(len(cache), 2)
+                _MODULE.audit_page(pages[0], decode_cache=cache)
+            self.assertEqual(decode.call_count, 4)
+            self.assertLessEqual(len(cache), 2)
+
+    def test_same_size_rewrite_with_restored_mtime_invalidates_cached_decode(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            path = assets / "card.png"
+            original = IMAGE_SIGNATURES["png"]
+            modified = original[:-1] + bytes([original[-1] ^ 1])
+            path.write_bytes(original)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            original_stat = path.stat()
+            actual_identity = _MODULE._image_stat_identity
+
+            def fixed_ctime(stat):
+                identity = actual_identity(stat)
+                return (*identity[:4], 0)
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "_image_stat_identity", side_effect=fixed_ctime), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                _MODULE.audit_page(page, decode_cache=cache)
+                path.write_bytes(modified)
+                os.utime(path, ns=(original_stat.st_atime_ns, original_stat.st_mtime_ns))
+                self.assertEqual(path.stat().st_size, original_stat.st_size)
+                self.assertEqual(path.stat().st_mtime_ns, original_stat.st_mtime_ns)
+                self.assertEqual(fixed_ctime(path.stat()), fixed_ctime(original_stat))
+                _MODULE.audit_page(page, decode_cache=cache)
+                _MODULE.audit_page(page, decode_cache=cache)
+            self.assertEqual(decode.call_count, 2)
+
+    def test_decode_cache_accepts_stable_windows_ctime_reporting_difference(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            actual_fstat = os.fstat
+
+            def differing_fstat(fd):
+                original = actual_fstat(fd)
+                return SimpleNamespace(
+                    st_dev=original.st_dev, st_ino=original.st_ino,
+                    st_size=original.st_size, st_mtime_ns=original.st_mtime_ns,
+                    st_ctime_ns=original.st_ctime_ns + 100,
+                )
+
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE.os, "fstat", side_effect=differing_fstat), patch.object(
+                _MODULE, "_social_image_decodes", return_value="ok"
+            ) as decode:
+                first = _MODULE.audit_page(page, decode_cache=cache)
+                second = _MODULE.audit_page(page, decode_cache=cache)
+
+            self.assertFalse(any("decode was not verified" in issue for issue in first + second))
+            self.assertEqual(decode.call_count, 1)
+
+    def test_decode_cache_is_fresh_for_separate_audit_runs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "card.png").write_bytes(IMAGE_SIGNATURES["png"])
+            pages = [root / "one.html", root / "two.html"]
+            for page in pages:
+                page.write_text('<meta property="og:image" content="/assets/card.png">', encoding="utf-8")
+            with ExitStack() as stack:
+                for name, value in {
+                    "iter_html_files": pages,
+                    "reconcile_sitemap": ([], [], []),
+                    "reconcile_search_index": [],
+                    "check_search_index_freshness": [],
+                    "scan_repo_cruft": [],
+                }.items():
+                    stack.enter_context(patch.object(_MODULE, name, return_value=value))
+                stack.enter_context(patch.object(_MODULE, "ROOT", root))
+                stack.enter_context(patch.object(_MODULE, "site_origin", return_value=ORIGIN))
+                stack.enter_context(patch.object(_MODULE.sys, "argv", [str(_SCRIPT), "--quiet", "--report", "audit.md"]))
+                stack.enter_context(patch.object(_MODULE.sys, "stdout", io.StringIO()))
+                stack.enter_context(patch.object(_MODULE.sys, "stderr", io.StringIO()))
+                decode = stack.enter_context(patch.object(_MODULE, "_social_image_decodes", return_value="ok"))
+                self.assertEqual(_MODULE.main(), 0)
+                self.assertEqual(_MODULE.main(), 0)
+                self.assertEqual(decode.call_count, 2)
+
+    def test_decode_cache_does_not_fetch_or_decode_external_images(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text('<meta property="og:image" content="https://external.test/image.png">', encoding="utf-8")
+            cache = {}
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "link_target") as resolve, patch.object(
+                _MODULE, "_social_image_decodes"
+            ) as decode, patch("socket.socket.connect", side_effect=AssertionError("network")):
+                _MODULE.audit_page(page, decode_cache=cache)
+            resolve.assert_not_called()
+            decode.assert_not_called()
+            self.assertEqual(cache, {})
+
+    def test_real_webp_lossy_lossless_and_extended_encodings_decode(self) -> None:
+        variants = (
+            ("VP8 ", "RGB", {"lossless": False}),
+            ("VP8L", "RGB", {"lossless": True}),
+            ("VP8X", "RGB", {"lossless": True, "exif": b"Exif\0\0synthetic"}),
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for chunk, mode, options in variants:
+                with self.subTest(chunk=chunk):
+                    buffer = BytesIO()
+                    color = (100, 120, 150, 100) if mode == "RGBA" else (100, 120, 150)
+                    Image.new(mode, (1200, 630), color).save(buffer, format="WEBP", **options)
+                    data = buffer.getvalue()
+                    self.assertEqual(data[12:16], chunk.encode("ascii"))
+                    path = root / f"{chunk.strip()}.webp"
+                    path.write_bytes(data)
+                    self.assertEqual(_MODULE._decode_social_image_in_worker(path, "WebP"), "ok")
+
+    def test_decode_budgets_are_enforced_without_claiming_invalid_image(self) -> None:
+        frames = [Image.new("RGB", (20, 10), color) for color in ("red", "green", "blue")]
+        buffer = BytesIO()
+        frames[0].save(buffer, format="GIF", save_all=True, append_images=frames[1:],
+                       duration=100, loop=0, optimize=False)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "animated.gif"
+            path.write_bytes(buffer.getvalue())
+            self.assertEqual(_MODULE._decode_social_image_in_worker(path, "GIF"), "ok")
+            limits = (
+                ("SOCIAL_DECODE_MAX_BYTES", path.stat().st_size - 1),
+                ("SOCIAL_DECODE_MAX_SIDE", 19),
+                ("SOCIAL_DECODE_MAX_FRAME_PIXELS", 199),
+                ("SOCIAL_DECODE_MAX_FRAMES", 2),
+                ("SOCIAL_DECODE_MAX_TOTAL_PIXELS", 599),
+            )
+            for name, limit in limits:
+                with self.subTest(limit=name), patch.object(_MODULE, name, limit):
+                    self.assertEqual(_MODULE._decode_social_image_in_worker(path, "GIF"), "unverified")
+            with patch.object(_MODULE, "SOCIAL_DECODE_MAX_BYTES", path.stat().st_size), patch.object(
+                _MODULE, "SOCIAL_DECODE_MAX_SIDE", 20
+            ), patch.object(_MODULE, "SOCIAL_DECODE_MAX_FRAME_PIXELS", 200), patch.object(
+                _MODULE, "SOCIAL_DECODE_MAX_FRAMES", 3
+            ), patch.object(_MODULE, "SOCIAL_DECODE_MAX_TOTAL_PIXELS", 600):
+                self.assertEqual(_MODULE._decode_social_image_in_worker(path, "GIF"), "ok")
+
+    def test_truncated_animated_gif_is_not_accepted_as_complete(self) -> None:
+        frames = [Image.new("RGB", (20, 10), color) for color in ("red", "green", "blue")]
+        buffer = BytesIO()
+        frames[0].save(buffer, format="GIF", save_all=True, append_images=frames[1:],
+                       duration=100, loop=0, optimize=False)
+        data = buffer.getvalue()
+        self.assertGreater(len(data), 127)
+        frame_ends, interiors = gif_fixture_locations(data)
+        self.assertEqual(len(frame_ends), 3)
+        self.assertTrue(interiors)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "controlled.gif"
+            path.write_bytes(data)
+            self.assertEqual(_MODULE._decode_social_image_in_worker(path, "GIF"), "ok")
+            path.write_bytes(data[:frame_ends[0]] + b";")
+            self.assertEqual(_MODULE._decode_social_image_in_worker(path, "GIF"), "ok")
+            for cut in (1, 2, 60, 127):
+                with self.subTest(cut=cut):
+                    path.write_bytes(data[:-cut])
+                    verdict = _MODULE._decode_social_image_in_worker(path, "GIF")
+                    self.assertIn(verdict, ("invalid", "unverified"))
+            path.write_bytes(data[:interiors[-1]] + b";")
+            self.assertIn(_MODULE._decode_social_image_in_worker(path, "GIF"), ("invalid", "unverified"))
+
+    def test_pinned_pillow_rejects_truncated_gif_through_real_subprocess(self) -> None:
+        if INSTALLED_PILLOW_VERSION != "13.0.0":
+            if os.environ.get("CI", "").lower() == "true":
+                self.fail(f"CI requires Pillow 13.0.0, found {INSTALLED_PILLOW_VERSION}")
+            self.skipTest(f"requires Pillow 13.0.0; local version is {INSTALLED_PILLOW_VERSION}")
+        self.assertEqual(_MODULE.PILLOW_VERSION, INSTALLED_PILLOW_VERSION)
+        frames = [Image.new("RGB", (20, 10), color) for color in ("red", "green", "blue")]
+        buffer = BytesIO()
+        frames[0].save(buffer, format="GIF", save_all=True, append_images=frames[1:],
+                       duration=100, loop=0, optimize=False)
+        data = buffer.getvalue()
+        frame_ends, interiors = gif_fixture_locations(data)
+        self.assertEqual(len(frame_ends), 3)
+        self.assertTrue(interiors)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "controlled.gif"
+            path.write_bytes(data)
+            self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "GIF"), "ok")
+            path.write_bytes(data[:frame_ends[0]] + b";")
+            self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "GIF"), "ok")
+            for cut in (1, 2, 60, 127):
+                with self.subTest(cut=cut):
+                    path.write_bytes(data[:-cut])
+                    self.assertIn(_REAL_SOCIAL_IMAGE_DECODES(path, "GIF"), ("invalid", "unverified"))
+            path.write_bytes(data[:interiors[-1]] + b";")
+            self.assertIn(_REAL_SOCIAL_IMAGE_DECODES(path, "GIF"), ("invalid", "unverified"))
+
+    def test_missing_decoder_and_resource_limit_are_not_reported_as_corrupt(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            path = images / "hero.png"
+            path.write_bytes(IMAGE_SIGNATURES["png"])
+            url = f"{ORIGIN}/assets/hero.png"
+            for attribute, value in (("Image", None), ("SOCIAL_DECODE_MAX_BYTES", path.stat().st_size - 1)):
+                with self.subTest(attribute=attribute), patch.object(_MODULE, attribute, value):
+                    self.assertEqual(_MODULE._decode_social_image_in_worker(path, "PNG"), "unverified")
+            with patch.object(_MODULE, "_social_image_decodes", return_value="unverified"):
+                issues = self.og_image_findings(root, url)
+            self.assertEqual(
+                issues,
+                ["og:image decode was not verified (resource limit or unavailable decoder)"],
+            )
+
+    def test_decode_subprocess_outcomes_and_timeout_are_distinguished(self) -> None:
+        path = Path("controlled.png")
+        for code, expected in ((10, "ok"), (11, "invalid"), (12, "unverified"),
+                               (0, "unverified"), (1, "unverified"), (37, "unverified")):
+            with self.subTest(code=code), patch.object(
+                _MODULE.subprocess, "run", return_value=subprocess.CompletedProcess([], code)
+            ) as run:
+                self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), expected)
+                self.assertEqual(run.call_args.kwargs["timeout"], _MODULE.SOCIAL_DECODE_TIMEOUT_SECONDS)
+                self.assertIs(run.call_args.kwargs["stdout"], subprocess.DEVNULL)
+                self.assertIs(run.call_args.kwargs["stderr"], subprocess.DEVNULL)
+                self.assertFalse(run.call_args.kwargs.get("shell", False))
+
+        for error in (subprocess.TimeoutExpired("decoder", 5), OSError("launch failed")):
+            with self.subTest(error=type(error).__name__), patch.object(
+                _MODULE.subprocess, "run", side_effect=error
+            ):
+                self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), "unverified")
+
+        with patch.object(_MODULE, "Image", None), patch.object(_MODULE.subprocess, "run") as run:
+            self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), "unverified")
+            run.assert_not_called()
+
+    def test_missing_or_wrong_decoder_version_fails_closed(self) -> None:
+        path = Path("controlled.png")
+        for version in (None, "12.3.0", "13.0.1"):
+            with self.subTest(version=version), patch.object(_MODULE, "PILLOW_VERSION", version), patch.object(
+                _MODULE.subprocess, "run"
+            ) as run:
+                self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), "unverified")
+                self.assertEqual(_MODULE._decode_social_image_in_worker(path, "PNG"), "unverified")
+                run.assert_not_called()
+
+    def test_decoder_io_failure_is_unverified_and_malformed_data_is_invalid(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "controlled.png"
+            path.write_bytes(IMAGE_SIGNATURES["png"])
+            for error, expected in (
+                (PermissionError(13, "denied"), "unverified"),
+                (OSError("malformed image data"), "invalid"),
+            ):
+                with self.subTest(error=type(error).__name__), patch.object(
+                    _MODULE.Image, "open", side_effect=error
+                ):
+                    self.assertEqual(_MODULE._decode_social_image_in_worker(path, "PNG"), expected)
+
+    def test_pinned_pillow_decodes_benign_image_through_real_subprocess(self) -> None:
+        if INSTALLED_PILLOW_VERSION != "13.0.0":
+            if os.environ.get("CI", "").lower() == "true":
+                self.fail(f"CI requires Pillow 13.0.0, found {INSTALLED_PILLOW_VERSION}")
+            self.skipTest(f"requires Pillow 13.0.0; local version is {INSTALLED_PILLOW_VERSION}")
+        self.assertEqual(_MODULE.PILLOW_VERSION, INSTALLED_PILLOW_VERSION)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "controlled.png"
+            path.write_bytes(IMAGE_SIGNATURES["png"])
+            self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), "ok")
+
+    def test_pinned_pillow_decodes_tracked_social_card_through_real_subprocess(self) -> None:
+        if INSTALLED_PILLOW_VERSION != "13.0.0":
+            if os.environ.get("CI", "").lower() == "true":
+                self.fail(f"CI requires Pillow 13.0.0, found {INSTALLED_PILLOW_VERSION}")
+            self.skipTest(f"requires Pillow 13.0.0; local version is {INSTALLED_PILLOW_VERSION}")
+        self.assertEqual(_MODULE.PILLOW_VERSION, INSTALLED_PILLOW_VERSION)
+        path = _SCRIPT.parent.parent / "assets/img/glee-fully-tools-social-card-1200x630.png"
+        self.assertTrue(path.is_file())
+        self.assertEqual(_REAL_SOCIAL_IMAGE_DECODES(path, "PNG"), "ok")
+
+    def test_oversized_local_image_is_not_sent_to_decoder(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            path = images / "hero.png"
+            path.write_bytes(IMAGE_SIGNATURES["png"])
+            with patch.object(_MODULE, "SOCIAL_DECODE_MAX_BYTES", path.stat().st_size - 1), patch.object(
+                _MODULE, "_social_image_decodes"
+            ) as decode:
+                issues = self.og_image_findings(root, f"{ORIGIN}/assets/hero.png")
+            self.assertEqual(issues, ["og:image decode was not verified (resource limit or unavailable decoder)"])
+            decode.assert_not_called()
+
+    def test_secure_alternate_decode_failure_is_distinct_from_valid_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            png = IMAGE_SIGNATURES["png"]
+            (images / "hero.png").write_bytes(png)
+            payload = png.index(b"IDAT") + 4
+            damaged = png[:payload] + bytes([png[payload] ^ 0xFF]) + png[payload + 1:]
+            (images / "secure.png").write_bytes(damaged)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:secure_url" content="/assets/secure.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if "encoded image data" in issue]
+            self.assertEqual(findings, ["og:image:secure_url encoded image data could not be decoded"])
 
     def test_og_image_directory_routes_do_not_accept_html_index_fallbacks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
