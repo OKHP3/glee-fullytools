@@ -570,9 +570,11 @@ def audit_page(path: Path) -> List[str]:
     # The offline fallback is intentionally noindex and is excluded from the
     # social-card family; it does not need social-preview metadata.
     if rel != "offline.html":
-        for required in ("og:title", "og:description", "og:image", "og:url"):
+        for required in ("og:title", "og:description", "og:url"):
             if required not in p.metas:
                 issues.append(f"Missing {required}")
+        if not ({"og:image", "og:image:url"} & p.metas.keys()):
+            issues.append("Missing og:image")
 
     # image hygiene
     for img in p.images:
