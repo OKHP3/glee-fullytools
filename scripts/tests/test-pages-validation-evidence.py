@@ -2021,12 +2021,116 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
             report = json.loads(report_path.read_text(encoding="utf-8"))
             self.assertEqual(report["failure_stage"], "browser_startup")
+            self.assertEqual(report["setup_step"], "launching_browser")
             self.assertNotIn("failed_case", report)
             self.assertEqual(
                 report["not_run_cases"],
                 ["light", "dark", "disabled_storage"],
             )
             self.assertEqual(report["error"], "browser could not be launched")
+            stdout.close()
+
+    def test_browser_setup_failures_name_the_last_step_reached(self):
+        cases = (
+            ("route preparation", "preparing_routes", "route scan failed"),
+            ("browser manager entry", "entering_browser_manager", "manager failed"),
+        )
+        for label, setup_step, message in cases:
+            with self.subTest(step=label):
+                playwright_api = ModuleType("playwright.sync_api")
+
+                def unexpected_launch(**_kwargs):
+                    raise AssertionError("launch must not run")
+
+                class PlaywrightManager:
+                    def __enter__(self):
+                        if setup_step == "entering_browser_manager":
+                            raise RuntimeError(message)
+                        return SimpleNamespace(
+                            chromium=SimpleNamespace(
+                                launch=unexpected_launch
+                            )
+                        )
+
+                    def __exit__(self, *_args):
+                        return False
+
+                playwright_api.sync_playwright = PlaywrightManager
+                playwright_module = ModuleType("playwright")
+                playwright_module.sync_api = playwright_api
+                with tempfile.TemporaryDirectory() as directory:
+                    report_path = Path(directory) / "browser-report.json"
+                    stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+                    with (
+                        patch.dict(
+                            sys.modules,
+                            {
+                                "playwright": playwright_module,
+                                "playwright.sync_api": playwright_api,
+                            },
+                        ),
+                        patch.object(
+                            sys,
+                            "argv",
+                            [
+                                str(COLOR_SCHEME_SCRIPT),
+                                "--browser",
+                                "chromium",
+                                "--output",
+                                str(report_path),
+                            ],
+                        ),
+                        patch.object(
+                            color_scheme_checker,
+                            "browser_routes",
+                            side_effect=RuntimeError(message)
+                            if setup_step == "preparing_routes"
+                            else lambda: [],
+                        ),
+                        patch.object(sys, "stdout", stdout),
+                        self.assertRaises(SystemExit),
+                    ):
+                        color_scheme_checker.main()
+
+                    report = json.loads(report_path.read_text(encoding="utf-8"))
+                    self.assertEqual(report["failure_stage"], "browser_startup")
+                    self.assertEqual(report["setup_step"], setup_step)
+                    self.assertEqual(report["error"], message)
+                    stdout.close()
+
+    def test_playwright_import_failure_is_identified_as_setup_failure(self):
+        original_import = __import__
+
+        def fail_playwright_import(name, *args, **kwargs):
+            if name == "playwright.sync_api":
+                raise ImportError("Playwright is unavailable")
+            return original_import(name, *args, **kwargs)
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch("builtins.__import__", side_effect=fail_playwright_import),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit),
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["failure_stage"], "browser_startup")
+            self.assertEqual(report["setup_step"], "loading_playwright")
+            self.assertEqual(report["error"], "Playwright is unavailable")
             stdout.close()
 
     def test_browser_route_checks_collect_all_failures(self):
@@ -2308,6 +2412,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "status": "FAIL",
                         "diagnostic_only": True,
                         "failure_stage": "browser_startup",
+                        "setup_step": "launching_browser",
                         "not_run_cases": [
                             "light",
                             "dark",
@@ -2360,11 +2465,21 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 summary,
             )
             self.assertIn(
+                "Setup phase attempted (diagnostic only; not validated evidence): "
+                "`launching the browser engine`.",
+                summary,
+            )
+            self.assertIn(
                 "Not run: `light`, `dark`, `disabled_storage`",
                 summary,
             )
             self.assertIn("Firefox (138.0)", summary)
             self.assertIn("theme check failed in `dark`", summary)
+            setup_step_lines = [
+                line for line in summary.splitlines()
+                if "Setup phase attempted" in line
+            ]
+            self.assertEqual(len(setup_step_lines), 1)
             self.assertIn(
                 "Completed before failure (diagnostic only; not validated "
                 "evidence): `light`.",
@@ -2389,6 +2504,67 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 not_run_line,
             )
             self.assertNotIn("Generated from the successful browser theme checks", summary)
+
+    def test_failure_diagnostic_omits_unrecognized_or_irrelevant_setup_phase(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        reports = (
+            {"failure_stage": "browser_startup"},
+            {"failure_stage": "browser_startup", "setup_step": "unknown"},
+            {"failure_stage": "browser_startup", "setup_step": ["launching_browser"]},
+            {"failure_stage": "theme_checks", "setup_step": "launching_browser"},
+        )
+        for extra in reports:
+            with self.subTest(report=extra), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                report = {"browser": "firefox", "status": "FAIL", "cases": {}, **extra}
+                (audit / "color-scheme-init-firefox.json").write_text(
+                    json.dumps(report), encoding="utf-8",
+                )
+                summary_path = root / "summary.md"
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                self.assertNotIn("Setup phase attempted", summary)
+                self.assertNotIn("unknown", summary)
+
+    def test_failure_diagnostic_keeps_conflicting_startup_case_unverified(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            report = {
+                "browser": "firefox", "status": "FAIL", "diagnostic_only": True,
+                "failure_stage": "browser_startup", "setup_step": "launching_browser",
+                "failed_case": "dark", "cases": {"light": {}, "disabled_storage": {}},
+                "not_run_cases": ["dark", "disabled_storage"],
+            }
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps(report), encoding="utf-8",
+            )
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code], cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("browser startup failure and a named theme case are both reported; neither is verified", summary)
+            self.assertIn("Setup phase attempted (diagnostic only; not validated evidence)", summary)
+            self.assertIn("actual failed case remains unverified", summary)
+            self.assertIn("Case sequence cannot be established from the conflicting report", summary)
+            self.assertNotIn("theme check failed in `dark`", summary)
+            self.assertNotIn("It is treated as failed", summary)
+            self.assertNotIn("Completed before failure", summary)
+            self.assertNotIn("after failed case", summary)
+            self.assertNotIn("Not run:", summary)
 
     def test_failure_diagnostic_flags_cases_listed_after_failure(self):
         code = theme_failure_diagnostic_code(self.workflow)
