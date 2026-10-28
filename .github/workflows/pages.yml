@@ -282,8 +282,15 @@ jobs:
                   engine += f" [report says {one_line(reported_browser)}]"
 
               status = report.get("status")
-              cases = report.get("cases")
-              cases = cases if isinstance(cases, dict) else {}
+              reported_cases = report.get("cases")
+              cases_are_valid = isinstance(reported_cases, dict)
+              cases = reported_cases if cases_are_valid else {}
+              if not cases_are_valid:
+                  lines.append(
+                      f"- **{engine}:** case results are malformed "
+                      "(expected an object); no cases are treated as completed, "
+                      "passed, or validated evidence."
+                  )
               completed_order = case_order
               if status == "FAIL":
                   failed_case = report.get("failed_case")
@@ -389,11 +396,18 @@ jobs:
                           "treat the details as unverified."
                       )
               elif status == "PASS":
-                  lines.append(
-                      f"- **{engine}:** completed cases (diagnostic only; not "
-                      f"validated evidence): {completed}."
-                  )
-                  missing = [case for case in case_order if case not in cases]
+                  if cases_are_valid:
+                      lines.append(
+                          f"- **{engine}:** completed cases (diagnostic only; not "
+                          f"validated evidence): {completed}."
+                      )
+                      missing = [case for case in case_order if case not in cases]
+                  else:
+                      lines.append(
+                          f"- **{engine}:** PASS status cannot establish completed "
+                          "cases because case results are malformed."
+                      )
+                      missing = []
                   if missing:
                       lines.append(
                           "  - Not reported despite PASS status (not validated): "

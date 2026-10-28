@@ -2446,6 +2446,75 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         summary,
                     )
 
+    def test_failure_diagnostic_marks_unsupported_case_results_as_malformed(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        reports = (
+            (
+                "valid case object",
+                "FAIL",
+                {"light": {}},
+                "`light`.",
+            ),
+            ("null cases", "FAIL", None, "none."),
+            ("list cases", "FAIL", ["light"], "none."),
+            ("string cases", "FAIL", "light", "none."),
+            ("numeric cases", "FAIL", 3, "none."),
+            ("boolean cases", "FAIL", False, "none."),
+            ("absent cases", "FAIL", None, "none."),
+            ("malformed cases with PASS status", "PASS", ["light"], None),
+            ("boolean cases with PASS status", "PASS", True, None),
+        )
+        for label, status, case_results, expected_completed in reports:
+            with self.subTest(report=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                report = {
+                    "browser": "firefox",
+                    "status": status,
+                    "diagnostic_only": True,
+                    "failed_case": "dark",
+                    "cases": case_results,
+                }
+                if label == "absent cases":
+                    del report["cases"]
+                (audit / "color-scheme-init-firefox.json").write_text(
+                    json.dumps(report), encoding="utf-8",
+                )
+                summary_path = root / "summary.md"
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                if label == "valid case object":
+                    completed = next(
+                        line for line in summary.splitlines()
+                        if "Completed before failure" in line
+                    )
+                    self.assertTrue(completed.endswith(expected_completed), completed)
+                    self.assertNotIn("case results are malformed", summary)
+                else:
+                    self.assertIn("case results are malformed", summary)
+                    self.assertIn(
+                        "no cases are treated as completed, passed, or validated evidence",
+                        summary,
+                    )
+                    if status == "FAIL":
+                        completed = next(
+                            line for line in summary.splitlines()
+                            if "Completed before failure" in line
+                        )
+                        self.assertTrue(completed.endswith(expected_completed), completed)
+                    else:
+                        self.assertNotIn("completed cases (diagnostic only", summary)
+                        self.assertIn(
+                            "PASS status cannot establish completed cases",
+                            summary,
+                        )
+
     def test_failed_route_details_cannot_become_validated_theme_evidence(self):
         diagnostic_code = theme_failure_diagnostic_code(self.workflow)
         verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split(
