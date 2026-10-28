@@ -148,7 +148,9 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn("Missing description", report.read_text(encoding="utf-8"))
 
     def og_image_findings(
-        self, root: Path, url: str, *later_urls: str, image_type: str = ""
+        self, root: Path, url: str, *later_urls: str, image_type: str = "",
+        declared_width: str | None = None, declared_height: str | None = None,
+        include_recommendations: bool = False,
     ) -> list[str]:
         page = root / "content" / "index.html"
         page.parent.mkdir(parents=True, exist_ok=True)
@@ -160,6 +162,10 @@ class AuditSiteTests(unittest.TestCase):
                     if image_type
                     else ""
                 )
+                + (f'<meta property="og:image:width" content="{declared_width}">'
+                   if declared_width is not None else "")
+                + (f'<meta property="og:image:height" content="{declared_height}">'
+                   if declared_height is not None else "")
                 for image_url in (url, *later_urls)
             ),
             encoding="utf-8",
@@ -169,7 +175,9 @@ class AuditSiteTests(unittest.TestCase):
         ):
             return [
                 issue for issue in _MODULE.audit_page(page)
-                if issue.startswith("og:image")
+                if issue.startswith("og:image") or (
+                    include_recommendations and issue.startswith("Recommended og:image")
+                )
             ]
 
     def test_matching_local_og_image_type_is_accepted(self) -> None:
@@ -1200,6 +1208,193 @@ class AuditSiteTests(unittest.TestCase):
                         root, f"{ORIGIN}/assets/social/{filename}"
                     )
                     self.assertEqual(findings, [])
+
+    def test_matching_og_image_dimensions_are_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(
+                social_image_fixture("png", width=1200, height=630)
+            )
+
+            findings = self.og_image_findings(
+                root, f"{ORIGIN}/assets/social/hero.png",
+                declared_width="1200", declared_height="630"
+            )
+
+            self.assertEqual(findings, [])
+
+
+    def test_missing_malformed_and_mismatched_og_image_dimensions_are_reported(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            image_dir = root / "assets" / "social"
+            image_dir.mkdir(parents=True)
+            (image_dir / "hero.png").write_bytes(
+                social_image_fixture("png", width=1200, height=630)
+            )
+            url = f"{ORIGIN}/assets/social/hero.png"
+
+            missing = self.og_image_findings(
+                root, url, declared_width=None, declared_height=None,
+                include_recommendations=True,
+            )
+            self.assertEqual(len(missing), 2)
+            self.assertTrue(
+                any("Recommended og:image:width for local images" in issue for issue in missing)
+            )
+            self.assertTrue(
+                any("Recommended og:image:height for local images" in issue for issue in missing)
+            )
+
+            malformed = self.og_image_findings(
+                root, url, declared_width="wide", declared_height="0"
+            )
+            self.assertEqual(len(malformed), 2)
+            self.assertTrue(
+                any(
+                    "og:image:width declaration is invalid or exceeds the supported range" in issue
+                    for issue in malformed
+                )
+            )
+            self.assertTrue(
+                any(
+                    "og:image:height declaration is invalid or exceeds the supported range" in issue
+                    for issue in malformed
+                )
+            )
+
+            mismatched = self.og_image_findings(
+                root, url, declared_width="1201", declared_height="631"
+            )
+            self.assertEqual(len(mismatched), 2)
+            self.assertTrue(
+                any("og:image:width does not match the local image" in issue for issue in mismatched)
+            )
+            self.assertTrue(
+                any("og:image:height does not match the local image" in issue for issue in mismatched)
+            )
+
+    def test_dimension_values_are_bounded_positive_ascii_decimals(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            url = f"{ORIGIN}/assets/hero.png"
+            for value in ("", "  ", "0", "-1", "1.5", "１２", "9" * 5000):
+                with self.subTest(value=value[:30]):
+                    issues = self.og_image_findings(
+                        root, url, declared_width=value, declared_height="630",
+                        include_recommendations=True,
+                    )
+                    self.assertEqual(
+                        issues,
+                        ["og:image:width declaration is invalid or exceeds the supported range"],
+                    )
+            self.assertEqual(
+                self.og_image_findings(root, url, declared_width=" 1200 ", declared_height="630"),
+                [],
+            )
+
+    def test_dimensions_are_attached_to_each_root_not_secure_alternate(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            for name in ("first.png", "second.png", "secure.png"):
+                (images / name).write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/first.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:height" content="630">'
+                '<meta property="og:image:url" content="/assets/second.png">'
+                '<meta property="og:image:secure_url" content="/assets/secure.png">'
+                '<meta property="og:image:width" content="1201">'
+                '<meta property="og:image:height" content="630">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            dimension_findings = [
+                issue for issue in issues
+                if issue.startswith(("og:image:width", "og:image:height", "Recommended og:image:"))
+            ]
+            self.assertEqual(dimension_findings, ["og:image:width does not match the local image (image 2)"])
+
+    def test_every_declared_dimension_is_checked_without_recommending_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:width" content="1200">'
+                '<meta property="og:image:width" content="1201">'
+                '<meta property="og:image:height" content="630">'
+                '<meta property="og:image:height" content="">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if issue.startswith(("og:image:width", "og:image:height", "Recommended og:image:"))]
+            self.assertEqual(findings, [
+                "og:image:width does not match the local image",
+                "og:image:height declaration is invalid or exceeds the supported range",
+            ])
+
+    def test_external_image_dimensions_do_not_trigger_local_or_network_access(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="https://external.test/image.png">'
+                '<meta property="og:image:width" content="invalid">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve, patch(
+                "socket.socket.connect", side_effect=AssertionError("unexpected network")
+            ), patch("socket.create_connection", side_effect=AssertionError("unexpected network")):
+                issues = _MODULE.audit_page(page)
+
+            resolve.assert_not_called()
+            self.assertFalse(any(issue.startswith(("og:image:width", "og:image:height", "Recommended og:image:")) for issue in issues))
+
+    def test_dimension_diagnostics_do_not_echo_hostile_values(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            (images / "hero.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image" content="/assets/hero.png">'
+                '<meta property="og:image:width" content="1200&#10;`Injected text`">'
+                '<meta property="og:image:height" content="631">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if issue.startswith(("og:image:width", "og:image:height"))]
+            self.assertEqual(findings, [
+                "og:image:width declaration is invalid or exceeds the supported range",
+                "og:image:height does not match the local image",
+            ])
+            self.assertFalse(any("Injected text" in issue for issue in findings))
+
 
     def test_undersized_local_social_image_is_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

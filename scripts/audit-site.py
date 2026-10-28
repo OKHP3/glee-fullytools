@@ -242,6 +242,7 @@ class PageParser(HTMLParser):
         self.og_images: List[Dict[str, str]] = []
         self.og_image_alts: List[List[str]] = []
         self.og_image_types: List[set[str]] = []
+        self.og_image_dimensions: List[Dict[str, List[str]]] = []
         self.og_secure_urls: List[str] = []
         self.orphan_og_image_type_count = 0
         self._current_og_image: int | None = None
@@ -277,6 +278,7 @@ class PageParser(HTMLParser):
                 )
                 self.og_image_alts.append([])
                 self.og_image_types.append(set())
+                self.og_image_dimensions.append({"width": [], "height": []})
                 self._current_og_image = len(self.og_images) - 1
             elif key and key.lower() == "og:image:secure_url":
                 # This is an alternate of the current root, not a new root.
@@ -298,6 +300,14 @@ class PageParser(HTMLParser):
                         self.orphan_og_image_type_count += 1
                 else:
                     self.orphan_og_image_type_count += 1
+            elif key and key.lower() in {"og:image:width", "og:image:height"}:
+                if self._current_og_image is not None:
+                    image = self.og_images[self._current_og_image]
+                    if image["url"].strip():
+                        dimension = key.lower().rsplit(":", 1)[1]
+                        self.og_image_dimensions[self._current_og_image][dimension].append(
+                            a.get("content", "") or ""
+                        )
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
                 if key.lower() in {"og:title", "og:description", "og:url"}:
@@ -365,7 +375,9 @@ BARE_LINK_TEXTS = frozenset({
 
 
 def _og_image_issues(
-    url: str, declared_type: str, source_dir: Path, root: Path, origin: str
+    url: str, declared_type: str, source_dir: Path, root: Path, origin: str,
+    *, declared_dimensions: Dict[str, List[str]] | None = None,
+    image_suffix: str = "",
 ) -> List[str]:
     """Validate local og:image paths and signatures without fetching URLs."""
     if not url.strip():
@@ -418,6 +430,24 @@ def _og_image_issues(
         return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
     width, height = dimensions
     issues = []
+    if declared_dimensions is not None:
+        for name, actual in (("width", width), ("height", height)):
+            values = declared_dimensions[name]
+            label = f"og:image:{name}"
+            if not values:
+                issues.append(f"Recommended {label} for local images{image_suffix}")
+            for value in values:
+                normalized = value.strip()
+                # Bound conversion before int(), including all-zero inputs.
+                if (len(normalized) > 20 or
+                    not re.fullmatch(r"[0-9]+", normalized) or
+                    int(normalized) == 0):
+                    issues.append(
+                        f"{label} declaration is invalid or exceeds the supported range"
+                        f"{image_suffix}"
+                    )
+                elif int(normalized) != actual:
+                    issues.append(f"{label} does not match the local image{image_suffix}")
     if width < SOCIAL_IMAGE_MIN_WIDTH or height < SOCIAL_IMAGE_MIN_HEIGHT:
         issues.append(
             f"og:image is {width}x{height}; minimum is "
@@ -559,7 +589,9 @@ def audit_page(path: Path) -> List[str]:
             suffix = f" (image {index + 1})" if len(p.og_images) > 1 else ""
             issues.append(f"Conflicting og:image:type declarations{suffix}")
         image_issues = _og_image_issues(
-            image["url"], image["type"], path.parent, ROOT, site_origin()
+            image["url"], image["type"], path.parent, ROOT, site_origin(),
+            declared_dimensions=p.og_image_dimensions[index],
+            image_suffix=f" (image {index + 1})" if len(p.og_images) > 1 else "",
         )
         issues.extend(image_issues)
     for url in p.og_secure_urls:
