@@ -2413,6 +2413,16 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 },
                 True,
             ),
+            (
+                "failed case also listed as not run",
+                {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failed_case": "dark",
+                    "cases": {"light": {}},
+                    "not_run_cases": ["dark", "disabled_storage"],
+                },
+                True,
+            ),
         )
         for label, report, inconsistent in reports:
             with self.subTest(report=label), tempfile.TemporaryDirectory() as directory:
@@ -2436,7 +2446,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 self.assertNotIn("disabled_storage", completed)
                 self.assertIn("Not run: `disabled_storage`", summary)
                 self.assertEqual("Report is inconsistent" in summary, inconsistent)
-                if inconsistent:
+                if label == "later case listed after failure":
                     self.assertIn(
                         "lists `disabled_storage` after failed case `dark`",
                         summary,
@@ -2445,6 +2455,48 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         "must not be treated as completed, passed, or validated evidence",
                         summary,
                     )
+                if label == "failed case also listed as not run":
+                    self.assertIn(
+                        "the failed case `dark` is also listed in `not_run_cases`",
+                        summary,
+                    )
+                    self.assertIn(
+                        "It is treated as failed, not completed, passed, or "
+                        "validated evidence.",
+                        summary,
+                    )
+                    completed = next(
+                        line for line in summary.splitlines()
+                        if "Completed before failure" in line
+                    )
+                    self.assertNotIn("`dark`", completed)
+
+    def test_failure_diagnostic_does_not_name_an_unknown_case(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            report = {
+                "browser": "firefox", "status": "FAIL", "diagnostic_only": True,
+                "failed_case": "unknown-case", "cases": {"light": {}},
+                "not_run_cases": ["unknown-case", "dark"],
+            }
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps(report), encoding="utf-8",
+            )
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code], cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("an unrecognized failure label also appears in `not_run_cases`", summary)
+            self.assertIn("the actual failed case remains unverified", summary)
+            self.assertNotIn("the failed case `not identified`", summary)
+            self.assertNotIn("unknown-case", summary)
 
     def test_failure_diagnostic_marks_unsupported_case_results_as_malformed(self):
         code = theme_failure_diagnostic_code(self.workflow)
