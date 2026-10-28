@@ -238,6 +238,7 @@ class PageParser(HTMLParser):
         self.headings: List[int] = []   # ordered heading levels outside <footer>
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
+        self.blank_og_text: set[str] = set()
         self.og_images: List[Dict[str, str]] = []
         self.og_secure_urls: List[str] = []
         self._current_og_image: int | None = None
@@ -282,6 +283,9 @@ class PageParser(HTMLParser):
                     )
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
+                if key.lower() in {"og:title", "og:description", "og:url"}:
+                    if not (a.get("content", "") or "").strip():
+                        self.blank_og_text.add(key.lower())
         elif tag == "link" and a.get("rel", "").lower() == "canonical":
             self.canonical = a.get("href", "") or ""
         elif tag == "img":
@@ -584,6 +588,8 @@ def audit_page(path: Path) -> List[str]:
         for required in ("og:title", "og:description", "og:url"):
             if required not in p.metas:
                 issues.append(f"Missing {required}")
+            elif required in p.blank_og_text:
+                issues.append(f"Blank {required}")
         if not ({"og:image", "og:image:url"} & p.metas.keys()):
             issues.append("Missing og:image")
 
