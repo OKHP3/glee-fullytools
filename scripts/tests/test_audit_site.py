@@ -327,7 +327,7 @@ class AuditSiteTests(unittest.TestCase):
                 if expected_mismatch:
                     self.assertIn("expected `image/jpeg`", findings[0])
 
-    def test_conflicting_og_image_types_are_reported_with_values_and_image_url(
+    def test_conflicting_og_image_types_do_not_echo_values_or_image_url(
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as directory:
