@@ -240,6 +240,7 @@ class PageParser(HTMLParser):
         self.metas: Dict[str, str] = {}
         self.blank_og_text: set[str] = set()
         self.og_images: List[Dict[str, str]] = []
+        self.og_image_alts: List[List[str]] = []
         self.og_secure_urls: List[str] = []
         self._current_og_image: int | None = None
         self.canonical = ""
@@ -272,10 +273,16 @@ class PageParser(HTMLParser):
                 self.og_images.append(
                     {"url": a.get("content", "") or "", "type": ""}
                 )
+                self.og_image_alts.append([])
                 self._current_og_image = len(self.og_images) - 1
             elif key and key.lower() == "og:image:secure_url":
                 # This is an alternate of the current root, not a new root.
                 self.og_secure_urls.append(a.get("content", "") or "")
+            elif key and key.lower() == "og:image:alt":
+                if self._current_og_image is not None:
+                    self.og_image_alts[self._current_og_image].append(
+                        a.get("content", "") or ""
+                    )
             elif key and key.lower() == "og:image:type":
                 if self._current_og_image is not None:
                     self.og_images[self._current_og_image]["type"] = (
@@ -592,6 +599,12 @@ def audit_page(path: Path) -> List[str]:
                 issues.append(f"Blank {required}")
         if not ({"og:image", "og:image:url"} & p.metas.keys()):
             issues.append("Missing og:image")
+        for index, alts in enumerate(p.og_image_alts, start=1):
+            suffix = f" (image {index})" if len(p.og_image_alts) > 1 else ""
+            if not alts:
+                issues.append(f"Missing og:image:alt{suffix}")
+            elif any(not alt.strip() for alt in alts):
+                issues.append(f"Blank og:image:alt{suffix}")
 
     # image hygiene
     for img in p.images:
