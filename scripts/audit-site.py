@@ -242,6 +242,7 @@ class PageParser(HTMLParser):
         self.og_images: List[Dict[str, str]] = []
         self.og_image_alts: List[List[str]] = []
         self.og_secure_urls: List[str] = []
+        self.orphan_og_image_type_count = 0
         self._current_og_image: int | None = None
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
@@ -285,9 +286,13 @@ class PageParser(HTMLParser):
                     )
             elif key and key.lower() == "og:image:type":
                 if self._current_og_image is not None:
-                    self.og_images[self._current_og_image]["type"] = (
-                        a.get("content", "") or ""
-                    )
+                    image = self.og_images[self._current_og_image]
+                    if image["url"].strip():
+                        image["type"] = a.get("content", "") or ""
+                    else:
+                        self.orphan_og_image_type_count += 1
+                else:
+                    self.orphan_og_image_type_count += 1
             if key:
                 self.metas[key.lower()] = a.get("content", "") or ""
                 if key.lower() in {"og:title", "og:description", "og:url"}:
@@ -541,6 +546,9 @@ def audit_page(path: Path) -> List[str]:
     # Check every declared social image, including later tags. The parser
     # handles attribute order, quotes and character references consistently.
     # External images remain outside the local filesystem audit.
+    for _ in range(p.orphan_og_image_type_count):
+        issues.append("og:image:type without a preceding non-empty og:image URL")
+
     for image in p.og_images:
         image_issues = _og_image_issues(
             image["url"], image["type"], path.parent, ROOT, site_origin()

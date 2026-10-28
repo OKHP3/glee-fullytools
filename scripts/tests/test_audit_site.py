@@ -199,6 +199,134 @@ class AuditSiteTests(unittest.TestCase):
 
                 self.assertEqual(findings, [])
 
+    def test_each_og_image_type_without_a_preceding_image_url_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image:type" content="image/webp">'
+                '<meta property="og:image" content="">'
+                '<meta property="og:image:type" content="image/jpeg">',
+                encoding="utf-8",
+            )
+
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue
+                    for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image:type")
+                ]
+
+            self.assertEqual(len(findings), 3)
+            self.assertEqual(
+                findings,
+                ["og:image:type without a preceding non-empty og:image URL"] * 3,
+            )
+
+    def test_orphan_image_type_is_not_attached_to_a_later_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            (images / "hero.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:type" content="image/png">'
+                '<meta property="og:image" content="/assets/hero.jpg">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if issue.startswith("og:image:type")]
+            self.assertEqual(findings, ["og:image:type without a preceding non-empty og:image URL"])
+
+    def test_image_type_after_blank_root_and_secure_url_is_orphaned(self) -> None:
+        for root_attributes in ('', ' content=""', ' content="   "'):
+            with self.subTest(root_attributes=root_attributes), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                page = root / "index.html"
+                page.write_text(
+                    f'<meta property="og:image"{root_attributes}>'
+                    '<meta property="og:image:secure_url" content="https://external.test/secure.png">'
+                    '<meta property="og:image:type" content="image/png">', encoding="utf-8"
+                )
+                with patch.object(_MODULE, "ROOT", root), patch.object(
+                    _MODULE, "site_origin", return_value=ORIGIN
+                ):
+                    issues = _MODULE.audit_page(page)
+
+                findings = [issue for issue in issues if issue.startswith("og:image:type")]
+                self.assertEqual(findings, ["og:image:type without a preceding non-empty og:image URL"])
+                self.assertIn("og:image declaration is missing a non-empty content URL", issues)
+
+    def test_orphan_image_type_does_not_inject_untrusted_text_into_reports(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:type" content="image/png&#10;`Injected report line`">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if issue.startswith("og:image:type")]
+            self.assertEqual(findings, ["og:image:type without a preceding non-empty og:image URL"])
+            self.assertFalse(any("Injected report line" in issue for issue in issues))
+
+    def test_image_type_binds_to_alias_root_across_secure_alternate(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            images = root / "assets"
+            images.mkdir()
+            (images / "primary.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+            (images / "secure.png").write_bytes(IMAGE_SIGNATURES["png"])
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:url" content="/assets/primary.jpg">'
+                '<meta property="og:image:secure_url" content="/assets/secure.png">'
+                '<meta property="og:image:type" content="image/png">', encoding="utf-8"
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            findings = [issue for issue in issues if issue.startswith("og:image:type")]
+            self.assertEqual(len(findings), 1)
+            self.assertIn("primary.jpg", findings[0])
+            self.assertIn("expected `image/jpeg`", findings[0])
+
+    def test_duplicate_image_types_keep_last_value_for_the_root(self) -> None:
+        for last_type, expected_mismatch in (("image/jpeg", False), ("image/png", True), ("", False)):
+            with self.subTest(last_type=last_type), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                images = root / "assets"
+                images.mkdir()
+                (images / "primary.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+                page = root / "index.html"
+                page.write_text(
+                    '<meta property="og:image" content="/assets/primary.jpg">'
+                    '<meta property="og:image:type" content="image/png">'
+                    f'<meta property="og:image:type" content="{last_type}">', encoding="utf-8"
+                )
+                with patch.object(_MODULE, "ROOT", root), patch.object(
+                    _MODULE, "site_origin", return_value=ORIGIN
+                ):
+                    issues = _MODULE.audit_page(page)
+
+                findings = [issue for issue in issues if issue.startswith("og:image:type")]
+                self.assertEqual(len(findings), int(expected_mismatch))
+                if expected_mismatch:
+                    self.assertIn("expected `image/jpeg`", findings[0])
+
     def test_mismatching_local_og_image_type_is_actionable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
