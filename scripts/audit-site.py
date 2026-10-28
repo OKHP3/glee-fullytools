@@ -34,7 +34,8 @@ Per-page checks actually emitted as issues:
     `id="foo"` on the same page
   * og:image URL (when it points to glee-fully.tools) resolves to a
     supported raster image (PNG, JPEG, GIF, or WebP) on disk, checked by
-    file signature (URL-decoded to handle %20 etc.)
+    file signature, dimensions, and bounded local decoding (URL-decoded to
+    handle %20 etc.)
 
 Cross-file / repo-wide checks:
   * no leftover backup / OS-junk files (.bak, .orig, .swp, .DS_Store, ~)
@@ -65,14 +66,21 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import struct
 import subprocess
 import sys
+import warnings
 from urllib.parse import urlsplit
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, List, Tuple
 from xml.etree import ElementTree as ET
+try:
+    from PIL import Image, __version__ as PILLOW_VERSION
+except ImportError:
+    Image = None
+    PILLOW_VERSION = None
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
@@ -104,6 +112,13 @@ EXPECTED_BG_COLOR = "#f5f0ea"
 # The site's shared sharing card is 1200x630. Require at least that many pixels
 # in each dimension and allow small crop/rounding differences around its 1.90:1
 # shape (1.85:1–1.96:1).
+SOCIAL_DECODE_MAX_BYTES = 32 * 1024 * 1024
+SOCIAL_DECODE_MAX_SIDE = 8192
+SOCIAL_DECODE_MAX_FRAME_PIXELS = 20_000_000
+SOCIAL_DECODE_MAX_FRAMES = 32
+SOCIAL_DECODE_MAX_TOTAL_PIXELS = 80_000_000
+SOCIAL_DECODE_TIMEOUT_SECONDS = 5
+
 SOCIAL_IMAGE_MIN_WIDTH = 1200
 SOCIAL_IMAGE_MIN_HEIGHT = 630
 SOCIAL_IMAGE_MIN_ASPECT_RATIO = 1.85
@@ -219,6 +234,135 @@ def _social_image_dimensions(image_file, image_format: str) -> Tuple[int, int] |
     if width <= 0 or height <= 0:
         return None
     return width, height
+
+
+def _gif_container_frame_count(image_file) -> int:
+    """Count GIF image blocks through a trailer; zero means incomplete."""
+    image_file.seek(0)
+    header = image_file.read(13)
+    if len(header) != 13 or header[:6] not in (b"GIF87a", b"GIF89a"):
+        return 0
+    if header[10] & 0x80:
+        table_size = 3 * (1 << ((header[10] & 7) + 1))
+        if len(image_file.read(table_size)) != table_size:
+            return 0
+
+    def read_subblocks() -> bool:
+        while True:
+            length_byte = image_file.read(1)
+            if not length_byte:
+                return False
+            length = length_byte[0]
+            if not length:
+                return True
+            if len(image_file.read(length)) != length:
+                return False
+
+    frame_count = 0
+    while True:
+        marker = image_file.read(1)
+        if marker == b";":
+            return frame_count
+        if marker == b"!":
+            if len(image_file.read(1)) != 1 or not read_subblocks():
+                return 0
+        elif marker == b",":
+            descriptor = image_file.read(9)
+            if len(descriptor) != 9:
+                return 0
+            if descriptor[8] & 0x80:
+                table_size = 3 * (1 << ((descriptor[8] & 7) + 1))
+                if len(image_file.read(table_size)) != table_size:
+                    return 0
+            if len(image_file.read(1)) != 1 or not read_subblocks():
+                return 0
+            frame_count += 1
+        else:
+            return 0
+
+
+def _decode_social_image_in_worker(image_path: Path, image_format: str) -> str:
+    """Return ok, invalid, or unverified for a bounded local decoder check."""
+    if Image is None or PILLOW_VERSION != "13.0.0":
+        return "unverified"
+    expected_format = {"PNG": "PNG", "JPEG": "JPEG", "GIF": "GIF", "WebP": "WEBP"}.get(image_format)
+    if expected_format is None:
+        return "unverified"
+    try:
+        if image_path.stat().st_size > SOCIAL_DECODE_MAX_BYTES:
+            return "unverified"
+    except OSError:
+        return "unverified"
+    gif_frames = None
+    try:
+        with image_path.open("rb") as image_file:
+            dimensions = _social_image_dimensions(image_file, image_format)
+            if image_format == "GIF":
+                gif_frames = _gif_container_frame_count(image_file)
+                if not gif_frames:
+                    return "invalid"
+                if gif_frames > SOCIAL_DECODE_MAX_FRAMES:
+                    return "unverified"
+    except OSError:
+        return "unverified"
+    if dimensions is None:
+        return "invalid"
+    width, height = dimensions
+    if (width > SOCIAL_DECODE_MAX_SIDE or height > SOCIAL_DECODE_MAX_SIDE or
+        width * height > SOCIAL_DECODE_MAX_FRAME_PIXELS):
+        return "unverified"
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(image_path, formats=[expected_format]) as image:
+                if image.format != expected_format:
+                    return "invalid"
+                image.verify()
+            with Image.open(image_path, formats=[expected_format]) as image:
+                total_pixels = 0
+                for frame_number in range(SOCIAL_DECODE_MAX_FRAMES + 1):
+                    try:
+                        image.seek(frame_number)
+                    except EOFError:
+                        if gif_frames is not None and frame_number != gif_frames:
+                            return "invalid"
+                        return "ok" if frame_number else "invalid"
+                    if frame_number == SOCIAL_DECODE_MAX_FRAMES:
+                        return "unverified"
+                    width, height = image.size
+                    pixels = width * height
+                    if (width <= 0 or height <= 0 or
+                        width > SOCIAL_DECODE_MAX_SIDE or height > SOCIAL_DECODE_MAX_SIDE or
+                        pixels > SOCIAL_DECODE_MAX_FRAME_PIXELS):
+                        return "unverified"
+                    total_pixels += pixels
+                    if total_pixels > SOCIAL_DECODE_MAX_TOTAL_PIXELS:
+                        return "unverified"
+                    image.load()
+    except (Image.DecompressionBombError, Image.DecompressionBombWarning):
+        return "unverified"
+    except OSError as exc:
+        return "unverified" if exc.errno is not None else "invalid"
+    except (EOFError, SyntaxError, struct.error, ValueError, OverflowError):
+        return "invalid"
+    return "unverified"
+
+
+def _social_image_decodes(image_path: Path, image_format: str) -> str:
+    """Run decoding in a time-limited process without capturing unbounded output."""
+    if Image is None or PILLOW_VERSION != "13.0.0":
+        return "unverified"
+    try:
+        result = subprocess.run(
+            [sys.executable, "-B", str(Path(__file__).resolve()),
+             "--decode-social-image", str(image_path), image_format],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, timeout=SOCIAL_DECODE_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return "unverified"
+    return {10: "ok", 11: "invalid"}.get(result.returncode, "unverified")
 
 
 def iter_html_files() -> List[Path]:
@@ -379,7 +523,7 @@ def _og_image_issues(
     *, declared_dimensions: Dict[str, List[str]] | None = None,
     image_suffix: str = "",
 ) -> List[str]:
-    """Validate local og:image paths and signatures without fetching URLs."""
+    """Validate and decode local og:image files without fetching URLs."""
     if not url.strip():
         return ["og:image declaration is missing a non-empty content URL"]
 
@@ -403,6 +547,8 @@ def _og_image_issues(
     if target.suffix.lower() in {".html", ".htm"}:
         return [f"og:image path resolves to an HTML page, not an image file: {url}"]
     try:
+        if target.stat().st_size > SOCIAL_DECODE_MAX_BYTES:
+            return ["og:image decode was not verified (resource limit or unavailable decoder)"]
         with target.open("rb") as image_file:
             header = image_file.read(12)
     except OSError:
@@ -428,6 +574,11 @@ def _og_image_issues(
         return [f"og:image file could not be inspected: {url}"]
     if dimensions is None:
         return [f"og:image dimensions could not be inspected (malformed or truncated file): {url}"]
+    decode_status = _social_image_decodes(target, detected_format)
+    if decode_status == "unverified":
+        return ["og:image decode was not verified (resource limit or unavailable decoder)"]
+    if decode_status == "invalid":
+        return ["og:image encoded image data could not be decoded"]
     width, height = dimensions
     issues = []
     if declared_dimensions is not None:
@@ -905,4 +1056,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 4 and sys.argv[1] == "--decode-social-image":
+        status = _decode_social_image_in_worker(Path(sys.argv[2]), sys.argv[3])
+        sys.exit({"ok": 10, "invalid": 11, "unverified": 12}.get(status, 12))
     sys.exit(main())
