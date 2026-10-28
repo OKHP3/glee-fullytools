@@ -241,6 +241,7 @@ class PageParser(HTMLParser):
         self.blank_og_text: set[str] = set()
         self.og_images: List[Dict[str, str]] = []
         self.og_image_alts: List[List[str]] = []
+        self.og_image_types: List[set[str]] = []
         self.og_secure_urls: List[str] = []
         self.orphan_og_image_type_count = 0
         self._current_og_image: int | None = None
@@ -275,6 +276,7 @@ class PageParser(HTMLParser):
                     {"url": a.get("content", "") or "", "type": ""}
                 )
                 self.og_image_alts.append([])
+                self.og_image_types.append(set())
                 self._current_og_image = len(self.og_images) - 1
             elif key and key.lower() == "og:image:secure_url":
                 # This is an alternate of the current root, not a new root.
@@ -289,6 +291,9 @@ class PageParser(HTMLParser):
                     image = self.og_images[self._current_og_image]
                     if image["url"].strip():
                         image["type"] = a.get("content", "") or ""
+                        normalized_type = image["type"].strip().lower()
+                        if normalized_type:
+                            self.og_image_types[self._current_og_image].add(normalized_type)
                     else:
                         self.orphan_og_image_type_count += 1
                 else:
@@ -549,7 +554,10 @@ def audit_page(path: Path) -> List[str]:
     for _ in range(p.orphan_og_image_type_count):
         issues.append("og:image:type without a preceding non-empty og:image URL")
 
-    for image in p.og_images:
+    for index, image in enumerate(p.og_images):
+        if len(p.og_image_types[index]) > 1:
+            suffix = f" (image {index + 1})" if len(p.og_images) > 1 else ""
+            issues.append(f"Conflicting og:image:type declarations{suffix}")
         image_issues = _og_image_issues(
             image["url"], image["type"], path.parent, ROOT, site_origin()
         )
