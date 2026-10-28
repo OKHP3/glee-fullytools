@@ -239,6 +239,7 @@ class PageParser(HTMLParser):
         self._in_footer: int = 0        # nesting depth inside <footer>
         self.metas: Dict[str, str] = {}
         self.og_images: List[Dict[str, str]] = []
+        self.og_secure_urls: List[str] = []
         self._current_og_image: int | None = None
         self.canonical = ""
         self.images: List[Dict[str, str]] = []
@@ -271,6 +272,9 @@ class PageParser(HTMLParser):
                     {"url": a.get("content", "") or "", "type": ""}
                 )
                 self._current_og_image = len(self.og_images) - 1
+            elif key and key.lower() == "og:image:secure_url":
+                # This is an alternate of the current root, not a new root.
+                self.og_secure_urls.append(a.get("content", "") or "")
             elif key and key.lower() == "og:image:type":
                 if self._current_og_image is not None:
                     self.og_images[self._current_og_image]["type"] = (
@@ -531,6 +535,13 @@ def audit_page(path: Path) -> List[str]:
             image["url"], image["type"], path.parent, ROOT, site_origin()
         )
         issues.extend(image_issues)
+    for url in p.og_secure_urls:
+        # A secure alternate may have different bytes from its root image.
+        # Validate its path and image separately without reassigning root MIME.
+        issues.extend(
+            issue.replace("og:image", "og:image:secure_url", 1)
+            for issue in _og_image_issues(url, "", path.parent, ROOT, site_origin())
+        )
 
     title = p.title.strip()
     if not title:

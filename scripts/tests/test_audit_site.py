@@ -300,6 +300,85 @@ class AuditSiteTests(unittest.TestCase):
             self.assertIn("/%2e%2e/outside.png", findings[0])
             self.assertIn("safe file inside", findings[0])
 
+    def test_unsafe_local_og_image_secure_url_is_checked(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:secure_url" '
+                'content="/%2e%2e/outside.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("/%2e%2e/outside.png", findings[0])
+            self.assertIn("safe file inside", findings[0])
+
+    def test_secure_url_does_not_redirect_type_from_its_root(self) -> None:
+        for type_before_alternate in (True, False):
+            with self.subTest(type_before_alternate=type_before_alternate), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                images = root / "assets"
+                images.mkdir()
+                (images / "primary.png").write_bytes(IMAGE_SIGNATURES["png"])
+                (images / "second.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+                (images / "alternate.jpg").write_bytes(IMAGE_SIGNATURES["jpg"])
+                (images / "alternate.png").write_bytes(IMAGE_SIGNATURES["png"])
+                image_type = '<meta property="og:image:type" content="image/png">'
+
+                def group(primary: str, alternate: str) -> str:
+                    root_tag = f'<meta property="og:image" content="/assets/{primary}">'
+                    secure_tag = (
+                        f'<meta property="og:image:secure_url" content="/assets/{alternate}">'
+                    )
+                    return root_tag + (image_type + secure_tag if type_before_alternate
+                                       else secure_tag + image_type)
+
+                page = root / "index.html"
+                page.write_text(
+                    group("primary.png", "alternate.jpg")
+                    + group("second.jpg", "alternate.png"), encoding="utf-8"
+                )
+                with patch.object(_MODULE, "ROOT", root), patch.object(
+                    _MODULE, "site_origin", return_value=ORIGIN
+                ):
+                    issues = _MODULE.audit_page(page)
+
+                findings = [issue for issue in issues if issue.startswith("og:image")]
+                self.assertNotIn("Missing og:image", issues)
+                self.assertEqual(len(findings), 1)
+                self.assertIn("second.jpg", findings[0])
+                self.assertIn("expected `image/jpeg`", findings[0])
+
+    def test_orphan_secure_url_is_validated_but_does_not_supply_primary(self) -> None:
+        for attributes, expected in (
+            ('', "missing a non-empty content URL"),
+            (' content=""', "missing a non-empty content URL"),
+            (' content="   "', "missing a non-empty content URL"),
+            (' content="/%2e%2e/outside.png"', "safe file inside"),
+        ):
+            with self.subTest(attributes=attributes), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                page = root / "index.html"
+                page.write_text(
+                    f'<meta property="og:image:secure_url"{attributes}>', encoding="utf-8"
+                )
+                with patch.object(_MODULE, "ROOT", root), patch.object(
+                    _MODULE, "site_origin", return_value=ORIGIN
+                ):
+                    issues = _MODULE.audit_page(page)
+
+                self.assertIn("Missing og:image", issues)
+                self.assertTrue(any(expected in issue for issue in issues))
+
     def test_valid_local_og_image_url_alias_satisfies_required_image_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
@@ -407,6 +486,33 @@ class AuditSiteTests(unittest.TestCase):
             with patch.object(_MODULE, "ROOT", root), patch.object(
                 _MODULE, "site_origin", return_value=ORIGIN
             ), patch.object(_MODULE, "link_target", wraps=_MODULE.link_target) as resolve:
+                findings = [
+                    issue for issue in _MODULE.audit_page(page)
+                    if issue.startswith("og:image")
+                ]
+
+            self.assertEqual(findings, [])
+            resolve.assert_not_called()
+
+    def test_external_og_image_secure_url_is_not_resolved_locally(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            root.mkdir()
+            page = root / "index.html"
+            page.write_text(
+                '<meta property="og:image:secure_url" '
+                'content="https://external.test/image.png">',
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ), patch.object(
+                _MODULE, "link_target", wraps=_MODULE.link_target
+            ) as resolve, patch(
+                "socket.socket.connect", side_effect=AssertionError("unexpected network")
+            ), patch(
+                "socket.create_connection", side_effect=AssertionError("unexpected network")
+            ):
                 findings = [
                     issue for issue in _MODULE.audit_page(page)
                     if issue.startswith("og:image")
