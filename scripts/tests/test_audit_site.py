@@ -448,6 +448,120 @@ class AuditSiteTests(unittest.TestCase):
                 "og:image declaration is missing a non-empty content URL", with_blank_alias
             )
 
+    def test_blank_open_graph_text_metadata_is_reported_and_populated_values_pass(self) -> None:
+        fields = ("og:title", "og:description", "og:url")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "index.html"
+
+            for field in fields:
+                for value in ("", "   ", "\n\t"):
+                    with self.subTest(field=field, value=value):
+                        tags = "".join(
+                            f'<meta property="{name}" content="'
+                            f'{"Populated value" if name != field else value}">'
+                            for name in fields
+                        )
+                        page.write_text(tags, encoding="utf-8")
+                        with patch.object(_MODULE, "ROOT", root), patch.object(
+                            _MODULE, "site_origin", return_value=ORIGIN
+                        ):
+                            issues = _MODULE.audit_page(page)
+
+                        self.assertIn(f"Blank {field}", issues)
+
+            page.write_text(
+                "".join(
+                    f'<meta property="{field}" content="Populated value">'
+                    for field in fields
+                ),
+                encoding="utf-8",
+            )
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            self.assertFalse(
+                any(issue.startswith("Blank og:") for issue in issues)
+            )
+
+    def test_duplicate_blank_text_metadata_is_reported_in_either_order(self) -> None:
+        fields = ("og:title", "og:description", "og:url")
+        for field in fields:
+            for blank_first in (True, False):
+                with self.subTest(field=field, blank_first=blank_first), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    page = root / "index.html"
+                    other_tags = "".join(
+                        f'<meta property="{name}" content="Populated value">'
+                        for name in fields if name != field
+                    )
+                    blank = f'<meta property="{field}" content=" ">'
+                    populated = f'<meta property="{field}" content="Populated value">'
+                    page.write_text(
+                        other_tags + (blank + populated if blank_first else populated + blank),
+                        encoding="utf-8",
+                    )
+                    with patch.object(_MODULE, "ROOT", root), patch.object(
+                        _MODULE, "site_origin", return_value=ORIGIN
+                    ):
+                        issues = _MODULE.audit_page(page)
+
+                    self.assertIn(f"Blank {field}", issues)
+                    self.assertNotIn(f"Missing {field}", issues)
+                    self.assertEqual(issues.count(f"Blank {field}"), 1)
+
+    def test_missing_and_contentless_open_graph_text_have_distinct_findings(self) -> None:
+        for field in ("og:title", "og:description", "og:url"):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                page = root / "index.html"
+                with patch.object(_MODULE, "ROOT", root), patch.object(
+                    _MODULE, "site_origin", return_value=ORIGIN
+                ):
+                    page.write_text("<html></html>", encoding="utf-8")
+                    missing = _MODULE.audit_page(page)
+                    page.write_text(f'<meta property="{field}">', encoding="utf-8")
+                    contentless = _MODULE.audit_page(page)
+
+                self.assertIn(f"Missing {field}", missing)
+                self.assertNotIn(f"Blank {field}", missing)
+                self.assertIn(f"Blank {field}", contentless)
+                self.assertNotIn(f"Missing {field}", contentless)
+
+    def test_open_graph_text_normalizes_case_and_decoded_whitespace(self) -> None:
+        for field in ("og:title", "og:description", "og:url"):
+            for value in ("&#9;&#10;", "&#160;"):
+                with self.subTest(field=field, value=value), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    page = root / "index.html"
+                    page.write_text(
+                        f'<META PROPERTY="{field.upper()}" CONTENT="{value}">',
+                        encoding="utf-8",
+                    )
+                    with patch.object(_MODULE, "ROOT", root), patch.object(
+                        _MODULE, "site_origin", return_value=ORIGIN
+                    ):
+                        issues = _MODULE.audit_page(page)
+
+                    self.assertIn(f"Blank {field}", issues)
+                    self.assertNotIn(f"Missing {field}", issues)
+
+    def test_offline_fallback_exempts_blank_and_missing_open_graph_text(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            page = root / "offline.html"
+            page.write_text('<meta property="og:title" content=" ">', encoding="utf-8")
+            with patch.object(_MODULE, "ROOT", root), patch.object(
+                _MODULE, "site_origin", return_value=ORIGIN
+            ):
+                issues = _MODULE.audit_page(page)
+
+            for field in ("og:title", "og:description", "og:url"):
+                self.assertNotIn(f"Blank {field}", issues)
+                self.assertNotIn(f"Missing {field}", issues)
+
     def test_later_og_images_with_missing_or_blank_content_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "repo"
