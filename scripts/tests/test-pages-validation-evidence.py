@@ -2143,6 +2143,40 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("case sequence and results remain unverified", unavailable_summary.read_text(encoding="utf-8"))
 
+    def test_shared_route_reason_contract_is_accepted_by_capture_and_summary(self):
+        reasons = sorted(color_scheme_checker.ROUTE_REASON_CODES)
+        route_failure = color_scheme_checker.RouteCheckFailure(
+            [{"route": "/about/", "error": "synthetic-private-token"}],
+            [{"route": "/about/", "reasons": reasons}],
+        )
+        report = {"cases": {}}
+        color_scheme_checker.capture_case(
+            report, "light", lambda: (_ for _ in ()).throw(route_failure),
+            allowed_routes=["/about/"],
+        )
+        color_scheme_checker.capture_case(report, "dark", lambda: {"routes": 1})
+        color_scheme_checker.capture_case(report, "disabled_storage", lambda: {"routes": 1})
+        self.assertEqual(report["case_failures"]["light"]["affected_routes"][0]["reasons"], reasons)
+        self.assertNotIn("synthetic-private-token", json.dumps(report))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps({**report, "browser": "firefox", "status": "FAIL"}), encoding="utf-8"
+            )
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", theme_failure_diagnostic_code(self.workflow)], cwd=root,
+                env={**os.environ, "GITHUB_WORKSPACE": str(ROOT),
+                     "GITHUB_STEP_SUMMARY": str(summary_path)}, capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            for reason in reasons:
+                self.assertIn(f"`{reason}`", summary)
+            self.assertNotIn("synthetic-private-token", summary)
+
     def test_release_gates_reject_pass_reports_with_failure_indicators(self):
         verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split("\n      - name:", 1)[0]
         job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
@@ -2231,7 +2265,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     summary_path = root / f"summary-{index}.md"
                     result = subprocess.run(
                         [sys.executable, "-c", code], cwd=root,
-                        env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                        env={**os.environ, "GITHUB_WORKSPACE": str(ROOT),
+                             "GITHUB_STEP_SUMMARY": str(summary_path)},
                         capture_output=True, text=True,
                     )
                     self.assertEqual(result.returncode, 0, result.stderr)
@@ -2256,7 +2291,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             partial_summary = root / "summary-partial.md"
             result = subprocess.run(
                 [sys.executable, "-c", code], cwd=root,
-                env={**os.environ, "GITHUB_STEP_SUMMARY": str(partial_summary)},
+                env={**os.environ, "GITHUB_WORKSPACE": str(ROOT),
+                     "GITHUB_STEP_SUMMARY": str(partial_summary)},
                 capture_output=True, text=True,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
@@ -2264,6 +2300,20 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertIn("theme checks failed in `light`", summary)
             self.assertIn("Not run: `disabled_storage`", summary)
             self.assertNotIn("case sequence and results remain unverified", summary)
+
+            path.write_text(json.dumps(good), encoding="utf-8")
+            missing_contract_summary = root / "summary-missing-contract.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code], cwd=root,
+                env={**os.environ, "GITHUB_WORKSPACE": str(root),
+                     "PYTHONPATH": str(ROOT / "scripts"),
+                     "GITHUB_STEP_SUMMARY": str(missing_contract_summary)},
+                capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = missing_contract_summary.read_text(encoding="utf-8")
+            self.assertIn("case sequence and results remain unverified", summary)
+            self.assertNotIn("theme checks failed in", summary)
 
     def test_multi_case_cancellation_is_not_caught_or_followed_by_other_cases(self):
         for interrupt in (KeyboardInterrupt, SystemExit):

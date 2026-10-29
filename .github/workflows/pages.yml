@@ -231,7 +231,6 @@ jobs:
           python3 - <<'PY'
           import json
           import os
-          import re
           import sys
           from pathlib import Path
 
@@ -299,24 +298,30 @@ jobs:
                       and isinstance(failures, dict)
                   )
                   if valid:
-                      route_codes = {
-                          "navigation_failed", "evidence_collection_failed",
-                          "theme_assertion_failed", "keyboard_recovery_failed", "route_check_failed",
-                      }
-                      route_pattern = re.compile(r"^/(?:[a-z0-9][a-z0-9-]*/)*(?:[a-z0-9][a-z0-9-]*\.html)?$")
+                      try:
+                          workspace = Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
+                          scripts_dir = (workspace / "scripts").resolve()
+                          contract = workspace / "scripts" / "theme_failure_contract.py"
+                          if (scripts_dir != workspace / "scripts"
+                              or contract.is_symlink() or not contract.is_file()
+                              or contract.resolve().parent != scripts_dir):
+                              raise ValueError("Theme failure contract unavailable")
+                          sys.path.insert(0, str(scripts_dir))
+                          from theme_failure_contract import (
+                              DISABLED_STORAGE_ROUTES, PUBLIC_ROUTE_PATTERN,
+                              ROUTE_REASON_CODES, UTILITY_ROUTES,
+                          )
+                      except Exception:
+                          valid = False
                       needs_inventory = any(
                           isinstance(record, dict) and "affected_routes" in record
                           for record in failures.values()
                       )
                       allowed_routes = set()
-                      if needs_inventory:
+                      if needs_inventory and valid:
                           try:
-                              workspace = Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
-                              sys.path.insert(0, str(workspace / "scripts"))
                               from public_inventory import iter_indexable_urls
-                              allowed_routes = set(iter_indexable_urls(workspace)) | {
-                                  "/404.html", "/under-construction.html", "/offline.html"
-                              }
+                              allowed_routes = set(iter_indexable_urls(workspace)) | set(UTILITY_ROUTES)
                           except Exception:
                               valid = False
 
@@ -338,12 +343,10 @@ jobs:
                                   return False
                               route, reasons = item["route"], item["reasons"]
                               if (not isinstance(route, str) or route not in allowed_routes
-                                  or not route_pattern.fullmatch(route) or route in seen
-                                  or (case_name == "disabled_storage" and route not in {
-                                      "/", "/404.html", "/under-construction.html", "/offline.html"
-                                  })
+                                  or not PUBLIC_ROUTE_PATTERN.fullmatch(route) or route in seen
+                                  or (case_name == "disabled_storage" and route not in DISABLED_STORAGE_ROUTES)
                                   or not isinstance(reasons, list) or not reasons
-                                  or any(not isinstance(reason, str) or reason not in route_codes for reason in reasons)
+                                  or any(not isinstance(reason, str) or reason not in ROUTE_REASON_CODES for reason in reasons)
                                   or len(set(reasons)) != len(reasons)):
                                   return False
                               seen.add(route)

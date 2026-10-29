@@ -16,7 +16,6 @@ from collections import Counter
 from datetime import datetime, timezone
 import json
 import os
-import re
 from pathlib import Path
 import sys
 from typing import Callable, Literal
@@ -25,12 +24,6 @@ from urllib.parse import urljoin, urlsplit
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
 THEME_CASES = ("light", "dark", "disabled_storage")
-ROUTE_REASON_CODES = frozenset({
-    "navigation_failed", "evidence_collection_failed", "theme_assertion_failed",
-    "keyboard_recovery_failed", "route_check_failed",
-})
-PUBLIC_ROUTE_PATTERN = re.compile(r"^/(?:[a-z0-9][a-z0-9-]*/)*(?:[a-z0-9][a-z0-9-]*\.html)?$")
-UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
 UTILITY_RECOVERY = {
     "/404.html": ("main .btn-primary", "Return home", "/"),
     "/under-construction.html": ("main .btn-primary", "Browse live Tools", "/toolbox/"),
@@ -50,6 +43,9 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
+from theme_failure_contract import (  # noqa: E402
+    DISABLED_STORAGE_ROUTES, PUBLIC_ROUTE_PATTERN, ROUTE_REASON_CODES, UTILITY_ROUTES,
+)
 from public_inventory import iter_indexable_urls, page_type  # noqa: E402
 
 
@@ -1068,9 +1064,9 @@ def main() -> None:
                     report,
                     THEME_CASES[2],
                     lambda: check_disabled_storage(
-                        browser, base_url, ["/", *UTILITY_ROUTES]
+                        browser, base_url, list(DISABLED_STORAGE_ROUTES)
                     ),
-                    allowed_routes=["/", *UTILITY_ROUTES],
+                    allowed_routes=list(DISABLED_STORAGE_ROUTES),
                 )
                 if report.get("case_failures"):
                     raise RuntimeError("Theme case failures recorded")
