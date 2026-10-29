@@ -1963,15 +1963,448 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         def fail_dark_case():
             raise AssertionError("dark preference was not applied")
 
-        with self.assertRaisesRegex(AssertionError, "dark preference was not applied"):
-            color_scheme_checker.capture_case(report, "dark", fail_dark_case)
+        color_scheme_checker.capture_case(report, "dark", fail_dark_case)
+        color_scheme_checker.capture_case(
+            report, "disabled_storage", lambda: {"storage_blocked": True}
+        )
 
-        self.assertEqual(report["cases"], {"light": {"preference_applied": True}})
+        self.assertEqual(
+            report["cases"],
+            {
+                "light": {"preference_applied": True},
+                "disabled_storage": {"storage_blocked": True},
+            },
+        )
         self.assertEqual(report["failure_stage"], "theme_check")
         self.assertEqual(report["failed_case"], "dark")
-        self.assertEqual(report["not_run_cases"], ["disabled_storage"])
-        self.assertEqual(report["error"], "dark preference was not applied")
+        self.assertEqual(report["error"], "One or more theme cases failed.")
+        self.assertEqual(
+            report["case_failures"],
+            {"dark": {"error": "Theme case failed."}},
+        )
+        self.assertEqual(report["attempted_cases"], ["light", "dark", "disabled_storage"])
+        self.assertEqual(report["not_run_cases"], [])
         self.assertTrue(report["diagnostic_only"])
+
+    def test_multiple_theme_failures_keep_later_results_and_hide_exception_details(self):
+        report = {"cases": {}}
+        marker = "synthetic-private-token"
+        for name in ("light", "dark", "disabled_storage"):
+            def check(name=name):
+                if name != "dark":
+                    raise RuntimeError(f"{marker} https://private.invalid/?token={marker}")
+                return {"routes": 1}
+            color_scheme_checker.capture_case(report, name, check)
+        self.assertEqual(report["attempted_cases"], ["light", "dark", "disabled_storage"])
+        self.assertEqual(report["not_run_cases"], [])
+        self.assertEqual(report["cases"], {"dark": {"routes": 1}})
+        self.assertEqual(set(report["case_failures"]), {"light", "disabled_storage"})
+        self.assertEqual(report["failed_case"], "light")
+        self.assertNotIn(marker, json.dumps(report))
+
+    def test_multi_case_route_diagnostics_are_allowlisted_and_do_not_expose_secrets(self):
+        marker = "synthetic-private-token"
+        report = {"cases": {}}
+
+        def check(route):
+            if route == "/about/":
+                color_scheme_checker.assert_independent_checks(
+                    route, [("visible primary content", lambda: color_scheme_checker.require_condition(False, marker))]
+                )
+            if route == "/toolbox/":
+                raise color_scheme_checker.TypedThemeRuntimeFailure(marker, "navigation_failed")
+            raise RuntimeError(marker)
+
+        first_routes = ["/about/", f"/private-{marker}/"]
+        second_routes = ["/toolbox/", "/404.html"]
+        color_scheme_checker.capture_case(
+            report, "light", lambda: color_scheme_checker.collect_route_evidence(first_routes, check),
+            allowed_routes=first_routes,
+        )
+        color_scheme_checker.capture_case(
+            report, "dark", lambda: color_scheme_checker.collect_route_evidence(second_routes, check),
+            allowed_routes=second_routes,
+        )
+        color_scheme_checker.capture_case(report, "disabled_storage", lambda: {"routes": 1})
+        self.assertEqual(report["case_failures"]["light"], {
+            "error": "Theme case failed.",
+            "affected_routes": [{"route": "/about/", "reasons": ["theme_assertion_failed"]}],
+            "route_details_incomplete": True,
+        })
+        self.assertEqual(report["case_failures"]["dark"]["affected_routes"], [
+            {"route": "/toolbox/", "reasons": ["navigation_failed"]},
+            {"route": "/404.html", "reasons": ["route_check_failed"]},
+        ])
+        self.assertNotIn(marker, json.dumps(report))
+
+        playwright_api = ModuleType("playwright.sync_api")
+        class FakeBrowser:
+            version = "test-browser"
+            def close(self): pass
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: FakeBrowser()))
+            def __exit__(self, *_args): return False
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        def fail_preference(_browser, _base, _preference, routes):
+            return color_scheme_checker.collect_route_evidence(routes, check)
+        stdout = StringIO()
+        with (
+            patch.dict(sys.modules, {"playwright": playwright_module, "playwright.sync_api": playwright_api}),
+            patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+            patch.object(color_scheme_checker, "browser_routes", return_value=["/about/", "/toolbox/"]),
+            patch.object(color_scheme_checker, "check_saved_preference", side_effect=fail_preference),
+            patch.object(color_scheme_checker, "check_disabled_storage", return_value={"routes": 1}),
+            redirect_stdout(stdout),
+            self.assertRaises(SystemExit),
+        ):
+            color_scheme_checker.main()
+        main_report = json.loads(stdout.getvalue())
+        self.assertEqual(main_report["status"], "FAIL")
+        self.assertEqual(main_report["case_failures"]["light"]["affected_routes"], [
+            {"route": "/about/", "reasons": ["theme_assertion_failed"]},
+            {"route": "/toolbox/", "reasons": ["navigation_failed"]},
+        ])
+        self.assertNotIn(marker, stdout.getvalue())
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            path = audit / "color-scheme-init-firefox.json"
+            report.update(browser="firefox", status="FAIL")
+            code = theme_failure_diagnostic_code(self.workflow)
+            path.write_text(json.dumps(report), encoding="utf-8")
+            summary_path = root / "summary.md"
+            env = {**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path), "GITHUB_WORKSPACE": str(ROOT)}
+            result = subprocess.run([sys.executable, "-c", code], cwd=root, env=env,
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("`light`, route `/about/`: `theme_assertion_failed`", summary)
+            self.assertIn("`dark`, route `/toolbox/`: `navigation_failed`", summary)
+            self.assertIn("`dark`, route `/404.html`: `route_check_failed`", summary)
+            self.assertIn("omitted or unavailable route details", summary)
+            self.assertNotIn(marker, summary)
+
+            invalid_routes = (
+                {"route": f"/private-{marker}/", "reasons": ["route_check_failed"]},
+                {"route": "/about/", "reasons": [marker]},
+                {"route": "/about/", "reasons": []},
+                {"route": "/about/", "reasons": ["route_check_failed", "route_check_failed"]},
+                {"route": "/about/", "reasons": ["route_check_failed"], "extra": marker},
+                {"route": "https://example.test/about/", "reasons": ["route_check_failed"]},
+            )
+            for index, item in enumerate(invalid_routes):
+                with self.subTest(item=item):
+                    broken = {**report, "case_failures": {
+                        **report["case_failures"],
+                        "light": {"error": "Theme case failed.", "affected_routes": [item]},
+                    }}
+                    path.write_text(json.dumps(broken), encoding="utf-8")
+                    result_path = root / f"bad-{index}.md"
+                    result = subprocess.run(
+                        [sys.executable, "-c", code], cwd=root,
+                        env={**env, "GITHUB_STEP_SUMMARY": str(result_path)},
+                        capture_output=True, text=True,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    summary = result_path.read_text(encoding="utf-8")
+                    self.assertIn("case sequence and results remain unverified", summary)
+                    self.assertNotIn(marker, summary)
+                    self.assertNotIn("Completed theme cases", summary)
+
+            bad_case_route = {
+                **report, "cases": {},
+                "case_failures": {
+                    **report["case_failures"],
+                    "disabled_storage": {
+                        "error": "Theme case failed.",
+                        "affected_routes": [{"route": "/about/", "reasons": ["route_check_failed"]}],
+                    },
+                },
+            }
+            path.write_text(json.dumps(bad_case_route), encoding="utf-8")
+            bad_summary = root / "bad-case-route.md"
+            result = subprocess.run([sys.executable, "-c", code], cwd=root,
+                                    env={**env, "GITHUB_STEP_SUMMARY": str(bad_summary)},
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("case sequence and results remain unverified", bad_summary.read_text(encoding="utf-8"))
+
+            path.write_text(json.dumps(report), encoding="utf-8")
+            unavailable_summary = root / "unavailable-inventory.md"
+            result = subprocess.run([sys.executable, "-c", code], cwd=root,
+                                    env={**env, "GITHUB_WORKSPACE": str(root),
+                                         "GITHUB_STEP_SUMMARY": str(unavailable_summary)},
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("case sequence and results remain unverified", unavailable_summary.read_text(encoding="utf-8"))
+
+    def test_release_gates_reject_pass_reports_with_failure_indicators(self):
+        verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split("\n      - name:", 1)[0]
+        job_block = self.workflow.split(POST_UPLOAD_JOB, 1)[1].split(DEPLOY_JOB, 1)[0]
+        downloaded_block = job_block.split(POST_UPLOAD_VERIFY_STEP, 1)[1].split(THEME_SUMMARY_STEP, 1)[0]
+        summary_block = job_block.split(THEME_SUMMARY_STEP, 1)[1].split("\n      - name:", 1)[0]
+        def python_code(block):
+            return textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / THEME_INDEX_NAME).write_text(browser_theme_index(), encoding="utf-8")
+            docs = root / "assets" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "audit-report.md").write_text(audit_report_index_link(), encoding="utf-8")
+            flags = (
+                {"case_results_version": 1},
+                {"case_failures": {"light": {"error": "Theme case failed."}}},
+                {"not_run_cases": ["dark"]},
+                {"failed_case": "dark"},
+                {"cleanup_failed": True},
+            )
+            for flag in flags:
+                with self.subTest(flag=flag):
+                    for browser, _, version in browser_versions():
+                        report = {
+                            "browser": browser, "browser_version": version, "status": "PASS",
+                            "cases": {"light": {}, "dark": {}, "disabled_storage": {}},
+                            **(flag if browser == "firefox" else {}),
+                        }
+                        (audit / f"color-scheme-init-{browser}.json").write_text(
+                            json.dumps(report), encoding="utf-8"
+                        )
+                    env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root),
+                           "GITHUB_STEP_SUMMARY": str(root / "summary.md")}
+                    for block in (verify_block, downloaded_block, summary_block):
+                        result = subprocess.run([sys.executable, "-c", python_code(block)],
+                                                cwd=root, env=env, capture_output=True, text=True)
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("diagnostic case failures are not release evidence", result.stderr)
+
+    def test_multi_case_diagnostics_validate_sequence_and_hide_untrusted_fields(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        good = {
+            "browser": "firefox", "status": "FAIL", "diagnostic_only": True,
+            "failure_stage": "theme_check", "case_results_version": 1,
+            "attempted_cases": ["light", "dark", "disabled_storage"],
+            "cases": {"dark": {"routes": 1}},
+            "case_failures": {"light": {"error": "Theme case failed."},
+                              "disabled_storage": {"error": "Theme case failed."}},
+            "failed_case": "light", "not_run_cases": [], "cleanup_failed": True,
+            "error": "synthetic-private-token",
+        }
+        conflicts = (
+            {"case_results_version": True},
+            {"case_results_version": 2},
+            {"attempted_cases": ["light", "dark", "dark"]},
+            {"attempted_cases": ["dark", "light", "disabled_storage"]},
+            {"attempted_cases": ["light", "dark", "unknown"]},
+            {"not_run_cases": ["dark"]},
+            {"not_run_cases": "disabled_storage"},
+            {"cases": {"light": {}, "dark": {}}},
+            {"cases": {"dark": None}},
+            {"case_failures": {"light": {"error": "synthetic-private-token"}}},
+            {"case_failures": {"unknown": {"error": "Theme case failed."}}},
+            {"failed_case": "disabled_storage"},
+            {"failed_routes": [{"route": "/synthetic-private-token"}]},
+            {"failure_stage": "browser_startup"},
+            {"failure_stage": "browser_cleanup"},
+            {"status": "PASS"},
+            {"cleanup_failed": 1},
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            path = audit / "color-scheme-init-firefox.json"
+            for index, update in enumerate(({}, *conflicts)):
+                with self.subTest(update=update):
+                    path.write_text(json.dumps({**good, **update}), encoding="utf-8")
+                    summary_path = root / f"summary-{index}.md"
+                    result = subprocess.run(
+                        [sys.executable, "-c", code], cwd=root,
+                        env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                        capture_output=True, text=True,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    summary = summary_path.read_text(encoding="utf-8")
+                    self.assertNotIn("synthetic-private-token", summary)
+                    if update:
+                        self.assertIn("case sequence and results remain unverified", summary)
+                        self.assertNotIn("Completed theme cases", summary)
+                        self.assertNotIn("Not run:", summary)
+                    else:
+                        self.assertIn("theme checks failed in `light`, `disabled_storage`", summary)
+                        self.assertIn("Completed theme cases (diagnostic only; not validated evidence): `dark`", summary)
+                        self.assertIn("Not run: none reported", summary)
+                        self.assertIn("Browser cleanup also failed", summary)
+            partial = {
+                **good, "attempted_cases": ["light", "dark"],
+                "case_failures": {"light": {"error": "Theme case failed."}},
+                "not_run_cases": ["disabled_storage"],
+            }
+            path.write_text(json.dumps(partial), encoding="utf-8")
+            partial_summary = root / "summary-partial.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code], cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(partial_summary)},
+                capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = partial_summary.read_text(encoding="utf-8")
+            self.assertIn("theme checks failed in `light`", summary)
+            self.assertIn("Not run: `disabled_storage`", summary)
+            self.assertNotIn("case sequence and results remain unverified", summary)
+
+    def test_multi_case_cancellation_is_not_caught_or_followed_by_other_cases(self):
+        for interrupt in (KeyboardInterrupt, SystemExit):
+            with self.subTest(interrupt=interrupt.__name__):
+                report = {"cases": {}}
+                color_scheme_checker.capture_case(
+                    report, "light", lambda: (_ for _ in ()).throw(ValueError("first failure"))
+                )
+                with self.assertRaises(interrupt):
+                    color_scheme_checker.capture_case(
+                        report, "dark", lambda: (_ for _ in ()).throw(interrupt())
+                    )
+                self.assertEqual(report["attempted_cases"], ["light", "dark"])
+                self.assertEqual(report["not_run_cases"], ["disabled_storage"])
+                self.assertEqual(set(report["case_failures"]), {"light"})
+
+    def test_main_cancellation_after_case_failure_closes_without_running_later_cases(self):
+        playwright_api = ModuleType("playwright.sync_api")
+        closed = []
+        attempted = []
+
+        class FakeBrowser:
+            version = "test-browser"
+            def close(self):
+                closed.append(True)
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: FakeBrowser()))
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        def check_preference(_browser, _base, preference, _routes):
+            attempted.append(preference)
+            if preference == "light":
+                raise ValueError("first failure")
+            raise KeyboardInterrupt()
+        with (
+            patch.dict(sys.modules, {"playwright": playwright_module, "playwright.sync_api": playwright_api}),
+            patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+            patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+            patch.object(color_scheme_checker, "check_saved_preference", side_effect=check_preference),
+            patch.object(color_scheme_checker, "check_disabled_storage") as disabled,
+            redirect_stdout(StringIO()),
+            self.assertRaises(KeyboardInterrupt),
+        ):
+            color_scheme_checker.main()
+        self.assertEqual(attempted, ["light", "dark"])
+        disabled.assert_not_called()
+        self.assertEqual(closed, [True])
+
+    def test_multi_case_main_failure_and_cleanup_preserve_safe_diagnostics(self):
+        marker = "synthetic-private-token"
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                raise RuntimeError(marker)
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: FakeBrowser()))
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        def check_preference(_browser, _base, preference, _routes):
+            if preference == "light":
+                raise RuntimeError(marker)
+            return {"routes": 1}
+        stdout = StringIO()
+        with (
+            patch.dict(sys.modules, {"playwright": playwright_module, "playwright.sync_api": playwright_api}),
+            patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+            patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+            patch.object(color_scheme_checker, "check_saved_preference", side_effect=check_preference),
+            patch.object(color_scheme_checker, "check_disabled_storage", side_effect=RuntimeError(marker)),
+            redirect_stdout(stdout),
+            self.assertRaises(SystemExit) as result,
+        ):
+            color_scheme_checker.main()
+        report = json.loads(stdout.getvalue())
+        self.assertEqual(result.exception.code, 1)
+        self.assertEqual(report["status"], "FAIL")
+        self.assertEqual(report["failure_stage"], "theme_check")
+        self.assertEqual(report["attempted_cases"], ["light", "dark", "disabled_storage"])
+        self.assertEqual(report["not_run_cases"], [])
+        self.assertEqual(set(report["case_failures"]), {"light", "disabled_storage"})
+        self.assertEqual(set(report["cases"]), {"dark"})
+        self.assertIs(report["cleanup_failed"], True)
+        self.assertNotIn(marker, stdout.getvalue())
+
+    def test_all_successful_cases_remain_pass_release_evidence(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: FakeBrowser()))
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        stdout = StringIO()
+        with (
+            patch.dict(sys.modules, {"playwright": playwright_module, "playwright.sync_api": playwright_api}),
+            patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+            patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+            patch.object(color_scheme_checker, "check_saved_preference", return_value={"routes": 1}),
+            patch.object(color_scheme_checker, "check_disabled_storage", return_value={"routes": 1}),
+            redirect_stdout(stdout),
+        ):
+            color_scheme_checker.main()
+        report, _ = json.JSONDecoder().raw_decode(stdout.getvalue())
+        self.assertEqual(report["status"], "PASS")
+        self.assertEqual(report["attempted_cases"], ["light", "dark", "disabled_storage"])
+        self.assertEqual(report["not_run_cases"], [])
+        self.assertEqual(report["case_failures"], {})
+        self.assertNotIn("case_results_version", report)
+        block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split("\n      - name:", 1)[0]
+        code = textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            for browser, _, version in browser_versions():
+                (audit / f"color-scheme-init-{browser}.json").write_text(
+                    json.dumps({**report, "browser": browser, "browser_version": version}),
+                    encoding="utf-8",
+                )
+            result = subprocess.run([sys.executable, "-c", code], cwd=root,
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_browser_launch_failure_is_reported_before_theme_checks_begin(self):
         playwright_api = ModuleType("playwright.sync_api")
@@ -2158,20 +2591,19 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         )
 
         report = {"cases": {}}
-        with self.assertRaises(color_scheme_checker.RouteCheckFailure):
-            color_scheme_checker.capture_case(
-                report,
-                "dark",
-                lambda: color_scheme_checker.collect_route_evidence(
-                    ["/first/", "/second/"], check
-                ),
+        color_scheme_checker.capture_case(
+            report,
+            "dark",
+            lambda: color_scheme_checker.collect_route_evidence(
+                ["/first/", "/second/"], check
             )
+        )
         self.assertTrue(report["diagnostic_only"])
         self.assertEqual(report["failed_case"], "dark")
-        self.assertEqual(
-            report["failed_routes"],
-            failure.exception.failed_routes,
-        )
+        self.assertEqual(report["case_failures"]["dark"], {
+            "error": "Theme case failed.", "route_details_incomplete": True,
+        })
+        self.assertNotIn("failed_routes", report)
 
     def test_browser_route_reports_every_independent_theme_assertion_failure(self):
         class FakePage:
@@ -2735,8 +3167,103 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(exit_result.exception.code, 1)
             self.assertEqual(report["status"], "FAIL")
             self.assertEqual(report["failure_stage"], "theme_check")
-            self.assertIn("2 independent theme check(s) failed", report["error"])
-            self.assertEqual(report["failed_routes"][0]["route"], "/theme-regression/")
+            self.assertEqual(report["error"], "One or more theme cases failed.")
+            self.assertEqual(report["case_failures"]["dark"], {
+                "error": "Theme case failed.", "route_details_incomplete": True,
+            })
+            self.assertNotIn("failed_routes", report)
+            stdout.close()
+
+    def test_first_theme_failure_keeps_running_and_reports_later_case_results(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        attempted = []
+
+        def check_saved(_browser, _base_url, preference, _routes):
+            attempted.append(preference)
+            if preference == "light":
+                raise AssertionError("light preference regressed")
+            return {"routes": 1, "preference": preference}
+
+        def check_blocked(_browser, _base_url, _routes):
+            attempted.append("disabled_storage")
+            return {"routes": 1, "storage_blocked": True}
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(
+                    color_scheme_checker, "browser_routes", return_value=["/"]
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    side_effect=check_saved,
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_disabled_storage",
+                    side_effect=check_blocked,
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit) as exit_result,
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(exit_result.exception.code, 1)
+            self.assertEqual(attempted, ["light", "dark", "disabled_storage"])
+            self.assertEqual(report["status"], "FAIL")
+            self.assertEqual(report["failure_stage"], "theme_check")
+            self.assertEqual(
+                report["case_failures"],
+                {"light": {"error": "Theme case failed."}},
+            )
+            self.assertEqual(
+                report["cases"],
+                {
+                    "dark": {"routes": 1, "preference": "dark"},
+                    "disabled_storage": {"routes": 1, "storage_blocked": True},
+                },
+            )
+            self.assertEqual(report["not_run_cases"], [])
             stdout.close()
 
     def test_browser_close_failure_preserves_completed_theme_cases(self):
@@ -2951,6 +3478,11 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     "check_saved_preference",
                     side_effect=[{"routes": 1}, theme_failure],
                 ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_disabled_storage",
+                    return_value={"routes": 1},
+                ),
                 patch.object(sys, "stdout", stdout),
                 self.assertRaises(SystemExit),
             ):
@@ -2959,10 +3491,11 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             report = json.loads(report_path.read_text(encoding="utf-8"))
             self.assertEqual(report["failure_stage"], "theme_check")
             self.assertEqual(report["failed_case"], "dark")
-            self.assertEqual(report["error"], "dark preference failed")
+            self.assertEqual(report["error"], "One or more theme cases failed.")
             self.assertIs(report["cleanup_failed"], True)
             self.assertNotIn("browser close failed", json.dumps(report))
-            self.assertEqual(report["not_run_cases"], ["disabled_storage"])
+            self.assertEqual(report["not_run_cases"], [])
+            self.assertIn("disabled_storage", report["cases"])
             stdout.close()
 
     def test_unclassified_execution_failure_remains_primary_when_close_fails(self):
@@ -2990,7 +3523,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         for malformed_cases in (False, True):
             with self.subTest(malformed_cases=malformed_cases):
-                def fail_outside_case_handler(report, *_args):
+                def fail_outside_case_handler(report, *_args, **_kwargs):
                     if malformed_cases:
                         report["cases"] = None
                         return real_capture_case(report, "light", lambda: {"routes": 1})
@@ -3012,11 +3545,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 report = json.loads(stdout.getvalue())
                 self.assertEqual(exit_result.exception.code, 1)
                 self.assertEqual(report["failure_stage"], "theme_checks")
-                self.assertEqual(
-                    report["error"],
-                    "Browser report cases must be an object" if malformed_cases
-                    else "primary execution failure",
-                )
+                self.assertEqual(report["error"], "Theme case execution could not be completed.")
                 self.assertIs(report["cleanup_failed"], True)
                 self.assertNotIn("cleanup-secret-marker", stdout.getvalue())
                 if malformed_cases:
