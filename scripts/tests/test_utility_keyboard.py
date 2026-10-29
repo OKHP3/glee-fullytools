@@ -74,7 +74,10 @@ class UtilityKeyboardTests(unittest.TestCase):
         action.count.return_value = 1
         action.is_visible.return_value = True
         action.inner_text.return_value = "Return home"
-        action.evaluate.side_effect = ["https://example.test/", False, True]
+        action.evaluate.side_effect = [
+            "https://example.test/", False, True,
+            {"href": "https://example.test/", "focused": True, "visible": True},
+        ]
         page.expect_navigation.return_value.__enter__ = Mock(
             return_value=SimpleNamespace(value=SimpleNamespace(ok=True, status=200))
         )
@@ -86,6 +89,7 @@ class UtilityKeyboardTests(unittest.TestCase):
             result = checker.check_utility_recovery(page, "https://example.test/", "/404.html", [])
         self.assertEqual(result["traversal_key"], "Alt+Tab")
         self.assertEqual(result["tab_presses"], 2)
+        self.assertEqual(action.evaluate.call_count, 4)
         self.assertEqual([call.args[0] for call in page.keyboard.press.call_args_list],
                          ["Alt+Tab", "Alt+Tab", "Enter"])
         action.focus.assert_not_called()
