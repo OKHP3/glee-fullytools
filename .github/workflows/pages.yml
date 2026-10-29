@@ -468,16 +468,6 @@ jobs:
                           candidate for candidate in case_order
                           if case_order.index(candidate) > case_order.index(case)
                       ]
-                  elif failure_stage == "browser_cleanup":
-                      remaining = (
-                          [candidate for candidate in reported_not_run
-                           if candidate in case_order]
-                          if isinstance(reported_not_run, list)
-                          else [
-                              candidate for candidate in case_order
-                              if candidate not in cases
-                          ]
-                      )
                   else:
                       remaining = (
                           [candidate for candidate in reported_not_run
