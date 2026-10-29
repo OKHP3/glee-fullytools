@@ -24,7 +24,6 @@ from urllib.parse import urljoin, urlsplit
 
 ASSET_PATH = "/assets/js/color-scheme-init.js"
 THEME_CASES = ("light", "dark", "disabled_storage")
-UTILITY_ROUTES = ("/404.html", "/under-construction.html", "/offline.html")
 UTILITY_RECOVERY = {
     "/404.html": ("main .btn-primary", "Return home", "/"),
     "/under-construction.html": ("main .btn-primary", "Browse live Tools", "/toolbox/"),
@@ -44,6 +43,9 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
+from theme_failure_contract import (  # noqa: E402
+    DISABLED_STORAGE_ROUTES, PUBLIC_ROUTE_PATTERN, ROUTE_REASON_CODES, UTILITY_ROUTES,
+)
 from public_inventory import iter_indexable_urls, page_type  # noqa: E402
 
 
@@ -328,11 +330,28 @@ def route_type(route: str) -> str:
     return "utility" if route in UTILITY_ROUTES else page_type(route)
 
 
+class TypedThemeFailure(AssertionError):
+    """Attach a fixed diagnostic category without exposing exception text."""
+
+    def __init__(self, message: str, reason: str):
+        super().__init__(message)
+        self.reason = reason
+
+
+class TypedThemeRuntimeFailure(RuntimeError):
+    """Attach a fixed category to a browser operation failure."""
+
+    def __init__(self, message: str, reason: str):
+        super().__init__(message)
+        self.reason = reason
+
+
 class RouteCheckFailure(AssertionError):
     """Keep every failed route available to failure-only diagnostics."""
 
-    def __init__(self, failures: list[dict[str, str]]):
+    def __init__(self, failures: list[dict[str, str]], safe_failures=None):
         self.failed_routes = failures
+        self.safe_failures = safe_failures
         details = "; ".join(
             f"{failure['route']}: {failure['error']}" for failure in failures
         )
@@ -352,9 +371,9 @@ def assert_independent_checks(
             failures.append(f"{name}: {error}")
     if failures:
         details = "; ".join(failures)
-        raise AssertionError(
+        raise TypedThemeFailure(
             f"{route}: {len(failures)} independent theme check(s) failed: "
-            f"{details}"
+            f"{details}", "theme_assertion_failed"
         )
 
 
@@ -367,14 +386,23 @@ def collect_route_evidence(routes: list[str], check) -> list[dict[str, object]]:
     """Run every route check and raise once with all route-specific failures."""
     results: list[dict[str, object]] = []
     failures: list[dict[str, str]] = []
+    safe_failures: list[dict[str, object]] = []
     for route in routes:
         try:
             evidence = check(route)
             results.extend(evidence["route_evidence"])
         except Exception as error:
-            failures.append({"route": route, "error": str(error)})
+            try:
+                detail = str(error)
+            except Exception:
+                detail = "Route check failed."
+            failures.append({"route": route, "error": detail})
+            reason = error.reason if isinstance(error, (TypedThemeFailure, TypedThemeRuntimeFailure)) else "route_check_failed"
+            if not isinstance(reason, str) or reason not in ROUTE_REASON_CODES:
+                reason = "route_check_failed"
+            safe_failures.append({"route": route, "reasons": [reason]})
     if failures:
-        raise RouteCheckFailure(failures)
+        raise RouteCheckFailure(failures, safe_failures)
     return results
 
 
@@ -419,13 +447,16 @@ def _check_saved_preference_context(
                     wait_until="domcontentloaded",
                 )
             except Exception as error:
-                raise RuntimeError(
-                    f"{route}: navigation failed before theme assertions: {error}"
+                raise TypedThemeRuntimeFailure(
+                    f"{route}: navigation failed before theme assertions: {error}",
+                    "navigation_failed",
                 ) from error
-            assert response is not None and response.ok, (
-                f"{route} did not load with saved {preference} preference: "
-                f"{response.status if response else 'no response'}"
-            )
+            if response is None or not response.ok:
+                raise TypedThemeFailure(
+                    f"{route} did not load with saved {preference} preference: "
+                    f"{response.status if response else 'no response'}",
+                    "navigation_failed",
+                )
 
             try:
                 initial = page.evaluate(
@@ -441,9 +472,9 @@ def _check_saved_preference_context(
                 page.wait_for_load_state("load")
                 timing = paint_timing(page)
             except Exception as error:
-                raise RuntimeError(
+                raise TypedThemeRuntimeFailure(
                     f"{route}: could not collect theme evidence before "
-                    f"assertions: {error}"
+                    f"assertions: {error}", "evidence_collection_failed"
                 ) from error
 
             event_evidence: dict[str, object] = {}
@@ -539,9 +570,9 @@ def _run_recovery_check(failures: list[str], name: str, check, message: str) -> 
 def _raise_recovery_failures(route: str, failures: list[str], unrun: str = "") -> None:
     if failures:
         details = "; ".join(failures)
-        raise AssertionError(
+        raise TypedThemeFailure(
             f"{route}: {len(failures)} independent keyboard recovery "
-            f"check(s) failed: {details}{unrun}"
+            f"check(s) failed: {details}{unrun}", "keyboard_recovery_failed"
         ) from None
 
 
@@ -754,13 +785,16 @@ def _check_disabled_storage_context(
                     wait_until="domcontentloaded",
                 )
             except Exception as error:
-                raise RuntimeError(
-                    f"{route}: navigation failed before theme assertions: {error}"
+                raise TypedThemeRuntimeFailure(
+                    f"{route}: navigation failed before theme assertions: {error}",
+                    "navigation_failed",
                 ) from error
-            assert response is not None and response.ok, (
-                f"{route} failed when storage was disabled: "
-                f"{response.status if response else 'no response'}"
-            )
+            if response is None or not response.ok:
+                raise TypedThemeFailure(
+                    f"{route} failed when storage was disabled: "
+                    f"{response.status if response else 'no response'}",
+                    "navigation_failed",
+                )
             try:
                 h1_visible = page.locator("h1").is_visible()
                 color_toggle_visible = (
@@ -780,9 +814,9 @@ def _check_disabled_storage_context(
                 page.wait_for_load_state("load")
                 timing = paint_timing(page)
             except Exception as error:
-                raise RuntimeError(
+                raise TypedThemeRuntimeFailure(
                     f"{route}: could not collect disabled-storage theme "
-                    f"evidence before assertions: {error}"
+                    f"evidence before assertions: {error}", "evidence_collection_failed"
                 ) from error
 
             event_evidence: dict[str, object] = {}
@@ -903,27 +937,70 @@ def check_disabled_storage(browser, base_url, routes):
     }
 
 
-def capture_case(report: dict[str, object], name: str, check) -> None:
-    """Keep completed cases and mark a failing case for diagnostic summaries."""
-    try:
-        result = check()
-    except Exception as error:
-        report["diagnostic_only"] = True
-        report["failure_stage"] = "theme_check"
-        report["failed_case"] = name
-        if name in THEME_CASES:
-            report["not_run_cases"] = list(
-                THEME_CASES[THEME_CASES.index(name) + 1:]
-            )
-        failed_routes = getattr(error, "failed_routes", None)
-        if isinstance(failed_routes, list):
-            report["failed_routes"] = failed_routes
-        report["error"] = str(error)
-        raise
-
+def capture_case(report: dict[str, object], name: str, check, *, allowed_routes=None) -> None:
+    """Record one result without preventing independent theme cases from running."""
+    if name not in THEME_CASES:
+        raise ValueError("Unknown browser theme case")
     cases = report.setdefault("cases", {})
     if not isinstance(cases, dict):
         raise TypeError("Browser report cases must be an object")
+    failures = report.setdefault("case_failures", {})
+    attempted = report.setdefault("attempted_cases", [])
+    not_run = report.setdefault("not_run_cases", list(THEME_CASES))
+    if (
+        not isinstance(failures, dict) or not isinstance(attempted, list)
+        or not isinstance(not_run, list)
+        or name in attempted or name not in not_run
+    ):
+        raise TypeError("Browser report case state is malformed")
+    attempted.append(name)
+    not_run.remove(name)
+    try:
+        result = check()
+    except Exception as error:
+        report["case_results_version"] = 1
+        report["diagnostic_only"] = True
+        report["failure_stage"] = "theme_check"
+        failure: dict[str, object] = {"error": "Theme case failed."}
+        if isinstance(error, RouteCheckFailure) and isinstance(error.safe_failures, list):
+            try:
+                public_inventory = set(iter_indexable_urls()) | set(UTILITY_ROUTES)
+                requested_routes = {
+                    route for route in allowed_routes
+                    if isinstance(route, str) and PUBLIC_ROUTE_PATTERN.fullmatch(route)
+                } if isinstance(allowed_routes, (list, tuple, set)) else set()
+                approved = public_inventory & requested_routes
+            except Exception:
+                approved = set()
+            affected = []
+            seen = set()
+            incomplete = False
+            for item in error.safe_failures:
+                if not isinstance(item, dict) or set(item) != {"route", "reasons"}:
+                    incomplete = True
+                    continue
+                route = item["route"]
+                reasons = item["reasons"]
+                if (not isinstance(route, str) or route not in approved
+                    or not PUBLIC_ROUTE_PATTERN.fullmatch(route) or route in seen
+                    or not isinstance(reasons, list) or not reasons
+                    or any(not isinstance(reason, str) or reason not in ROUTE_REASON_CODES for reason in reasons)
+                    or len(set(reasons)) != len(reasons)):
+                    incomplete = True
+                    continue
+                seen.add(route)
+                affected.append({"route": route, "reasons": list(reasons)})
+            if affected:
+                failure["affected_routes"] = affected
+            if incomplete or not affected:
+                failure["route_details_incomplete"] = True
+        elif isinstance(error, RouteCheckFailure):
+            failure["route_details_incomplete"] = True
+        failures[name] = failure
+        report.setdefault("failed_case", name)
+        report.setdefault("error", "One or more theme cases failed.")
+        return
+
     cases[name] = result
 
 
@@ -981,14 +1058,18 @@ def main() -> None:
                         lambda preference=preference: check_saved_preference(
                             browser, base_url, preference, routes
                         ),
+                        allowed_routes=routes,
                     )
                 capture_case(
                     report,
                     THEME_CASES[2],
                     lambda: check_disabled_storage(
-                        browser, base_url, ["/", *UTILITY_ROUTES]
+                        browser, base_url, list(DISABLED_STORAGE_ROUTES)
                     ),
+                    allowed_routes=list(DISABLED_STORAGE_ROUTES),
                 )
+                if report.get("case_failures"):
+                    raise RuntimeError("Theme case failures recorded")
             except BaseException:
                 try:
                     browser.close()
@@ -1008,7 +1089,11 @@ def main() -> None:
         report["diagnostic_only"] = True
         report.setdefault("failure_stage", "browser_startup")
         if "error" not in report:
-            report["error"] = str(error)
+            report["error"] = (
+                "Theme case execution could not be completed."
+                if report.get("failure_stage") in ("theme_check", "theme_checks")
+                else str(error)
+            )
         cases = report.get("cases")
         if isinstance(cases, dict):
             report.setdefault(

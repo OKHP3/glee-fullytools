@@ -34,6 +34,7 @@ follows the same convention as `askjamie/scripts/README.md`.
 | `public-artifact.py` | active | Stage and verify the reviewed public inventory, transferred bytes, and final Pages archive |
 | `public_inventory.py` | active | Public inventory model imported by `check-pages-artifact.py` and `public-artifact.py`; not run directly |
 | `public_paths.py` | active | Shared reverse URL lookup for discovery routes and source-relative links; not run directly |
+| `theme_failure_contract.py` | active | Shared theme failure route and reason constants for the checker and Pages workflow; not run directly |
 | `responsive-qa.mjs` | active | Responsive QA entry point |
 | `run-viewport-qa.py` | active | Full browser viewport QA runner (`.github/workflows/pages.yml`, `viewport-qa.yml`) |
 | `resilience-qa.py` | active | Installability, offline lifecycle, cross-browser, crawler, and third-party failure acceptance checks |

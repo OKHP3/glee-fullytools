@@ -231,6 +231,7 @@ jobs:
           python3 - <<'PY'
           import json
           import os
+          import sys
           from pathlib import Path
 
           expected = (
@@ -277,6 +278,127 @@ jobs:
                       f"- **{label}:** failure report is malformed (JSON root must "
                       "be an object); inspect the workflow log."
                   )
+                  continue
+
+              if "case_results_version" in report:
+                  attempted = report.get("attempted_cases")
+                  not_run = report.get("not_run_cases")
+                  cases = report.get("cases")
+                  failures = report.get("case_failures")
+                  valid = (
+                      type(report.get("case_results_version")) is int
+                      and report["case_results_version"] == 1
+                      and report.get("browser") == browser
+                      and report.get("status") == "FAIL"
+                      and report.get("diagnostic_only") is True
+                      and report.get("failure_stage") == "theme_check"
+                      and isinstance(attempted, list)
+                      and isinstance(not_run, list)
+                      and isinstance(cases, dict)
+                      and isinstance(failures, dict)
+                  )
+                  if valid:
+                      try:
+                          workspace = Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
+                          scripts_dir = (workspace / "scripts").resolve()
+                          contract = workspace / "scripts" / "theme_failure_contract.py"
+                          if (scripts_dir != workspace / "scripts"
+                              or contract.is_symlink() or not contract.is_file()
+                              or contract.resolve().parent != scripts_dir):
+                              raise ValueError("Theme failure contract unavailable")
+                          sys.path.insert(0, str(scripts_dir))
+                          from theme_failure_contract import (
+                              DISABLED_STORAGE_ROUTES, PUBLIC_ROUTE_PATTERN,
+                              ROUTE_REASON_CODES, UTILITY_ROUTES,
+                          )
+                      except Exception:
+                          valid = False
+                      needs_inventory = any(
+                          isinstance(record, dict) and "affected_routes" in record
+                          for record in failures.values()
+                      )
+                      allowed_routes = set()
+                      if needs_inventory and valid:
+                          try:
+                              from public_inventory import iter_indexable_urls
+                              allowed_routes = set(iter_indexable_urls(workspace)) | set(UTILITY_ROUTES)
+                          except Exception:
+                              valid = False
+
+                      def valid_failure(case_name, record):
+                          if not isinstance(record, dict) or not set(record) <= {
+                              "error", "affected_routes", "route_details_incomplete"
+                          } or record.get("error") != "Theme case failed.":
+                              return False
+                          if "route_details_incomplete" in record and record["route_details_incomplete"] is not True:
+                              return False
+                          if "affected_routes" not in record:
+                              return True
+                          items = record["affected_routes"]
+                          if not isinstance(items, list) or not items:
+                              return False
+                          seen = set()
+                          for item in items:
+                              if not isinstance(item, dict) or set(item) != {"route", "reasons"}:
+                                  return False
+                              route, reasons = item["route"], item["reasons"]
+                              if (not isinstance(route, str) or route not in allowed_routes
+                                  or not PUBLIC_ROUTE_PATTERN.fullmatch(route) or route in seen
+                                  or (case_name == "disabled_storage" and route not in DISABLED_STORAGE_ROUTES)
+                                  or not isinstance(reasons, list) or not reasons
+                                  or any(not isinstance(reason, str) or reason not in ROUTE_REASON_CODES for reason in reasons)
+                                  or len(set(reasons)) != len(reasons)):
+                                  return False
+                              seen.add(route)
+                          return True
+
+                      valid = (
+                          valid
+                          and
+                          all(isinstance(case, str) for case in attempted + not_run)
+                          and attempted == list(case_order[:len(attempted)])
+                          and not_run == list(case_order[len(attempted):])
+                          and not (set(cases) & set(failures))
+                          and set(cases) | set(failures) == set(attempted)
+                          and bool(failures)
+                          and all(isinstance(value, dict) for value in cases.values())
+                          and all(valid_failure(name, value) for name, value in failures.items())
+                          and report.get("failed_case") == next(
+                              (name for name in attempted if name in failures), None
+                          )
+                          and report.get("failed_routes") in (None, [])
+                          and (report.get("cleanup_failed") is None
+                               or type(report.get("cleanup_failed")) is bool)
+                      )
+                  if not valid:
+                      lines.append(
+                          f"- **{label}:** multi-case report is inconsistent or "
+                          "malformed; case sequence and results remain unverified."
+                      )
+                      continue
+                  failed = ", ".join(f"`{name}`" for name in attempted if name in failures)
+                  completed = ", ".join(f"`{name}`" for name in attempted if name in cases) or "none"
+                  remaining = ", ".join(f"`{name}`" for name in not_run) or "none reported"
+                  lines.append(f"- **{label}:** theme checks failed in {failed}.")
+                  for name in attempted:
+                      if name not in failures:
+                          continue
+                      failure = failures[name]
+                      for item in failure.get("affected_routes", []):
+                          reasons = ", ".join(f"`{reason}`" for reason in item["reasons"])
+                          lines.append(f"  - Failed case `{name}`, route `{item['route']}`: {reasons}.")
+                      if failure.get("route_details_incomplete") is True:
+                          lines.append(f"  - Failed case `{name}` has omitted or unavailable route details.")
+                  lines.append(
+                      "  - Completed theme cases (diagnostic only; not validated "
+                      f"evidence): {completed}."
+                  )
+                  lines.append(
+                      f"  - Not run: {remaining}; these cases must not be treated "
+                      "as passing or validated evidence."
+                  )
+                  if report.get("cleanup_failed") is True:
+                      lines.append("  - Browser cleanup also failed while closing the browser.")
                   continue
 
               engine = label
@@ -576,6 +698,15 @@ jobs:
                   versions[browser] = version.strip()
               if report.get("status") != "PASS":
                   invalid.append(f"{path.name}: status={report.get('status')!r}, expected 'PASS'")
+              if (
+                  "case_results_version" in report
+                  or report.get("case_failures") not in (None, {})
+                  or report.get("not_run_cases") not in (None, [])
+                  or report.get("failed_case") is not None
+                  or (report.get("cleanup_failed") is not None
+                      and report.get("cleanup_failed") is not False)
+              ):
+                  invalid.append(f"{path.name}: diagnostic case failures are not release evidence")
               cases = report.get("cases")
               if not isinstance(cases, dict) or not {"light", "dark", "disabled_storage"} <= cases.keys():
                   invalid.append(
@@ -801,6 +932,15 @@ jobs:
                       f"{report_path.name}: browser={report.get('browser')!r}, "
                       f"expected {browser!r}"
                   )
+              if (
+                  "case_results_version" in report
+                  or report.get("case_failures") not in (None, {})
+                  or report.get("not_run_cases") not in (None, [])
+                  or report.get("failed_case") is not None
+                  or (report.get("cleanup_failed") is not None
+                      and report.get("cleanup_failed") is not False)
+              ):
+                  raise SystemExit(f"{report_path.name}: diagnostic case failures are not release evidence")
               version = report.get("browser_version")
               if not isinstance(version, str) or not version.strip():
                   raise SystemExit(
@@ -875,6 +1015,15 @@ jobs:
                   raise SystemExit(
                       f"{report_path.name}: expected {browser} report with PASS status"
                   )
+              if (
+                  "case_results_version" in report
+                  or report.get("case_failures") not in (None, {})
+                  or report.get("not_run_cases") not in (None, [])
+                  or report.get("failed_case") is not None
+                  or (report.get("cleanup_failed") is not None
+                      and report.get("cleanup_failed") is not False)
+              ):
+                  raise SystemExit(f"{report_path.name}: diagnostic case failures are not release evidence")
               version = report.get("browser_version")
               if not isinstance(version, str) or not version.strip():
                   raise SystemExit(
