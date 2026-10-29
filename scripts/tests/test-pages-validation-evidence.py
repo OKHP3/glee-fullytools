@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -113,6 +114,28 @@ def valid_artifact_archive(
             zipped.writestr(name, content)
         for name, content in duplicate_files or []:
             zipped.writestr(name, content)
+    return archive.getvalue()
+
+
+def artifact_archive_with_special_required_entry(report_path, entry_attributes, creator=3):
+    """Build a complete artifact with controlled required-entry metadata."""
+    contents = {
+        "assets/audit/color-scheme-init-chromium.json": b'{"browser":"chromium"}',
+        "assets/audit/color-scheme-init-firefox.json": b'{"browser":"firefox"}',
+        "assets/audit/color-scheme-init-webkit.json": b'{"browser":"webkit"}',
+        "assets/audit/color-scheme-evidence-index.md": b"# Browser theme evidence",
+        "assets/docs/audit-report.md": b"# Audit report",
+    }
+    archive = BytesIO()
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
+        for name, content in contents.items():
+            if name == report_path:
+                entry = zipfile.ZipInfo(name)
+                entry.create_system = creator
+                entry.external_attr = entry_attributes
+                zipped.writestr(entry, content)
+            else:
+                zipped.writestr(name, content)
     return archive.getvalue()
 
 
@@ -1790,6 +1813,67 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_required_evidence_entry_rejects_explicit_non_file_types(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        for creator, entry_attributes, label in (
+            (3, (stat.S_IFDIR | 0o755) << 16, "Unix directory"),
+            (3, (stat.S_IFLNK | 0o777) << 16, "symbolic link"),
+            (0, 0x10, "DOS directory attribute without slash"),
+            (3, (stat.S_IFIFO | 0o600) << 16, "FIFO"),
+            (3, (stat.S_IFCHR | 0o600) << 16, "character device"),
+            (3, (stat.S_IFBLK | 0o600) << 16, "block device"),
+            (3, (stat.S_IFSOCK | 0o600) << 16, "socket"),
+        ):
+            with self.subTest(entry_type=label):
+                archive = artifact_archive_with_special_required_entry(
+                    report_path, entry_attributes, creator=creator
+                )
+                with self.assertRaisesRegex(
+                    ValueError,
+                    f"required evidence entry is not a regular file: {report_path}",
+                ):
+                    retention_checker.validate_artifact_archive(BytesIO(archive))
+
+    def test_required_evidence_entry_accepts_regular_or_unspecified_cross_platform_metadata(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        for creator, attrs, label in (
+            (3, ((stat.S_IFREG | 0o644) << 16) | 0x20, "Unix regular with DOS archive bit"),
+            (3, 0o644 << 16, "Unix permissions without type"),
+            (0, 0x20, "DOS archive attribute"),
+            (0, ((stat.S_IFLNK | 0o777) << 16) | 0x20, "DOS creator with unrelated upper bits"),
+        ):
+            with self.subTest(creator=creator, entry_type=label):
+                archive = artifact_archive_with_special_required_entry(report_path, attrs, creator=creator)
+                retention_checker.validate_artifact_archive(BytesIO(archive))
+
+    def test_non_required_directory_entries_remain_compatible(self):
+        archive = valid_artifact_archive(additional_files={"assets/audit/optional/": b""})
+        retention_checker.validate_artifact_archive(BytesIO(archive))
+
+    def test_all_required_paths_reject_explicit_symlinks(self):
+        for name in sorted(retention_checker.REQUIRED_EVIDENCE_FILES):
+            with self.subTest(name=name):
+                archive = artifact_archive_with_special_required_entry(
+                    name, (stat.S_IFLNK | 0o777) << 16, creator=3
+                )
+                with self.assertRaisesRegex(ValueError, "not a regular file"):
+                    retention_checker.validate_artifact_archive(BytesIO(archive))
+
+    def test_released_pages_artifact_shaped_unix_metadata_is_accepted(self):
+        # One previously released Pages artifact had Unix regular-file type
+        # and the DOS archive bit for each required member. Permissions below
+        # are synthetic; they were not observed in that artifact sample.
+        archive = BytesIO()
+        with zipfile.ZipFile(archive, "w") as zipped:
+            for name in sorted(retention_checker.REQUIRED_EVIDENCE_FILES):
+                info = zipfile.ZipInfo(name)
+                info.create_system = 3
+                info.external_attr = ((stat.S_IFREG | 0o644) << 16) | 0x20
+                zipped.writestr(info, b"{}")
+        with patch.object(zipfile.ZipFile, "extract", side_effect=AssertionError("unexpected extraction")), \
+             patch.object(zipfile.ZipFile, "extractall", side_effect=AssertionError("unexpected extraction")):
+            retention_checker.validate_artifact_archive(archive)
 
     def test_downloaded_archive_with_duplicate_required_report_is_rejected(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"
