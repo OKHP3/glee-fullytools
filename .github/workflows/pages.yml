@@ -239,6 +239,12 @@ jobs:
               ("webkit", "WebKit"),
           )
           case_order = ("light", "dark", "disabled_storage")
+          setup_step_labels = {
+              "loading_playwright": "loading Playwright",
+              "preparing_routes": "preparing routes",
+              "entering_browser_manager": "entering the browser manager",
+              "launching_browser": "launching the browser engine",
+          }
           lines = [
               "## Browser theme failure diagnostics (not validated release evidence)",
               "",
@@ -282,6 +288,13 @@ jobs:
                   engine += f" [report says {one_line(reported_browser)}]"
 
               status = report.get("status")
+              failed_case = report.get("failed_case")
+              startup_case_conflict = (
+                  status == "FAIL"
+                  and report.get("failure_stage") == "browser_startup"
+                  and isinstance(failed_case, str)
+                  and failed_case in case_order
+              )
               reported_cases = report.get("cases")
               cases_are_valid = isinstance(reported_cases, dict)
               cases = reported_cases if cases_are_valid else {}
@@ -302,6 +315,7 @@ jobs:
               later_reported_cases = []
               if (
                   status == "FAIL"
+                  and not startup_case_conflict
                   and isinstance(failed_case, str)
                   and failed_case in case_order
               ):
@@ -328,7 +342,12 @@ jobs:
                       isinstance(failed_case, str) and failed_case in case_order
                   ) else "not identified"
                   failure_stage = report.get("failure_stage")
-                  if case != "not identified":
+                  if case != "not identified" and failure_stage == "browser_startup":
+                      failure_label = (
+                          "report is inconsistent: browser startup failure and a "
+                          "named theme case are both reported; neither is verified"
+                      )
+                  elif case != "not identified":
                       failure_label = f"theme check failed in `{case}`"
                   elif failure_stage == "browser_startup":
                       failure_label = (
@@ -345,10 +364,27 @@ jobs:
                   detail = one_line(report.get("error", ""))
                   suffix = f" — {detail}" if detail else ""
                   lines.append(f"- **{engine}:** {failure_label}{suffix}.")
-                  lines.append(
-                      "  - Completed before failure (diagnostic only; not "
-                      f"validated evidence): {completed}."
-                  )
+                  setup_step = report.get("setup_step")
+                  if (
+                      failure_stage == "browser_startup"
+                      and isinstance(setup_step, str)
+                      and setup_step in setup_step_labels
+                  ):
+                      lines.append(
+                          "  - Setup phase attempted (diagnostic only; not validated "
+                          f"evidence): `{setup_step_labels[setup_step]}`."
+                      )
+                  if startup_case_conflict:
+                      lines.append(
+                          "  - Case sequence cannot be established from the "
+                          "conflicting report; completion and not-run status remain "
+                          "unverified."
+                      )
+                  else:
+                      lines.append(
+                          "  - Completed before failure (diagnostic only; not "
+                          f"validated evidence): {completed}."
+                      )
                   if later_reported_cases:
                       later = ", ".join(
                           f"`{candidate}`" for candidate in later_reported_cases
@@ -365,6 +401,12 @@ jobs:
                               "  - **Report is inconsistent:** an unrecognized failure "
                               "label also appears in `not_run_cases`; the actual "
                               "failed case remains unverified."
+                          )
+                      elif failure_stage == "browser_startup":
+                          lines.append(
+                              "  - **Report is inconsistent:** the reported theme case "
+                              f"`{case}` is also listed in `not_run_cases`; the "
+                              "actual failed case remains unverified."
                           )
                       else:
                           lines.append(
@@ -406,10 +448,11 @@ jobs:
                           ]
                       )
                   not_run = ", ".join(f"`{candidate}`" for candidate in remaining)
-                  lines.append(
-                      f"  - Not run: {not_run or 'none reported'}; these cases "
-                      "must not be treated as passing or validated evidence."
-                  )
+                  if not startup_case_conflict:
+                      lines.append(
+                          f"  - Not run: {not_run or 'none reported'}; these cases "
+                          "must not be treated as passing or validated evidence."
+                      )
                   if report.get("diagnostic_only") is not True:
                       lines.append(
                           "  - Report is missing its diagnostic-only marker; "
