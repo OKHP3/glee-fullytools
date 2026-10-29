@@ -125,6 +125,7 @@ jobs:
           python3 scripts/tests/test_sync_css_version.py
           python3 scripts/tests/test-pages-validation-evidence.py
           python3 -m unittest scripts.tests.test_browser_acceptance_fixture
+          python3 -m unittest scripts.tests.test_utility_keyboard
 
       - name: Run owner-transferred Replit regression fixtures
         run: python3 scripts/tests/test-closeout-replit-regressions.py
