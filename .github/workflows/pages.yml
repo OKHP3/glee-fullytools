@@ -204,7 +204,113 @@ jobs:
         run: python3 scripts/tests/test-universe-browser.py
 
       - name: Run browser responsive and asset QA
-        run: python3 scripts/run-viewport-qa.py
+        id: responsive_asset_qa
+        run: |
+          report_dir="$(mktemp -d "$RUNNER_TEMP/glee-responsive-qa.XXXXXXXX")"
+          report_path="$report_dir/responsive-failure.json"
+          success_path="$report_dir/responsive-success.json"
+          printf 'report_path=%s\n' "$report_path" >> "$GITHUB_OUTPUT"
+          printf 'success_path=%s\n' "$success_path" >> "$GITHUB_OUTPUT"
+          python3 scripts/run-viewport-qa.py --diagnostic-output "$report_path" --success-output "$success_path"
+
+      - name: Validate responsive failure report (diagnostic only)
+        id: responsive_diagnostic_validation
+        if: ${{ always() && steps.responsive_asset_qa.outcome == 'failure' && steps.responsive_asset_qa.outputs.report_path != '' }}
+        env:
+          RESPONSIVE_FAILURE_REPORT: ${{ steps.responsive_asset_qa.outputs.report_path }}
+        run: |
+          python3 - <<'PY'
+          import importlib.util
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          try:
+              workspace = Path(os.environ.get("GITHUB_WORKSPACE", ".")).resolve()
+              scripts_dir = (workspace / "scripts").resolve()
+              runner_path = workspace / "scripts" / "run-viewport-qa.py"
+              if (scripts_dir != workspace / "scripts" or runner_path.is_symlink()
+                  or not runner_path.is_file() or runner_path.resolve().parent != scripts_dir):
+                  raise ValueError()
+              sys.path.insert(0, str(scripts_dir))
+              spec = importlib.util.spec_from_file_location("responsive_runner_contract", runner_path)
+              if spec is None or spec.loader is None:
+                  raise ValueError()
+              runner = importlib.util.module_from_spec(spec)
+              spec.loader.exec_module(runner)
+              viewport_names = [viewport["name"] for viewport in runner.VIEWPORTS]
+              if (not runner.PAGES or not viewport_names
+                  or any(not isinstance(name, str) or not name.isascii() or not name.isdecimal()
+                         or not 1 <= len(name) <= 4 for name in viewport_names)
+                  or len(set(viewport_names)) != len(viewport_names)):
+                  raise ValueError()
+              path = Path(os.environ["RESPONSIVE_FAILURE_REPORT"])
+              if not path.is_file() or path.is_symlink() or path.stat().st_size > 1048576:
+                  raise ValueError()
+              def unique_object(pairs):
+                  result = {}
+                  for key, value in pairs:
+                      if key in result:
+                          raise ValueError()
+                      result[key] = value
+                  return result
+
+              report = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_object)
+              expected = {"version", "status", "diagnostic_only", "pages_completed",
+                          "combinations_completed", "total_issues", "total_warnings", "affected"}
+              if not isinstance(report, dict) or set(report) != expected or type(report["version"]) is not int or report["version"] != 1 or report["status"] != "FAIL" or report["diagnostic_only"] is not True:
+                  raise ValueError()
+              for name in ("pages_completed", "combinations_completed", "total_issues", "total_warnings"):
+                  if type(report[name]) is not int or report[name] < 0:
+                      raise ValueError()
+              if (report["pages_completed"] != len(runner.PAGES)
+                  or report["combinations_completed"] != len(runner.PAGES) * len(viewport_names)
+                  or not report["total_issues"] or not isinstance(report["affected"], list)):
+                  raise ValueError()
+              allowed = {"http_error", "horizontal_overflow", "navigation_toggle", "heading_overflow", "image_overflow", "browser_error", "other"}
+              issue_count = 0
+              seen = set()
+              for row in report["affected"]:
+                  if not isinstance(row, dict) or set(row) != {"page_index", "viewport", "issue_count", "reason_codes"}:
+                      raise ValueError()
+                  index, viewport, count, codes = (row[k] for k in ("page_index", "viewport", "issue_count", "reason_codes"))
+                  if (type(index) is not int or not 0 <= index < report["pages_completed"]
+                      or not isinstance(viewport, str) or viewport not in viewport_names
+                      or type(count) is not int or count <= 0 or not isinstance(codes, list) or not codes
+                      or any(not isinstance(code, str) or code not in allowed for code in codes)
+                      or len(set(codes)) != len(codes) or (index, viewport) in seen):
+                      raise ValueError()
+                  seen.add((index, viewport))
+                  issue_count += count
+              if issue_count != report["total_issues"] or len(seen) > report["combinations_completed"]:
+                  raise ValueError()
+          except Exception:
+              raise SystemExit("Responsive failure report unavailable or invalid")
+          PY
+
+      - name: Upload failed responsive QA report (diagnostic only)
+        id: upload_responsive_qa_failure_diagnostics
+        if: ${{ always() && steps.responsive_asset_qa.outcome == 'failure' && steps.responsive_diagnostic_validation.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-responsive-qa-failure-diagnostics-${{ github.sha }}
+          path: ${{ steps.responsive_asset_qa.outputs.report_path }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Link responsive QA failure diagnostics
+        if: ${{ always() && steps.responsive_asset_qa.outcome == 'failure' }}
+        env:
+          UPLOAD_OUTCOME: ${{ steps.upload_responsive_qa_failure_diagnostics.outcome }}
+          ARTIFACT_ID: ${{ steps.upload_responsive_qa_failure_diagnostics.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload_responsive_qa_failure_diagnostics.outputs.artifact-url }}
+        run: |
+          if [ "$UPLOAD_OUTCOME" = success ] && [ -n "$ARTIFACT_ID" ] && [ -n "$ARTIFACT_URL" ]; then
+            echo "**Diagnostic only. This is not validated release evidence.** [Download the sanitized responsive QA report]($ARTIFACT_URL)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Diagnostic only. This is not validated release evidence.** Responsive QA report unavailable; the check failed before a diagnostic was retained or upload failed." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Run visitor, privacy, and rendered contrast acceptance
         run: python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output assets/audit/browser-acceptance.json
@@ -792,6 +898,7 @@ jobs:
         env:
           VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
           VALIDATION_REPORT_NAME: ${{ steps.validation_provenance.outputs.report_name }}
+          RESPONSIVE_SUCCESS_REPORT: ${{ steps.responsive_asset_qa.outputs.success_path }}
         run: |
           python3 - <<'PY'
           import os
@@ -801,6 +908,12 @@ jobs:
           artifact_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
           audit_dir = artifact_dir / "assets" / "audit"
           shutil.copytree("assets/audit", audit_dir)
+
+          responsive_source = Path(os.environ["RESPONSIVE_SUCCESS_REPORT"])
+          responsive_target = audit_dir / "viewport-qa-full-current-run.json"
+          if not responsive_source.is_file() or responsive_source.is_symlink() or responsive_target.exists():
+              raise SystemExit("Current responsive QA report unavailable or staging path already exists")
+          shutil.copy2(responsive_source, responsive_target)
 
           current_report = os.environ["VALIDATION_REPORT_NAME"]
           for report in audit_dir.glob("validation-report-*.json"):

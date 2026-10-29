@@ -69,6 +69,41 @@ jobs:
             --browser chromium \
             --output assets/audit/color-scheme-init-chromium.json
 
+      - name: Smoke-test isolated responsive QA in Chromium
+        run: |
+          smoke_dir="$(mktemp -d "$RUNNER_TEMP/glee-responsive-smoke.XXXXXXXX")"
+          python3 scripts/run-viewport-qa.py --start 0 --end 1 \
+            --diagnostic-output "$smoke_dir/failure.json" \
+            --success-output "$smoke_dir/success.json"
+          SMOKE_DIR="$smoke_dir" python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          directory = Path(os.environ["SMOKE_DIR"])
+          failure = directory / "failure.json"
+          success = directory / "success.json"
+          if failure.exists() or not success.is_file():
+              raise SystemExit("Expected a current success report and no failure report")
+          try:
+              report = json.loads(success.read_text(encoding="utf-8"))
+              results = report["results"]
+              viewports = ["320", "375", "390", "414", "768", "1024", "1280", "1440"]
+              valid = (
+                  report["pages_tested"] == 1 and report["total_combinations"] == len(viewports)
+                  and report["total_issues"] == 0 and report["screenshots_dir"] is None
+                  and report["viewports_tested"] == viewports and len(results) == 1
+                  and results[0]["page"] == "/"
+                  and [item["viewport"] for item in results[0]["viewports"]] == viewports
+                  and all(item["issues"] == [] for item in results[0]["viewports"])
+              )
+          except (OSError, ValueError, TypeError, KeyError):
+              valid = False
+          if not valid:
+              raise SystemExit("Current responsive QA report is incomplete or invalid")
+          print("Verified one page across all configured responsive viewports.")
+          PY
+
       - name: Run link and audit regression tests
         run: python3 -m unittest scripts.tests.test_audit_site scripts.tests.test_check_links_fragments
 
