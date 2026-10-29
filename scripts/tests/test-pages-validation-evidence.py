@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import traceback
 import unittest
 from types import ModuleType, SimpleNamespace
 from unittest.mock import patch
@@ -2243,6 +2244,345 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "color-scheme asset has no resource timing entry",
         ):
             self.assertIn(detail, route_failure["error"])
+
+    def test_utility_recovery_reports_independent_failures_together(self):
+        expected_url = "https://example.test/"
+
+        class FakeAction:
+            def count(self):
+                return 1
+
+            def is_visible(self):
+                return True
+
+            def inner_text(self):
+                return "Wrong label"
+
+            def evaluate(self, expression):
+                if expression == "element => element.href":
+                    return expected_url
+                if "href: element.href" in expression:
+                    return {"href": expected_url, "focused": True, "visible": True}
+                return True
+
+        class FakeHeading:
+            def is_visible(self):
+                return False
+
+        class FakeNavigation:
+            value = SimpleNamespace(ok=True, status=200)
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        class FakeKeyboard:
+            def press(self, key):
+                if key == "Enter":
+                    page.url = expected_url
+
+        class FakePage:
+            context = object()
+            url = "https://example.test/404.html"
+            keyboard = FakeKeyboard()
+
+            def locator(self, selector):
+                return FakeHeading() if selector == "h1" else FakeAction()
+
+            def expect_navigation(self, **_kwargs):
+                return FakeNavigation()
+
+        page = FakePage()
+        with (
+            patch.object(color_scheme_checker, "link_traversal_key", return_value="Tab"),
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=["SecurityError", "NotAllowedError"],
+            ),
+            self.assertRaises(AssertionError) as failure,
+        ):
+            color_scheme_checker.check_utility_recovery(
+                page,
+                "https://example.test/",
+                "/404.html",
+                ["synthetic-private-page-error-token"],
+            )
+
+        report = str(failure.exception)
+        self.assertIn("4 independent keyboard recovery check(s) failed", report)
+        for detail in (
+            "primary recovery label",
+            "primary recovery action no longer says 'Return home'",
+            "destination primary content",
+            "destination storage denial",
+            "page errors occurred during keyboard recovery",
+        ):
+            self.assertIn(detail, report)
+        self.assertNotIn("synthetic-private-page-error-token", report)
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            serialized = json.dumps({
+                "browser": "firefox", "status": "FAIL", "diagnostic_only": True,
+                "failure_stage": "theme_check", "failed_case": "disabled_storage",
+                "cases": {"light": {}, "dark": {}}, "not_run_cases": [],
+                "error": report[report.index("page errors:"):],
+                "failed_routes": [{"route": "/404.html", "error": report}],
+            })
+            self.assertNotIn("synthetic-private-page-error-token", serialized)
+            (audit / "color-scheme-init-firefox.json").write_text(serialized, encoding="utf-8")
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", theme_failure_diagnostic_code(self.workflow)],
+                cwd=root, env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True, text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("primary recovery label", summary)
+            self.assertIn("page errors occurred during keyboard recovery", summary)
+            self.assertNotIn("synthetic-private-page-error-token", summary)
+
+    def test_utility_recovery_setup_failure_stops_follow_on_checks(self):
+        class FakeAction:
+            def count(self):
+                return 0
+
+        class FakePage:
+            context = object()
+
+            def locator(self, _selector):
+                return FakeAction()
+
+        with (
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=AssertionError("storage check must not run"),
+            ),
+            patch.object(
+                color_scheme_checker,
+                "link_traversal_key",
+                side_effect=AssertionError("keyboard setup must not run"),
+            ),
+            self.assertRaisesRegex(
+                AssertionError,
+                "/404.html: expected one visible primary recovery action",
+            ),
+        ):
+            color_scheme_checker.check_utility_recovery(
+                FakePage(), "https://example.test/", "/404.html", []
+            )
+
+    def test_utility_recovery_navigation_failure_skips_destination_checks(self):
+        class FakeAction:
+            def count(self):
+                return 1
+
+            def is_visible(self):
+                return True
+
+            def inner_text(self):
+                return "Return home"
+
+            def evaluate(self, expression):
+                if expression == "element => element.href":
+                    return "https://example.test/"
+                if "href: element.href" in expression:
+                    return {"href": "https://example.test/", "focused": True, "visible": True}
+                return True
+
+        class FakeNavigation:
+            value = SimpleNamespace(ok=False, status=503)
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        class FakeKeyboard:
+            def press(self, _key):
+                pass
+
+        class FakePage:
+            context = object()
+            url = "https://example.test/404.html"
+            keyboard = FakeKeyboard()
+
+            def locator(self, selector):
+                if selector == "h1":
+                    raise AssertionError("destination checks must not run")
+                return FakeAction()
+
+            def expect_navigation(self, **_kwargs):
+                return FakeNavigation()
+
+        with (
+            patch.object(color_scheme_checker, "link_traversal_key", return_value="Tab"),
+            patch.object(
+                color_scheme_checker,
+                "storage_error_name",
+                side_effect=["SecurityError"],
+            ),
+            self.assertRaisesRegex(
+                AssertionError,
+                "keyboard recovery failed: 503",
+            ),
+        ):
+            color_scheme_checker.check_utility_recovery(
+                FakePage(), "https://example.test/", "/404.html", []
+            )
+
+    def test_utility_recovery_blocks_unverified_targets_and_preserves_failures(self):
+        expected_url = "https://example.test/"
+        secret = "synthetic-secret-token"
+
+        class FakeAction:
+            def __init__(self, scenario):
+                self.scenario = scenario
+
+            def count(self):
+                if self.scenario == "action_exception":
+                    raise RuntimeError(secret)
+                return 1
+
+            def is_visible(self):
+                return True
+
+            def inner_text(self):
+                if self.scenario == "label_exception":
+                    raise RuntimeError(secret)
+                return "Wrong label" if self.scenario in ("setup_exception", "tab_exception", "navigation_exception") else "Return home"
+
+            def evaluate(self, expression):
+                if expression == "element => element.href":
+                    if self.scenario == "href_exception":
+                        raise RuntimeError(secret)
+                    if self.scenario == "wrong_href":
+                        return "https://outside.invalid/?token=" + secret
+                    return expected_url
+                if "href: element.href" in expression:
+                    if self.scenario == "recheck_exception":
+                        raise RuntimeError(secret)
+                    return {
+                        "href": "https://outside.invalid/?token=" + secret if self.scenario == "mutated_href" else expected_url,
+                        "focused": self.scenario != "lost_focus",
+                        "visible": True,
+                    }
+                return self.scenario != "unreachable"
+
+        class FakeNavigation:
+            value = SimpleNamespace(ok=True, status=200)
+
+            def __init__(self, scenario):
+                self.scenario = scenario
+
+            def __enter__(self):
+                if self.scenario == "navigation_exception":
+                    raise RuntimeError(secret)
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        class FakeKeyboard:
+            def __init__(self, page):
+                self.page = page
+                self.keys = []
+
+            def press(self, key):
+                self.keys.append(key)
+                if key == "Tab" and self.page.scenario == "tab_exception":
+                    raise RuntimeError(secret)
+                if key == "Enter":
+                    self.page.url = (
+                        "https://outside.invalid/?token=" + secret
+                        if self.page.scenario == "wrong_final_url" else expected_url
+                    )
+
+        class FakePage:
+            context = object()
+
+            def __init__(self, scenario):
+                self.scenario = scenario
+                self.url = "https://example.test/404.html"
+                self.action = FakeAction(scenario)
+                self.keyboard = FakeKeyboard(self)
+                self.heading_calls = 0
+
+            def locator(self, selector):
+                if selector == "h1":
+                    self.heading_calls += 1
+                    raise RuntimeError(secret)
+                return self.action
+
+            def expect_navigation(self, **_kwargs):
+                return FakeNavigation(self.scenario)
+
+        scenarios = (
+            "wrong_href", "mutated_href", "lost_focus", "unreachable",
+            "tab_exception", "setup_exception", "navigation_exception",
+            "wrong_final_url", "href_exception", "recheck_exception", "label_exception",
+            "action_exception", "storage_exception",
+        )
+        for scenario in scenarios:
+            with self.subTest(scenario=scenario):
+                page = FakePage(scenario)
+                setup = RuntimeError(secret) if scenario == "setup_exception" else None
+                storage = RuntimeError(secret) if scenario == "storage_exception" else None
+                with (
+                    patch.object(color_scheme_checker, "storage_error_name", side_effect=storage, return_value="SecurityError"),
+                    patch.object(color_scheme_checker, "link_traversal_key", side_effect=setup, return_value="Tab"),
+                    self.assertRaises(AssertionError) as result,
+                ):
+                    color_scheme_checker.check_utility_recovery(
+                        page, "https://example.test/", "/404.html", []
+                    )
+                message = str(result.exception)
+                trace = "".join(traceback.format_exception(result.exception))
+                self.assertNotIn(secret, message)
+                self.assertNotIn(secret, trace)
+                if scenario in ("setup_exception", "tab_exception", "navigation_exception"):
+                    self.assertIn("primary recovery label", message)
+                if scenario in ("wrong_href", "mutated_href", "lost_focus", "unreachable", "tab_exception", "setup_exception", "href_exception", "recheck_exception", "action_exception", "storage_exception"):
+                    self.assertNotIn("Enter", page.keyboard.keys)
+                    self.assertIn("were not run", message)
+                if scenario == "unreachable":
+                    self.assertEqual(len(page.keyboard.keys), 100)
+                if scenario in ("navigation_exception", "wrong_final_url"):
+                    self.assertEqual(page.heading_calls, 0)
+                    self.assertIn("destination checks were not run", message)
+
+    def test_utility_recovery_does_not_swallow_keyboard_cancellation(self):
+        class FakeAction:
+            def count(self): return 1
+            def is_visible(self): return True
+            def inner_text(self): return "Return home"
+            def evaluate(self, expression):
+                return "https://example.test/" if expression == "element => element.href" else True
+
+        class FakePage:
+            context = object()
+            def locator(self, _selector): return FakeAction()
+
+        for interrupt in (KeyboardInterrupt, SystemExit):
+            with self.subTest(interrupt=interrupt.__name__):
+                page = FakePage()
+                page.keyboard = SimpleNamespace(press=lambda _key: (_ for _ in ()).throw(interrupt()))
+                with (
+                    patch.object(color_scheme_checker, "storage_error_name", return_value="SecurityError"),
+                    patch.object(color_scheme_checker, "link_traversal_key", return_value="Tab"),
+                    self.assertRaises(interrupt),
+                ):
+                    color_scheme_checker.check_utility_recovery(
+                        page, "https://example.test/", "/404.html", []
+                    )
 
     def test_navigation_failure_does_not_run_theme_assertions(self):
         calls = {"evaluate": 0, "wait_for_load": 0}
