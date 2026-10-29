@@ -179,7 +179,15 @@ def _parse_args():
     p.add_argument("--batch", type=str, default=None,
                    help="Suffix for partial output filename (e.g. '0', '1', …)")
     p.add_argument("--all-screenshots", action="store_true")
+    p.add_argument("--diagnostic-output", type=Path, default=None,
+                   help="Write a sanitized failure-only report at a new path")
+    p.add_argument("--success-output", type=Path, default=None,
+                   help="Write successful full report at a new isolated path")
     args, _ = p.parse_known_args()
+    if (args.diagnostic_output is None) != (args.success_output is None):
+        p.error("--diagnostic-output and --success-output must be supplied together")
+    if args.diagnostic_output is not None and args.all_screenshots:
+        p.error("--all-screenshots is not supported with isolated reports")
     return args
 
 LAUNCH_ARGS = [
@@ -200,11 +208,12 @@ LAUNCH_ARGS = [
 ]
 
 
-def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
+def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None, diagnostic_output=None, success_output=None):
     from playwright.sync_api import sync_playwright
 
     pages = PAGES[pages_slice] if pages_slice else PAGES
-    SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+    if diagnostic_output is None:
+        SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
     results = []
     total_issues = 0
     total_warnings = 0
@@ -326,7 +335,7 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
                         warnings.append(f"text at {t['fs']}px (<12px): '{t['txt']}'")
 
                     # Screenshot on any issue (or always if --all-screenshots)
-                    if issues or SCREENSHOTS_ALL:
+                    if diagnostic_output is None and (issues or SCREENSHOTS_ALL):
                         shot = SCREENSHOTS_DIR / f"{page_slug}-{vp['name']}.png"
                         try:
                             page.screenshot(path=str(shot), full_page=False)
@@ -337,7 +346,15 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
                     issues.append(f"playwright-error: {str(exc)[:120]}")
 
                 finally:
-                    ctx.close()
+                    if diagnostic_output is None:
+                        ctx.close()
+                    else:
+                        pending = sys.exc_info()[1]
+                        try:
+                            ctx.close()
+                        except Exception:
+                            if pending is None:
+                                raise
 
                 total_issues += len(issues)
                 total_warnings += len(warnings)
@@ -345,6 +362,8 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
                 sym = "✗" if issues else ("△" if warnings else "✓")
                 detail = ("  ".join(issues[:2]) if issues
                           else ("  ".join(warnings[:1]) if warnings else "ok"))
+                if diagnostic_output is not None:
+                    detail = "check failed" if issues else ("warnings reported" if warnings else "ok")
                 print(f"  {sym} {page_slug:<24} {vp['name']:>5}px  {detail}")
 
                 page_result["viewports"].append({
@@ -358,11 +377,57 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
 
         browser.close()
 
-    # Write JSON report
-    out_dir = ROOT / "assets" / "audit"
-    out_dir.mkdir(exist_ok=True)
-    suffix = f"-batch{batch_suffix}" if batch_suffix is not None else ""
-    report_path = out_dir / f"viewport-qa-full{suffix}-{_TODAY}.json"
+    if diagnostic_output is not None:
+        # This report is diagnostic only. Never serialize page data, exception
+        # text, URLs, element identifiers, or screenshot paths.
+        if total_issues:
+            affected = []
+            issue_prefixes = (
+                ("HTTP ", "http_error"),
+                ("horizontal-overflow", "horizontal_overflow"),
+                ("nav-toggle", "navigation_toggle"),
+                ("h1 overflows", "heading_overflow"),
+                ("img '", "image_overflow"),
+                ("playwright-error:", "browser_error"),
+            )
+            for page_index, page_result in enumerate(results):
+                for viewport in page_result["viewports"]:
+                    if viewport["issues"]:
+                        codes = sorted({
+                            next((code for prefix, code in issue_prefixes if issue.startswith(prefix)), "other")
+                            for issue in viewport["issues"]
+                        })
+                        affected.append({
+                            "page_index": page_index,
+                            "viewport": viewport["viewport"],
+                            "issue_count": len(viewport["issues"]),
+                            "reason_codes": codes,
+                        })
+            diagnostic = {
+                "version": 1,
+                "status": "FAIL",
+                "diagnostic_only": True,
+                "pages_completed": len(results),
+                "combinations_completed": sum(len(page["viewports"]) for page in results),
+                "total_issues": total_issues,
+                "total_warnings": total_warnings,
+                "affected": affected,
+            }
+            with Path(diagnostic_output).open("x", encoding="utf-8") as output:
+                json.dump(diagnostic, output, indent=2, ensure_ascii=False)
+            print("Responsive QA failed; sanitized diagnostic report written.")
+            return 1
+        if success_output is None:
+            raise ValueError("Isolated successful report path is required")
+
+    # Write JSON report. The ordinary local mode retains its historical path.
+    if diagnostic_output is None:
+        out_dir = ROOT / "assets" / "audit"
+        out_dir.mkdir(exist_ok=True)
+        suffix = f"-batch{batch_suffix}" if batch_suffix is not None else ""
+        report_path = out_dir / f"viewport-qa-full{suffix}-{_TODAY}.json"
+    else:
+        report_path = Path(success_output)
     report = {
         "date": _TODAY,
         "base_url": base_url,
@@ -371,7 +436,7 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
         "total_combinations": len(pages) * len(VIEWPORTS),
         "total_issues": total_issues,
         "total_warnings": total_warnings,
-        "screenshots_dir": str(SCREENSHOTS_DIR.relative_to(ROOT)),
+        "screenshots_dir": (str(SCREENSHOTS_DIR.relative_to(ROOT)) if diagnostic_output is None else None),
         "environment_note": (
             "libgbm.so.1 stub compiled from scripts/run-viewport-qa.py embedded source. "
             "All Chrome system deps installed via Nix. --disable-gpu mode; "
@@ -379,7 +444,11 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
         ),
         "results": results,
     }
-    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    if diagnostic_output is None:
+        report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    else:
+        with report_path.open("x", encoding="utf-8") as output:
+            json.dump(report, output, indent=2, ensure_ascii=False)
 
     print(f"\n{'='*60}")
     print(f"Pages tested:        {len(pages)}")
@@ -387,20 +456,31 @@ def run_qa(base_url: str = BASE_URL, pages_slice=None, batch_suffix=None):
     print(f"Total combinations:  {len(pages) * len(VIEWPORTS)}")
     print(f"Total issues:        {total_issues}")
     print(f"Total warnings:      {total_warnings}")
-    print(f"Report:              {report_path.relative_to(ROOT)}")
-    print(f"Screenshots:         {SCREENSHOTS_DIR.relative_to(ROOT)}/")
+    if diagnostic_output is None:
+        print(f"Report:              {report_path.relative_to(ROOT)}")
+        print(f"Screenshots:         {SCREENSHOTS_DIR.relative_to(ROOT)}/")
+    else:
+        print("Current successful report written to isolated output.")
 
     return 0 if total_issues == 0 else 1
 
 
+def main():
+    args = _parse_args()
+    try:
+        print("Setting up libgbm stub…")
+        ensure_stub()
+        page_slice = slice(args.start, args.end)
+        count = len(PAGES[page_slice])
+        print(f"Starting Playwright QA: {count} pages (indices {args.start}–{args.end-1}) × {len(VIEWPORTS)} viewports\n")
+        return run_qa(pages_slice=page_slice, batch_suffix=args.batch,
+                      diagnostic_output=args.diagnostic_output, success_output=args.success_output)
+    except Exception:
+        if args.diagnostic_output is None:
+            raise
+        print("Responsive QA did not complete; diagnostic report unavailable.", file=sys.stderr)
+        return 1
+
+
 if __name__ == "__main__":
-    _args = _parse_args()
-    _start = _args.start
-    _end   = _args.end
-    _batch = _args.batch
-    print("Setting up libgbm stub…")
-    ensure_stub()
-    _page_slice = slice(_start, _end)
-    _n = len(PAGES[_page_slice])
-    print(f"Starting Playwright QA: {_n} pages (indices {_start}–{_end-1}) × {len(VIEWPORTS)} viewports\n")
-    sys.exit(run_qa(pages_slice=_page_slice, batch_suffix=_batch))
+    sys.exit(main())

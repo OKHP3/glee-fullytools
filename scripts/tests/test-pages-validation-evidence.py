@@ -7,6 +7,7 @@ from io import BytesIO, StringIO
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -18,7 +19,7 @@ from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
 import zipfile
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -31,6 +32,11 @@ THEME_BROWSER_STEP = "- name: Run color-scheme bootstrap regression in all insta
 THEME_FAILURE_DIAGNOSTIC_STEP = "- name: Summarize browser theme failures (diagnostic only)"
 THEME_FAILURE_UPLOAD_STEP = "- name: Upload failed browser theme reports (diagnostic only)"
 THEME_FAILURE_LINK_STEP = "- name: Link browser theme failure diagnostics"
+RESPONSIVE_QA_STEP = "- name: Run browser responsive and asset QA"
+RESPONSIVE_FAILURE_UPLOAD_STEP = (
+    "- name: Upload failed responsive QA report (diagnostic only)"
+)
+RESPONSIVE_FAILURE_LINK_STEP = "- name: Link responsive QA failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -166,6 +172,9 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             THEME_FAILURE_DIAGNOSTIC_STEP,
             THEME_FAILURE_UPLOAD_STEP,
             THEME_FAILURE_LINK_STEP,
+            RESPONSIVE_QA_STEP,
+            RESPONSIVE_FAILURE_UPLOAD_STEP,
+            RESPONSIVE_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -277,6 +286,61 @@ def assert_validation_evidence_contract(workflow: str) -> None:
         raise AssertionError(
             "Browser-specific theme evidence must include light, dark, and disabled-storage cases"
         )
+
+    responsive_position = positions[RESPONSIVE_QA_STEP]
+    responsive_upload_position = positions[RESPONSIVE_FAILURE_UPLOAD_STEP]
+    responsive_link_position = positions[RESPONSIVE_FAILURE_LINK_STEP]
+    visitor_acceptance_position = workflow.find(
+        "- name: Run visitor, privacy, and rendered contrast acceptance"
+    )
+    if not (
+        responsive_position
+        < responsive_upload_position
+        < responsive_link_position
+        < visitor_acceptance_position
+        < staging_position
+    ):
+        raise AssertionError(
+            "Failed responsive QA reports must be uploaded and linked immediately "
+            "after the QA gate, before validation evidence staging"
+        )
+    responsive_block = workflow[responsive_position:responsive_upload_position]
+    if (
+        "id: responsive_asset_qa" not in responsive_block
+        or 'mktemp -d "$RUNNER_TEMP/glee-responsive-qa.XXXXXXXX"' not in responsive_block
+        or '--diagnostic-output "$report_path" --success-output "$success_path"' not in responsive_block
+        or "rm -f" in responsive_block
+        or "continue-on-error" in responsive_block
+    ):
+        raise AssertionError("Responsive QA must use a fresh isolated report path and remain a gate")
+    responsive_upload_block = workflow[responsive_upload_position:responsive_link_position]
+    if (
+        "always() && steps.responsive_asset_qa.outcome == 'failure'" not in responsive_upload_block
+        or "steps.responsive_diagnostic_validation.outcome == 'success'" not in responsive_upload_block
+        or "uses: actions/upload-artifact@v7" not in responsive_upload_block
+        or "path: ${{ steps.responsive_asset_qa.outputs.report_path }}" not in responsive_upload_block
+        or "if-no-files-found: warn" not in responsive_upload_block
+        or "retention-days: 14" not in responsive_upload_block
+        or "pages-validation" in responsive_upload_block
+        or "glee-public-site" in responsive_upload_block
+    ):
+        raise AssertionError("Responsive failure upload must be isolated and failure-only")
+    responsive_link_block = workflow[responsive_link_position:visitor_acceptance_position]
+    if (
+        "always() && steps.responsive_asset_qa.outcome == 'failure'" not in responsive_link_block
+        or "steps.upload_responsive_qa_failure_diagnostics.outcome" not in responsive_link_block
+        or "steps.upload_responsive_qa_failure_diagnostics.outputs.artifact-id" not in responsive_link_block
+        or "steps.upload_responsive_qa_failure_diagnostics.outputs.artifact-url" not in responsive_link_block
+        or '[ "$UPLOAD_OUTCOME" = success ] && [ -n "$ARTIFACT_ID" ] && [ -n "$ARTIFACT_URL" ]' not in responsive_link_block
+        or "report unavailable" not in responsive_link_block
+        or "not validated release evidence" not in responsive_link_block
+    ):
+        raise AssertionError("Responsive summary must distinguish uploaded and unavailable evidence")
+    if "if: ${{ success() &&" not in staging_block:
+        raise AssertionError(
+            "Failed responsive QA must remain excluded from complete validation evidence"
+        )
+
     if THEME_GATE not in staging_block:
         raise AssertionError(
             "Complete evidence staging must require successful browser-specific theme verification"
@@ -2176,6 +2240,241 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             for reason in reasons:
                 self.assertIn(f"`{reason}`", summary)
             self.assertNotIn("synthetic-private-token", summary)
+
+    def test_responsive_diagnostic_executes_failure_without_raw_details(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        secret = "SYNTHETIC_SECRET_in_exception_and_page"
+
+        class Page:
+            def goto(self, *args, **kwargs):
+                raise RuntimeError(secret)
+            def screenshot(self, **kwargs):
+                raise AssertionError("Diagnostic mode must not capture screenshots")
+        class Context:
+            def new_page(self): return Page()
+            def close(self): pass
+        class Browser:
+            def new_context(self, **kwargs): return Context()
+            def close(self): pass
+        class Manager:
+            def __enter__(self): return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **kw: Browser()))
+            def __exit__(self, *args): return False
+        fake_playwright = ModuleType("playwright")
+        fake_api = ModuleType("playwright.sync_api")
+        fake_api.sync_playwright = lambda: Manager()
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "report.json"
+            with patch.dict(sys.modules, {"playwright": fake_playwright, "playwright.sync_api": fake_api}), \
+                 patch.object(runner, "PAGES", [("about", "/about/")]), \
+                 patch.object(runner, "VIEWPORTS", [{"name": "320", "width": 320, "height": 568}]), \
+                 redirect_stdout(StringIO()) as output:
+                self.assertEqual(runner.run_qa(diagnostic_output=report_path), 1)
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["affected"], [{"page_index": 0, "viewport": "320", "issue_count": 1, "reason_codes": ["browser_error"]}])
+            self.assertEqual(report["combinations_completed"], 1)
+            self.assertNotIn(secret, report_path.read_text(encoding="utf-8"))
+            self.assertNotIn(secret, output.getvalue())
+            self.assertNotIn("base_url", report)
+            original = report_path.read_bytes()
+            with patch.dict(sys.modules, {"playwright": fake_playwright, "playwright.sync_api": fake_api}), \
+                 patch.object(runner, "PAGES", [("about", "/about/")]), \
+                 patch.object(runner, "VIEWPORTS", [{"name": "320", "width": 320, "height": 568}]), \
+                 redirect_stdout(StringIO()):
+                with self.assertRaises(FileExistsError):
+                    runner.run_qa(diagnostic_output=report_path)
+            self.assertEqual(original, report_path.read_bytes())
+
+    def test_responsive_failure_does_not_publish_page_content(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        secret = "SYNTHETIC_PRIVATE_PAGE_CONTENT"
+        class Page:
+            def goto(self, *args, **kwargs): return SimpleNamespace(status=200)
+            def evaluate(self, code):
+                if "maxW" in code:
+                    return {"maxW": 400, "vw": 320, "offenders": [{"tag": "div", "id": secret, "cls": secret}]}
+                if "const problems" in code: return [{"src": secret, "w": 500}]
+                return [{"fs": 10, "txt": secret}]
+            def query_selector(self, name):
+                return SimpleNamespace(is_visible=lambda: True) if name == ".nav-toggle" else None
+        class Context:
+            def new_page(self): return Page()
+            def close(self): pass
+        class Browser:
+            def new_context(self, **kwargs): return Context()
+            def close(self): pass
+        class Manager:
+            def __enter__(self): return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **kw: Browser()))
+            def __exit__(self, *args): return False
+        fake_api = ModuleType("playwright.sync_api")
+        fake_api.sync_playwright = lambda: Manager()
+        with tempfile.TemporaryDirectory() as directory:
+            failure = Path(directory) / "failure.json"
+            with patch.dict(sys.modules, {"playwright": ModuleType("playwright"), "playwright.sync_api": fake_api}), \
+                 patch.object(runner, "PAGES", [("home", "/")]), \
+                 patch.object(runner, "VIEWPORTS", [{"name": "320", "width": 320, "height": 568}]), \
+                 patch.object(runner.time, "sleep"), redirect_stdout(StringIO()) as output:
+                self.assertEqual(runner.run_qa(diagnostic_output=failure), 1)
+            self.assertNotIn(secret, failure.read_text(encoding="utf-8"))
+            self.assertNotIn(secret, output.getvalue())
+            report = json.loads(failure.read_text(encoding="utf-8"))
+            self.assertEqual(report["total_issues"], 2)
+            self.assertEqual(report["total_warnings"], 1)
+            self.assertEqual(report["affected"][0]["reason_codes"], ["horizontal_overflow", "image_overflow"])
+
+    def test_responsive_success_report_is_current_and_failure_report_absent(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        class Page:
+            def goto(self, *args, **kwargs): return SimpleNamespace(status=200)
+            def evaluate(self, code):
+                if "maxW" in code: return {"maxW": 320, "vw": 320, "offenders": []}
+                return []
+            def query_selector(self, name):
+                return SimpleNamespace(is_visible=lambda: True) if name == ".nav-toggle" else None
+        class Context:
+            def new_page(self): return Page()
+            def close(self): pass
+        class Browser:
+            def new_context(self, **kwargs): return Context()
+            def close(self): pass
+        class Manager:
+            def __enter__(self): return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **kw: Browser()))
+            def __exit__(self, *args): return False
+        fake_api = ModuleType("playwright.sync_api")
+        fake_api.sync_playwright = lambda: Manager()
+        with tempfile.TemporaryDirectory() as directory:
+            failure = Path(directory) / "failure.json"
+            success = Path(directory) / "success.json"
+            with patch.dict(sys.modules, {"playwright": ModuleType("playwright"), "playwright.sync_api": fake_api}), \
+                 patch.object(runner, "PAGES", [("home", "/")]), \
+                 patch.object(runner, "VIEWPORTS", [{"name": "320", "width": 320, "height": 568}]), \
+                 patch.object(runner.time, "sleep"), redirect_stdout(StringIO()):
+                self.assertEqual(runner.run_qa(diagnostic_output=failure, success_output=success), 0)
+            self.assertFalse(failure.exists())
+            report = json.loads(success.read_text(encoding="utf-8"))
+            self.assertEqual(report["total_issues"], 0)
+            self.assertEqual(report["total_combinations"], 1)
+            self.assertEqual(report["results"][0]["page"], "/")
+            self.assertIsNone(report["screenshots_dir"])
+
+    def test_responsive_report_validation_rejects_untrusted_or_partial_content(self):
+        block = self.workflow.split("- name: Validate responsive failure report (diagnostic only)", 1)[1].split("\n      - name:", 1)[0]
+        code = textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        spec = importlib.util.spec_from_file_location("viewport_runner_contract_test", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        good = {"version": 1, "status": "FAIL", "diagnostic_only": True,
+                "pages_completed": len(runner.PAGES),
+                "combinations_completed": len(runner.PAGES) * len(runner.VIEWPORTS),
+                "total_issues": 1, "total_warnings": 0,
+                "affected": [{"page_index": 0, "viewport": "320", "issue_count": 1, "reason_codes": ["browser_error"]}]}
+        bad = ["{", json.dumps({**good, "error": "synthetic-secret"}),
+               json.dumps({**good, "affected": [{**good["affected"][0], "reason_codes": ["synthetic-secret"]}]}),
+               json.dumps({**good, "total_issues": 2}),
+               json.dumps({**good, "pages_completed": 5, "combinations_completed": 1}),
+               json.dumps({**good, "affected": [{**good["affected"][0], "viewport": "9999"}]}),
+               json.dumps(good).replace('"status": "FAIL"', '"status": "synthetic-secret", "status": "FAIL"'),
+               json.dumps(good).replace('"viewport": "320"', '"viewport": "synthetic-secret", "viewport": "320"')]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            env = {**os.environ, "RESPONSIVE_FAILURE_REPORT": str(path), "GITHUB_WORKSPACE": str(ROOT)}
+            for payload, accepted in [(json.dumps(good), True), *[(v, False) for v in bad]]:
+                path.write_text(payload, encoding="utf-8")
+                result = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode == 0, accepted)
+                self.assertNotIn("synthetic-secret", result.stdout + result.stderr)
+            path.write_text(json.dumps(good), encoding="utf-8")
+            missing_workspace = {**env, "GITHUB_WORKSPACE": str(Path(directory) / "missing")}
+            self.assertNotEqual(subprocess.run([sys.executable, "-c", code], env=missing_workspace, capture_output=True).returncode, 0)
+            path.unlink()
+            self.assertNotEqual(subprocess.run([sys.executable, "-c", code], env=env, capture_output=True).returncode, 0)
+
+    def test_responsive_main_hides_setup_error_only_in_isolated_mode(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        args = SimpleNamespace(diagnostic_output=Path("unused"), success_output=Path("unused-success"),
+                               start=0, end=1, batch=None)
+        with patch.object(runner, "_parse_args", return_value=args), \
+             patch.object(runner, "ensure_stub", side_effect=RuntimeError("synthetic setup secret")), \
+             redirect_stdout(StringIO()), redirect_stderr(StringIO()) as error:
+            self.assertEqual(runner.main(), 1)
+        self.assertNotIn("synthetic setup secret", error.getvalue())
+        self.assertIn("diagnostic report unavailable", error.getvalue())
+
+    def test_responsive_summary_reports_actual_upload_outcome(self):
+        block = self.workflow.split(RESPONSIVE_FAILURE_LINK_STEP, 1)[1].split("\n      - name:", 1)[0]
+        script = textwrap.dedent(block.split("        run: |\n", 1)[1])
+        bash = shutil.which("bash")
+        if os.name == "nt":
+            git = shutil.which("git")
+            candidate = Path(git).resolve().parent.parent / "bin" / "bash.exe" if git else None
+            bash = str(candidate) if candidate and candidate.is_file() else None
+        if not bash:
+            self.skipTest("Bash is unavailable")
+        scenarios = [("success", "42", "https://example.invalid/artifact", True),
+                     ("success", "", "", False), ("failure", "42", "https://example.invalid/artifact", False),
+                     ("skipped", "", "", False)]
+        with tempfile.TemporaryDirectory() as directory:
+            for index, (outcome, artifact_id, url, linked) in enumerate(scenarios):
+                path = Path(directory) / f"summary-{index}.md"
+                shell_path = path.as_posix()
+                if os.name == "nt": shell_path = "/" + shell_path[0].lower() + shell_path[2:]
+                env = {**os.environ, "UPLOAD_OUTCOME": outcome, "ARTIFACT_ID": artifact_id,
+                       "ARTIFACT_URL": url, "GITHUB_STEP_SUMMARY": shell_path}
+                result = subprocess.run([bash, "-c", script], env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = path.read_text(encoding="utf-8")
+                self.assertEqual("Download the sanitized" in summary, linked)
+                self.assertEqual("report unavailable" in summary, not linked)
+
+    def test_responsive_interruption_survives_cleanup_failure_without_report(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        class Page:
+            def goto(self, *args, **kwargs): raise KeyboardInterrupt()
+        class Context:
+            def new_page(self): return Page()
+            def close(self): raise RuntimeError("synthetic cleanup secret")
+        class Browser:
+            def new_context(self, **kwargs): return Context()
+        class Manager:
+            def __enter__(self): return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **kw: Browser()))
+            def __exit__(self, *args): return False
+        fake_api = ModuleType("playwright.sync_api")
+        fake_api.sync_playwright = lambda: Manager()
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "failure.json"
+            with patch.dict(sys.modules, {"playwright": ModuleType("playwright"), "playwright.sync_api": fake_api}), \
+                 patch.object(runner, "PAGES", [("home", "/")]), \
+                 patch.object(runner, "VIEWPORTS", [{"name": "320", "width": 320, "height": 568}]), \
+                 redirect_stdout(StringIO()):
+                with self.assertRaises(KeyboardInterrupt):
+                    runner.run_qa(diagnostic_output=report)
+            self.assertFalse(report.exists())
+
+    def test_responsive_diagnostic_startup_and_cancellation_leave_no_report(self):
+        spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        for error in (RuntimeError("synthetic secret"), KeyboardInterrupt(), SystemExit(7)):
+            with self.subTest(error=type(error).__name__), tempfile.TemporaryDirectory() as directory:
+                report_path = Path(directory) / "report.json"
+                fake_playwright = ModuleType("playwright")
+                fake_api = ModuleType("playwright.sync_api")
+                def start(): raise error
+                fake_api.sync_playwright = start
+                with patch.dict(sys.modules, {"playwright": fake_playwright, "playwright.sync_api": fake_api}), \
+                     redirect_stdout(StringIO()):
+                    with self.assertRaises(type(error)):
+                        runner.run_qa(diagnostic_output=report_path)
+                self.assertFalse(report_path.exists())
 
     def test_release_gates_reject_pass_reports_with_failure_indicators(self):
         verify_block = self.workflow.split(THEME_VERIFY_STEP, 1)[1].split("\n      - name:", 1)[0]
@@ -4630,10 +4929,13 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 "# Audit report\n", encoding="utf-8"
             )
             artifact = root / "validation-artifact"
+            responsive = root / "current-responsive.json"
+            responsive.write_text('{"current": true}', encoding="utf-8")
             env = {
                 **os.environ,
                 "VALIDATION_ARTIFACT_DIR": str(artifact),
                 "VALIDATION_REPORT_NAME": "validation-report-2026-10-02.json",
+                "RESPONSIVE_SUCCESS_REPORT": str(responsive),
             }
             result = subprocess.run(
                 [sys.executable, "-c", code],
@@ -4663,10 +4965,33 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 (staged_audit / "validation-report-2026-10-01.json").exists()
             )
             self.assertTrue((staged_audit / "links-report-2026-10-02.json").is_file())
+            self.assertEqual((staged_audit / "viewport-qa-full-current-run.json").read_text(encoding="utf-8"), '{"current": true}')
+            self.assertEqual(responsive.read_text(encoding="utf-8"), '{"current": true}')
             staged_summary = (
                 artifact / "assets" / "docs" / "audit-report.md"
             ).read_text(encoding="utf-8")
             self.assertIn(audit_report_index_link(), staged_summary)
+
+    def test_staging_rejects_missing_or_colliding_current_responsive_report(self):
+        block = self.workflow.split(STAGING_STEP, 1)[1].split(UPLOAD_STEP, 1)[0]
+        code = textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        for collision in (False, True):
+            with self.subTest(collision=collision), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                source = root / "success.json"
+                if collision:
+                    source.write_text("{}", encoding="utf-8")
+                    (audit / "viewport-qa-full-current-run.json").write_text("historical", encoding="utf-8")
+                env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root / "artifact"),
+                       "VALIDATION_REPORT_NAME": "report.json", "RESPONSIVE_SUCCESS_REPORT": str(source)}
+                result = subprocess.run([sys.executable, "-c", code], cwd=root, env=env,
+                                        capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Current responsive QA report unavailable", result.stderr)
+                if collision:
+                    self.assertEqual((audit / "viewport-qa-full-current-run.json").read_text(), "historical")
 
     def test_early_staging_has_clear_failure(self):
         changed = self.workflow.replace(
