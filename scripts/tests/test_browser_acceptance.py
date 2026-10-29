@@ -19,8 +19,21 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 import re
+import sys
 import time
 from urllib.parse import parse_qs, urljoin, urlsplit
+
+JOURNEYS = (
+    "served generated index and deep function discovery",
+    "Glee modal identity keyboard and focus return",
+    "inline query category history reload and keyboard",
+    "consent default grant reload and denied reload",
+    "computed hero contrast light",
+    "computed hero contrast dark",
+    "computed hero contrast auto-light",
+    "computed hero contrast auto-dark",
+    "Neighborly Bazaar SVG decodes",
+)
 
 
 def rgba(value: str) -> list[float]:
@@ -67,12 +80,13 @@ def adapt_local_http_navigation(url: str, base_url: str, content_type: str,
     return body.replace("; upgrade-insecure-requests", "")
 
 
-def run_checks(browser, expect, args) -> list[dict]:
+def run_checks(browser, expect, args, results=None) -> list[dict]:
     base = args.base_url.rstrip("/")
     parsed_base = urlsplit(base)
     origin = parsed_base.netloc
     local_http = parsed_base.scheme == "http" and parsed_base.hostname in {"localhost", "127.0.0.1"}
-    results = []
+    if results is None:
+        results = []
 
     def wait_for_page_condition(page, expression: str) -> None:
         """Poll a page expression without asking the page to compile eval code.
@@ -170,8 +184,22 @@ def run_checks(browser, expect, args) -> list[dict]:
                     result["screenshot"] = str(image)
                 except Exception as error:
                     result["screenshot_error"] = str(error)
-            context.close()
-            results.append(result)
+            if getattr(args, "diagnostic_output", None) is None:
+                context.close()
+                results.append(result)
+            else:
+                pending = sys.exc_info()[1]
+                try:
+                    context.close()
+                except Exception:
+                    result["cleanup_failed"] = True
+                    if result.get("status") == "FAIL":
+                        results.append(result)
+                    if pending is None:
+                        raise RuntimeError("Visitor context cleanup failed") from None
+                else:
+                    if "status" in result:
+                        results.append(result)
 
     def generated_index(page, _):
         response = page.request.get(base + "/assets/data/search-index.json")
@@ -340,6 +368,66 @@ def run_checks(browser, expect, args) -> list[dict]:
     return results
 
 
+def write_report(report: dict, output: Path | None, *, exclusive=False) -> str:
+    """Serialize the complete report and persist it even when checks failed."""
+    text = json.dumps(report, indent=2, ensure_ascii=False)
+    if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        if exclusive:
+            with output.open("x", encoding="utf-8") as stream:
+                stream.write(text + "\n")
+        else:
+            output.write_text(text + "\n", encoding="utf-8")
+    return text
+
+
+def failure_diagnostic(report: dict, phase: str) -> dict:
+    """Construct an allowlisted report without serializing browser detail."""
+    entries = []
+    for index, item in enumerate(report.get("results", [])):
+        if (index >= len(JOURNEYS) or not isinstance(item, dict)
+            or item.get("name") != JOURNEYS[index]
+            or item.get("status") not in ("PASS", "FAIL")):
+            break
+        entries.append({"name": JOURNEYS[index], "status": item["status"]})
+    return {"version": 1, "status": "FAIL", "diagnostic_only": True,
+            "browser": report["browser"], "phase": phase,
+            "results": entries, "not_completed": list(JOURNEYS[len(entries):])}
+
+
+def validate_failure_diagnostic(path: Path, browser: str) -> None:
+    """Reject untrusted or ambiguous diagnostic bytes before artifact upload."""
+    def unique_pairs(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("Duplicate key")
+            result[key] = value
+        return result
+
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > 1048576:
+        raise ValueError("Report unavailable")
+    report = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_pairs)
+    expected = {"version", "status", "diagnostic_only", "browser", "phase", "results", "not_completed"}
+    if (not isinstance(report, dict) or set(report) != expected
+        or type(report["version"]) is not int or report["version"] != 1
+        or report["status"] != "FAIL" or report["diagnostic_only"] is not True
+        or report["browser"] != browser or report["phase"] not in {"journey_failed", "execution_failed"}
+        or not isinstance(report["results"], list) or not isinstance(report["not_completed"], list)):
+        raise ValueError("Invalid report")
+    entries = report["results"]
+    if len(entries) > len(JOURNEYS):
+        raise ValueError("Invalid journey count")
+    for index, entry in enumerate(entries):
+        if (not isinstance(entry, dict) or set(entry) != {"name", "status"}
+            or entry["name"] != JOURNEYS[index] or entry["status"] not in ("PASS", "FAIL")):
+            raise ValueError("Invalid journey")
+    if report["not_completed"] != list(JOURNEYS[len(entries):]):
+        raise ValueError("Invalid remaining journeys")
+    if report["phase"] == "journey_failed" and (len(entries) != len(JOURNEYS) or not any(x["status"] == "FAIL" for x in entries)):
+        raise ValueError("Inconsistent failure")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://localhost:5000")
@@ -347,24 +435,69 @@ def main() -> int:
     parser.add_argument("--timeout-ms", type=int, default=15000)
     parser.add_argument("--output", type=Path, help="Optional JSON evidence report")
     parser.add_argument("--screenshots", type=Path, help="Optional directory for per-journey screenshots")
+    parser.add_argument("--diagnostic-output", type=Path, help="Fresh sanitized failure-only report")
+    parser.add_argument("--success-output", type=Path, help="Fresh full successful evidence report")
+    parser.add_argument("--validate-failure", type=Path, help="Validate a sanitized failure report")
     args = parser.parse_args()
+    if args.validate_failure is not None:
+        try:
+            validate_failure_diagnostic(args.validate_failure, args.browser)
+            return 0
+        except Exception:
+            print("Visitor failure report unavailable or invalid", file=sys.stderr)
+            return 1
+    isolated = args.diagnostic_output is not None
+    if isolated != (args.success_output is not None):
+        parser.error("--diagnostic-output and --success-output must be supplied together")
+    if isolated and (args.output is not None or args.screenshots is not None):
+        parser.error("isolated reports cannot be combined with --output or --screenshots")
     report = {"checked_at": datetime.now(timezone.utc).isoformat(), "base_url": args.base_url,
               "browser": args.browser, "service_workers": "blocked (separate resilience gate)", "results": []}
+    execution_failed = False
     try:
         from playwright.sync_api import expect, sync_playwright
         with sync_playwright() as playwright:
             browser = getattr(playwright, args.browser).launch(headless=True)
-            try:
-                report["results"] = run_checks(browser, expect, args)
-            finally:
-                browser.close()
+            if isolated:
+                try:
+                    run_checks(browser, expect, args, report["results"])
+                except BaseException:
+                    try:
+                        browser.close()
+                    except Exception:
+                        report["cleanup_failed"] = True
+                    raise
+                else:
+                    browser.close()
+            else:
+                try:
+                    report["results"] = run_checks(browser, expect, args)
+                finally:
+                    browser.close()
     except Exception as error:
-        report["results"].append({"name": "browser gate setup or execution", "status": "FAIL", "error": str(error)})
+        if isolated:
+            execution_failed = True
+        else:
+            report["results"].append({"name": "browser gate setup or execution", "status": "FAIL", "error": str(error)})
     report["failures"] = sum(item["status"] != "PASS" for item in report["results"])
-    text = json.dumps(report, indent=2, ensure_ascii=False)
-    if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(text + "\n", encoding="utf-8")
+    if isolated:
+        try:
+            if ([item.get("name") for item in report["results"]] != list(JOURNEYS)
+                or any(item.get("status") not in ("PASS", "FAIL") for item in report["results"])):
+                execution_failed = True
+            if execution_failed or report["failures"]:
+                phase = "execution_failed" if execution_failed else "journey_failed"
+                diagnostic = failure_diagnostic(report, phase)
+                write_report(diagnostic, args.diagnostic_output, exclusive=True)
+                print("Visitor acceptance failed; sanitized diagnostic report written.")
+                return 1
+            write_report(report, args.success_output, exclusive=True)
+            print("Visitor acceptance passed; current evidence written to isolated output.")
+            return 0
+        except Exception:
+            print("Visitor acceptance report unavailable.", file=sys.stderr)
+            return 1
+    text = write_report(report, args.output)
     print(text)
     return 1 if report["failures"] else 0
 

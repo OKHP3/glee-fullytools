@@ -313,7 +313,45 @@ jobs:
           fi
 
       - name: Run visitor, privacy, and rendered contrast acceptance
-        run: python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --output assets/audit/browser-acceptance.json
+        id: visitor_acceptance
+        run: |
+          report_dir="$(mktemp -d "$RUNNER_TEMP/glee-visitor-qa.XXXXXXXX")"
+          report_path="$report_dir/visitor-failure.json"
+          success_path="$report_dir/visitor-success.json"
+          printf 'report_path=%s\n' "$report_path" >> "$GITHUB_OUTPUT"
+          printf 'success_path=%s\n' "$success_path" >> "$GITHUB_OUTPUT"
+          python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 \
+            --diagnostic-output "$report_path" --success-output "$success_path"
+
+      - name: Validate visitor acceptance failure report (diagnostic only)
+        id: visitor_diagnostic_validation
+        if: ${{ always() && steps.visitor_acceptance.outcome == 'failure' && steps.visitor_acceptance.outputs.report_path != '' }}
+        env:
+          VISITOR_FAILURE_REPORT: ${{ steps.visitor_acceptance.outputs.report_path }}
+        run: python3 scripts/tests/test_browser_acceptance.py --browser chromium --validate-failure "$VISITOR_FAILURE_REPORT"
+
+      - name: Upload failed visitor acceptance report (diagnostic only)
+        id: upload_visitor_failure_diagnostics
+        if: ${{ always() && steps.visitor_acceptance.outcome == 'failure' && steps.visitor_diagnostic_validation.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}
+          path: ${{ steps.visitor_acceptance.outputs.report_path }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Link visitor acceptance failure diagnostics
+        if: ${{ always() && steps.visitor_acceptance.outcome == 'failure' }}
+        env:
+          UPLOAD_OUTCOME: ${{ steps.upload_visitor_failure_diagnostics.outcome }}
+          ARTIFACT_ID: ${{ steps.upload_visitor_failure_diagnostics.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload_visitor_failure_diagnostics.outputs.artifact-url }}
+        run: |
+          if [ "$UPLOAD_OUTCOME" = success ] && [ -n "$ARTIFACT_ID" ] && [ -n "$ARTIFACT_URL" ]; then
+            echo "**Diagnostic only. This is not validated release evidence.** [Download the sanitized visitor acceptance report]($ARTIFACT_URL)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**Diagnostic only. This is not validated release evidence.** Visitor acceptance report unavailable; the check did not retain a validated diagnostic or upload failed." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Run resilient web behavior QA
         run: python3 scripts/resilience-qa.py --base-url http://localhost:5000
@@ -899,6 +937,7 @@ jobs:
           VALIDATION_ARTIFACT_DIR: ${{ runner.temp }}/pages-validation
           VALIDATION_REPORT_NAME: ${{ steps.validation_provenance.outputs.report_name }}
           RESPONSIVE_SUCCESS_REPORT: ${{ steps.responsive_asset_qa.outputs.success_path }}
+          VISITOR_SUCCESS_REPORT: ${{ steps.visitor_acceptance.outputs.success_path }}
         run: |
           python3 - <<'PY'
           import os
@@ -907,13 +946,20 @@ jobs:
 
           artifact_dir = Path(os.environ["VALIDATION_ARTIFACT_DIR"])
           audit_dir = artifact_dir / "assets" / "audit"
-          shutil.copytree("assets/audit", audit_dir)
+          shutil.copytree("assets/audit", audit_dir,
+                          ignore=shutil.ignore_patterns("browser-acceptance.json"))
 
           responsive_source = Path(os.environ["RESPONSIVE_SUCCESS_REPORT"])
           responsive_target = audit_dir / "viewport-qa-full-current-run.json"
           if not responsive_source.is_file() or responsive_source.is_symlink() or responsive_target.exists():
               raise SystemExit("Current responsive QA report unavailable or staging path already exists")
           shutil.copy2(responsive_source, responsive_target)
+
+          visitor_source = Path(os.environ["VISITOR_SUCCESS_REPORT"])
+          visitor_target = audit_dir / "browser-acceptance-current-run.json"
+          if not visitor_source.is_file() or visitor_source.is_symlink() or visitor_target.exists():
+              raise SystemExit("Current visitor acceptance report unavailable or staging path already exists")
+          shutil.copy2(visitor_source, visitor_target)
 
           current_report = os.environ["VALIDATION_REPORT_NAME"]
           for report in audit_dir.glob("validation-report-*.json"):

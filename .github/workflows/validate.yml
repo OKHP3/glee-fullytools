@@ -104,6 +104,31 @@ jobs:
           print("Verified one page across all configured responsive viewports.")
           PY
 
+      - name: Smoke-test isolated visitor acceptance in Chromium
+        run: |
+          smoke_dir="$(mktemp -d "$RUNNER_TEMP/glee-visitor-smoke.XXXXXXXX")"
+          python3 scripts/tests/test_browser_acceptance.py --base-url http://127.0.0.1:5000 --browser chromium \
+            --diagnostic-output "$smoke_dir/failure.json" --success-output "$smoke_dir/success.json"
+          SMOKE_DIR="$smoke_dir" python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from scripts.tests.test_browser_acceptance import JOURNEYS
+
+          directory = Path(os.environ["SMOKE_DIR"])
+          success = directory / "success.json"
+          if (directory / "failure.json").exists() or not success.is_file() or success.is_symlink():
+              raise SystemExit("Isolated visitor evidence is unavailable or conflicting")
+          report = json.loads(success.read_text(encoding="utf-8"))
+          results = report.get("results")
+          if (report.get("browser") != "chromium" or report.get("failures") != 0
+              or not isinstance(results, list)
+              or [row.get("name") for row in results if isinstance(row, dict)] != list(JOURNEYS)
+              or any(not isinstance(row, dict) or row.get("status") != "PASS" for row in results)):
+              raise SystemExit("Isolated visitor evidence is inconsistent")
+          print("Verified isolated visitor evidence across all configured journeys.")
+          PY
+
       - name: Run link and audit regression tests
         run: python3 -m unittest scripts.tests.test_audit_site scripts.tests.test_check_links_fragments
 
