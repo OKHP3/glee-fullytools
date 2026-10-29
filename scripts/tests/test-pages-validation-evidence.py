@@ -2199,6 +2199,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         conflicts = (
             {"case_results_version": True},
             {"case_results_version": 2},
+            {"browser": "chromium"},
+            {"browser": None},
             {"attempted_cases": ["light", "dark", "dark"]},
             {"attempted_cases": ["dark", "light", "disabled_storage"]},
             {"attempted_cases": ["light", "dark", "unknown"]},
@@ -2220,9 +2222,12 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             audit = root / "assets" / "audit"
             audit.mkdir(parents=True)
             path = audit / "color-scheme-init-firefox.json"
-            for index, update in enumerate(({}, *conflicts)):
+            for index, update in enumerate(({}, *conflicts, {"missing_browser": True})):
                 with self.subTest(update=update):
-                    path.write_text(json.dumps({**good, **update}), encoding="utf-8")
+                    candidate = {**good, **update}
+                    if candidate.pop("missing_browser", False):
+                        candidate.pop("browser")
+                    path.write_text(json.dumps(candidate), encoding="utf-8")
                     summary_path = root / f"summary-{index}.md"
                     result = subprocess.run(
                         [sys.executable, "-c", code], cwd=root,
@@ -2236,6 +2241,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                         self.assertIn("case sequence and results remain unverified", summary)
                         self.assertNotIn("Completed theme cases", summary)
                         self.assertNotIn("Not run:", summary)
+                        self.assertNotIn("theme checks failed in", summary)
                     else:
                         self.assertIn("theme checks failed in `light`, `disabled_storage`", summary)
                         self.assertIn("Completed theme cases (diagnostic only; not validated evidence): `dark`", summary)

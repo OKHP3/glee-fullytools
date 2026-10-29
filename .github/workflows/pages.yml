@@ -289,6 +289,7 @@ jobs:
                   valid = (
                       type(report.get("case_results_version")) is int
                       and report["case_results_version"] == 1
+                      and report.get("browser") == browser
                       and report.get("status") == "FAIL"
                       and report.get("diagnostic_only") is True
                       and report.get("failure_stage") == "theme_check"
