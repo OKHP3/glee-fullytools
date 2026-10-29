@@ -868,23 +868,36 @@ def main() -> None:
                         browser, base_url, ["/", *UTILITY_ROUTES]
                     ),
                 )
-            finally:
-                browser.close()
+            except BaseException:
+                try:
+                    browser.close()
+                except Exception:
+                    report["cleanup_failed"] = True
+                raise
+            else:
+                try:
+                    browser.close()
+                except Exception:
+                    report["failure_stage"] = "browser_cleanup"
+                    report["error"] = "Browser cleanup failed."
+                    raise
         report["status"] = "PASS"
     except Exception as error:
         report["status"] = "FAIL"
         report["diagnostic_only"] = True
         report.setdefault("failure_stage", "browser_startup")
-        report.setdefault("error", str(error))
-        report.setdefault(
-            "not_run_cases",
-            [
-                name
-                for name in THEME_CASES
-                if name not in report.get("cases", {})
-                and name != report.get("failed_case")
-            ],
-        )
+        if "error" not in report:
+            report["error"] = str(error)
+        cases = report.get("cases")
+        if isinstance(cases, dict):
+            report.setdefault(
+                "not_run_cases",
+                [
+                    name
+                    for name in THEME_CASES
+                    if name not in cases and name != report.get("failed_case")
+                ],
+            )
 
     text = json.dumps(report, indent=2, ensure_ascii=False)
     if args.output:

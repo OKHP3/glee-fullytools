@@ -298,15 +298,33 @@ jobs:
               reported_cases = report.get("cases")
               cases_are_valid = isinstance(reported_cases, dict)
               cases = reported_cases if cases_are_valid else {}
+              failure_stage = report.get("failure_stage")
+              reported_not_run = report.get("not_run_cases")
+              reported_failed_routes = report.get("failed_routes")
+              cleanup_case_conflict = (
+                  status == "FAIL"
+                  and failure_stage == "browser_cleanup"
+                  and (
+                      not cases_are_valid
+                      or set(cases) != set(case_order)
+                      or failed_case is not None
+                      or reported_failed_routes not in (None, [])
+                      or reported_not_run not in (None, [])
+                  )
+              )
+              sequence_unverified = (
+                  startup_case_conflict or cleanup_case_conflict
+                  or (report.get("cleanup_failed") is True and not cases_are_valid)
+              )
               if not cases_are_valid:
                   lines.append(
                       f"- **{engine}:** case results are malformed "
                       "(expected an object); no cases are treated as completed, "
                       "passed, or validated evidence."
                   )
+              failed_case = report.get("failed_case")
               completed_order = case_order
-              if status == "FAIL":
-                  failed_case = report.get("failed_case")
+              if status == "FAIL" and failure_stage != "browser_cleanup":
                   completed_order = (
                       case_order[:case_order.index(failed_case)]
                       if isinstance(failed_case, str) and failed_case in case_order
@@ -316,6 +334,7 @@ jobs:
               if (
                   status == "FAIL"
                   and not startup_case_conflict
+                  and not cleanup_case_conflict
                   and isinstance(failed_case, str)
                   and failed_case in case_order
               ):
@@ -324,7 +343,6 @@ jobs:
                       if case_order.index(candidate) > case_order.index(failed_case)
                       and candidate in cases
                   ]
-              reported_not_run = report.get("not_run_cases")
               failed_case_also_not_run = (
                   status == "FAIL"
                   and isinstance(failed_case, str)
@@ -341,8 +359,12 @@ jobs:
                   case = failed_case if (
                       isinstance(failed_case, str) and failed_case in case_order
                   ) else "not identified"
-                  failure_stage = report.get("failure_stage")
-                  if case != "not identified" and failure_stage == "browser_startup":
+                  if cleanup_case_conflict:
+                      failure_label = (
+                          "report is inconsistent: browser cleanup failure and "
+                          "case results conflict; the case sequence is unverified"
+                      )
+                  elif case != "not identified" and failure_stage == "browser_startup":
                       failure_label = (
                           "report is inconsistent: browser startup failure and a "
                           "named theme case are both reported; neither is verified"
@@ -357,11 +379,16 @@ jobs:
                       failure_label = (
                           "theme-check execution failed without an identified case"
                       )
+                  elif failure_stage == "browser_cleanup":
+                      failure_label = "browser cleanup failed while closing the browser"
                   else:
                       failure_label = (
                           "browser failure stage and case were not identified"
                       )
-                  detail = one_line(report.get("error", ""))
+                  detail = (
+                      "" if failure_stage == "browser_cleanup"
+                      else one_line(report.get("error", ""))
+                  )
                   suffix = f" — {detail}" if detail else ""
                   lines.append(f"- **{engine}:** {failure_label}{suffix}.")
                   setup_step = report.get("setup_step")
@@ -374,7 +401,7 @@ jobs:
                           "  - Setup phase attempted (diagnostic only; not validated "
                           f"evidence): `{setup_step_labels[setup_step]}`."
                       )
-                  if startup_case_conflict:
+                  if sequence_unverified:
                       lines.append(
                           "  - Case sequence cannot be established from the "
                           "conflicting report; completion and not-run status remain "
@@ -384,6 +411,10 @@ jobs:
                       lines.append(
                           "  - Completed before failure (diagnostic only; not "
                           f"validated evidence): {completed}."
+                      )
+                  if report.get("cleanup_failed") is True:
+                      lines.append(
+                          "  - Browser cleanup also failed while closing the browser."
                       )
                   if later_reported_cases:
                       later = ", ".join(
@@ -395,7 +426,7 @@ jobs:
                           "are ignored and must not be treated as completed, "
                           "passed, or validated evidence."
                       )
-                  if failed_case_also_not_run:
+                  if failed_case_also_not_run and not cleanup_case_conflict:
                       if case == "not identified":
                           lines.append(
                               "  - **Report is inconsistent:** an unrecognized failure "
@@ -416,7 +447,7 @@ jobs:
                               "validated evidence."
                           )
                   failed_routes = report.get("failed_routes")
-                  if isinstance(failed_routes, list) and failed_routes:
+                  if not cleanup_case_conflict and isinstance(failed_routes, list) and failed_routes:
                       lines.append(
                           "  - Affected pages (diagnostic only; not validated "
                           "release evidence):"
@@ -448,7 +479,7 @@ jobs:
                           ]
                       )
                   not_run = ", ".join(f"`{candidate}`" for candidate in remaining)
-                  if not startup_case_conflict:
+                  if not sequence_unverified:
                       lines.append(
                           f"  - Not run: {not_run or 'none reported'}; these cases "
                           "must not be treated as passing or validated evidence."

@@ -2399,6 +2399,407 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(report["failed_routes"][0]["route"], "/theme-regression/")
             stdout.close()
 
+    def test_browser_close_failure_preserves_completed_theme_cases(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                raise RuntimeError("secret-marker https://example.invalid/?token=private /private/path")
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(
+                    color_scheme_checker, "browser_routes", return_value=["/"]
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    return_value={"routes": 1},
+                ),
+                patch.object(
+                    color_scheme_checker,
+                    "check_disabled_storage",
+                    return_value={"routes": 1},
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit) as exit_result,
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(exit_result.exception.code, 1)
+            self.assertEqual(report["status"], "FAIL")
+            self.assertEqual(report["failure_stage"], "browser_cleanup")
+            self.assertNotIn("failed_case", report)
+            self.assertEqual(
+                tuple(report["cases"]),
+                ("light", "dark", "disabled_storage"),
+            )
+            self.assertEqual(report["not_run_cases"], [])
+            self.assertEqual(report["error"], "Browser cleanup failed.")
+            self.assertNotIn("secret-marker", json.dumps(report))
+            stdout.close()
+
+    def test_cleanup_failure_diagnostic_lists_completed_cases(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "color-scheme-init-firefox.json").write_text(
+                json.dumps(
+                    {
+                        "browser": "firefox",
+                        "status": "FAIL",
+                        "diagnostic_only": True,
+                        "failure_stage": "browser_cleanup",
+                        "cases": {"light": {}, "dark": {}, "disabled_storage": {}},
+                        "not_run_cases": [],
+                        "error": "secret-marker https://example.invalid/?token=private",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            summary_path = root / "summary.md"
+            result = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=root,
+                env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = summary_path.read_text(encoding="utf-8")
+            self.assertIn("browser cleanup failed while closing the browser", summary)
+            self.assertIn(
+                "Completed before failure (diagnostic only; not validated "
+                "evidence): `light`, `dark`, `disabled_storage`.",
+                summary,
+            )
+            self.assertIn("Not run: none reported", summary)
+            self.assertNotIn("theme check failed in", summary)
+            self.assertNotIn("secret-marker", summary)
+
+    def test_cleanup_failure_does_not_stringify_exception(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class CleanupError(RuntimeError):
+            def __str__(self):
+                raise AssertionError("cleanup exception was stringified")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                raise CleanupError()
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        stdout = StringIO()
+        with (
+            patch.dict(sys.modules, {
+                "playwright": playwright_module,
+                "playwright.sync_api": playwright_api,
+            }),
+            patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+            patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+            patch.object(color_scheme_checker, "check_saved_preference", return_value={}),
+            patch.object(color_scheme_checker, "check_disabled_storage", return_value={}),
+            redirect_stdout(stdout),
+            self.assertRaises(SystemExit) as exit_result,
+        ):
+            color_scheme_checker.main()
+        self.assertEqual(exit_result.exception.code, 1)
+        report = json.loads(stdout.getvalue())
+        self.assertEqual(report["failure_stage"], "browser_cleanup")
+        self.assertEqual(report["error"], "Browser cleanup failed.")
+
+    def test_theme_failure_remains_primary_when_browser_cleanup_also_fails(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                raise RuntimeError("browser close failed")
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        theme_failure = AssertionError("dark preference failed")
+
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "browser-report.json"
+            stdout = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
+            with (
+                patch.dict(
+                    sys.modules,
+                    {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    },
+                ),
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        str(COLOR_SCHEME_SCRIPT),
+                        "--browser",
+                        "chromium",
+                        "--output",
+                        str(report_path),
+                    ],
+                ),
+                patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+                patch.object(
+                    color_scheme_checker,
+                    "check_saved_preference",
+                    side_effect=[{"routes": 1}, theme_failure],
+                ),
+                patch.object(sys, "stdout", stdout),
+                self.assertRaises(SystemExit),
+            ):
+                color_scheme_checker.main()
+
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["failure_stage"], "theme_check")
+            self.assertEqual(report["failed_case"], "dark")
+            self.assertEqual(report["error"], "dark preference failed")
+            self.assertIs(report["cleanup_failed"], True)
+            self.assertNotIn("browser close failed", json.dumps(report))
+            self.assertEqual(report["not_run_cases"], ["disabled_storage"])
+            stdout.close()
+
+    def test_unclassified_execution_failure_remains_primary_when_close_fails(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                raise RuntimeError("cleanup-secret-marker")
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        real_capture_case = color_scheme_checker.capture_case
+
+        for malformed_cases in (False, True):
+            with self.subTest(malformed_cases=malformed_cases):
+                def fail_outside_case_handler(report, *_args):
+                    if malformed_cases:
+                        report["cases"] = None
+                        return real_capture_case(report, "light", lambda: {"routes": 1})
+                    raise ValueError("primary execution failure")
+
+                stdout = StringIO()
+                with (
+                    patch.dict(sys.modules, {
+                        "playwright": playwright_module,
+                        "playwright.sync_api": playwright_api,
+                    }),
+                    patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+                    patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+                    patch.object(color_scheme_checker, "capture_case", side_effect=fail_outside_case_handler),
+                    redirect_stdout(stdout),
+                    self.assertRaises(SystemExit) as exit_result,
+                ):
+                    color_scheme_checker.main()
+                report = json.loads(stdout.getvalue())
+                self.assertEqual(exit_result.exception.code, 1)
+                self.assertEqual(report["failure_stage"], "theme_checks")
+                self.assertEqual(
+                    report["error"],
+                    "Browser report cases must be an object" if malformed_cases
+                    else "primary execution failure",
+                )
+                self.assertIs(report["cleanup_failed"], True)
+                self.assertNotIn("cleanup-secret-marker", stdout.getvalue())
+                if malformed_cases:
+                    self.assertIsNone(report["cases"])
+                    self.assertNotIn("not_run_cases", report)
+
+    def test_cleanup_interrupt_during_execution_failure_is_not_suppressed(self):
+        playwright_api = ModuleType("playwright.sync_api")
+
+        class FakeBrowser:
+            version = "test-browser"
+
+            def close(self):
+                pass
+
+        class PlaywrightManager:
+            def __enter__(self):
+                return SimpleNamespace(
+                    chromium=SimpleNamespace(launch=lambda **_kwargs: FakeBrowser())
+                )
+
+            def __exit__(self, *_args):
+                return False
+
+        playwright_api.sync_playwright = PlaywrightManager
+        playwright_module = ModuleType("playwright")
+        playwright_module.sync_api = playwright_api
+        for interrupt in (KeyboardInterrupt, SystemExit):
+            with (
+                self.subTest(interrupt=interrupt.__name__),
+                patch.dict(sys.modules, {
+                    "playwright": playwright_module,
+                    "playwright.sync_api": playwright_api,
+                }),
+                patch.object(sys, "argv", [str(COLOR_SCHEME_SCRIPT)]),
+                patch.object(color_scheme_checker, "browser_routes", return_value=[]),
+                patch.object(color_scheme_checker, "capture_case", side_effect=ValueError("primary")),
+                patch.object(FakeBrowser, "close", side_effect=interrupt),
+                redirect_stdout(StringIO()),
+                self.assertRaises(interrupt),
+            ):
+                color_scheme_checker.main()
+
+    def test_cleanup_conflicting_reports_do_not_claim_case_sequence(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        valid_cases = {"light": {}, "dark": {}, "disabled_storage": {}}
+        conflicts = (
+            {"failed_case": "dark"},
+            {"failed_case": ["dark"]},
+            {"cases": {"light": {}, "dark": {}}},
+            {"cases": None},
+            {"cases": {**valid_cases, "other": {}}},
+            {"not_run_cases": ["disabled_storage"]},
+            {"not_run_cases": "dark"},
+            {"failed_routes": [{"route": "/private-route"}]},
+            {"failed_routes": "malformed"},
+        )
+        for conflict in conflicts:
+            with self.subTest(conflict=conflict), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                report = {
+                    "browser": "firefox", "status": "FAIL",
+                    "diagnostic_only": True, "failure_stage": "browser_cleanup",
+                    "cases": valid_cases, "not_run_cases": [],
+                    "error": "cleanup-secret-marker",
+                    "cleanup_error": "secondary-secret-marker",
+                    **conflict,
+                }
+                (audit / "color-scheme-init-firefox.json").write_text(
+                    json.dumps(report), encoding="utf-8"
+                )
+                summary_path = root / "summary.md"
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                self.assertIn("Case sequence cannot be established", summary)
+                self.assertNotIn("Completed before failure", summary)
+                self.assertNotIn("Not run:", summary)
+                self.assertNotIn("Affected pages", summary)
+                self.assertNotIn("theme check failed in", summary)
+                self.assertNotIn("secret-marker", summary)
+
+    def test_secondary_cleanup_preserves_theme_failure_and_hides_raw_detail(self):
+        code = theme_failure_diagnostic_code(self.workflow)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            audit = root / "assets" / "audit"
+            audit.mkdir(parents=True)
+            report_path = audit / "color-scheme-init-firefox.json"
+            for index, cases in enumerate(({"light": {}}, None)):
+                summary_path = root / f"summary-{index}.md"
+                report_path.write_text(json.dumps({
+                    "browser": "firefox", "status": "FAIL", "diagnostic_only": True,
+                    "failure_stage": "theme_check", "failed_case": "dark",
+                    "cases": cases, "not_run_cases": ["disabled_storage"],
+                    "error": "dark preference failed", "cleanup_failed": True,
+                    "cleanup_error": "secondary-secret-marker",
+                }), encoding="utf-8")
+                result = subprocess.run(
+                    [sys.executable, "-c", code], cwd=root,
+                    env={**os.environ, "GITHUB_STEP_SUMMARY": str(summary_path)},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = summary_path.read_text(encoding="utf-8")
+                self.assertIn("theme check failed in `dark`", summary)
+                self.assertIn("dark preference failed", summary)
+                self.assertIn("Browser cleanup also failed", summary)
+                self.assertNotIn("secondary-secret-marker", summary)
+                if cases is None:
+                    self.assertIn("Case sequence cannot be established", summary)
+                    self.assertNotIn("Completed before failure", summary)
+                    self.assertNotIn("Not run:", summary)
+                else:
+                    self.assertIn("Completed before failure", summary)
+                    self.assertIn("Not run: `disabled_storage`", summary)
+
     def test_failure_diagnostic_names_engine_case_and_is_not_release_evidence(self):
         code = theme_failure_diagnostic_code(self.workflow)
         with tempfile.TemporaryDirectory() as directory:
