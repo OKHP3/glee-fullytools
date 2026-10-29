@@ -2325,6 +2325,29 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertEqual(report["total_warnings"], 1)
             self.assertEqual(report["affected"][0]["reason_codes"], ["horizontal_overflow", "image_overflow"])
 
+    def test_site_ci_responsive_smoke_checks_the_actual_report(self):
+        workflow = (ROOT / ".github" / "workflows" / "validate.yml").read_text(encoding="utf-8")
+        block = workflow.split("- name: Smoke-test isolated responsive QA in Chromium", 1)[1].split("\n      - name:", 1)[0]
+        code = textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        names = ["320", "375", "390", "414", "768", "1024", "1280", "1440"]
+        report = {"pages_tested": 1, "total_combinations": 8, "total_issues": 0,
+                  "screenshots_dir": None, "viewports_tested": names,
+                  "results": [{"page": "/", "viewports": [{"viewport": name, "issues": []} for name in names]}]}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "success.json"
+            env = {**os.environ, "SMOKE_DIR": str(root)}
+            def check():
+                return subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True)
+            self.assertNotEqual(check().returncode, 0)
+            path.write_text(json.dumps(report), encoding="utf-8")
+            self.assertEqual(check().returncode, 0)
+            (root / "failure.json").write_text("{}", encoding="utf-8")
+            self.assertNotEqual(check().returncode, 0)
+            (root / "failure.json").unlink()
+            path.write_text(json.dumps({**report, "total_combinations": 7}), encoding="utf-8")
+            self.assertNotEqual(check().returncode, 0)
+
     def test_responsive_success_report_is_current_and_failure_report_absent(self):
         spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")
         runner = importlib.util.module_from_spec(spec)
@@ -2432,6 +2455,8 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 summary = path.read_text(encoding="utf-8")
                 self.assertEqual("Download the sanitized" in summary, linked)
                 self.assertEqual("report unavailable" in summary, not linked)
+                self.assertIn("not validated release evidence", summary)
+                self.assertNotIn(chr(0x2014), summary)
 
     def test_responsive_interruption_survives_cleanup_failure_without_report(self):
         spec = importlib.util.spec_from_file_location("viewport_runner", ROOT / "scripts" / "run-viewport-qa.py")

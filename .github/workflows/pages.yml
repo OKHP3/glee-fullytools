@@ -307,9 +307,9 @@ jobs:
           ARTIFACT_URL: ${{ steps.upload_responsive_qa_failure_diagnostics.outputs.artifact-url }}
         run: |
           if [ "$UPLOAD_OUTCOME" = success ] && [ -n "$ARTIFACT_ID" ] && [ -n "$ARTIFACT_URL" ]; then
-            echo "**Diagnostic only—not validated release evidence.** [Download the sanitized responsive QA report]($ARTIFACT_URL)." >> "$GITHUB_STEP_SUMMARY"
+            echo "**Diagnostic only. This is not validated release evidence.** [Download the sanitized responsive QA report]($ARTIFACT_URL)." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "**Diagnostic only—not validated release evidence.** Responsive QA report unavailable; the check failed before a diagnostic was retained or upload failed." >> "$GITHUB_STEP_SUMMARY"
+            echo "**Diagnostic only. This is not validated release evidence.** Responsive QA report unavailable; the check failed before a diagnostic was retained or upload failed." >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Run visitor, privacy, and rendered contrast acceptance
