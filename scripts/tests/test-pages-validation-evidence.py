@@ -37,6 +37,11 @@ RESPONSIVE_FAILURE_UPLOAD_STEP = (
     "- name: Upload failed responsive QA report (diagnostic only)"
 )
 RESPONSIVE_FAILURE_LINK_STEP = "- name: Link responsive QA failure diagnostics"
+VISITOR_ACCEPTANCE_STEP = "- name: Run visitor, privacy, and rendered contrast acceptance"
+VISITOR_FAILURE_UPLOAD_STEP = (
+    "- name: Upload failed visitor acceptance report (diagnostic only)"
+)
+VISITOR_FAILURE_LINK_STEP = "- name: Link visitor acceptance failure diagnostics"
 POST_UPLOAD_JOB = "  verify-validation-evidence:"
 RETENTION_VERIFY_STEP = "- name: Verify validation artifact retention"
 POST_UPLOAD_VERIFY_STEP = "- name: Verify downloaded browser theme reports"
@@ -66,7 +71,7 @@ PROVENANCE_GATE = "steps.validation_provenance.outcome == 'success'"
 STAGING_GATE = "steps.validation_staging.outcome == 'success'"
 THEME_GATE = "steps.theme_evidence.outcome == 'success'"
 HISTORICAL_FILTER = 'audit_dir.glob("validation-report-*.json")'
-COMPLETE_AUDIT_COPY = 'shutil.copytree("assets/audit", audit_dir)'
+COMPLETE_AUDIT_COPY = 'shutil.copytree("assets/audit", audit_dir,'
 THEME_BROWSER_LOOP = "for browser in chromium firefox webkit; do"
 THEME_REPORT_PATTERN = "color-scheme-init-$browser.json"
 THEME_INDEX_NAME = "color-scheme-evidence-index.md"
@@ -175,6 +180,9 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             RESPONSIVE_QA_STEP,
             RESPONSIVE_FAILURE_UPLOAD_STEP,
             RESPONSIVE_FAILURE_LINK_STEP,
+            VISITOR_ACCEPTANCE_STEP,
+            VISITOR_FAILURE_UPLOAD_STEP,
+            VISITOR_FAILURE_LINK_STEP,
             *LATE_EVIDENCE_STEPS,
         )
     }
@@ -199,9 +207,9 @@ def assert_validation_evidence_contract(workflow: str) -> None:
     staging_block = workflow[staging_position:upload_position]
     if "if: ${{ success() &&" not in staging_block:
         raise AssertionError("Complete evidence requires successful preceding gates")
-    if COMPLETE_AUDIT_COPY not in staging_block:
+    if COMPLETE_AUDIT_COPY not in staging_block or 'shutil.ignore_patterns("browser-acceptance.json")' not in staging_block:
         raise AssertionError(
-            "Validation evidence staging must copy the complete final audit directory"
+            "Validation evidence staging must copy the audit directory while excluding stale visitor output"
         )
     if HISTORICAL_FILTER not in staging_block or "report.unlink()" not in staging_block:
         raise AssertionError(
@@ -304,6 +312,73 @@ def assert_validation_evidence_contract(workflow: str) -> None:
             "Failed responsive QA reports must be uploaded and linked immediately "
             "after the QA gate, before validation evidence staging"
         )
+    visitor_acceptance_position = positions[VISITOR_ACCEPTANCE_STEP]
+    visitor_upload_position = positions[VISITOR_FAILURE_UPLOAD_STEP]
+    visitor_link_position = positions[VISITOR_FAILURE_LINK_STEP]
+    resilient_qa_position = workflow.find("- name: Run resilient web behavior QA")
+    if not (
+        visitor_acceptance_position
+        < visitor_upload_position
+        < visitor_link_position
+        < resilient_qa_position
+        < staging_position
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance reports must be uploaded and linked "
+            "immediately after the acceptance gate, before validation staging"
+        )
+    visitor_gate_block = workflow[
+        visitor_acceptance_position:visitor_upload_position
+    ]
+    if (
+        "id: visitor_acceptance" not in visitor_gate_block
+        or 'mktemp -d "$RUNNER_TEMP/glee-visitor-qa.XXXXXXXX"' not in visitor_gate_block
+        or 'rm -f' in visitor_gate_block
+        or 'continue-on-error' in visitor_gate_block
+        or '--diagnostic-output "$report_path" --success-output "$success_path"' not in visitor_gate_block
+        or '--validate-failure "$VISITOR_FAILURE_REPORT"' not in visitor_gate_block
+        or "report_path=%s\\n" not in visitor_gate_block
+        or "scripts/tests/test_browser_acceptance.py" not in visitor_gate_block
+    ):
+        raise AssertionError(
+            "Visitor acceptance must isolate and validate its current-run reports"
+        )
+    visitor_upload_block = workflow[visitor_upload_position:visitor_link_position]
+    if (
+        "always() && steps.visitor_acceptance.outcome == 'failure'"
+        not in visitor_upload_block
+        or "steps.visitor_diagnostic_validation.outcome == 'success'" not in visitor_upload_block
+        or "uses: actions/upload-artifact@v7" not in visitor_upload_block
+        or "name: pages-visitor-acceptance-failure-diagnostics-${{ github.sha }}"
+        not in visitor_upload_block
+        or "path: ${{ steps.visitor_acceptance.outputs.report_path }}"
+        not in visitor_upload_block
+        or "if-no-files-found: warn" not in visitor_upload_block
+        or "retention-days: 14" not in visitor_upload_block
+        or "pages-validation" in visitor_upload_block
+        or "glee-public-site" in visitor_upload_block
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance JSON must be available in a separate "
+            "failure-only diagnostic artifact"
+        )
+    visitor_link_block = workflow[visitor_link_position:resilient_qa_position]
+    if (
+        "always() && steps.visitor_acceptance.outcome == 'failure'"
+        not in visitor_link_block
+        or "GITHUB_STEP_SUMMARY" not in visitor_link_block
+        or "Diagnostic only" not in visitor_link_block
+        or "not validated release evidence" not in visitor_link_block
+        or "steps.upload_visitor_failure_diagnostics.outcome" not in visitor_link_block
+        or "steps.upload_visitor_failure_diagnostics.outputs.artifact-id" not in visitor_link_block
+        or "steps.upload_visitor_failure_diagnostics.outputs.artifact-url" not in visitor_link_block
+        or '[ "$UPLOAD_OUTCOME" = success ] && [ -n "$ARTIFACT_ID" ] && [ -n "$ARTIFACT_URL" ]' not in visitor_link_block
+        or "report unavailable" not in visitor_link_block
+    ):
+        raise AssertionError(
+            "Failed visitor acceptance summary must link the diagnostic artifact "
+            "without presenting it as validated evidence"
+        )
     responsive_block = workflow[responsive_position:responsive_upload_position]
     if (
         "id: responsive_asset_qa" not in responsive_block
@@ -339,6 +414,10 @@ def assert_validation_evidence_contract(workflow: str) -> None:
     if "if: ${{ success() &&" not in staging_block:
         raise AssertionError(
             "Failed responsive QA must remain excluded from complete validation evidence"
+        )
+    if 'browser-acceptance-current-run.json' not in staging_block:
+        raise AssertionError(
+            "Visitor acceptance success evidence must be staged from the current run"
         )
 
     if THEME_GATE not in staging_block:
@@ -2432,6 +2511,34 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
     def test_responsive_summary_reports_actual_upload_outcome(self):
         block = self.workflow.split(RESPONSIVE_FAILURE_LINK_STEP, 1)[1].split("\n      - name:", 1)[0]
+        script = textwrap.dedent(block.split("        run: |\n", 1)[1])
+        bash = shutil.which("bash")
+        if os.name == "nt":
+            git = shutil.which("git")
+            candidate = Path(git).resolve().parent.parent / "bin" / "bash.exe" if git else None
+            bash = str(candidate) if candidate and candidate.is_file() else None
+        if not bash:
+            self.skipTest("Bash is unavailable")
+        scenarios = [("success", "42", "https://example.invalid/artifact", True),
+                     ("success", "", "", False), ("failure", "42", "https://example.invalid/artifact", False),
+                     ("skipped", "", "", False)]
+        with tempfile.TemporaryDirectory() as directory:
+            for index, (outcome, artifact_id, url, linked) in enumerate(scenarios):
+                path = Path(directory) / f"summary-{index}.md"
+                shell_path = path.as_posix()
+                if os.name == "nt": shell_path = "/" + shell_path[0].lower() + shell_path[2:]
+                env = {**os.environ, "UPLOAD_OUTCOME": outcome, "ARTIFACT_ID": artifact_id,
+                       "ARTIFACT_URL": url, "GITHUB_STEP_SUMMARY": shell_path}
+                result = subprocess.run([bash, "-c", script], env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                summary = path.read_text(encoding="utf-8")
+                self.assertEqual("Download the sanitized" in summary, linked)
+                self.assertEqual("report unavailable" in summary, not linked)
+                self.assertIn("not validated release evidence", summary)
+                self.assertNotIn(chr(0x2014), summary)
+
+    def test_visitor_summary_reports_actual_upload_outcome(self):
+        block = self.workflow.split(VISITOR_FAILURE_LINK_STEP, 1)[1].split("\n      - name:", 1)[0]
         script = textwrap.dedent(block.split("        run: |\n", 1)[1])
         bash = shutil.which("bash")
         if os.name == "nt":
@@ -4948,6 +5055,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             (audit / "links-report-2026-10-02.json").write_text(
                 '{"audit": true}', encoding="utf-8"
             )
+            (audit / "browser-acceptance.json").write_text(
+                '{"failures": 1}', encoding="utf-8"
+            )
             docs = root / "assets" / "docs"
             docs.mkdir(parents=True)
             (docs / "audit-report.md").write_text(
@@ -4956,11 +5066,14 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             artifact = root / "validation-artifact"
             responsive = root / "current-responsive.json"
             responsive.write_text('{"current": true}', encoding="utf-8")
+            visitor = root / "current-visitor.json"
+            visitor.write_text('{"failures": 0}', encoding="utf-8")
             env = {
                 **os.environ,
                 "VALIDATION_ARTIFACT_DIR": str(artifact),
                 "VALIDATION_REPORT_NAME": "validation-report-2026-10-02.json",
                 "RESPONSIVE_SUCCESS_REPORT": str(responsive),
+                "VISITOR_SUCCESS_REPORT": str(visitor),
             }
             result = subprocess.run(
                 [sys.executable, "-c", code],
@@ -4992,6 +5105,9 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             self.assertTrue((staged_audit / "links-report-2026-10-02.json").is_file())
             self.assertEqual((staged_audit / "viewport-qa-full-current-run.json").read_text(encoding="utf-8"), '{"current": true}')
             self.assertEqual(responsive.read_text(encoding="utf-8"), '{"current": true}')
+            self.assertFalse((staged_audit / "browser-acceptance.json").exists())
+            self.assertEqual((staged_audit / "browser-acceptance-current-run.json").read_text(encoding="utf-8"), '{"failures": 0}')
+            self.assertEqual((audit / "browser-acceptance.json").read_text(encoding="utf-8"), '{"failures": 1}')
             staged_summary = (
                 artifact / "assets" / "docs" / "audit-report.md"
             ).read_text(encoding="utf-8")
@@ -5017,6 +5133,30 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 self.assertIn("Current responsive QA report unavailable", result.stderr)
                 if collision:
                     self.assertEqual((audit / "viewport-qa-full-current-run.json").read_text(), "historical")
+
+    def test_staging_rejects_missing_or_colliding_current_visitor_report(self):
+        block = self.workflow.split(STAGING_STEP, 1)[1].split(UPLOAD_STEP, 1)[0]
+        code = textwrap.dedent(block.split("python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        for collision in (False, True):
+            with self.subTest(collision=collision), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                audit = root / "assets" / "audit"
+                audit.mkdir(parents=True)
+                responsive = root / "responsive.json"
+                responsive.write_text("{}", encoding="utf-8")
+                source = root / "visitor.json"
+                if collision:
+                    source.write_text("{}", encoding="utf-8")
+                    (audit / "browser-acceptance-current-run.json").write_text("historical", encoding="utf-8")
+                env = {**os.environ, "VALIDATION_ARTIFACT_DIR": str(root / "artifact"),
+                       "VALIDATION_REPORT_NAME": "report.json", "RESPONSIVE_SUCCESS_REPORT": str(responsive),
+                       "VISITOR_SUCCESS_REPORT": str(source)}
+                result = subprocess.run([sys.executable, "-c", code], cwd=root, env=env,
+                                        capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Current visitor acceptance report unavailable", result.stderr)
+                if collision:
+                    self.assertEqual((audit / "browser-acceptance-current-run.json").read_text(), "historical")
 
     def test_early_staging_has_clear_failure(self):
         changed = self.workflow.replace(
