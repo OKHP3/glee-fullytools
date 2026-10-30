@@ -7,7 +7,9 @@ from email.utils import parsedate_to_datetime
 import hashlib
 from http.client import IncompleteRead
 import json
+import ntpath
 from pathlib import Path
+import posixpath
 import re
 import math
 import stat
@@ -545,6 +547,33 @@ def _required_local_encryption_flags(archive, entry, archive_size: int) -> int:
     return int.from_bytes(header[6:8], "little") & 0x41
 
 
+def _windows_archive_projection(source: str) -> str:
+    """Project Python ZIP extraction's Windows component sanitization."""
+    translation = str.maketrans(':<>|"?*', "_______")
+    parts = (part for part in source.split("/") if part not in ("", ".", ".."))
+    sanitized = (part.translate(translation).rstrip(" .") for part in parts)
+    return "/".join(part for part in sanitized if part)
+
+
+def _required_path_alias(original: str) -> str | None:
+    """Match common ZIP path interpretations without extracting anything."""
+    path = original.split("\0", 1)[0].replace("\\", "/")
+    drive, tail = ntpath.splitdrive(path)
+    sources = (path, tail) if drive else (path,)
+    required = {name.casefold(): name for name in REQUIRED_EVIDENCE_FILES}
+    for source in sources:
+        candidates = (
+            posixpath.normpath(source).lstrip("/"),
+            "/".join(part for part in source.split("/") if part not in ("", ".", "..")),
+            _windows_archive_projection(source),
+        )
+        for candidate in candidates:
+            match = required.get(candidate.casefold())
+            if match is not None and original != match:
+                return match
+    return None
+
+
 def validate_artifact_archive(archive) -> None:
     """Check ZIP structure, CRCs, and the required review reports."""
     try:
@@ -565,6 +594,12 @@ def validate_artifact_archive(archive) -> None:
             path_counts: dict[str, int] = {}
             effective_counts: dict[str, int] = {}
             for entry in entries:
+                required_path_match = _required_path_alias(entry.orig_filename)
+                if required_path_match is not None:
+                    raise ValueError(
+                        "artifact archive has an ambiguous required evidence "
+                        f"path alias for: {required_path_match}"
+                    )
                 # Also check zipfile's effective names, since testzip opens by
                 # that name and may otherwise read one colliding entry twice.
                 name = entry.orig_filename
