@@ -160,6 +160,19 @@ def zip_fixture_header_offsets(archive, report_path):
     raise AssertionError("fixture member not found")
 
 
+def artifact_archive_with_raw_optional_name(raw_name, missing_file=None):
+    """Patch both named ZIP headers so Windows cannot normalize the fixture."""
+    raw_bytes = raw_name.encode("ascii")
+    placeholder = "x" * len(raw_bytes)
+    archive = bytearray(valid_artifact_archive(
+        missing_file=missing_file, additional_files={placeholder: b"fixture"}
+    ))
+    local, central = zip_fixture_header_offsets(archive, placeholder)
+    archive[local + 30:local + 30 + len(raw_bytes)] = raw_bytes
+    archive[central + 46:central + 46 + len(raw_bytes)] = raw_bytes
+    return bytes(archive)
+
+
 def artifact_archive_with_invalid_utf8_optional_name(report_path, header):
     archive = bytearray(valid_artifact_archive(additional_files={report_path: b"data"}))
     local, central = zip_fixture_header_offsets(archive, report_path)
@@ -1856,6 +1869,100 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 ),
             )
 
+    def test_downloaded_archive_rejects_aliases_for_required_report_paths(self):
+        canonical_path = "assets/audit/color-scheme-init-chromium.json"
+        aliases = (
+            r"assets\audit\color-scheme-init-chromium.json",
+            "assets/./audit/color-scheme-init-chromium.json",
+            "assets//audit/color-scheme-init-chromium.json",
+            "./assets/audit/color-scheme-init-chromium.json",
+            "/assets/audit/color-scheme-init-chromium.json",
+            "assets/tmp/../audit/color-scheme-init-chromium.json",
+            "ASSETS/audit/color-scheme-init-chromium.json",
+            "../../assets/audit/color-scheme-init-chromium.json",
+            "assets/../audit/color-scheme-init-chromium.json",
+            "C:/assets/audit/color-scheme-init-chromium.json",
+            r"C:\assets\audit\color-scheme-init-chromium.json",
+            "//server/share/assets/audit/color-scheme-init-chromium.json",
+            "assets./audit./color-scheme-init-chromium.json.",
+            "assets./audit /color-scheme-init-chromium.json.",
+            r"C:\assets.\audit \color-scheme-init-chromium.json. ",
+            canonical_path + "\0SYNTHETIC_PRIVATE_SECRET",
+            "SYNTHETIC_PRIVATE_SECRET\nforged/../" + canonical_path,
+        )
+
+        for alias in aliases:
+            with self.subTest(alias=alias):
+                archive = artifact_archive_with_raw_optional_name(alias, missing_file=canonical_path)
+                with zipfile.ZipFile(BytesIO(archive)) as zipped:
+                    self.assertEqual(zipped.infolist()[-1].orig_filename, alias)
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "artifact archive has an ambiguous required evidence "
+                    "path alias",
+                ) as raised:
+                    retention_checker.verify_artifact_download(
+                        "owner/repo",
+                        701,
+                        "https://api.github.com",
+                        "test-token",
+                        open_url=lambda request, timeout: FakeDownloadResponse(
+                            200, archive
+                        ),
+                    )
+                self.assertIn(canonical_path, str(raised.exception))
+                self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
+
+    def test_downloaded_archive_accepts_canonical_required_report_paths(self):
+        archive = valid_artifact_archive(additional_files={
+            "assets/audit/color-scheme-init-chromium-backup.json": b"{}",
+            "other/assets/audit/color-scheme-init-chromium.json": b"{}",
+            "assets./audit /color-scheme-init-chromium-backup.json.": b"{}",
+            "assets/audit/optional/": b"",
+        })
+        retries = retention_checker.verify_artifact_download(
+            "owner/repo",
+            701,
+            "https://api.github.com",
+            "test-token",
+            open_url=lambda request, timeout: FakeDownloadResponse(200, archive),
+        )
+        self.assertEqual(retries, 0)
+
+    def test_windows_zip_component_projection_matches_python_sanitization(self):
+        for source in ("assets./audit /color-scheme-init-chromium.json.",
+                       'part:<>|"?*/../  /file. ', "../one././two "):
+            with self.subTest(source=source):
+                parts = (part for part in source.split("/") if part not in ("", ".", ".."))
+                before_windows_sanitization = "/".join(parts)
+                expected = zipfile.ZipFile._sanitize_windows_name(before_windows_sanitization, "/")
+                self.assertIn(expected, retention_checker._windows_archive_projections(source))
+
+    def test_windows_zip_component_projection_covers_both_sanitizer_variants(self):
+        source = 'assets./audit /part:<>|"?*/../  /file. '
+        self.assertEqual(
+            retention_checker._windows_archive_projections(source),
+            ("assets/audit /part_______/  /file. ", "assets/audit/part_______/file"),
+        )
+
+    def test_downloaded_archive_rejects_alias_even_when_canonical_report_exists(self):
+        alias = r"assets\audit\color-scheme-init-chromium.json"
+        archive = artifact_archive_with_raw_optional_name(alias)
+        with zipfile.ZipFile(BytesIO(archive)) as zipped:
+            self.assertEqual(zipped.infolist()[-1].orig_filename, alias)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "artifact archive has an ambiguous required evidence path alias",
+        ):
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(200, archive),
+            )
+
     def test_encrypted_required_evidence_entry_is_rejected_as_invalid_archive(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"
         encrypted_archive = artifact_archive_with_required_entry_flags(report_path)
@@ -2062,7 +2169,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         local, central = zip_fixture_header_offsets(archive, optional)
         archive[local + 30 + len(required)] = 0
         archive[central + 46 + len(required)] = 0
-        with self.assertRaisesRegex(ValueError, "duplicate paths: " + required) as raised:
+        with self.assertRaisesRegex(ValueError, "required evidence path alias for: " + required) as raised:
             retention_checker.validate_artifact_archive(BytesIO(archive))
         self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
 
@@ -2260,8 +2367,18 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         corrupt = bytearray(valid_artifact_archive(additional_files={optional: b"data"}))
         local, _ = zip_fixture_header_offsets(corrupt, optional)
         corrupt[local + 30] ^= 1
+        alias = marker + "\nforged-log/../assets/audit/color-scheme-init-chromium.json"
+        alias_archive = artifact_archive_with_raw_optional_name(alias)
+        with zipfile.ZipFile(BytesIO(alias_archive)) as zipped:
+            self.assertEqual(zipped.infolist()[-1].orig_filename, alias)
+        windows_alias = "assets./audit /color-scheme-init-chromium.json.\0" + marker + "\nforged-log"
+        windows_alias_archive = artifact_archive_with_raw_optional_name(windows_alias)
+        with zipfile.ZipFile(BytesIO(windows_alias_archive)) as zipped:
+            self.assertEqual(zipped.infolist()[-1].orig_filename, windows_alias)
         for body, expected in ((archive, "duplicate paths outside required evidence"),
                                (corrupt, "damaged optional entry"),
+                               (alias_archive, "required evidence path alias for: assets/audit/color-scheme-init-chromium.json"),
+                               (windows_alias_archive, "required evidence path alias for: assets/audit/color-scheme-init-chromium.json"),
                                (artifact_archive_with_invalid_utf8_optional_name(optional, "central"),
                                 "artifact archive is corrupt or incomplete"),
                                (artifact_archive_with_invalid_utf8_optional_name(optional, "local"),
