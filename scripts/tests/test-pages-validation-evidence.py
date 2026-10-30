@@ -1739,6 +1739,162 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             )],
         )
 
+    def test_retention_monitor_reports_malformed_run_entries_and_checks_valid_runs(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        run = {
+            "id": 54,
+            "head_sha": "e" * 40,
+            "created_at": "2026-10-01T12:00:00Z",
+            "conclusion": "success",
+        }
+
+        for malformed_first in (True, False):
+            with self.subTest(malformed_first=malformed_first):
+                requested_runs = []
+
+                def fetch(url, token):
+                    if "/workflows/pages.yml/runs?" in url:
+                        entries = ["malformed run", run]
+                        if not malformed_first:
+                            entries.reverse()
+                        return {"workflow_runs": entries}, None
+                    if "/compare/" in url:
+                        return {"status": "ahead"}, None
+                    if "/runs/54/artifacts?" in url:
+                        requested_runs.append(54)
+                        return {"artifacts": []}, None
+                    self.fail(f"Unexpected GitHub API request: {url}")
+
+                with self.assertRaises(ValueError) as error:
+                    retention_checker.monitor_repository(
+                        "owner/repo",
+                        "https://api.github.com",
+                        "test-token",
+                        now=now,
+                        fetch_page=fetch,
+                    )
+
+                report = str(error.exception)
+                malformed_entry_number = 1 if malformed_first else 2
+                self.assertIn(
+                    f"workflow_runs entry {malformed_entry_number} is not a JSON object",
+                    report,
+                )
+                self.assertIn(
+                    "run 54 | commit " + "e" * 40
+                    + " | review deadline 2026-12-30T12:00:00+00:00: "
+                    "validation artifact is missing | GitHub Actions: "
+                    "https://github.com/owner/repo/actions/runs/54",
+                    report,
+                )
+                self.assertEqual(requested_runs, [54])
+
+    def test_malformed_runs_across_pages_still_check_valid_download_then_fail(self):
+        marker1 = "SYNTHETIC_PRIVATE_SECRET_1\nforged"
+        marker2 = "SYNTHETIC_PRIVATE_SECRET_2\nforged"
+        commit = "e" * 40
+        run = {"id": 54, "head_sha": commit, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        artifact = {"id": 540, "name": f"pages-validation-{commit}", "expired": False,
+                    "created_at": "2026-10-01T12:01:00Z", "expires_at": "2026-12-30T12:00:00Z",
+                    "workflow_run": {"id": 54, "head_sha": commit}}
+        calls, downloads = [], []
+
+        def fetch(url, token):
+            calls.append(url)
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [marker1, run]}, "https://api.github.com/page2"
+            if url.endswith("/page2"):
+                return {"workflow_runs": [None, marker2]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/54/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail("unexpected request")
+
+        def download(request, timeout):
+            downloads.append(request.full_url)
+            return FakeDownloadResponse(200, valid_artifact_archive())
+
+        output = StringIO()
+        with redirect_stdout(output), self.assertRaises(ValueError) as raised:
+            checked = retention_checker.monitor_repository(
+                "owner/repo", "https://api.github.com", "test-token", fetch_page=fetch,
+                open_url=download, now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+            )
+            print(f"Verified {checked} artifacts")
+        report = str(raised.exception) + output.getvalue()
+        self.assertEqual(len(downloads), 1)
+        self.assertEqual(sum(url.endswith("/page2") for url in calls), 1)
+        self.assertIn("malformed workflow run entries", report)
+        for ordinal in (1, 3, 4):
+            self.assertIn(f"workflow_runs entry {ordinal} is not a JSON object", report)
+        self.assertNotIn("Verified", report)
+        self.assertNotIn(marker1, report)
+        self.assertNotIn(marker2, report)
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", report)
+
+    def test_malformed_artifact_entry_remains_strict(self):
+        marker = "SYNTHETIC_PRIVATE_SECRET\nforged"
+        commit = "e" * 40
+        run = {"id": 54, "head_sha": commit, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        artifact = {"id": 540, "name": f"pages-validation-{commit}", "expired": False,
+                    "created_at": "2026-10-01T12:01:00Z", "expires_at": "2026-12-30T12:00:00Z",
+                    "workflow_run": {"id": 54, "head_sha": commit}}
+        downloads = []
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/54/artifacts?" in url:
+                return {"artifacts": [artifact, marker]}, None
+            self.fail("unexpected request")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo", "https://api.github.com", "test-token", fetch_page=fetch,
+                open_url=lambda request, timeout: downloads.append(request),
+                now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+            )
+        self.assertIn("GitHub API artifacts entries must be JSON objects", str(raised.exception))
+        self.assertNotIn(marker, str(raised.exception))
+        self.assertEqual(downloads, [])
+
+    def test_incomplete_later_runs_page_never_claims_complete_coverage(self):
+        marker = "SYNTHETIC_PRIVATE_SECRET\nforged"
+        run = {"id": 54, "head_sha": "e" * 40, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        for failure in ("invalid-page", "budget"):
+            with self.subTest(failure=failure):
+                elapsed = [0.0]
+                budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+                calls = []
+
+                def fetch(url, token):
+                    calls.append(url)
+                    if len(calls) == 1:
+                        return {"workflow_runs": [marker, run]}, "https://api.github.com/page2"
+                    if failure == "budget":
+                        elapsed[0] = 3
+                        return {"workflow_runs": []}, None
+                    return {"workflow_runs": None}, None
+
+                output = StringIO()
+                with redirect_stdout(output), self.assertRaises(ValueError) as raised:
+                    checked = retention_checker.monitor_repository(
+                        "owner/repo", "https://api.github.com", "test-token", fetch_page=fetch,
+                        now=datetime(2026, 10, 13, tzinfo=timezone.utc), budget=budget,
+                    )
+                    print(f"Verified {checked} artifacts")
+                report = str(raised.exception) + output.getvalue()
+                self.assertEqual(len(calls), 2)
+                self.assertNotIn("Verified", report)
+                self.assertNotIn(marker, report)
+                if failure == "budget":
+                    self.assertIn("last attempted stage: workflow runs, page 2", report)
+                else:
+                    self.assertIn("missing the workflow_runs list", report)
+
     def test_artifact_authorization_is_not_forwarded_to_download_storage(self):
         def open_url(request, timeout):
             self.assertEqual(request.get_header("Authorization"), "Bearer test-token")
