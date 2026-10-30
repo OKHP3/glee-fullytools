@@ -916,18 +916,210 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertIn(
             f"run 44 | commit {'a' * 40} | review deadline "
             "2026-12-30T12:00:00+00:00: evidence not checked; "
-            "shared monitor time budget exhausted after 3 seconds",
+            "shared monitor time budget exhausted after 3 seconds; last attempted stage: "
+            "artifact download for run 44 (artifact 440), retry wait",
             message,
         )
         self.assertIn(
             f"run 45 | commit {'b' * 40} | review deadline "
             "2026-12-31T12:00:00+00:00: evidence not checked; "
-            "shared monitor time budget exhausted after 3 seconds",
+            "shared monitor time budget exhausted after 3 seconds; last attempted stage: "
+            "artifact download for run 44 (artifact 440), retry wait",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/44",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/45",
             message,
         )
         self.assertEqual(download_ids, [440, 440])
         self.assertEqual(download_timeouts, [3, 2])
         self.assertEqual(sleeps, [1, 2])
+
+    def test_metadata_budget_exhaustion_names_stage_and_preserves_run_details(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "c" * 40
+        run = {
+            "id": 46,
+            "head_sha": commit,
+            "created_at": "2026-10-03T12:00:00Z",
+            "conclusion": "success",
+        }
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                elapsed[0] = 3
+                return {"status": "ahead"}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                budget=budget,
+            )
+
+        message = str(raised.exception)
+        self.assertIn(
+            f"run 46 | commit {commit} | review deadline "
+            "2027-01-01T12:00:00+00:00: evidence not checked; "
+            "shared monitor time budget exhausted after 3 seconds; last attempted stage: "
+            "run 46 retention-policy ancestry",
+            message,
+        )
+        self.assertIn(
+            "GitHub Actions: https://github.com/owner/repo/actions/runs/46",
+            message,
+        )
+
+    def test_artifact_listing_budget_exhaustion_names_stage(self):
+        now = datetime(2026, 10, 13, tzinfo=timezone.utc)
+        commit = "d" * 40
+        run = {
+            "id": 47,
+            "head_sha": commit,
+            "created_at": "2026-10-04T12:00:00Z",
+            "conclusion": "success",
+        }
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/47/artifacts?" in url:
+                elapsed[0] = 3
+                return {"artifacts": []}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "run 47.*evidence not checked.*budget exhausted after 3 seconds"
+            "; last attempted stage: run 47 artifact listing, page 1",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=now,
+                fetch_page=fetch,
+                budget=budget,
+            )
+
+    def test_run_listing_budget_exhaustion_names_stage(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+
+        def fetch(url, token):
+            elapsed[0] = 3
+            return {"workflow_runs": []}, None
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "workflow runs listing.*run identifiers, review deadlines, and "
+            "Actions links are unavailable.*last attempted stage: workflow runs, page 1",
+        ):
+            retention_checker.monitor_repository(
+                "owner/repo",
+                "https://api.github.com",
+                "test-token",
+                now=datetime(2026, 10, 13, tzinfo=timezone.utc),
+                fetch_page=fetch,
+                budget=budget,
+            )
+
+    def test_budget_reports_previous_stage_if_next_never_starts(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        budget.begin_stage(("workflow runs", None, 1, None))
+        elapsed[0] = 3
+        with self.assertRaises(retention_checker._RetryBudgetExceeded) as raised:
+            budget.begin_stage(("artifact listing", 47, 2, None))
+        self.assertIn("last attempted stage: workflow runs, page 1", str(raised.exception))
+        self.assertNotIn("artifact listing", str(raised.exception))
+
+    def test_budget_stage_rejects_freeform_and_untrusted_identifiers(self):
+        marker = "SYNTHETIC_PRIVATE_SECRET\nforged"
+        for stage in (marker, (marker, 1, 1, 1), ("artifact download", marker, None, marker)):
+            with self.subTest(stage=stage):
+                elapsed = [0.0]
+                budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+                budget.begin_stage(stage)
+                elapsed[0] = 3
+                with self.assertRaises(retention_checker._RetryBudgetExceeded) as raised:
+                    budget.ensure_available()
+                self.assertNotIn(marker, "".join(traceback.format_exception(raised.exception)))
+
+    def test_initial_listing_expired_before_request_reports_no_started_stage(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        elapsed[0] = 3
+        requests = []
+        with self.assertRaisesRegex(ValueError, "run identifiers.*unavailable.*no tracked stage started"):
+            retention_checker.monitor_repository(
+                "owner/repo", "https://api.github.com", "token",
+                now=datetime(2026, 10, 13, tzinfo=timezone.utc), budget=budget,
+                fetch_page=lambda url, token: requests.append(url),
+            )
+        self.assertEqual(requests, [])
+
+    def test_budget_exhaustion_reports_the_later_metadata_page(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        calls = []
+
+        def fetch(url, token):
+            calls.append(url)
+            if len(calls) == 1:
+                return {"artifacts": []}, "https://example.test/next"
+            elapsed[0] = 3
+            return {"artifacts": []}, None
+
+        with self.assertRaisesRegex(retention_checker._RetryBudgetExceeded,
+                                    "last attempted stage: run 47 artifact listing, page 2"):
+            retention_checker._list_all("https://example.test/first", "artifacts", "token",
+                                        fetch, budget, lookup="artifact listing", run_id=47)
+        self.assertEqual(len(calls), 2)
+
+    def test_budget_expiration_after_archive_verification_reports_its_stage(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        archive = valid_artifact_archive()
+        def verify(_archive):
+            elapsed[0] = 3
+        with patch.object(retention_checker, "validate_artifact_archive", side_effect=verify):
+            with self.assertRaisesRegex(retention_checker._RetryBudgetExceeded,
+                                       "last attempted stage: artifact verification for run 44 \\(artifact 701\\)"):
+                retention_checker.verify_artifact_download(
+                    "owner/repo", 701, "https://api.github.com", "token", budget=budget,
+                    run_id=44, open_url=lambda request, timeout: FakeDownloadResponse(200, archive),
+                )
+
+    def test_budget_expiration_during_read_reports_download_stage(self):
+        elapsed = [0.0]
+        budget = retention_checker._RuntimeBudget(3, clock=lambda: elapsed[0])
+        class SlowResponse(FakeDownloadResponse):
+            def read(self, size=-1):
+                elapsed[0] = 3
+                return super().read(size)
+        with self.assertRaisesRegex(retention_checker._RetryBudgetExceeded,
+                                    "last attempted stage: artifact download for run 44 \\(artifact 701\\)"):
+            retention_checker.verify_artifact_download(
+                "owner/repo", 701, "https://api.github.com", "token", budget=budget,
+                run_id=44, open_url=lambda request, timeout: SlowResponse(200, b"data"),
+            )
 
     def test_archive_failure_at_runtime_deadline_cannot_count_as_verified(self):
         elapsed = [0.0]

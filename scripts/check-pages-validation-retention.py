@@ -65,10 +65,13 @@ def parse_timestamp(value: object, field: str) -> datetime:
 
 
 class _RetryBudgetExceeded(TimeoutError):
-    def __init__(self, seconds: float):
+    def __init__(self, seconds: float, stage: str | None = None):
         self.seconds = seconds
+        self.stage = stage
+        stage_detail = f"; last attempted stage: {stage}" if stage else "; no tracked stage started"
         super().__init__(
             f"shared monitor time budget exhausted after {seconds:g} seconds"
+            f"{stage_detail}"
         )
 
 
@@ -80,6 +83,7 @@ class _RuntimeBudget:
         self._clock = clock or time.monotonic
         self._sleep = sleeper or time.sleep
         self.deadline = self._clock() + seconds
+        self.last_stage: str | None = None
 
     def remaining(self) -> float:
         return max(0.0, self.deadline - self._clock())
@@ -87,19 +91,43 @@ class _RuntimeBudget:
     def request_timeout(self) -> float:
         remaining = self.remaining()
         if remaining <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, self.last_stage)
         return min(REQUEST_TIMEOUT_SECONDS, remaining)
 
     def ensure_available(self) -> None:
         if self.remaining() <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, self.last_stage)
 
-    def wait(self, seconds: float) -> None:
+    def begin_stage(self, stage, *, retry_wait: bool = False) -> None:
+        self.ensure_available()
+        label = _budget_stage_label(stage)
+        if label is not None:
+            self.last_stage = label + (", retry wait" if retry_wait else "")
+
+    def wait(self, seconds: float, stage=None) -> None:
+        self.begin_stage(stage, retry_wait=True)
         remaining = self.remaining()
         if remaining <= 0:
-            raise _RetryBudgetExceeded(self.seconds)
+            raise _RetryBudgetExceeded(self.seconds, self.last_stage)
         self._sleep(min(seconds, remaining))
         self.ensure_available()
+
+
+def _budget_stage_label(stage) -> str | None:
+    """Accept only fixed stage kinds and bounded integer identifiers."""
+    if type(stage) is not tuple or len(stage) != 4:
+        return None
+    kind, run_id, page, artifact_id = stage
+    if kind in ("metadata lookup", "workflow runs", "retention-policy ancestry", "artifact listing"):
+        return _metadata_recovery_context(kind, run_id, page)
+    if kind in ("artifact download", "artifact verification"):
+        label = kind
+        if type(run_id) is int and 0 < run_id < 10**20:
+            label += f" for run {run_id}"
+        if type(artifact_id) is int and 0 < artifact_id < 10**20:
+            label += f" (artifact {artifact_id})"
+        return label
+    return None
 
 
 def validate_artifact(
@@ -178,9 +206,11 @@ def verify_artifact_download(
     expected_digest: str | None = None,
     open_url=None,
     budget: _RuntimeBudget | None = None,
+    run_id: int | None = None,
 ) -> int:
     """Stream and validate an evidence ZIP using bounded temporary storage."""
     open_request = open_url or urlopen
+    stage = ("artifact download", run_id, None, artifact_id)
     retry_wait = 0
     for attempt in range(1, DOWNLOAD_MAX_ATTEMPTS + 1):
         try:
@@ -194,6 +224,7 @@ def verify_artifact_download(
                 expected_digest=expected_digest,
                 open_request=open_request,
                 budget=budget,
+                stage=stage,
             )
             if budget is not None:
                 budget.ensure_available()
@@ -209,7 +240,7 @@ def verify_artifact_download(
             if budget is None:
                 time.sleep(delay)
             else:
-                budget.wait(delay)
+                budget.wait(delay, stage)
             retry_wait += delay
         except HTTPError as error:
             try:
@@ -231,7 +262,7 @@ def verify_artifact_download(
             if budget is None:
                 time.sleep(delay)
             else:
-                budget.wait(delay)
+                budget.wait(delay, stage)
             retry_wait += delay
         except (
             ValueError,
@@ -280,6 +311,7 @@ def _fetch_metadata_page(
 ) -> tuple[dict[str, object], str | None]:
     """Fetch a metadata page, retrying temporary API and transport failures."""
     fetch = fetch_page or api_page
+    stage = (lookup, run_id, page, None)
     retry_wait = 0
     for attempt in range(1, METADATA_MAX_ATTEMPTS + 1):
         delay = METADATA_RETRY_BACKOFF_SECONDS * (2 ** (attempt - 1))
@@ -287,9 +319,11 @@ def _fetch_metadata_page(
             if budget is None:
                 result = fetch(url, token)
             else:
-                budget.ensure_available()
+                budget.begin_stage(stage)
                 if fetch_page is None:
-                    result = api_page(url, token, timeout=budget.request_timeout())
+                    result = api_page(
+                        url, token, timeout=budget.request_timeout()
+                    )
                 else:
                     result = fetch(url, token)
                 budget.ensure_available()
@@ -332,7 +366,7 @@ def _fetch_metadata_page(
         if budget is None:
             time.sleep(delay)
         else:
-            budget.wait(delay)
+            budget.wait(delay, stage)
         retry_wait += delay
     raise AssertionError("metadata retry loop exited unexpectedly")
 
@@ -438,6 +472,7 @@ def _verify_artifact_download_once(
     expected_digest: str | None,
     open_request,
     budget: _RuntimeBudget | None = None,
+    stage=None,
 ) -> None:
     url = (
         f"{api_url.rstrip('/')}/repos/{repository}/actions/artifacts/"
@@ -462,6 +497,8 @@ def _verify_artifact_download_once(
     request.add_unredirected_header("Authorization", f"Bearer {token}")
     try:
         try:
+            if budget is not None:
+                budget.begin_stage(stage)
             timeout = (
                 budget.request_timeout()
                 if budget is not None
@@ -540,7 +577,13 @@ def _verify_artifact_download_once(
                     raise ValueError(
                         "artifact download does not match GitHub's SHA-256 digest"
                     )
+                if budget is not None:
+                    run = stage[1] if type(stage) is tuple and len(stage) == 4 else None
+                    verification_stage = ("artifact verification", run, None, artifact_id)
+                    budget.begin_stage(verification_stage)
                 validate_artifact_archive(archive)
+                if budget is not None:
+                    budget.ensure_available()
     except _RetryableDownloadError:
         raise
     except HTTPError:
@@ -773,14 +816,20 @@ def monitor_repository(
         f"{api_url.rstrip('/')}/repos/{repository}/actions/workflows/"
         f"{workflow_path}/runs?{query}"
     )
-    runs = _list_all(
-        runs_url,
-        "workflow_runs",
-        token,
-        fetch_page,
-        budget,
-        lookup="workflow runs",
-    )
+    try:
+        runs = _list_all(
+            runs_url,
+            "workflow_runs",
+            token,
+            fetch_page,
+            budget,
+            lookup="workflow runs",
+        )
+    except _RetryBudgetExceeded as error:
+        raise ValueError(
+            "could not finish workflow runs listing; run identifiers, review "
+            f"deadlines, and Actions links are unavailable: {error}"
+        ) from error
     checked = 0
     failures: list[str] = []
 
@@ -820,11 +869,13 @@ def monitor_repository(
             continue
 
         if budget.remaining() <= 0:
+            stage_detail = (f"; last attempted stage: {budget.last_stage}"
+                            if budget.last_stage else "; no tracked stage started")
             failures.append(
                 f"run {run_id} | commit {commit} | "
                 f"review deadline {deadline.isoformat()}: evidence not checked; "
                 f"shared monitor time budget exhausted after "
-                f"{budget.seconds:g} seconds{run_link}"
+                f"{budget.seconds:g} seconds{stage_detail}{run_link}"
             )
             continue
 
@@ -905,6 +956,7 @@ def monitor_repository(
                         ),
                         open_url=open_url,
                         budget=budget,
+                        run_id=run_id,
                     )
                     if retry_count:
                         retry_label = "retry" if retry_count == 1 else "retries"
