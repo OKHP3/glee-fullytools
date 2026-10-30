@@ -595,7 +595,7 @@ def validate_artifact_archive(archive) -> None:
             duplicates = ({name for name, count in path_counts.items() if count > 1}
                           | {name for name, count in effective_counts.items() if count > 1})
             required_duplicates = sorted(duplicates & REQUIRED_EVIDENCE_FILES)
-            if duplicates or required_duplicates:
+            if duplicates:
                 if required_duplicates:
                     detail = ", ".join(required_duplicates)
                     if duplicates - REQUIRED_EVIDENCE_FILES:
