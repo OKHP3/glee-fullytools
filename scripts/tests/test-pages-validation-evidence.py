@@ -20,6 +20,7 @@ from unittest.mock import patch
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler
 import zipfile
+import zlib
 from contextlib import redirect_stderr, redirect_stdout
 
 
@@ -157,6 +158,17 @@ def zip_fixture_header_offsets(archive, report_path):
                 return local_offset, central_offset
             central_offset += 46 + name_length + extra_length + comment_length
     raise AssertionError("fixture member not found")
+
+
+def artifact_archive_with_invalid_utf8_optional_name(report_path, header):
+    archive = bytearray(valid_artifact_archive(additional_files={report_path: b"data"}))
+    local, central = zip_fixture_header_offsets(archive, report_path)
+    flags_offset, name_offset = ((local + 6, local + 30) if header == "local"
+                                 else (central + 8, central + 46))
+    flags = int.from_bytes(archive[flags_offset:flags_offset + 2], "little") | 0x800
+    archive[flags_offset:flags_offset + 2] = flags.to_bytes(2, "little")
+    archive[name_offset] = 0xFF
+    return bytes(archive)
 
 
 def artifact_archive_with_required_entry_flags(report_path, *, local_flags=1, central_flags=1, source=None):
@@ -1982,7 +1994,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(
             ValueError,
-            "artifact archive has duplicate required evidence files: "
+            "artifact archive has duplicate paths: "
             "assets/audit/color-scheme-init-chromium.json",
         ):
             retention_checker.verify_artifact_download(
@@ -1994,6 +2006,141 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, ambiguous_archive
                 ),
             )
+
+    def test_downloaded_archive_with_duplicate_optional_files_is_rejected(self):
+        duplicate_paths = (
+            "assets/audit/SYNTHETIC_PRIVATE_SECRET\nforged-log.json",
+            "assets/docs/" + "long-marker-" * 400,
+        )
+        with self.assertWarns(UserWarning):
+            ambiguous_archive = valid_artifact_archive(
+                duplicate_files=[
+                    (path, b"first copy")
+                    for path in duplicate_paths
+                ]
+                + [
+                    (path, b"second copy")
+                    for path in duplicate_paths
+                ]
+            )
+
+        with self.assertRaisesRegex(ValueError, "duplicate paths outside required evidence") as raised:
+            retention_checker.verify_artifact_download(
+                "owner/repo",
+                701,
+                "https://api.github.com",
+                "test-token",
+                open_url=lambda request, timeout: FakeDownloadResponse(
+                    200, ambiguous_archive
+                ),
+            )
+        trace = "".join(traceback.format_exception(raised.exception))
+        for name in duplicate_paths:
+            self.assertNotIn(name, trace)
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", trace)
+        self.assertNotIn("long-marker-", trace)
+
+    def test_duplicate_required_and_optional_paths_only_name_allowlisted_path(self):
+        required = "assets/audit/color-scheme-init-chromium.json"
+        optional = "assets/audit/SYNTHETIC_PRIVATE_SECRET\nforged.json"
+        with self.assertWarns(UserWarning):
+            archive = valid_artifact_archive(
+                additional_files={optional: b"one"},
+                duplicate_files=[(required, b"different"), (optional, b"two")],
+            )
+        with self.assertRaises(ValueError) as raised:
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+        trace = "".join(traceback.format_exception(raised.exception))
+        self.assertIn(required, trace)
+        self.assertIn("additional duplicate paths omitted", trace)
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", trace)
+
+    def test_normalized_required_collision_keeps_existing_guard(self):
+        required = "assets/audit/color-scheme-init-chromium.json"
+        optional = required + "-SYNTHETIC_PRIVATE_SECRET"
+        archive = bytearray(valid_artifact_archive(additional_files={optional: b"data"}))
+        local, central = zip_fixture_header_offsets(archive, optional)
+        archive[local + 30 + len(required)] = 0
+        archive[central + 46 + len(required)] = 0
+        with self.assertRaisesRegex(ValueError, "duplicate paths: " + required) as raised:
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
+
+    def test_duplicate_optional_directory_is_rejected_without_name(self):
+        directory = "assets/audit/SYNTHETIC_PRIVATE_SECRET/"
+        with self.assertWarns(UserWarning):
+            archive = valid_artifact_archive(
+                additional_files={directory: b""}, duplicate_files=[(directory, b"")]
+            )
+        with self.assertRaisesRegex(ValueError, "duplicate paths outside required evidence") as raised:
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", str(raised.exception))
+
+    def test_optional_effective_name_collision_blocks_corrupt_first_entry(self):
+        prefix = "assets/audit/SYNTHETIC_PRIVATE_SECRET"
+        first, second = prefix + "-first.json", prefix + "-second.json"
+        archive = bytearray(valid_artifact_archive(additional_files={first: b"first data", second: b"second data"}))
+        offsets = [zip_fixture_header_offsets(archive, name) for name in (first, second)]
+        first_local = offsets[0][0]
+        name_length = int.from_bytes(archive[first_local + 26:first_local + 28], "little")
+        extra_length = int.from_bytes(archive[first_local + 28:first_local + 30], "little")
+        archive[first_local + 30 + name_length + extra_length] ^= 0xFF
+        for local, central in offsets:
+            archive[local + 30 + len(prefix)] = 0
+            archive[central + 46 + len(prefix)] = 0
+        with zipfile.ZipFile(BytesIO(archive)) as zipped:
+            entries = zipped.infolist()[-2:]
+            self.assertNotEqual(entries[0].orig_filename, entries[1].orig_filename)
+            self.assertEqual(entries[0].filename, entries[1].filename)
+            # Name-based testzip would read the second entry twice.
+            self.assertIsNone(zipped.testzip())
+            with self.assertRaises((zipfile.BadZipFile, zlib.error)):
+                with zipped.open(entries[0]) as member:
+                    member.read()
+        with self.assertRaisesRegex(ValueError, "duplicate paths outside required evidence") as raised:
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
+
+    def test_synthetic_207_entry_unique_archive_is_accepted(self):
+        # Shape only: one sampled released artifact had 207 entries and no
+        # exact duplicate names; its optional names and bytes were not copied.
+        optional = {f"synthetic/entry-{index:03d}.json": b"{}" for index in range(201)}
+        optional["synthetic/unique-directory/"] = b""
+        archive = valid_artifact_archive(additional_files=optional)
+        with zipfile.ZipFile(BytesIO(archive)) as zipped:
+            self.assertEqual(len(zipped.infolist()), 207)
+        with patch.object(zipfile.ZipFile, "extract", side_effect=AssertionError("unexpected extraction")), \
+             patch.object(zipfile.ZipFile, "extractall", side_effect=AssertionError("unexpected extraction")):
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+
+    def test_corrupt_optional_filename_does_not_leak_in_exception_trace(self):
+        optional = "assets/audit/SYNTHETIC_PRIVATE_SECRET\nforged.json"
+        archive = bytearray(valid_artifact_archive(additional_files={optional: b"data"}))
+        local, _ = zip_fixture_header_offsets(archive, optional)
+        archive[local + 30] ^= 1  # Central and local names no longer agree.
+        with self.assertRaisesRegex(ValueError, "artifact archive is corrupt or incomplete|damaged optional entry") as raised:
+            retention_checker.validate_artifact_archive(BytesIO(archive))
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
+
+        with patch.object(zipfile.ZipFile, "testzip", side_effect=zipfile.BadZipFile(optional)):
+            with self.assertRaisesRegex(ValueError, "artifact archive is corrupt or incomplete") as raised:
+                retention_checker.validate_artifact_archive(BytesIO(valid_artifact_archive()))
+        self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", "".join(traceback.format_exception(raised.exception)))
+
+    def test_invalid_utf8_optional_names_fail_safely_in_both_zip_headers(self):
+        optional = "assets/audit/SYNTHETIC_PRIVATE_SECRET\nforged.json"
+        for header in ("central", "local"):
+            with self.subTest(header=header):
+                archive = artifact_archive_with_invalid_utf8_optional_name(optional, header)
+                with self.assertRaises(UnicodeDecodeError):
+                    with zipfile.ZipFile(BytesIO(archive)) as zipped:
+                        with zipped.open(optional):
+                            pass
+                with self.assertRaisesRegex(ValueError, "artifact archive is corrupt or incomplete") as raised:
+                    retention_checker.validate_artifact_archive(BytesIO(archive))
+                trace = "".join(traceback.format_exception(raised.exception))
+                self.assertNotIn("SYNTHETIC_PRIVATE_SECRET", trace)
+                self.assertNotIn("forged.json", trace)
 
     def test_historical_archive_with_dated_audit_reports_is_accepted(self):
         # Successful October 6 evidence archives include release-specific audit
@@ -2085,6 +2232,52 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 fetch_page=fetch,
                 open_url=open_url,
             )
+
+    def test_monitor_hides_duplicate_optional_names_in_report_and_logs(self):
+        marker = "SYNTHETIC_PRIVATE_SECRET"
+        optional = f"assets/audit/{marker}\nforged-log.json"
+        with self.assertWarns(UserWarning):
+            archive = valid_artifact_archive(
+                additional_files={optional: b"one"}, duplicate_files=[(optional, b"two")]
+            )
+        commit = "9" * 40
+        run = {"id": 79, "head_sha": commit, "created_at": "2026-10-01T12:00:00Z", "conclusion": "success"}
+        artifact = {
+            "id": 709, "name": f"pages-validation-{commit}", "expired": False,
+            "created_at": "2026-10-01T12:01:00Z", "expires_at": "2026-12-30T12:00:00Z",
+            "workflow_run": {"id": 79, "head_sha": commit},
+        }
+
+        def fetch(url, token):
+            if "/workflows/pages.yml/runs?" in url:
+                return {"workflow_runs": [run]}, None
+            if "/compare/" in url:
+                return {"status": "ahead"}, None
+            if "/runs/79/artifacts?" in url:
+                return {"artifacts": [artifact]}, None
+            self.fail(f"Unexpected GitHub API request: {url}")
+
+        corrupt = bytearray(valid_artifact_archive(additional_files={optional: b"data"}))
+        local, _ = zip_fixture_header_offsets(corrupt, optional)
+        corrupt[local + 30] ^= 1
+        for body, expected in ((archive, "duplicate paths outside required evidence"),
+                               (corrupt, "damaged optional entry"),
+                               (artifact_archive_with_invalid_utf8_optional_name(optional, "central"),
+                                "artifact archive is corrupt or incomplete"),
+                               (artifact_archive_with_invalid_utf8_optional_name(optional, "local"),
+                                "artifact archive is corrupt or incomplete")):
+            with self.subTest(expected=expected):
+                output, errors = StringIO(), StringIO()
+                with redirect_stdout(output), redirect_stderr(errors), self.assertRaises(ValueError) as raised:
+                    retention_checker.monitor_repository(
+                        "owner/repo", "https://api.github.com", "test-token",
+                        now=datetime(2026, 10, 13, tzinfo=timezone.utc), fetch_page=fetch,
+                        open_url=lambda request, timeout: FakeDownloadResponse(200, body),
+                    )
+                result = output.getvalue() + errors.getvalue() + "".join(traceback.format_exception(raised.exception))
+                self.assertIn(expected, result)
+                self.assertNotIn(marker, result)
+                self.assertNotIn("forged-log", result)
 
     def test_retention_monitor_stops_checking_at_the_90_day_deadline(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)

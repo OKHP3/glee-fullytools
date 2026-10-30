@@ -562,12 +562,16 @@ def validate_artifact_archive(archive) -> None:
                 raise ValueError(
                     "artifact archive expands beyond the 512 MiB size limit"
                 )
-            required_counts: dict[str, int] = {}
+            path_counts: dict[str, int] = {}
+            effective_counts: dict[str, int] = {}
             for entry in entries:
+                # Also check zipfile's effective names, since testzip opens by
+                # that name and may otherwise read one colliding entry twice.
+                name = entry.orig_filename
+                path_counts[name] = path_counts.get(name, 0) + 1
+                name = entry.filename
+                effective_counts[name] = effective_counts.get(name, 0) + 1
                 if entry.filename in REQUIRED_EVIDENCE_FILES:
-                    required_counts[entry.filename] = (
-                        required_counts.get(entry.filename, 0) + 1
-                    )
                     # POSIX mode bits are meaningful for Unix-created ZIPs.
                     # DOS or type-unspecified metadata cannot prove a member
                     # is regular, but remains compatible with older artifacts.
@@ -588,14 +592,16 @@ def validate_artifact_archive(archive) -> None:
                             "artifact archive contains an encrypted required "
                             f"evidence file: {entry.filename}"
                         )
-            duplicates = sorted(
-                name for name, count in required_counts.items() if count > 1
-            )
-            if duplicates:
-                raise ValueError(
-                    "artifact archive has duplicate required evidence files: "
-                    + ", ".join(duplicates)
-                )
+            duplicates = ({name for name, count in path_counts.items() if count > 1}
+                          | {name for name, count in effective_counts.items() if count > 1})
+            required_duplicates = sorted(duplicates & REQUIRED_EVIDENCE_FILES)
+            if duplicates or required_duplicates:
+                if required_duplicates:
+                    detail = ", ".join(required_duplicates)
+                    if duplicates - REQUIRED_EVIDENCE_FILES:
+                        detail += "; additional duplicate paths omitted"
+                    raise ValueError("artifact archive has duplicate paths: " + detail)
+                raise ValueError("artifact archive has duplicate paths outside required evidence")
             names = {entry.filename for entry in entries}
             missing = sorted(REQUIRED_EVIDENCE_FILES - names)
             if missing:
@@ -605,7 +611,9 @@ def validate_artifact_archive(archive) -> None:
                 )
             damaged = zipped.testzip()
             if damaged is not None:
-                raise ValueError(f"artifact archive has a damaged file: {damaged}")
+                if damaged in REQUIRED_EVIDENCE_FILES:
+                    raise ValueError(f"artifact archive has a damaged file: {damaged}")
+                raise ValueError("artifact archive has a damaged optional entry")
     except (
         zipfile.BadZipFile,
         EOFError,
@@ -613,8 +621,10 @@ def validate_artifact_archive(archive) -> None:
         OSError,
         zlib.error,
         NotImplementedError,
-    ) as error:
-        raise ValueError(f"artifact archive is corrupt or incomplete: {error}") from error
+        UnicodeError,
+    ):
+        # ZIP exceptions can contain attacker-controlled optional entry names.
+        raise ValueError("artifact archive is corrupt or incomplete") from None
 
 
 def _list_all(
