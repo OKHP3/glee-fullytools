@@ -139,6 +139,36 @@ def artifact_archive_with_special_required_entry(report_path, entry_attributes, 
     return archive.getvalue()
 
 
+def zip_fixture_header_offsets(archive, report_path):
+    """Locate the exact local and central records in a controlled ZIP fixture."""
+    with zipfile.ZipFile(BytesIO(archive)) as zipped:
+        local_offset = zipped.getinfo(report_path).header_offset
+        central_offset = zipped.start_dir
+        for entry in zipped.infolist():
+            if bytes(archive[central_offset:central_offset + 4]) != b"PK\x01\x02":
+                raise AssertionError("invalid fixture central directory")
+            name_length = int.from_bytes(archive[central_offset + 28:central_offset + 30], "little")
+            extra_length = int.from_bytes(archive[central_offset + 30:central_offset + 32], "little")
+            comment_length = int.from_bytes(archive[central_offset + 32:central_offset + 34], "little")
+            name = bytes(archive[central_offset + 46:central_offset + 46 + name_length])
+            if entry.filename == report_path:
+                if name != report_path.encode("utf-8"):
+                    raise AssertionError("fixture central name mismatch")
+                return local_offset, central_offset
+            central_offset += 46 + name_length + extra_length + comment_length
+    raise AssertionError("fixture member not found")
+
+
+def artifact_archive_with_required_entry_flags(report_path, *, local_flags=1, central_flags=1, source=None):
+    """Set flags in the named records, never by searching arbitrary payload bytes."""
+    archive = bytearray(valid_artifact_archive() if source is None else source)
+    local, central = zip_fixture_header_offsets(archive, report_path)
+    for offset, bits in ((local + 6, local_flags), (central + 8, central_flags)):
+        flags = int.from_bytes(archive[offset:offset + 2], "little") | bits
+        archive[offset:offset + 2] = flags.to_bytes(2, "little")
+    return bytes(archive)
+
+
 def browser_theme_index() -> str:
     """Return a valid minimal index for exercising the uploaded-artifact gate."""
     rows = [
@@ -1813,6 +1843,74 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     200, incomplete_archive
                 ),
             )
+
+    def test_encrypted_required_evidence_entry_is_rejected_as_invalid_archive(self):
+        report_path = "assets/audit/color-scheme-init-chromium.json"
+        encrypted_archive = artifact_archive_with_required_entry_flags(report_path)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            f"artifact archive contains an encrypted required evidence file: "
+            f"{report_path}",
+        ):
+            retention_checker.validate_artifact_archive(BytesIO(encrypted_archive))
+
+    def test_required_entry_rejects_local_or_central_encryption_flags(self):
+        for name in sorted(retention_checker.REQUIRED_EVIDENCE_FILES):
+            for local, central in ((1, 0), (0, 1), (1, 1), (0x40, 0), (0, 0x40), (0x40, 0x40)):
+                with self.subTest(name=name, local=local, central=central):
+                    data = artifact_archive_with_required_entry_flags(
+                        name, local_flags=local, central_flags=central
+                    )
+                    with self.assertRaisesRegex(ValueError, "encrypted required evidence file"):
+                        retention_checker.validate_artifact_archive(BytesIO(data))
+
+    def test_required_entry_rejects_invalid_or_truncated_local_headers(self):
+        name = "assets/audit/color-scheme-init-chromium.json"
+        for corruption in ("signature", "offset", "length"):
+            with self.subTest(corruption=corruption):
+                data = bytearray(valid_artifact_archive())
+                local, central = zip_fixture_header_offsets(data, name)
+                if corruption == "signature":
+                    data[local:local + 4] = b"FAIL"
+                elif corruption == "offset":
+                    data[central + 42:central + 46] = (len(data) - 5).to_bytes(4, "little")
+                else:
+                    data[local + 26:local + 30] = b"\xff\xff\xff\xff"
+                with self.assertRaisesRegex(ValueError, "invalid local header|truncated local header|corrupt or incomplete"):
+                    retention_checker.validate_artifact_archive(BytesIO(data))
+
+    def test_required_entry_allows_utf8_data_descriptor_and_adjusted_prefix_offsets(self):
+        name = "assets/audit/color-scheme-init-chromium.json"
+        utf8 = artifact_archive_with_required_entry_flags(name, local_flags=0x800, central_flags=0x800)
+        retention_checker.validate_artifact_archive(BytesIO(utf8))
+
+        class NonSeekable(BytesIO):
+            def seekable(self): return False
+            def seek(self, *args): raise OSError("fixture stream is not seekable")
+        output = NonSeekable()
+        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as zipped:
+            for member in sorted(retention_checker.REQUIRED_EVIDENCE_FILES):
+                zipped.writestr(member, b"{}")
+        descriptor = output.getvalue()
+        with zipfile.ZipFile(BytesIO(descriptor)) as zipped:
+            self.assertTrue(all(entry.flag_bits & 0x8 for entry in zipped.infolist()))
+        retention_checker.validate_artifact_archive(BytesIO(descriptor))
+        prefixed = b"synthetic-self-extracting-stub" + valid_artifact_archive()
+        with zipfile.ZipFile(BytesIO(prefixed)) as zipped:
+            self.assertGreater(zipped.getinfo(name).header_offset, 0)
+        retention_checker.validate_artifact_archive(BytesIO(prefixed))
+        flagged = artifact_archive_with_required_entry_flags(name, local_flags=1, central_flags=0, source=prefixed)
+        with self.assertRaisesRegex(ValueError, "encrypted required evidence file"):
+            retention_checker.validate_artifact_archive(BytesIO(flagged))
+
+    def test_required_entry_allows_zip64_local_extra_fields(self):
+        output = BytesIO()
+        with zipfile.ZipFile(output, "w", allowZip64=True) as zipped:
+            for member in sorted(retention_checker.REQUIRED_EVIDENCE_FILES):
+                with zipped.open(member, "w", force_zip64=True) as entry:
+                    entry.write(b"{}")
+        retention_checker.validate_artifact_archive(BytesIO(output.getvalue()))
 
     def test_required_evidence_entry_rejects_explicit_non_file_types(self):
         report_path = "assets/audit/color-scheme-init-chromium.json"

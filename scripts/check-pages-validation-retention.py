@@ -529,12 +529,30 @@ def _verify_artifact_download_once(
         raise
 
 
+def _required_local_encryption_flags(archive, entry, archive_size: int) -> int:
+    """Read encryption flags from a bounded local header using ZIP-adjusted offsets."""
+    offset = entry.header_offset
+    if offset < 0 or offset > archive_size - 30:
+        raise ValueError(f"required evidence entry has an invalid local header: {entry.filename}")
+    archive.seek(offset)
+    header = archive.read(30)
+    if len(header) != 30 or header[:4] != b"PK\x03\x04":
+        raise ValueError(f"required evidence entry has an invalid local header: {entry.filename}")
+    name_length = int.from_bytes(header[26:28], "little")
+    extra_length = int.from_bytes(header[28:30], "little")
+    if offset + 30 + name_length + extra_length > archive_size:
+        raise ValueError(f"required evidence entry has a truncated local header: {entry.filename}")
+    return int.from_bytes(header[6:8], "little") & 0x41
+
+
 def validate_artifact_archive(archive) -> None:
     """Check ZIP structure, CRCs, and the required review reports."""
     try:
         archive.seek(0)
         with zipfile.ZipFile(archive) as zipped:
             entries = zipped.infolist()
+            archive.seek(0, 2)
+            archive_size = archive.tell()
             if len(entries) > MAX_ARCHIVE_ENTRIES:
                 raise ValueError(
                     f"artifact archive has more than {MAX_ARCHIVE_ENTRIES} entries"
@@ -563,6 +581,12 @@ def validate_artifact_archive(archive) -> None:
                         raise ValueError(
                             "required evidence entry is not a regular file: "
                             f"{entry.filename}"
+                        )
+                    local_flags = _required_local_encryption_flags(archive, entry, archive_size)
+                    if (entry.flag_bits & 0x41) or local_flags:
+                        raise ValueError(
+                            "artifact archive contains an encrypted required "
+                            f"evidence file: {entry.filename}"
                         )
             duplicates = sorted(
                 name for name, count in required_counts.items() if count > 1
