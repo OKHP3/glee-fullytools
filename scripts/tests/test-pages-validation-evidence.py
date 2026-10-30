@@ -956,7 +956,10 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 200, body, {"Content-Length": str(len(body))}
             )
 
-        with patch.object(retention_checker.time, "sleep") as sleep:
+        retry_output = StringIO()
+        with patch.object(retention_checker.time, "sleep") as sleep, redirect_stdout(
+            retry_output
+        ):
             checked = retention_checker.monitor_repository(
                 "owner/repo",
                 "https://api.github.com",
@@ -969,6 +972,85 @@ class PagesValidationEvidenceTests(unittest.TestCase):
         self.assertEqual(checked, 1)
         self.assertEqual(attempts, {"runs": 2, "compare": 2, "artifacts": 2})
         self.assertEqual(sleep.call_count, 3)
+        output = retry_output.getvalue()
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(workflow runs, page 1).",
+            output,
+        )
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(run 44 retention-policy ancestry).",
+            output,
+        )
+        self.assertIn(
+            "Recovered GitHub metadata lookup after 1 retry "
+            "(run 44 artifact listing, page 1).",
+            output,
+        )
+        self.assertNotIn("test-token", output)
+        self.assertNotIn("https://", output)
+
+    def test_metadata_first_attempt_success_is_quiet(self):
+        output = StringIO()
+        with redirect_stdout(output):
+            result = retention_checker._fetch_metadata_page(
+                "https://api.github.com/test",
+                "test-token",
+                lambda url, token: ({"ok": True}, None),
+                lookup="retention-policy ancestry", run_id=44,
+            )
+
+        self.assertEqual(result, ({"ok": True}, None))
+        self.assertEqual(output.getvalue(), "")
+
+    def test_metadata_recovered_after_multiple_retries_has_fixed_safe_context(self):
+        marker = "SYNTHETIC_PRIVATE_SECRET\nforged"
+        calls = []
+
+        def fetch(url, token):
+            calls.append(url)
+            if len(calls) < 3:
+                raise URLError(marker)
+            return {"ok": True}, None
+
+        output = StringIO()
+        with patch.object(retention_checker.time, "sleep") as sleep, redirect_stdout(output):
+            result = retention_checker._fetch_metadata_page(
+                "https://example.test/" + marker, marker, fetch,
+                lookup=marker, run_id=marker, page=True,
+            )
+        self.assertEqual(result, ({"ok": True}, None))
+        self.assertEqual(len(calls), 3)
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [1, 2])
+        self.assertEqual(output.getvalue(), "Recovered GitHub metadata lookup after 2 retries (metadata lookup).\n")
+        self.assertNotIn(marker, output.getvalue())
+
+    def test_metadata_output_failure_is_not_retried_as_network_error(self):
+        attempts = []
+
+        def fetch(url, token):
+            attempts.append(url)
+            if len(attempts) == 1:
+                raise URLError("temporary")
+            return {"ok": True}, None
+
+        with patch.object(retention_checker.time, "sleep") as sleep, \
+             patch("builtins.print", side_effect=OSError("output failed")):
+            with self.assertRaisesRegex(OSError, "output failed"):
+                retention_checker._fetch_metadata_page("https://example.test", "token", fetch)
+        self.assertEqual(len(attempts), 2)
+        sleep.assert_called_once_with(1)
+
+    def test_metadata_exhausted_retries_do_not_report_recovery(self):
+        output = StringIO()
+        with patch.object(retention_checker.time, "sleep"), redirect_stdout(output):
+            with self.assertRaisesRegex(ValueError, "failed after 3 attempts"):
+                retention_checker._fetch_metadata_page(
+                    "https://example.test", "token",
+                    lambda url, token: (_ for _ in ()).throw(URLError("offline")),
+                )
+        self.assertEqual(output.getvalue(), "")
 
     def test_metadata_retries_honor_server_wait_and_close_error(self):
         for status, headers, delay in (
@@ -988,13 +1070,16 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     self.assertTrue(body.closed)
                     return {"ok": True}, None
 
-                with patch.object(retention_checker.time, "sleep") as sleep:
+                output = StringIO()
+                with patch.object(retention_checker.time, "sleep") as sleep, redirect_stdout(output):
                     self.assertEqual(
                         retention_checker._fetch_metadata_page("https://api.github.com/test", "token", fetch),
                         ({"ok": True}, None),
                     )
                 sleep.assert_called_once_with(delay)
                 self.assertTrue(body.closed)
+                self.assertEqual(output.getvalue(),
+                                 "Recovered GitHub metadata lookup after 1 retry (metadata lookup).\n")
 
     def test_metadata_server_wait_beyond_budget_defers_without_retry(self):
         body = BytesIO(b"throttled")
@@ -2530,14 +2615,20 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                     raise HTTPError(url, 503, "Service Unavailable", {}, None)
             return {"artifacts": pages[url]}, second if url == first else None
 
-        with patch.object(retention_checker.time, "sleep"):
+        output = StringIO()
+        with patch.object(retention_checker.time, "sleep"), redirect_stdout(output):
             artifacts = retention_checker._list_all(
-                first, "artifacts", "test-token", fetch
+                first, "artifacts", "test-token", fetch,
+                lookup="artifact listing", run_id=73,
             )
 
         self.assertEqual([artifact["id"] for artifact in artifacts], [730, 731, 732])
         self.assertEqual(calls, [first, second, second])
         self.assertEqual(second_page_attempts, 2)
+        self.assertEqual(output.getvalue(),
+                         "Recovered GitHub metadata lookup after 1 retry (run 73 artifact listing, page 2).\n")
+        self.assertNotIn("test-token", output.getvalue())
+        self.assertNotIn("https://", output.getvalue())
 
     def test_retention_monitor_reports_permanent_later_artifact_page_failure(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
