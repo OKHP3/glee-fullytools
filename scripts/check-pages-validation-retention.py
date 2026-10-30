@@ -547,12 +547,16 @@ def _required_local_encryption_flags(archive, entry, archive_size: int) -> int:
     return int.from_bytes(header[6:8], "little") & 0x41
 
 
-def _windows_archive_projection(source: str) -> str:
-    """Project Python ZIP extraction's Windows component sanitization."""
+def _windows_archive_projections(source: str) -> tuple[str, str]:
+    """Project Windows ZIP component sanitization used by Python versions."""
     translation = str.maketrans(':<>|"?*', "_______")
-    parts = (part for part in source.split("/") if part not in ("", ".", ".."))
-    sanitized = (part.translate(translation).rstrip(" .") for part in parts)
-    return "/".join(part for part in sanitized if part)
+    parts = tuple(part.translate(translation) for part in source.split("/")
+                  if part not in ("", ".", ".."))
+    projections = []
+    for trailing in (".", " ."):
+        sanitized = (part.rstrip(trailing) for part in parts)
+        projections.append("/".join(part for part in sanitized if part))
+    return tuple(projections)
 
 
 def _required_path_alias(original: str) -> str | None:
@@ -565,7 +569,7 @@ def _required_path_alias(original: str) -> str | None:
         candidates = (
             posixpath.normpath(source).lstrip("/"),
             "/".join(part for part in source.split("/") if part not in ("", ".", "..")),
-            _windows_archive_projection(source),
+            *_windows_archive_projections(source),
         )
         for candidate in candidates:
             match = required.get(candidate.casefold())

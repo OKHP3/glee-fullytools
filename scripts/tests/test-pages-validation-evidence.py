@@ -1884,6 +1884,7 @@ class PagesValidationEvidenceTests(unittest.TestCase):
             "C:/assets/audit/color-scheme-init-chromium.json",
             r"C:\assets\audit\color-scheme-init-chromium.json",
             "//server/share/assets/audit/color-scheme-init-chromium.json",
+            "assets./audit./color-scheme-init-chromium.json.",
             "assets./audit /color-scheme-init-chromium.json.",
             r"C:\assets.\audit \color-scheme-init-chromium.json. ",
             canonical_path + "\0SYNTHETIC_PRIVATE_SECRET",
@@ -1935,7 +1936,14 @@ class PagesValidationEvidenceTests(unittest.TestCase):
                 parts = (part for part in source.split("/") if part not in ("", ".", ".."))
                 before_windows_sanitization = "/".join(parts)
                 expected = zipfile.ZipFile._sanitize_windows_name(before_windows_sanitization, "/")
-                self.assertEqual(retention_checker._windows_archive_projection(source), expected)
+                self.assertIn(expected, retention_checker._windows_archive_projections(source))
+
+    def test_windows_zip_component_projection_covers_both_sanitizer_variants(self):
+        source = 'assets./audit /part:<>|"?*/../  /file. '
+        self.assertEqual(
+            retention_checker._windows_archive_projections(source),
+            ("assets/audit /part_______/  /file. ", "assets/audit/part_______/file"),
+        )
 
     def test_downloaded_archive_rejects_alias_even_when_canonical_report_exists(self):
         alias = r"assets\audit\color-scheme-init-chromium.json"
