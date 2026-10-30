@@ -7,6 +7,7 @@ from io import BytesIO, StringIO
 import importlib.util
 import json
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -677,6 +678,74 @@ def assert_uploaded_theme_evidence_contract(workflow: str) -> None:
         )
 
 
+def assert_retention_timeout_contract(
+    workflow: str, monitor_budget_seconds: int, minimum_margin_seconds: int
+) -> None:
+    """Check the workflow's supported, block-style subset; reject ambiguity."""
+    if (type(monitor_budget_seconds) is not int or monitor_budget_seconds <= 0
+            or type(minimum_margin_seconds) is not int or minimum_margin_seconds < 180):
+        raise AssertionError("monitor budget must be positive and margin at least 180 seconds")
+    lines = workflow.splitlines()
+    if any("\t" in line for line in lines):
+        raise AssertionError("tabs are unsupported in the retention workflow")
+    root_keys: dict[str, int] = {}
+    for index, line in enumerate(lines):
+        if not line.strip() or line.lstrip().startswith("#") or line.startswith(" "):
+            continue
+        match = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_-]*):(?:[ ]+(.*))?", line)
+        if not match or match.group(1) in root_keys:
+            raise AssertionError("unsupported or duplicate workflow root key")
+        root_keys[match.group(1)] = index
+    if "jobs" not in root_keys:
+        raise AssertionError("scheduled retention workflow must define jobs")
+    jobs_index = root_keys["jobs"]
+    if not re.fullmatch(r"jobs:(?:[ ]+#.*|[ ]*)", lines[jobs_index]):
+        raise AssertionError("jobs must use a block mapping")
+    end = min((index for index in root_keys.values() if index > jobs_index), default=len(lines))
+    jobs: dict[str, tuple[int, int]] = {}
+    positions = []
+    for index in range(jobs_index + 1, end):
+        line = lines[index]
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        if indent < 2 or indent % 2:
+            raise AssertionError("unsupported indentation in jobs")
+        if indent == 2:
+            match = re.fullmatch(r"  ([A-Za-z_][A-Za-z0-9_-]*):(?:[ ]+#.*|[ ]*)", line)
+            if not match or match.group(1) in jobs:
+                raise AssertionError("unsupported or duplicate job definition")
+            jobs[match.group(1)] = (index, end)
+            positions.append((match.group(1), index))
+    for position, (name, start) in enumerate(positions):
+        jobs[name] = (start, positions[position + 1][1] if position + 1 < len(positions) else end)
+    if "monitor" not in jobs:
+        raise AssertionError("scheduled retention workflow must define a monitor job")
+    start, end = jobs["monitor"]
+    fields: dict[str, str] = {}
+    for line in lines[start + 1:end]:
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        if indent == 4:
+            match = re.fullmatch(r"    ([A-Za-z_][A-Za-z0-9_-]*):(?:[ ]+(.*))?", line)
+            if not match or match.group(1) in fields:
+                raise AssertionError("unsupported or duplicate monitor job field")
+            fields[match.group(1)] = match.group(2) or ""
+    timeout = re.fullmatch(r"([1-9][0-9]{0,5})(?:[ ]+#.*|[ ]*)", fields.get("timeout-minutes", ""))
+    if timeout is None:
+        raise AssertionError("scheduled retention job must define a positive integer timeout-minutes")
+    timeout_seconds = int(timeout.group(1)) * 60
+    margin_seconds = timeout_seconds - monitor_budget_seconds
+    if margin_seconds < minimum_margin_seconds:
+        raise AssertionError(
+            "scheduled retention job timeout must exceed the monitor budget "
+            f"by at least {minimum_margin_seconds} seconds "
+            f"(timeout={timeout_seconds}s, budget={monitor_budget_seconds}s, "
+            f"margin={margin_seconds}s)"
+        )
+
+
 class PagesValidationEvidenceTests(unittest.TestCase):
     def test_retention_checker_requires_repository_checkout(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -706,16 +775,67 @@ class PagesValidationEvidenceTests(unittest.TestCase):
     def test_scheduled_retention_workflow_is_read_only_and_daily(self):
         workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('cron: "17 12 * * *"', workflow)
-        self.assertIn("timeout-minutes: 10", workflow)
         self.assertIn("actions: read", workflow)
         self.assertIn("--monitor-window", workflow)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn("Check Pages validation evidence remains downloadable", workflow)
         self.assertNotIn("actions/deploy-pages", workflow)
         self.assertEqual(retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 7 * 60)
-        self.assertGreaterEqual(
-            10 * 60 - retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS, 3 * 60
+        assert_retention_timeout_contract(
+            workflow,
+            retention_checker.MONITOR_RUNTIME_BUDGET_SECONDS,
+            3 * 60,
         )
+
+    def test_retention_timeout_contract_explains_an_unsafe_margin(self):
+        workflow = RETENTION_WORKFLOW.read_text(encoding="utf-8")
+        with self.assertRaisesRegex(
+            AssertionError,
+            "must exceed the monitor budget by at least 180 seconds",
+        ):
+            assert_retention_timeout_contract(
+                workflow,
+                monitor_budget_seconds=8 * 60 + 1,
+                minimum_margin_seconds=3 * 60,
+            )
+
+    def test_retention_timeout_contract_enforces_180_second_boundary(self):
+        workflow = "jobs:\n  monitor:\n    timeout-minutes: 10 # scheduled job\n"
+        assert_retention_timeout_contract(workflow, 420, 180)
+        with self.assertRaisesRegex(AssertionError, "at least 180 seconds"):
+            assert_retention_timeout_contract(workflow, 421, 180)
+
+    def test_retention_timeout_contract_rejects_nonpositive_or_weak_budgets(self):
+        workflow = "jobs:\n  monitor:\n    timeout-minutes: 10\n"
+        for budget, margin in ((0, 180), (-1, 180), (True, 180), (420, 0), (420, 179), (420, True)):
+            with self.subTest(budget=budget, margin=margin), self.assertRaises(AssertionError):
+                assert_retention_timeout_contract(workflow, budget, margin)
+
+    def test_retention_timeout_contract_rejects_impostors_and_ambiguity(self):
+        invalid = {
+            "step only": "jobs:\n  monitor:\n    steps:\n      - timeout-minutes: 10\n",
+            "later job": "jobs:\n  monitor:\n    steps:\n      - run: echo ok\n  other:\n    timeout-minutes: 10\n",
+            "multiline text": "jobs:\n  monitor:\n    name: |\n      timeout-minutes: 10\n",
+            "duplicate timeout": "jobs:\n  monitor:\n    timeout-minutes: 10\n    timeout-minutes: 11\n",
+            "duplicate monitor": "jobs:\n  monitor:\n    timeout-minutes: 10\n  monitor:\n    timeout-minutes: 10\n",
+            "duplicate jobs": "jobs:\n  monitor:\n    timeout-minutes: 10\njobs:\n  other:\n    timeout-minutes: 10\n",
+            "flow jobs": "jobs: {monitor: {timeout-minutes: 10}}\n",
+            "flow monitor": "jobs:\n  monitor: {timeout-minutes: 10}\n",
+            "quoted monitor": 'jobs:\n  "monitor":\n    timeout-minutes: 10\n',
+            "quoted timeout": 'jobs:\n  monitor:\n    "timeout-minutes": 10\n',
+            "expression": "jobs:\n  monitor:\n    timeout-minutes: ${{ vars.TIMEOUT }}\n",
+            "zero": "jobs:\n  monitor:\n    timeout-minutes: 0\n",
+            "negative": "jobs:\n  monitor:\n    timeout-minutes: -10\n",
+            "decimal": "jobs:\n  monitor:\n    timeout-minutes: 10.0\n",
+            "unseparated hash": "jobs:\n  monitor:\n    timeout-minutes: 10#not-a-comment\n",
+            "unseparated job hash": "jobs:\n  monitor:#not-a-comment\n    timeout-minutes: 10\n",
+            "anchor": "jobs:\n  monitor: &shared\n    timeout-minutes: 10\n",
+            "tab": "jobs:\n  monitor:\n\ttimeout-minutes: 10\n",
+            "bad indentation": "jobs:\n  monitor:\n     timeout-minutes: 10\n",
+        }
+        for name, workflow in invalid.items():
+            with self.subTest(name=name), self.assertRaises(AssertionError):
+                assert_retention_timeout_contract(workflow, 420, 180)
 
     def test_shared_monitor_budget_identifies_runs_left_unchecked(self):
         now = datetime(2026, 10, 13, tzinfo=timezone.utc)
